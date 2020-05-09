@@ -1,0 +1,17 @@
+server:
+  port: 7008
+
+logging:
+  config: classpath:logback.xml
+
+xxl:
+  job:
+    accessToken: ''
+    admin:
+      addresses: http://127.0.0.1:7009/xxl-job-admin
+    executor:
+      appname: blade-xxljob
+      ip: 127.0.0.1
+      logpath: ../data/applogs/xxl-job/jobhandler
+      logretentiondays: -1
+      port: 7018
