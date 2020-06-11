@@ -9,7 +9,15 @@
         <result column="role_name" property="roleName"/>
         <result column="sort" property="sort"/>
         <result column="role_alias" property="roleAlias"/>
+        <result column="remark" property="remark"/>
+        <result column="is_enable" property="isEnable"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
     </resultMap>
 
     <resultMap id="treeNodeResultMap" type="org.springblade.core.tool.node.TreeNode">
@@ -23,7 +31,7 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         select
-        id, parent_id, role_name, sort, role_alias, is_deleted
+        id, parent_id, role_name, sort, role_alias, remark, is_enable, is_deleted, create_user, create_dept, create_time, update_user, update_time, status
     </sql>
 
     <select id="selectRolePage" resultMap="roleResultMap">
@@ -62,6 +70,15 @@
         id IN
         <foreach collection="array" item="ids" index="index" open="(" close=")" separator=",">
             #{ids}
+        </foreach>
+        and is_deleted = 0
+    </select>
+    <select id="selectRoleByParentId" resultType="org.springblade.system.entity.Role">
+        select * from blade_role
+        where
+        parent_id in
+        <foreach item="item" collection="idsList" separator="," open="(" close=")">
+            #{item}
         </foreach>
         and is_deleted = 0
     </select>

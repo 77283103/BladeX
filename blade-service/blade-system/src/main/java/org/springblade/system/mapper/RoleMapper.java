@@ -18,10 +18,15 @@ package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.Role;
 import org.springblade.system.vo.RoleVO;
 
+import javax.websocket.server.PathParam;
+import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Mapper 接口
@@ -64,4 +69,11 @@ public interface RoleMapper extends BaseMapper<Role> {
 	 */
 	List<String> getRoleAliases(Long[] ids);
 
+
+	/**
+	 * 根据父级id查询
+	 * @param idList
+	 * @return
+	 */
+	List<Role> selectRoleByParentId(@Param("idsList") Set<Long> idsList);
 }

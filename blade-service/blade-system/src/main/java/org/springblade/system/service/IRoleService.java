@@ -92,4 +92,11 @@ public interface IRoleService extends IService<Role> {
 	 */
 	boolean submit(Role role);
 
+	/**
+	 * 根据ids删除及其子类
+	 * @param idsList
+	 * @return
+	 */
+	boolean removeByIdsAndSon(List<Long> idsList);
+
 }

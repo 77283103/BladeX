@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springblade.core.tenant.mp.TenantEntity;
 
 import java.io.Serializable;
 
@@ -36,23 +37,9 @@ import java.io.Serializable;
 @Data
 @TableName("blade_role")
 @ApiModel(value = "Role对象", description = "Role对象")
-public class Role implements Serializable {
+public class Role extends TenantEntity {
 
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 主键
-	 */
-	@JsonSerialize(using = ToStringSerializer.class)
-	@ApiModelProperty(value = "主键")
-	@TableId(value = "id", type = IdType.ASSIGN_ID)
-	private Long id;
-
-	/**
-	 * 租户ID
-	 */
-	@ApiModelProperty(value = "租户ID")
-	private String tenantId;
 
 	/**
 	 * 父主键
@@ -80,11 +67,16 @@ public class Role implements Serializable {
 	private String roleAlias;
 
 	/**
-	 * 是否已删除
+	 * 备注
 	 */
-	@TableLogic
-	@ApiModelProperty(value = "是否已删除")
-	private Integer isDeleted;
+	@ApiModelProperty(value = "备注")
+	private String remark;
+
+	/**
+	 * 是否启用
+	 */
+	@ApiModelProperty(value = "是否启用（0未启用，1已启用）")
+	private Integer isEnable;
 
 
 }

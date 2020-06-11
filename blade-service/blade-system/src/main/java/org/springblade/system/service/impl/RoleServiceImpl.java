@@ -19,6 +19,7 @@ package org.springblade.system.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -41,8 +42,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.NotEmpty;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springblade.common.constant.CommonConstant.API_SCOPE_CATEGORY;
@@ -157,6 +158,28 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IR
 		}
 		role.setIsDeleted(BladeConstant.DB_NOT_DELETED);
 		return saveOrUpdate(role);
+	}
+
+	@Override
+	public boolean removeByIdsAndSon(List<Long> idsList) {
+		Set<Long> idsSet = Sets.newHashSet(idsList);
+		idsSet = this.recursionSelect(idsSet);
+		return super.removeByIds(idsSet);
+	}
+
+	/**
+	 * 递归查询子级
+	 * @param idsSet
+	 * @return
+	 */
+	private Set<Long> recursionSelect(Set<Long> idsSet){
+		List<Role> roles = baseMapper.selectRoleByParentId(idsSet);
+		if (CollectionUtil.isNotEmpty(roles)){
+			Set<Long> set = roles.stream().map(Role::getId).collect(Collectors.toSet());
+			set = this.recursionSelect(set);
+			idsSet.addAll(set);
+		}
+		return idsSet;
 	}
 
 }
