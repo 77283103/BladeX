@@ -13,6 +13,14 @@
         <result column="sort" property="sort"/>
         <result column="remark" property="remark"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="record_number" property="recordNumber"/>
+        <result column="pinyin_name" property="pinyinName"/>
+        <result column="update_dept_id" property="updateDeptId"/>
+        <result column="is_enable" property="isEnable"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
     </resultMap>
 
     <resultMap id="deptVOResultMap" type="org.springblade.system.vo.DeptVO">
@@ -25,6 +33,14 @@
         <result column="sort" property="sort"/>
         <result column="remark" property="remark"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="record_number" property="recordNumber"/>
+        <result column="pinyin_name" property="pinyinName"/>
+        <result column="update_dept_id" property="updateDeptId"/>
+        <result column="is_enable" property="isEnable"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
         <result column="has_children" property="hasChildren"/>
     </resultMap>
 
@@ -40,7 +56,8 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         select
-        id, parent_id, dept_name, full_name, sort, remark, is_deleted
+        id, parent_id, dept_name, full_name, sort, remark, is_deleted, record_name, pinyin_name, update_dept_id, is_enable,
+        create_user, create_time, update_time, update_time
     </sql>
 
     <select id="lazyList" resultMap="deptVOResultMap">
@@ -64,10 +81,12 @@
             and dept.parent_id = #{param2}
         </if>
         <if test="param3.deptName!=null and param3.deptName!=''">
-            and dept.dept_name like concat(concat('%', #{param3.deptName}),'%')
+            and (dept.dept_name like concat(concat('%', #{param3.deptName}),'%')
+            or dept.full_name like concat(concat('%', #{param3.deptName}),'%')
+            or dept.pinyin_name like concat(concat('%', #{param3.deptName}),'%'))
         </if>
-        <if test="param3.fullName!=null and param3.fullName!=''">
-            and dept.full_name like concat(concat('%', #{param3.fullName}),'%')
+        <if test="param3.recordNumber!=null and param3.recordNumber!=''">
+            and dept.record_number like concat(concat('%', #{param3.recordNumber}),'%')
         </if>
         ORDER BY dept.sort
     </select>
@@ -117,5 +136,4 @@
         </foreach>
         and is_deleted = 0
     </select>
-
 </mapper>

@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
 
     <properties>
+        <pinyin4j.version>2.5.1</pinyin4j.version>
         <bladex.project.version>2.5.0.RELEASE</bladex.project.version>
 
         <java.version>1.8</java.version>
@@ -43,6 +44,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.belerweb</groupId>
+                <artifactId>pinyin4j</artifactId>
+                <version>${pinyin4j.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.springblade.platform</groupId>
                 <artifactId>blade-bom</artifactId>
