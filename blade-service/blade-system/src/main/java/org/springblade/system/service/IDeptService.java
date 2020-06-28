@@ -17,6 +17,7 @@
 package org.springblade.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.vo.DeptVO;
 
@@ -28,7 +29,7 @@ import java.util.Map;
  *
  * @author Chill
  */
-public interface IDeptService extends IService<Dept> {
+public interface IDeptService extends BaseService<Dept> {
 
 	/**
 	 * 懒加载部门列表
@@ -89,9 +90,16 @@ public interface IDeptService extends IService<Dept> {
 	 * @return
 	 */
 	boolean removeDept(String ids);
+	/**
+	 * 删除部门，忽略子节点，用于父级机构更新
+	 *
+	 * @param ids
+	 * @return
+	 */
+	boolean removeDeptIgnoreChild(String ids);
 
 	/**
-	 * 提交
+	 * 提交-新增
 	 *
 	 * @param dept
 	 * @return

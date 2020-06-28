@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springblade.core.mp.base.BaseEntity;
 
 import java.io.Serializable;
 
@@ -36,17 +37,9 @@ import java.io.Serializable;
 @Data
 @TableName("blade_dept")
 @ApiModel(value = "Dept对象", description = "Dept对象")
-public class Dept implements Serializable {
+public class Dept extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
-
-	/**
-	 * 主键
-	 */
-	@JsonSerialize(using = ToStringSerializer.class)
-	@ApiModelProperty(value = "主键")
-	@TableId(value = "id", type = IdType.ASSIGN_ID)
-	private Long id;
 
 	/**
 	 * 租户ID
@@ -98,11 +91,28 @@ public class Dept implements Serializable {
 	private String remark;
 
 	/**
-	 * 是否已删除
+	 * 机构编号
 	 */
-	@TableLogic
-	@ApiModelProperty(value = "是否已删除")
-	private Integer isDeleted;
+	@ApiModelProperty(value = "机构编号")
+	private String recordNumber;
+
+	/**
+	 * 机构中文拼音名称
+	 */
+	@ApiModelProperty(value = "机构中文拼音名称")
+	private String pinyinName;
+
+	/**
+	 * 修改前机构
+	 */
+	@ApiModelProperty(value = "修改前机构")
+	private Long updateDeptId;
+
+	/**
+	 * 是否启用（0未启用，1启用）
+	 */
+	@ApiModelProperty(value = "是否启用")
+	private Integer isEnable;
 
 
 }
