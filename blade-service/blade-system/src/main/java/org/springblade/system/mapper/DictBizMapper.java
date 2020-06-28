@@ -20,8 +20,10 @@ package org.springblade.system.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.vo.DictBizVO;
+import org.springblade.system.vo.DictVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Mapper 接口
@@ -60,5 +62,15 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 * @return
 	 */
 	List<DictBizVO> parentTree();
+
+	/**
+	 * 懒加载列表
+	 *
+	 * @param parentId
+	 * @param param
+	 * @return
+	 */
+	List<DictBizVO> lazyList(Long parentId, Map<String, Object> param);
+
 
 }

@@ -78,7 +78,9 @@ public class MenuController extends BladeController {
 	@GetMapping("/list")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "code", value = "菜单编号", paramType = "query", dataType = "string"),
-		@ApiImplicitParam(name = "name", value = "菜单名称", paramType = "query", dataType = "string")
+		@ApiImplicitParam(name = "name", value = "菜单名称", paramType = "query", dataType = "string"),
+		@ApiImplicitParam(name = "alias", value = "菜单别名", paramType = "query", dataType = "string")
+
 	})
 	@PreAuth(RoleConstant.HAS_ROLE_ADMINISTRATOR)
 	@ApiOperationSupport(order = 2)

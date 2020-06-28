@@ -17,6 +17,7 @@
 package org.springblade.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -29,13 +30,16 @@ import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
+import org.springblade.system.entity.Dict;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.mapper.DictBizMapper;
 import org.springblade.system.service.IDictBizService;
 import org.springblade.system.vo.DictBizVO;
+import org.springblade.system.vo.DictVO;
 import org.springblade.system.wrapper.DictBizWrapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -104,5 +108,54 @@ public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> impl
 		dict.remove("parentId");
 		IPage<DictBiz> page = this.page(Condition.getPage(query), Condition.getQueryWrapper(dict, DictBiz.class).lambda().eq(DictBiz::getParentId, parentId).orderByAsc(DictBiz::getSort));
 		return DictBizWrapper.build().pageVO(page);
+	}
+	@Override
+	public List<DictBizVO> lazyList(Long parentId, Map<String, Object> param) {
+		if (Func.isEmpty(Func.toStr(param.get("parentId")))) {
+			parentId = null;
+		}
+		return baseMapper.lazyList(parentId, param);
+	}
+
+	/**
+	 * @Description:  根据ids 递归查询子节点
+	 * @Param:  ids
+	 * @return:
+	 * @Author: lm
+	 * @Date:  2020年6月19日
+	 */
+	List<Long> result =new ArrayList<>();
+	// 递归查询
+	public void selectChild(List<Long> ids) {
+		List<Long> temp = new ArrayList<>();
+		for (Long id : ids) {
+			QueryWrapper<DictBiz> queryWrapper = new QueryWrapper<DictBiz>();
+			queryWrapper.eq("parent_id", id);
+			List<DictBiz> DictList = this.baseMapper.selectList(queryWrapper);
+			for (DictBiz dict : DictList) {
+				temp.add(dict.getId());
+				result.add(id);
+				result.add(dict.getId());
+				if (temp.size() != 0 && temp != null) {
+					selectChild(temp);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @Description: 重新定义删除方法
+	 * @Param:
+	 * @return:
+	 * @Author: lm
+	 * @Date:  2020年6月19日
+	 */
+	@Override
+	public Boolean deleteIds(String ids){
+		List<Long> idList =Func.toLongList(ids);
+		//递归查询
+		this.selectChild(idList);
+		return removeByIds(result);
+
 	}
 }

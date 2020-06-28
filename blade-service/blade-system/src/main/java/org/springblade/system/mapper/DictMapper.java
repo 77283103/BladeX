@@ -20,8 +20,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.system.entity.Dict;
 import org.springblade.system.vo.DictVO;
+import org.springblade.system.vo.MenuVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Mapper 接口
@@ -69,5 +71,13 @@ public interface DictMapper extends BaseMapper<Dict> {
 	 * @return
 	 */
 	List<DictVO> parentTree();
+	/**
+	 * 懒加载列表
+	 *
+	 * @param parentId
+	 * @param param
+	 * @return
+	 */
+	List<DictVO> lazyList(Long parentId, Map<String, Object> param);
 
 }
