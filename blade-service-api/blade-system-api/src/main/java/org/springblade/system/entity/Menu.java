@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springblade.core.tenant.mp.TenantEntity;
 import org.springblade.core.tool.utils.Func;
 
 import java.io.Serializable;
@@ -37,7 +38,7 @@ import java.io.Serializable;
 @Data
 @TableName("blade_menu")
 @ApiModel(value = "Menu对象", description = "Menu对象")
-public class Menu implements Serializable {
+public class Menu extends TenantEntity {
 
 	private static final long serialVersionUID = 1L;
 

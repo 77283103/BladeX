@@ -17,8 +17,9 @@
 package org.springblade.system.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.springblade.common.utils.ChinessToPinyin;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
@@ -40,7 +41,7 @@ import java.util.stream.Collectors;
  * @author Chill
  */
 @Service
-public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements IDeptService {
+public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implements IDeptService {
 
 	@Override
 	public List<DeptVO> lazyList(String tenantId, Long parentId, Map<String, Object> param) {
@@ -51,7 +52,8 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 		if (Func.isNotEmpty(paramTenantId) && AuthUtil.isAdministrator()) {
 			tenantId = paramTenantId;
 		}
-		if (Func.isEmpty(param.get("parentId"))) {
+		Object paramParentId = param.get("parentId");
+		if (Func.isEmpty(paramParentId)) {
 			parentId = null;
 		}
 		return baseMapper.lazyList(tenantId, parentId, param);
@@ -87,7 +89,8 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 
 	@Override
 	public List<Dept> getDeptChild(Long deptId) {
-		return baseMapper.selectList(Wrappers.<Dept>query().lambda().like(Dept::getAncestors, deptId));
+		// 2020-6-19 14:45:40 tah，增加过滤条件，查询未删除的的，即isDeleted=0
+		return baseMapper.selectList(Wrappers.<Dept>query().lambda().like(Dept::getAncestors, deptId).eq(Dept::getIsDeleted, 0));
 	}
 
 	@Override
@@ -96,6 +99,11 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 		if (cnt > 0) {
 			throw new ServiceException("请先删除子节点!");
 		}
+		return removeByIds(Func.toLongList(ids));
+	}
+
+	@Override
+	public boolean removeDeptIgnoreChild(String ids){
 		return removeByIds(Func.toLongList(ids));
 	}
 
@@ -115,8 +123,37 @@ public class DeptServiceImpl extends ServiceImpl<DeptMapper, Dept> implements ID
 			String ancestors = parent.getAncestors() + StringPool.COMMA + dept.getParentId();
 			dept.setAncestors(ancestors);
 		}
-		dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
-		return saveOrUpdate(dept);
+		// 根据id是否为空判断做新增还是修改
+		if(null == dept.getId()){
+			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
+			// 保存拼音名称
+			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(),dept.getFullName()));
+			return save(dept);
+		}else{
+			boolean flag = false;
+			// 获取被修改机构的id
+			Long oldId = dept.getId();
+			// 将被修改机构制作成副本保存一份
+			dept.setUpdateDeptId(oldId);
+			dept.setId(null);
+			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
+			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(),dept.getFullName()));
+			save(dept);
+			// 获取机构修改后的id，这个id与oldId不同
+			Long newId = dept.getId();
+			// 逻辑删除被修改记录留存
+			flag = removeDeptIgnoreChild(oldId+"");
+			// 获取修改机构的子级单位集合
+			List<Dept> childDepts = getDeptChild(oldId);
+			// 获取修改后的机构对象
+			Dept deptNew = getById(newId);
+			// 遍历子单位集合修改子单位的父ID和祖籍列表
+			for (Dept dept1: childDepts) {
+				dept1.setParentId(newId);
+				dept1.setAncestors(deptNew.getAncestors() + StringPool.COMMA + dept1.getParentId());
+				flag = saveOrUpdate(dept1);
+			}
+			return flag;
+		}
 	}
-
 }

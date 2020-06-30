@@ -24,6 +24,10 @@
             <artifactId>blade-core-auto</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

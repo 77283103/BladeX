@@ -22,6 +22,7 @@ import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.Dict;
 import org.springblade.system.vo.DictVO;
+import org.springblade.system.vo.MenuVO;
 
 import java.util.List;
 import java.util.Map;
@@ -72,6 +73,14 @@ public interface DictMapper extends BaseMapper<Dict> {
 	 * @return
 	 */
 	List<DictVO> parentTree();
+	/**
+	 * 懒加载列表
+	 *
+	 * @param parentId
+	 * @param param
+	 * @return
+	 */
+	List<DictVO> lazyList(Long parentId, Map<String, Object> param);
 
 	/**
 	 * 根据codes获取字典(code以“，”分隔)

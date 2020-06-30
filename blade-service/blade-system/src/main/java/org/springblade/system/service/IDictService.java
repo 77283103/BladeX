@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.core.mp.support.Query;
 import org.springblade.system.entity.Dict;
 import org.springblade.system.vo.DictVO;
+import org.springblade.system.vo.MenuVO;
 
 import java.util.List;
 import java.util.Map;
@@ -103,6 +104,16 @@ public interface IDictService extends IService<Dict> {
 	 * @return
 	 */
 	IPage<DictVO> childList(Map<String, Object> dict, Long parentId, Query query);
+	/**
+	 * 懒加载列表
+	 *
+	 * @param parentId
+	 * @param param
+	 * @return
+	 */
+	List<DictVO> lazyList(Long parentId, Map<String, Object> param);
+
+    Boolean deleteIds(String ids);
 
 	/**
 	 * 根据codes获取字典(code以“，”分隔)

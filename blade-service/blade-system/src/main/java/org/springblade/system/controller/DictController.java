@@ -24,7 +24,9 @@ import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.node.INode;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
@@ -32,7 +34,9 @@ import org.springblade.system.entity.Dict;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.service.IDictService;
 import org.springblade.system.vo.DictVO;
+import org.springblade.system.vo.MenuVO;
 import org.springblade.system.wrapper.DictWrapper;
+import org.springblade.system.wrapper.MenuWrapper;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -158,7 +162,8 @@ public class DictController extends BladeController {
 	@ApiOperation(value = "删除", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		CacheUtil.clear(DICT_CACHE);
-		return R.status(dictService.removeDict(ids));
+		//return R.status(dictService.removeDict(ids));
+		return R.status(dictService.deleteIds(ids));
 	}
 
 	/**
@@ -172,6 +177,23 @@ public class DictController extends BladeController {
 	public R<List<Dict>> dictionary(String code) {
 		List<Dict> tree = dictService.getList(code);
 		return R.data(tree);
+	}
+	/**
+	 * 懒加载列表
+	 *
+	 * @return
+	 */
+	@GetMapping("/lazy-list")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "dictValue", value = "字典名称", paramType = "query", dataType = "string"),
+		@ApiImplicitParam(name = "code", value = "字典编号", paramType = "query", dataType = "string")
+	})
+	@PreAuth(RoleConstant.HAS_ROLE_ADMINISTRATOR)
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "懒加载列表", notes = "传入dict")
+	public R<List<DictVO>> lazyList(Long parentId, @ApiIgnore @RequestParam Map<String, Object> dict) {
+		List<DictVO> list = dictService.lazyList(parentId,dict );
+		return R.data(DictWrapper.build().listNodeLazyVO(list));
 	}
 
 	/**

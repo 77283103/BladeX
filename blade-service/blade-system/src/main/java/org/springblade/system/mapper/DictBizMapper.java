@@ -22,6 +22,7 @@ import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.vo.DictBizVO;
+import org.springblade.system.vo.DictVO;
 
 import java.util.List;
 import java.util.Map;
@@ -63,6 +64,16 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 * @return
 	 */
 	List<DictBizVO> parentTree();
+
+	/**
+	 * 懒加载列表
+	 *
+	 * @param parentId
+	 * @param param
+	 * @return
+	 */
+	List<DictBizVO> lazyList(Long parentId, Map<String, Object> param);
+
 
 	/**
 	 * 根据codes获取字典(code以“，”分隔)

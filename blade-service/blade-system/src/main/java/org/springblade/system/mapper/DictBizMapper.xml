@@ -15,6 +15,19 @@
         <result column="is_deleted" property="isDeleted"/>
     </resultMap>
 
+    <!-- 通用查询映射结果 -->
+    <resultMap id="dictBizVOResultMap" type="org.springblade.system.vo.DictBizVO">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="code" property="code"/>
+        <result column="dict_key" property="dictKey"/>
+        <result column="dict_value" property="dictValue"/>
+        <result column="sort" property="sort"/>
+        <result column="remark" property="remark"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="has_children" property="hasChildren"/>
+    </resultMap>
+
     <resultMap id="treeNodeResultMap" type="org.springblade.core.tool.node.TreeNode">
         <id column="id" property="id"/>
         <result column="parent_id" property="parentId"/>
@@ -46,6 +59,31 @@
 
     <select id="parentTree" resultMap="treeNodeResultMap">
         select id, parent_id, dict_value as title, id as "value", id as "key" from blade_dict_biz where is_deleted = 0 and parent_id = 0
+    </select>
+    <select id="lazyList"  resultMap="dictBizVOResultMap">
+        SELECT
+        dict.*,
+        (
+        SELECT
+        CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END
+        FROM
+        blade_dict_biz
+        WHERE
+        parent_id = dict.id AND is_deleted = 0
+        ) AS "has_children"
+        FROM
+        blade_dict_biz dict
+        WHERE dict.is_deleted = 0
+        <if test="param1!=null">
+            and dict.parent_id = #{param1}
+        </if>
+        <if test="param2.dictValue!=null and param2.dictValue!=''">
+            and dict.dict_value like concat(concat('%', #{param2.dictValue}),'%')
+        </if>
+        <if test="param2.code!=null and param2.code!=''">
+            and dict.code like concat(concat('%', #{param2.code}),'%')
+        </if>
+        ORDER BY dict.sort
     </select>
 
     <select id="dictionaryByCodes" resultType="org.springblade.system.entity.DictBiz">

@@ -17,6 +17,7 @@
 package org.springblade.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -33,9 +34,13 @@ import org.springblade.system.entity.Dict;
 import org.springblade.system.mapper.DictMapper;
 import org.springblade.system.service.IDictService;
 import org.springblade.system.vo.DictVO;
+import org.springblade.system.vo.MenuVO;
 import org.springblade.system.wrapper.DictWrapper;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -111,6 +116,56 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 		dict.remove("parentId");
 		IPage<Dict> page = this.page(Condition.getPage(query), Condition.getQueryWrapper(dict, Dict.class).lambda().eq(Dict::getParentId, parentId).orderByAsc(Dict::getSort));
 		return DictWrapper.build().pageVO(page);
+	}
+
+	@Override
+	public List<DictVO> lazyList(Long parentId, Map<String, Object> param) {
+		if (Func.isEmpty(Func.toStr(param.get("parentId")))) {
+			parentId = null;
+		}
+		return baseMapper.lazyList(parentId, param);
+	}
+
+	/**
+	* @Description:  根据ids 递归查询子节点
+	* @Param:  ids
+	* @return:void
+	* @Author: lm
+	* @Date:  2020年6月19日
+	*/
+	List<Long> result =new ArrayList<>();
+	// 递归查询
+	public void selectChild(List<Long> ids) {
+		List<Long> temp = new ArrayList<>();
+		for (Long id : ids) {
+			QueryWrapper<Dict> queryWrapper = new QueryWrapper<Dict>();
+			queryWrapper.eq("parent_id", id);
+			List<Dict> DictList = this.baseMapper.selectList(queryWrapper);
+			for (Dict dict : DictList) {
+				temp.add(dict.getId());
+				result.add(id);
+				result.add(dict.getId());
+				if (temp.size() != 0 && temp != null) {
+					selectChild(temp);
+				}
+			}
+		}
+	}
+
+	/**
+	* @Description: 重新定义删除方法
+	* @Param:ids
+	* @return:boolean
+	* @Author: lm
+	* @Date:  2020年6月19日
+	*/
+	@Override
+	public Boolean deleteIds(String ids){
+		List<Long> idList =Func.toLongList(ids);
+		//递归查询
+		this.selectChild(idList);
+		 return removeByIds(result);
+
 	}
 
 	@Override

@@ -25,6 +25,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.DictCache;
 import org.springblade.system.entity.Dict;
 import org.springblade.system.vo.DictVO;
+import org.springblade.system.vo.MenuVO;
 
 import java.util.List;
 import java.util.Objects;
@@ -57,5 +58,7 @@ public class DictWrapper extends BaseEntityWrapper<Dict, DictVO> {
 		List<INode> collect = list.stream().map(dict -> BeanUtil.copy(dict, DictVO.class)).collect(Collectors.toList());
 		return ForestNodeMerger.merge(collect);
 	}
-
+	public List<DictVO> listNodeLazyVO(List<DictVO> list) {
+		return ForestNodeMerger.merge(list);
+	}
 }
