@@ -19,6 +19,7 @@ package org.springblade.system.user.feign;
 
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tool.api.R;
+import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -81,7 +82,7 @@ public interface IUserClient {
 	 * @return
 	 */
 	@PostMapping(SAVE_USER)
-	R<Boolean> saveUser(@RequestBody User user);
+	R<Boolean> saveUser(@RequestBody UserDTO user);
 
 	/**
 	 * 删除用户

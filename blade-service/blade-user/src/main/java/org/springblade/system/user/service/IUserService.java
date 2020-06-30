@@ -20,9 +20,11 @@ package org.springblade.system.user.service;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
+import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.excel.UserExcel;
+import org.springblade.system.user.vo.UserVO;
 
 import java.util.List;
 
@@ -39,7 +41,7 @@ public interface IUserService extends BaseService<User> {
 	 * @param user
 	 * @return
 	 */
-	boolean submit(User user);
+	boolean submit(UserDTO user);
 
 	/**
 	 * 修改用户
@@ -47,7 +49,7 @@ public interface IUserService extends BaseService<User> {
 	 * @param user
 	 * @return
 	 */
-	boolean updateUser(User user);
+	boolean updateUser(UserDTO user);
 
 	/**
 	 * 修改用户基本信息
@@ -66,7 +68,7 @@ public interface IUserService extends BaseService<User> {
 	 * @param tenantId
 	 * @return
 	 */
-	IPage<User> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId);
+	IPage<UserVO> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId);
 
 	/**
 	 * 用户信息
@@ -132,9 +134,32 @@ public interface IUserService extends BaseService<User> {
 
 	/**
 	 * 获取导出用户数据
-	 *
-	 * @param queryWrapper
+	 * @param user
+	 * @param deptId
+	 * @param tenantId
 	 * @return
 	 */
-	List<UserExcel> exportUser(Wrapper<User> queryWrapper);
+	List<UserExcel> exportUser(User user, Long deptId, String tenantId);
+
+	/**
+	 * 停用/启用
+	 * @param user
+	 * @return
+	 */
+	boolean changeStatus(UserDTO user);
+
+	/**
+	 * 根据id查询
+	 * @param id
+	 * @return
+	 */
+	UserVO selectById(Long id);
+
+	/**
+	 * 修改启用状态
+	 * @param id
+	 * @param isEnable
+	 * @return
+	 */
+	boolean updateStatus(String id, Integer isEnable);
 }

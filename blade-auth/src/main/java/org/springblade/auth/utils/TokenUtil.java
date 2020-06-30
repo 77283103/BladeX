@@ -46,6 +46,7 @@ public class TokenUtil {
 	public final static String POST_ID = TokenConstant.POST_ID;
 	public final static String ROLE_ID = TokenConstant.ROLE_ID;
 	public final static String ROLE_NAME = TokenConstant.ROLE_NAME;
+	public final static String DEPART_LIST = TokenConstant.DEPART_LIST;
 	public final static String TENANT_ID = TokenConstant.TENANT_ID;
 	public final static String CLIENT_ID = TokenConstant.CLIENT_ID;
 	public final static String LICENSE = TokenConstant.LICENSE;
@@ -56,6 +57,7 @@ public class TokenUtil {
 	public final static String CAPTCHA_NOT_CORRECT = "验证码不正确";
 	public final static String TENANT_HEADER_KEY = "Tenant-Id";
 	public final static String TENANT_PARAM_KEY = "tenant_id";
+	public final static String DEPART_ID = "Depart-Id";
 	public final static String DEFAULT_TENANT_ID = "000000";
 	public final static String TENANT_NOT_FOUND = "租户ID未找到";
 	public final static String USER_TYPE_HEADER_KEY = "User-Type";

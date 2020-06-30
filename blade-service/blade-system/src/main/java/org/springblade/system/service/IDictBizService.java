@@ -97,4 +97,10 @@ public interface IDictBizService extends IService<DictBiz> {
 	 */
 	IPage<DictBizVO> childList(Map<String, Object> dict, Long parentId, Query query);
 
+	/**
+	 * 根据codes获取字典(code以“，”分隔)
+	 * @param codes
+	 * @return
+	 */
+	Map<String, List<DictBiz>> dictionaryByCodes(List<String> codes);
 }

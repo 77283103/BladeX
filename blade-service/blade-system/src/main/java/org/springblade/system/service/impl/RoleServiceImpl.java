@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.constant.BladeConstant;
@@ -57,7 +58,7 @@ import static org.springblade.common.constant.CommonConstant.DATA_SCOPE_CATEGORY
 @Service
 @Validated
 @AllArgsConstructor
-public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements IRoleService {
+public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implements IRoleService {
 
 	private IRoleMenuService roleMenuService;
 	private IRoleScopeService roleScopeService;

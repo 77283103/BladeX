@@ -48,4 +48,20 @@
         select id, parent_id, dict_value as title, id as "value", id as "key" from blade_dict_biz where is_deleted = 0 and parent_id = 0
     </select>
 
+    <select id="dictionaryByCodes" resultType="org.springblade.system.entity.DictBiz">
+        select
+            code,
+            dict_key,
+            dict_value,
+            sort,
+            remark
+        from
+            blade_dict_biz
+        where
+        parent_id > 0 and is_sealed = 0 and is_deleted = 0
+        <foreach collection="codes" item="code" open="and code in (" separator="," close=")">
+            #{code}
+        </foreach>
+    </select>
+
 </mapper>

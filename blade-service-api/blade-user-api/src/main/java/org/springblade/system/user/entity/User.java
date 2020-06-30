@@ -17,10 +17,12 @@
 package org.springblade.system.user.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.core.tenant.mp.TenantEntity;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -48,11 +50,7 @@ public class User extends TenantEntity {
 	 */
 	private String password;
 	/**
-	 * 昵称
-	 */
-	private String name;
-	/**
-	 * 真名
+	 * 真实姓名
 	 */
 	private String realName;
 	/**
@@ -68,25 +66,20 @@ public class User extends TenantEntity {
 	 */
 	private String phone;
 	/**
+	 * 座机号
+	 */
+	private String landline;
+	/**
 	 * 生日
 	 */
-	private Date birthday;
+	private LocalDateTime birthday;
 	/**
 	 * 性别
 	 */
 	private Integer sex;
 	/**
-	 * 角色id
+	 * 是否启用
 	 */
-	private String roleId;
-	/**
-	 * 部门id
-	 */
-	private String deptId;
-	/**
-	 * 岗位id
-	 */
-	private String postId;
-
+	private Integer isEnable;
 
 }

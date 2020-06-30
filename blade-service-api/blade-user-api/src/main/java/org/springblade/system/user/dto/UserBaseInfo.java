@@ -14,68 +14,58 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.common.constant;
+package org.springblade.system.user.dto;
+
+import lombok.Data;
+import org.springblade.system.dto.UserDepartDTO;
+import org.springblade.system.user.entity.User;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.List;
+
 
 /**
- * 通用常量
+ * 用户基本信息
  *
- * @author Chill
+ * @author Feng
  */
-public interface CommonConstant {
+@Data
+public class UserBaseInfo implements Serializable {
 
+	private static final long serialVersionUID = 1L;
+
+	private Long id;
 	/**
-	 * sword 系统名
+	 * 用户编号
 	 */
-	String SWORD_NAME = "sword";
-
+	private String code;
 	/**
-	 * saber 系统名
+	 * 真实姓名
 	 */
-	String SABER_NAME = "saber";
-
+	private String realName;
 	/**
-	 * 顶级父节点id
+	 * 头像
 	 */
-	Long TOP_PARENT_ID = 0L;
-
+	private String avatar;
 	/**
-	 * 顶级父节点名称
+	 * 邮箱
 	 */
-	String TOP_PARENT_NAME = "顶级";
-
+	private String email;
 	/**
-	 * 未封存状态值
+	 * 手机
 	 */
-	Integer NOT_SEALED_ID = 0;
-
+	private String phone;
 	/**
-	 * 默认密码
+	 * 座机号
 	 */
-	String DEFAULT_PASSWORD = "123456";
+	private String landline;
 	/**
-	 * 默认租户id
+	 * 生日
 	 */
-	String DEFAULT_TENANT_ID = "000000";
-
+	private LocalDateTime birthday;
 	/**
-	 * 默认密码参数值
+	 * 性别
 	 */
-	String DEFAULT_PARAM_PASSWORD = "account.initPassword";
-
-	/**
-	 * 默认排序字段
-	 */
-	String SORT_FIELD = "sort";
-
-	/**
-	 * 数据权限类型
-	 */
-	Integer DATA_SCOPE_CATEGORY = 1;
-
-	/**
-	 * 接口权限类型
-	 */
-	Integer API_SCOPE_CATEGORY = 2;
-
-
+	private Integer sex;
 }

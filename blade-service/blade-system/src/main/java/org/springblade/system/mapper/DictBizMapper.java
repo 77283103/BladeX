@@ -18,10 +18,13 @@ package org.springblade.system.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.vo.DictBizVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Mapper 接口
@@ -61,4 +64,10 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 */
 	List<DictBizVO> parentTree();
 
+	/**
+	 * 根据codes获取字典(code以“，”分隔)
+	 * @param codes
+	 * @return
+	 */
+	List<DictBiz> dictionaryByCodes(@Param("codes") List<String> codes);
 }

@@ -39,6 +39,7 @@ public class AuthProvider {
 		defaultSkipUrl.add("/oauth/captcha/**");
 		defaultSkipUrl.add("/oauth/clear-cache/**");
 		defaultSkipUrl.add("/oauth/user-info");
+		defaultSkipUrl.add("/oauth/select-depart");
 		defaultSkipUrl.add("/token/**");
 		defaultSkipUrl.add("/actuator/health/**");
 		defaultSkipUrl.add("/v2/api-docs/**");

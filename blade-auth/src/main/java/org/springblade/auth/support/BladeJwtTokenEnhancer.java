@@ -18,14 +18,19 @@ package org.springblade.auth.support;
 
 import org.springblade.auth.service.BladeUserDetails;
 import org.springblade.auth.utils.TokenUtil;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.dto.UserDepartDTO;
+import org.springblade.system.vo.UserDepartVO;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * jwt返回参数增强
@@ -36,16 +41,22 @@ public class BladeJwtTokenEnhancer implements TokenEnhancer {
 	@Override
 	public OAuth2AccessToken enhance(OAuth2AccessToken accessToken, OAuth2Authentication authentication) {
 		BladeUserDetails principal = (BladeUserDetails) authentication.getUserAuthentication().getPrincipal();
+
+		List<UserDepartDTO> userDepartList = principal.getUserDepartList();
+		List<UserDepartVO> collect = userDepartList.stream().map(depart -> {
+			return BeanUtil.copy(depart, UserDepartVO.class);
+		}).collect(Collectors.toList());
+
 		Map<String, Object> info = new HashMap<>(16);
 		info.put(TokenUtil.CLIENT_ID, TokenUtil.getClientIdFromHeader());
 		info.put(TokenUtil.USER_ID, Func.toStr(principal.getUserId()));
 		info.put(TokenUtil.DEPT_ID, Func.toStr(principal.getDeptId()));
 		info.put(TokenUtil.POST_ID, Func.toStr(principal.getPostId()));
 		info.put(TokenUtil.ROLE_ID, Func.toStr(principal.getRoleId()));
+		info.put(TokenUtil.DEPART_LIST, collect);
 		info.put(TokenUtil.TENANT_ID, principal.getTenantId());
 		info.put(TokenUtil.ACCOUNT, principal.getAccount());
 		info.put(TokenUtil.USER_NAME, principal.getUsername());
-		info.put(TokenUtil.NICK_NAME, principal.getName());
 		info.put(TokenUtil.REAL_NAME, principal.getRealName());
 		info.put(TokenUtil.ROLE_NAME, principal.getRoleName());
 		info.put(TokenUtil.AVATAR, principal.getAvatar());

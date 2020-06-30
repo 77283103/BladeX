@@ -18,10 +18,13 @@ package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.MapKey;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.Dict;
 import org.springblade.system.vo.DictVO;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Mapper 接口
@@ -70,4 +73,11 @@ public interface DictMapper extends BaseMapper<Dict> {
 	 */
 	List<DictVO> parentTree();
 
+	/**
+	 * 根据codes获取字典(code以“，”分隔)
+	 * @param codes
+	 * @return
+	 */
+	@MapKey("code")
+	List<Dict> dictionaryByCodes(@Param("codes") List<String> codes);
 }

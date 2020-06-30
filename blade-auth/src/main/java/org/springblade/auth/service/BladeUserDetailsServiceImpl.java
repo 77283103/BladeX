@@ -24,11 +24,13 @@ import org.springblade.auth.enums.BladeUserEnum;
 import org.springblade.auth.utils.TokenUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.StringPool;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.core.tool.utils.WebUtil;
+import org.springblade.system.dto.UserDepartDTO;
 import org.springblade.system.entity.Tenant;
 import org.springblade.system.feign.ISysClient;
-import org.springblade.system.user.entity.User;
+import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -38,6 +40,10 @@ import org.springframework.security.oauth2.common.exceptions.UserDeniedAuthoriza
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 用户信息
@@ -58,6 +64,8 @@ public class BladeUserDetailsServiceImpl implements UserDetailsService {
 		// 获取租户ID
 		String headerTenant = request.getHeader(TokenUtil.TENANT_HEADER_KEY);
 		String paramTenant = request.getParameter(TokenUtil.TENANT_PARAM_KEY);
+		// 获取当前身份信息
+		String departId = request.getHeader(TokenUtil.DEPART_ID);
 		if (StringUtil.isAllBlank(headerTenant, paramTenant)) {
 			throw new UserDeniedAuthorizationException(TokenUtil.TENANT_NOT_FOUND);
 		}
@@ -90,17 +98,52 @@ public class BladeUserDetailsServiceImpl implements UserDetailsService {
 		// 判断返回信息
 		if (result.isSuccess()) {
 			UserInfo userInfo = result.getData();
-			User user = userInfo.getUser();
+			UserDTO user = userInfo.getUser();
 			if (user == null || user.getId() == null) {
 				throw new UsernameNotFoundException(TokenUtil.USER_NOT_FOUND);
 			}
-			if (Func.isEmpty(userInfo.getRoles())) {
+
+			String roleName = "";
+			List<UserDepartDTO> userDepartList = user.getUserDepartList();
+			if(StringUtils.isEmpty(departId)){
+				List<String> roleAliasList = userDepartList.stream().map(UserDepartDTO::getRoleAlias).collect(Collectors.toList());
+				Set<Long> deptIdsSet = userDepartList.stream().map(UserDepartDTO::getDeptId).collect(Collectors.toSet());
+				Set<Long> roleIdsSet = userDepartList.stream().map(UserDepartDTO::getRoleId).collect(Collectors.toSet());
+				Set<Long> postIdsSet = userDepartList.stream().map(UserDepartDTO::getPostId).collect(Collectors.toSet());
+				//
+				user.setDeptId(Func.join(deptIdsSet, StringPool.COMMA));
+				user.setRoleId(Func.join(roleIdsSet,StringPool.COMMA));
+				user.setPostId(Func.join(postIdsSet,StringPool.COMMA));
+				roleName = Func.join(roleAliasList);
+			} else{
+				Map<Long, UserDepartDTO> userDepartMap = userDepartList.stream().collect(Collectors.toMap(UserDepartDTO::getId, d -> d));
+				UserDepartDTO userDepart = userDepartMap.get(Func.toLong(departId));
+				user.setDeptId(Func.toStr(userDepart.getDeptId()));
+				user.setPostId(Func.toStr(userDepart.getPostId()));
+				user.setRoleId(Func.toStr(userDepart.getRoleId()));
+				roleName = userDepart.getRoleAlias();
+			}
+			if (Func.isEmpty(roleName)) {
 				throw new UserDeniedAuthorizationException(TokenUtil.USER_HAS_NO_ROLE);
 			}
-			return new BladeUserDetails(user.getId(),
-				user.getTenantId(), user.getName(), user.getRealName(), user.getDeptId(), user.getPostId(),user.getRoleId(), Func.join(result.getData().getRoles()), Func.toStr(user.getAvatar(), TokenUtil.DEFAULT_AVATAR),
-				username, AuthConstant.ENCRYPT + user.getPassword(), true, true, true, true,
-				AuthorityUtils.commaSeparatedStringToAuthorityList(Func.join(result.getData().getRoles())));
+
+			return new BladeUserDetails(
+				user.getId(),
+				user.getTenantId(),
+				user.getRealName(),
+				user.getDeptId(),
+				user.getPostId(),
+				user.getRoleId(),
+				roleName,
+				Func.toStr(user.getAvatar(), TokenUtil.DEFAULT_AVATAR),
+				username,
+				AuthConstant.ENCRYPT + user.getPassword(),
+				true,
+				true,
+				true,
+				true,
+				AuthorityUtils.commaSeparatedStringToAuthorityList(roleName),
+				user.getUserDepartList());
 		} else {
 			throw new UsernameNotFoundException(result.getMsg());
 		}

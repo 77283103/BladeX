@@ -30,11 +30,14 @@ import org.springblade.system.cache.ParamCache;
 import org.springblade.system.entity.*;
 import org.springblade.system.mapper.TenantMapper;
 import org.springblade.system.service.*;
+import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
@@ -59,6 +62,7 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, Tenant> imp
 	private final IPostService postService;
 	private final IRoleMenuService roleMenuService;
 	private final IUserClient userClient;
+	private final IUserDepartService userDepartService;
 
 	@Override
 	public IPage<Tenant> selectTenantPage(IPage<Tenant> page, Tenant tenant) {
@@ -123,22 +127,25 @@ public class TenantServiceImpl extends BaseServiceImpl<TenantMapper, Tenant> imp
 			post.setSort(1);
 			postService.save(post);
 			// 新建租户对应的默认管理用户
-			User user = new User();
+			UserDTO user = new UserDTO();
 			user.setTenantId(tenantId);
-			user.setName("admin");
 			user.setRealName("admin");
 			user.setAccount("admin");
 			// 获取参数配置的密码
 			String password = Func.toStr(ParamCache.getValue(PASSWORD_KEY), DEFAULT_PASSWORD);
 			user.setPassword(password);
-			user.setRoleId(String.valueOf(role.getId()));
-			user.setDeptId(String.valueOf(dept.getId()));
-			user.setPostId(String.valueOf(post.getId()));
-			user.setBirthday(new Date());
+			user.setBirthday(LocalDateTime.now());
 			user.setSex(1);
 			user.setIsDeleted(0);
 			boolean temp = super.saveOrUpdate(tenant);
 			R<Boolean> result = userClient.saveUser(user);
+			// 新建租户对应的默认身份信息
+			UserDepartEntity userDepartEntity = new UserDepartEntity();
+			userDepartEntity.setUserId(user.getId());
+			userDepartEntity.setDeptId(dept.getId());
+			userDepartEntity.setPostId(post.getId());
+			userDepartEntity.setRoleId(role.getId());
+			userDepartService.save(userDepartEntity);
 			if (!result.isSuccess()) {
 				throw new ServiceException(result.getMsg());
 			}

@@ -22,6 +22,10 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.system.user.entity.User;
+import org.springblade.system.vo.UserDepartVO;
+
+import java.util.List;
+
 
 /**
  * 视图实体类
@@ -41,27 +45,7 @@ public class UserVO extends User {
 	private Long id;
 
 	/**
-	 * 租户名
+	 * 人员身份信息
 	 */
-	private String tenantName;
-
-	/**
-	 * 角色名
-	 */
-	private String roleName;
-
-	/**
-	 * 部门名
-	 */
-	private String deptName;
-
-	/**
-	 * 岗位名
-	 */
-	private String postName;
-
-	/**
-	 * 性别
-	 */
-	private String sexName;
+	private List<UserDepartVO> userDepartList;
 }

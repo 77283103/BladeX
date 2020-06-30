@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.service.IUserService;
@@ -59,7 +60,7 @@ public class UserClient implements IUserClient {
 
 	@Override
 	@PostMapping(SAVE_USER)
-	public R<Boolean> saveUser(@RequestBody User user) {
+	public R<Boolean> saveUser(@RequestBody UserDTO user) {
 		return R.data(service.submit(user));
 	}
 

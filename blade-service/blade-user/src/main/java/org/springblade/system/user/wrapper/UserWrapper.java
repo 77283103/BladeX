@@ -41,18 +41,7 @@ public class UserWrapper extends BaseEntityWrapper<User, UserVO> {
 
 	@Override
 	public UserVO entityVO(User user) {
-		UserVO userVO = Objects.requireNonNull(BeanUtil.copy(user, UserVO.class));
-		Tenant tenant = SysCache.getTenant(user.getTenantId());
-		List<String> roleName = SysCache.getRoleNames(user.getRoleId());
-		List<String> deptName = SysCache.getDeptNames(user.getDeptId());
-		List<String> postName = SysCache.getPostNames(user.getPostId());
-		userVO.setTenantName(tenant.getTenantName());
-		userVO.setRoleName(Func.join(roleName));
-		userVO.setDeptName(Func.join(deptName));
-		userVO.setPostName(Func.join(postName));
-		String sex = DictCache.getValue("sex", Func.toInt(user.getSex()));
-		userVO.setSexName(sex);
-		return userVO;
+		return Objects.requireNonNull(BeanUtil.copy(user, UserVO.class));
 	}
 
 }

@@ -20,8 +20,10 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
+import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.excel.UserExcel;
+import org.springblade.system.user.vo.UserVO;
 
 import java.util.List;
 
@@ -50,14 +52,19 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @param account
 	 * @return
 	 */
-	User getUser(String tenantId, String account);
+	UserDTO getUser(String tenantId, String account);
 
 	/**
 	 * 获取导出用户数据
-	 *
-	 * @param queryWrapper
+	 * @param user
+	 * @param deptIdList
+	 * @param tenantId
 	 * @return
 	 */
-	List<UserExcel> exportUser(@Param("ew") Wrapper<User> queryWrapper);
+	List<UserExcel> exportUser( @Param("user") User user, @Param("deptIdList") List<Long> deptIdList, @Param("tenantId") String tenantId);
 
+	/**
+	 * 根据id查询
+	 */
+	UserDTO selectUserDTOById(@Param("id")Long id);
 }

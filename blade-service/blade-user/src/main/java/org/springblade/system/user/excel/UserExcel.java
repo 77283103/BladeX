@@ -39,16 +39,8 @@ public class UserExcel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@ColumnWidth(15)
-	@ExcelProperty("租户编号")
-	private String tenantId;
-
-	@ColumnWidth(15)
 	@ExcelProperty("账户")
 	private String account;
-
-	@ColumnWidth(10)
-	@ExcelProperty("昵称")
-	private String name;
 
 	@ColumnWidth(10)
 	@ExcelProperty("姓名")
@@ -60,6 +52,10 @@ public class UserExcel implements Serializable {
 	@ColumnWidth(15)
 	@ExcelProperty("手机")
 	private String phone;
+
+	@ColumnWidth(15)
+	@ExcelProperty("座机号")
+	private String landline;
 
 	@ExcelIgnore
 	@ExcelProperty("角色ID")

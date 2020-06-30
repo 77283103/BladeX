@@ -47,7 +47,7 @@ public class LeaveController extends BladeController implements CacheNames {
 	@GetMapping("detail")
 	public R<ProcessLeave> detail(Long businessId) {
 		ProcessLeave detail = leaveService.getById(businessId);
-		detail.getFlow().setAssigneeName(UserCache.getUser(detail.getCreateUser()).getName());
+		detail.getFlow().setAssigneeName(UserCache.getUser(detail.getCreateUser()).getRealName());
 		return R.data(detail);
 	}
 

@@ -14,68 +14,39 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.common.constant;
+package org.springblade.system.user.dto;
+
+import lombok.Data;
+import org.springblade.system.dto.UserDepartDTO;
+import org.springblade.system.user.entity.User;
+
+import java.util.List;
+
 
 /**
- * 通用常量
+ * 实体类
  *
- * @author Chill
+ * @author Feng
  */
-public interface CommonConstant {
+@Data
+public class UserDTO extends User {
+
+	private static final long serialVersionUID = 1L;
 
 	/**
-	 * sword 系统名
+	 * 角色id
 	 */
-	String SWORD_NAME = "sword";
-
+	private String roleId;
 	/**
-	 * saber 系统名
+	 * 部门id
 	 */
-	String SABER_NAME = "saber";
-
+	private String deptId;
 	/**
-	 * 顶级父节点id
+	 * 岗位id
 	 */
-	Long TOP_PARENT_ID = 0L;
-
+	private String postId;
 	/**
-	 * 顶级父节点名称
+	 * 人员身份信息
 	 */
-	String TOP_PARENT_NAME = "顶级";
-
-	/**
-	 * 未封存状态值
-	 */
-	Integer NOT_SEALED_ID = 0;
-
-	/**
-	 * 默认密码
-	 */
-	String DEFAULT_PASSWORD = "123456";
-	/**
-	 * 默认租户id
-	 */
-	String DEFAULT_TENANT_ID = "000000";
-
-	/**
-	 * 默认密码参数值
-	 */
-	String DEFAULT_PARAM_PASSWORD = "account.initPassword";
-
-	/**
-	 * 默认排序字段
-	 */
-	String SORT_FIELD = "sort";
-
-	/**
-	 * 数据权限类型
-	 */
-	Integer DATA_SCOPE_CATEGORY = 1;
-
-	/**
-	 * 接口权限类型
-	 */
-	Integer API_SCOPE_CATEGORY = 2;
-
-
+	private List<UserDepartDTO> userDepartList;
 }

@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.springblade.core.cache.constant.CacheConstant.DICT_CACHE;
 
@@ -110,5 +111,15 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 		dict.remove("parentId");
 		IPage<Dict> page = this.page(Condition.getPage(query), Condition.getQueryWrapper(dict, Dict.class).lambda().eq(Dict::getParentId, parentId).orderByAsc(Dict::getSort));
 		return DictWrapper.build().pageVO(page);
+	}
+
+	@Override
+	public Map<String,List<Dict>> dictionaryByCodes(List<String> codes) {
+		List<Dict> dictList = baseMapper.dictionaryByCodes(codes);
+		if (dictList.isEmpty()){
+			return null;
+		}
+		Map<String, List<Dict>> collect = dictList.stream().collect(Collectors.groupingBy(Dict::getCode));
+		return collect;
 	}
 }

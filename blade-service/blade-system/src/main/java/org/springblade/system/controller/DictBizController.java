@@ -26,6 +26,8 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.node.INode;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.StringPool;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.service.IDictBizService;
 import org.springblade.system.vo.DictBizVO;
@@ -169,5 +171,16 @@ public class DictBizController extends BladeController {
 		return R.data(tree);
 	}
 
-
+	/**
+	 * 根据codes获取字典(code以“，”分隔)
+	 *
+	 * @return
+	 */
+	@GetMapping("/dictionaryByCodes")
+	@ApiOperationSupport(order = 8)
+	@ApiOperation(value = "获取字典", notes = "获取字典")
+	public R<Map<String,List<DictBiz>>> dictionaryByCodes(String codes) {
+		Map<String,List<DictBiz>> dictBizMap= dictService.dictionaryByCodes(Func.toStrList(StringPool.COMMA, codes));
+		return R.data(dictBizMap);
+	}
 }

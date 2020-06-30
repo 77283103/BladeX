@@ -16,8 +16,6 @@
  */
 package org.springblade.system.user.controller;
 
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiImplicitParam;
@@ -31,12 +29,14 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
-import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.constant.RoleConstant;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.StringPool;
+import org.springblade.system.user.dto.UserBaseInfo;
+import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.excel.UserExcel;
 import org.springblade.system.user.excel.UserImporter;
@@ -51,7 +51,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import static org.springblade.core.cache.constant.CacheConstant.USER_CACHE;
 
@@ -75,36 +74,19 @@ public class UserController {
 	@GetMapping("/detail")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R<UserVO> detail(User user) {
-		User detail = userService.getOne(Condition.getQueryWrapper(user));
-		return R.data(UserWrapper.build().entityVO(detail));
+		UserVO userVO = userService.selectById(user.getId());
+		return R.data(UserWrapper.build().entityVO(userVO));
 	}
 
 	/**
-	 * 查询单条
+	 * 查询当前登录用户信息
 	 */
 	@ApiOperationSupport(order =2)
-	@ApiOperation(value = "查看详情", notes = "传入id")
+	@ApiOperation(value = "查询当前登录用户信息", notes = "传入id")
 	@GetMapping("/info")
 	public R<UserVO> info(BladeUser user) {
 		User detail = userService.getById(user.getUserId());
 		return R.data(UserWrapper.build().entityVO(detail));
-	}
-
-	/**
-	 * 用户列表
-	 */
-	@GetMapping("/list")
-	@ApiImplicitParams({
-		@ApiImplicitParam(name = "account", value = "账号名", paramType = "query", dataType = "string"),
-		@ApiImplicitParam(name = "realName", value = "姓名", paramType = "query", dataType = "string")
-	})
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "列表", notes = "传入account和realName")
-	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
-	public R<IPage<UserVO>> list(@ApiIgnore @RequestParam Map<String, Object> user, Query query, BladeUser bladeUser) {
-		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user, User.class);
-		IPage<User> pages = userService.page(Condition.getPage(query), (!bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID)) ? queryWrapper.lambda().eq(User::getTenantId, bladeUser.getTenantId()) : queryWrapper);
-		return R.data(UserWrapper.build().pageVO(pages));
 	}
 
 	/**
@@ -119,18 +101,18 @@ public class UserController {
 	@ApiOperation(value = "列表", notes = "传入account和realName")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R<IPage<UserVO>> page(@ApiIgnore User user, Query query, Long deptId, BladeUser bladeUser) {
-		IPage<User> pages = userService.selectUserPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
-		return R.data(UserWrapper.build().pageVO(pages));
+		IPage<UserVO> pages = userService.selectUserPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
+		return R.data(pages);
 	}
 
 	/**
-	 * 新增或修改
+	 * 新增
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增或修改", notes = "传入User")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
-	public R submit(@Valid @RequestBody User user) {
+	public R submit(@Valid @RequestBody UserDTO user) {
 		CacheUtil.clear(USER_CACHE);
 		return R.status(userService.submit(user));
 	}
@@ -141,7 +123,8 @@ public class UserController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入User")
-	public R update(@Valid @RequestBody User user) {
+	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
+	public R update(@Valid @RequestBody UserDTO user) {
 		CacheUtil.clear(USER_CACHE);
 		return R.status(userService.updateUser(user));
 	}
@@ -156,19 +139,6 @@ public class UserController {
 	public R remove(@RequestParam String ids) {
 		CacheUtil.clear(USER_CACHE);
 		return R.status(userService.removeUser(ids));
-	}
-
-	/**
-	 * 设置菜单权限
-	 */
-	@PostMapping("/grant")
-	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "权限设置", notes = "传入roleId集合以及menuId集合")
-	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
-	public R grant(@ApiParam(value = "userId集合", required = true) @RequestParam String userIds,
-				   @ApiParam(value = "roleId集合", required = true) @RequestParam String roleIds) {
-		boolean temp = userService.grant(userIds, roleIds);
-		return R.status(temp);
 	}
 
 	@PostMapping("/reset-password")
@@ -194,26 +164,30 @@ public class UserController {
 	}
 
 	/**
+	 * 修改用户启用状态
+	 * @param id
+	 * @param isEnable
+	 * @return
+	 */
+	@PostMapping("/update-status")
+	@ApiOperationSupport(order = 9)
+	@ApiOperation(value = "修改启用状态", notes = "传入id和状态值")
+	public R updateStatus(@ApiParam(value = "用户id", required = true) @RequestParam String id,
+							@ApiParam(value = "状态", required = true) @RequestParam Integer isEnable){
+		boolean temp = userService.updateStatus(id, isEnable);
+		return R.status(temp);
+	}
+
+	/**
 	 * 修改基本信息
 	 */
 	@PostMapping("/update-info")
 	@ApiOperationSupport(order = 10)
 	@ApiOperation(value = "修改基本信息", notes = "传入User")
-	public R updateInfo(@Valid @RequestBody User user) {
+	public R updateInfo(@Valid @RequestBody UserBaseInfo user) {
 		CacheUtil.clear(USER_CACHE);
-		return R.status(userService.updateUserInfo(user));
-	}
-
-	/**
-	 * 用户列表
-	 */
-	@GetMapping("/user-list")
-	@ApiOperationSupport(order = 11)
-	@ApiOperation(value = "用户列表", notes = "传入user")
-	public R<List<User>> userList(User user, BladeUser bladeUser) {
-		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user);
-		List<User> list = userService.list((!AuthUtil.isAdministrator()) ? queryWrapper.lambda().eq(User::getTenantId, bladeUser.getTenantId()) : queryWrapper);
-		return R.data(list);
+		User copy = BeanUtil.copy(user, User.class);
+		return R.status(userService.updateUserInfo(copy));
 	}
 
 	/**
@@ -234,13 +208,8 @@ public class UserController {
 	@GetMapping("export-user")
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "导出用户", notes = "传入user")
-	public void exportUser(@ApiIgnore @RequestParam Map<String, Object> user, BladeUser bladeUser, HttpServletResponse response) {
-		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user, User.class);
-		if (!AuthUtil.isAdministrator()){
-			queryWrapper.lambda().eq(User::getTenantId, bladeUser.getTenantId());
-		}
-		queryWrapper.lambda().eq(User::getIsDeleted, BladeConstant.DB_NOT_DELETED);
-		List<UserExcel> list = userService.exportUser(queryWrapper);
+	public void exportUser(@ApiIgnore User user, Long deptId, BladeUser bladeUser, HttpServletResponse response) {
+		List<UserExcel> list = userService.exportUser(user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
 		ExcelUtil.export(response, "用户数据" + DateUtil.time(), "用户数据表", list, UserExcel.class);
 	}
 

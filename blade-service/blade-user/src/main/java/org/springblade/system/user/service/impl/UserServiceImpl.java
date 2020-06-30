@@ -17,37 +17,43 @@
 package org.springblade.system.user.service.impl;
 
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.google.common.collect.Lists;
 import lombok.AllArgsConstructor;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.SecureUtil;
-import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.utils.*;
 import org.springblade.system.cache.ParamCache;
 import org.springblade.system.cache.SysCache;
+import org.springblade.system.dto.UserDepartDTO;
 import org.springblade.system.entity.Tenant;
+import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.cache.UserCache;
+import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
-import org.springblade.system.user.entity.UserDept;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.excel.UserExcel;
 import org.springblade.system.user.mapper.UserMapper;
+import org.springblade.system.user.service.IUserDepartService;
 import org.springblade.system.user.service.IUserDeptService;
 import org.springblade.system.user.service.IUserService;
+import org.springblade.system.user.vo.UserVO;
+import org.springblade.system.user.wrapper.UserDTOWrapper;
+import org.springblade.system.user.wrapper.UserWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.springblade.common.constant.CommonConstant.DEFAULT_PARAM_PASSWORD;
+import static org.springblade.common.constant.CommonConstant.DEFAULT_TENANT_ID;
 
 /**
  * 服务实现类
@@ -59,11 +65,12 @@ import static org.springblade.common.constant.CommonConstant.DEFAULT_PARAM_PASSW
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements IUserService {
 
 	private IUserDeptService userDeptService;
+	private IUserDepartService userDepartService;
 	private ISysClient sysClient;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean submit(User user) {
+	public boolean submit(UserDTO user) {
 		if (StringUtil.isBlank(user.getTenantId())) {
 			user.setTenantId(BladeConstant.ADMIN_TENANT_ID);
 		}
@@ -83,12 +90,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		if (userCount > 0 && Func.isEmpty(user.getId())) {
 			throw new ServiceException(StringUtil.format("当前用户 [{}] 已存在!", user.getAccount()));
 		}
-		return save(user) && submitUserDept(user);
+		return save(user) && submitUserDepart(user);
 	}
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean updateUser(User user) {
+	public boolean updateUser(UserDTO user) {
 		String tenantId = user.getTenantId();
 		Integer userCount = baseMapper.selectCount(
 			Wrappers.<User>query().lambda()
@@ -99,7 +106,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		if (userCount > 0) {
 			throw new ServiceException(StringUtil.format("当前用户 [{}] 已存在!", user.getAccount()));
 		}
-		return updateUserInfo(user) && submitUserDept(user);
+		return updateUserInfo(user) && submitUserDepart(user);
 	}
 
 	@Override
@@ -108,23 +115,33 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		return updateById(user);
 	}
 
-	private boolean submitUserDept(User user) {
-		List<Long> deptIdList = Func.toLongList(user.getDeptId());
-		List<UserDept> userDeptList = new ArrayList<>();
-		deptIdList.forEach(deptId -> {
-			UserDept userDept = new UserDept();
-			userDept.setUserId(user.getId());
-			userDept.setDeptId(deptId);
-			userDeptList.add(userDept);
-		});
-		userDeptService.remove(Wrappers.<UserDept>query().lambda().eq(UserDept::getUserId, user.getId()));
-		return userDeptService.saveBatch(userDeptList);
+	/**
+	 * 更新人员身份信息
+	 * @param user
+	 * @return
+	 */
+	private boolean submitUserDepart(UserDTO user) {
+		List<UserDepartDTO> userDepartList = user.getUserDepartList();
+		if(CollectionUtil.isNotEmpty(userDepartList)){
+			userDepartService.delByUserId(user.getId());
+			List<UserDepartEntity> collect = userDepartList.stream().map(depart -> {
+				depart.setUserId(user.getId());
+				UserDepartEntity userDepartEntity = new UserDepartEntity();
+				BeanUtil.copy(depart, userDepartEntity);
+				return userDepartEntity;
+			}).collect(Collectors.toList());
+			return userDepartService.saveBatch(collect);
+		} else {
+			throw new ServiceException("至少填写一条身份信息");
+		}
 	}
 
 	@Override
-	public IPage<User> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId) {
+	public IPage<UserVO> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId) {
 		List<Long> deptIdList = SysCache.getDeptChildIds(deptId);
-		return page.setRecords(baseMapper.selectUserPage(page, user, deptIdList, tenantId));
+		List<User> userList = baseMapper.selectUserPage(page, user, deptIdList, tenantId);
+		page.setRecords(userList);
+		return UserWrapper.build().pageVO(page);
 	}
 
 	@Override
@@ -135,21 +152,14 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Override
 	public UserInfo userInfo(String tenantId, String account) {
 		UserInfo userInfo = new UserInfo();
-		User user = baseMapper.getUser(tenantId, account);
+		UserDTO user = baseMapper.getUser(tenantId, account);
 		userInfo.setUser(user);
-		if (Func.isNotEmpty(user)) {
-			R<List<String>> result = sysClient.getRoleAliases(user.getRoleId());
-			if (result.isSuccess()) {
-				List<String> roleAlias = result.getData();
-				userInfo.setRoles(roleAlias);
-			}
-		}
 		return userInfo;
 	}
 
 	@Override
 	public boolean grant(String userIds, String roleIds) {
-		User user = new User();
+		UserDTO user = new UserDTO();
 		user.setRoleId(roleIds);
 		return this.update(user, Wrappers.<User>update().lambda().in(User::getId, Func.toLongList(userIds)));
 	}
@@ -186,17 +196,23 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Transactional(rollbackFor = Exception.class)
 	public void importUser(List<UserExcel> data, Boolean isCovered) {
 		data.forEach(userExcel -> {
-			User user = Objects.requireNonNull(BeanUtil.copy(userExcel, User.class));
-			// 设置部门ID
-			user.setDeptId(SysCache.getDeptIds(userExcel.getTenantId(), userExcel.getDeptName()));
-			// 设置岗位ID
-			user.setPostId(SysCache.getPostIds(userExcel.getTenantId(), userExcel.getPostName()));
-			// 设置角色ID
-			user.setRoleId(SysCache.getRoleIds(userExcel.getTenantId(), userExcel.getRoleName()));
+			UserDTO user = Objects.requireNonNull(BeanUtil.copy(userExcel, UserDTO.class));
+			// 初始化身份信息
+			List<UserDepartDTO> userDepartDTOList = Lists.newArrayList();
+			UserDepartDTO userDepartDTO = new UserDepartDTO();
+			String deptIdStr = SysCache.getDeptIds(DEFAULT_TENANT_ID, userExcel.getDeptName());
+			String postIdStr = SysCache.getPostIds(DEFAULT_TENANT_ID, userExcel.getPostName());
+			String roleIdStr = SysCache.getRoleIds(DEFAULT_TENANT_ID, userExcel.getRoleName());
+			userDepartDTO.setDeptId(Func.toLong(deptIdStr));
+			userDepartDTO.setPostId(Func.toLong(postIdStr));
+			userDepartDTO.setRoleId(Func.toLong(roleIdStr));
+			userDepartDTOList.add(userDepartDTO);
+			//
+			user.setUserDepartList(userDepartDTOList);
 			// 覆盖数据
 			if (isCovered) {
 				// 查询用户是否存在
-				User oldUser = UserCache.getUser(userExcel.getTenantId(), userExcel.getAccount());
+				User oldUser = UserCache.getUser(DEFAULT_TENANT_ID, userExcel.getAccount());
 				if (oldUser != null && oldUser.getId() != null) {
 					user.setId(oldUser.getId());
 					this.updateUser(user);
@@ -205,20 +221,37 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 			}
 			// 获取默认密码配置
 			String initPassword = ParamCache.getValue(DEFAULT_PARAM_PASSWORD);
+			String initTenantId = ParamCache.getValue(DEFAULT_TENANT_ID);
 			user.setPassword(DigestUtil.encrypt(initPassword));
+			user.setTenantId(initTenantId);
 			this.submit(user);
 		});
 	}
 
 	@Override
-	public List<UserExcel> exportUser(Wrapper<User> queryWrapper) {
-		List<UserExcel> userList = baseMapper.exportUser(queryWrapper);
-		userList.forEach(user -> {
-			user.setRoleName(StringUtil.join(SysCache.getRoleNames(user.getRoleId())));
-			user.setDeptName(StringUtil.join(SysCache.getDeptNames(user.getDeptId())));
-			user.setPostName(StringUtil.join(SysCache.getPostNames(user.getPostId())));
-		});
+	public List<UserExcel> exportUser(User user, Long deptId, String tenantId) {
+		List<Long> deptIdList = SysCache.getDeptChildIds(deptId);
+		List<UserExcel> userList = baseMapper.exportUser(user, deptIdList, tenantId);
 		return userList;
+	}
+
+	@Override
+	public boolean changeStatus(UserDTO user) {
+		return save(user);
+	}
+
+	@Override
+	public UserVO selectById(Long id) {
+		UserDTO userDTO = baseMapper.selectUserDTOById(id);
+		return UserDTOWrapper.build().toVO(userDTO);
+	}
+
+	@Override
+	public boolean updateStatus(String id, Integer isEnable) {
+		User user = baseMapper.selectById(id);
+		user.setIsEnable(isEnable);
+		baseMapper.updateById(user);
+		return true;
 	}
 
 }

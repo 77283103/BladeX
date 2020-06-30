@@ -17,10 +17,12 @@
 package org.springblade.auth.service;
 
 import lombok.Getter;
+import org.springblade.system.dto.UserDepartDTO;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
 import java.util.Collection;
+import java.util.List;
 
 /**
  * 用户信息拓展
@@ -38,10 +40,6 @@ public class BladeUserDetails extends User {
 	 * 租户ID
 	 */
 	private String tenantId;
-	/**
-	 * 昵称
-	 */
-	private String name;
 	/**
 	 * 真名
 	 */
@@ -70,12 +68,15 @@ public class BladeUserDetails extends User {
 	 * 头像
 	 */
 	private String avatar;
+	/**
+	 * 人员身份信息
+	 */
+	private List<UserDepartDTO> userDepartList;
 
-	public BladeUserDetails(Long userId, String tenantId, String name, String realName, String deptId, String postId, String roleId, String roleName, String avatar, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
+	public BladeUserDetails(Long userId, String tenantId, String realName, String deptId, String postId, String roleId, String roleName, String avatar, String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities, List<UserDepartDTO> userDepartList) {
 		super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
 		this.userId = userId;
 		this.tenantId = tenantId;
-		this.name = name;
 		this.realName = realName;
 		this.account = username;
 		this.deptId = deptId;
@@ -83,6 +84,7 @@ public class BladeUserDetails extends User {
 		this.roleId = roleId;
 		this.roleName = roleName;
 		this.avatar = avatar;
+		this.userDepartList = userDepartList;
 	}
 
 }
