@@ -169,7 +169,6 @@ public class DictController extends BladeController {
 	@ApiOperation(value = "删除", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		CacheUtil.clear(DICT_CACHE);
-		//return R.status(dictService.removeDict(ids));
 		return R.status(dictService.deleteIds(ids));
 	}
 

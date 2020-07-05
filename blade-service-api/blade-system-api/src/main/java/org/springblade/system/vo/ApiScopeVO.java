@@ -16,6 +16,8 @@
  */
 package org.springblade.system.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -32,6 +34,8 @@ import org.springblade.system.entity.ApiScope;
 public class ApiScopeVO extends ApiScope {
 	private static final long serialVersionUID = 1L;
 
+	@JsonSerialize(using = ToStringSerializer.class)
+	private Integer scopeType;
 	/**
 	 * 规则类型名
 	 */

@@ -29,7 +29,7 @@ import org.springblade.contract.service.IContractAccordingService;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/blade-contract/according")
+@RequestMapping("/according")
 @Api(value = "合同依据管理", tags = "合同依据管理")
 public class ContractAccordingController extends BladeController {
 

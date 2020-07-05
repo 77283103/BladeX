@@ -31,8 +31,8 @@ public interface IDataScopeService extends BaseService<DataScope> {
 	/**
 	 * 分页查询
 	 * @param page
-	 * @param DataScope
+	 * @param dataScope
 	 * @return
 	 */
-	IPage<DataScope> pageList(IPage<DataScope> page, DataScope DataScope);
+	IPage<DataScope> pageList(IPage<DataScope> page, DataScope dataScope);
 }

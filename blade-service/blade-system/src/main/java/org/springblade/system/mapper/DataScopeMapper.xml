@@ -46,11 +46,12 @@
         <include refid="baseColumnList"></include>
         FROM blade_scope_data
         WHERE is_deleted = 0
-        <if test="DataScope.resourceCode != null and DataScope.resourceCode != ''">
-            AND resource_code like concat('%',#{DataScope.resourceCode},'%')
+        AND menu_id = #{dataScope.menuId}
+        <if test="dataScope.resourceCode != null and dataScope.resourceCode != ''">
+            AND resource_code like concat('%',#{dataScope.resourceCode},'%')
         </if>
-        <if test="DataScope.scopeName != null and DataScope.scopeName != ''">
-            AND scope_name like concat('%',#{DataScope.scopeName},'%')
+        <if test="dataScope.scopeName != null and dataScope.scopeName != ''">
+            AND scope_name like concat('%',#{dataScope.scopeName},'%')
         </if>
     </select>
 </mapper>

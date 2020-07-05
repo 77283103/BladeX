@@ -14,16 +14,16 @@
         <result column="is_deleted" property="isDeleted"/>
     </resultMap>
     <resultMap id="dictVOResultMap" type="org.springblade.system.vo.DictVO">
-        <id column="id" property="id"/>
-        <result column="parent_id" property="parentId"/>
-        <result column="code" property="code"/>
-        <result column="dict_key" property="dictKey"/>
-        <result column="dict_value" property="dictValue"/>
-        <result column="sort" property="sort"/>
-        <result column="remark" property="remark"/>
-        <result column="is_deleted" property="isDeleted"/>
-        <result column="has_children" property="hasChildren"/>
-    </resultMap>
+    <id column="id" property="id"/>
+    <result column="parent_id" property="parentId"/>
+    <result column="code" property="code"/>
+    <result column="dict_key" property="dictKey"/>
+    <result column="dict_value" property="dictValue"/>
+    <result column="sort" property="sort"/>
+    <result column="remark" property="remark"/>
+    <result column="is_deleted" property="isDeleted"/>
+    <result column="has_children" property="hasChildren"/>
+</resultMap>
 
     <resultMap id="treeNodeResultMap" type="org.springblade.core.tool.node.TreeNode">
         <id column="id" property="id"/>

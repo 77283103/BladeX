@@ -17,6 +17,8 @@
 package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.ApiScope;
 
 /**
@@ -27,4 +29,5 @@ import org.springblade.system.entity.ApiScope;
  */
 public interface ApiScopeMapper extends BaseMapper<ApiScope> {
 
+	IPage<ApiScope> pageList(IPage<Object> page, @Param("apiScope") ApiScope apiScope);
 }
