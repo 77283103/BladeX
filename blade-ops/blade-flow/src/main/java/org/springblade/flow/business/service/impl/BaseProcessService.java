@@ -36,8 +36,6 @@ public abstract class BaseProcessService {
     protected HistoryService historyService;
     @Autowired
     protected IdentityService identityService;
-    //private IRunFlowableActinstDao runFlowableActinstDao;
-    //private IHisFlowableActinstDao hisFlowableActinstDao;
 
 
 	/**

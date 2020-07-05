@@ -137,4 +137,5 @@ public interface FlowBusinessService {
 
 	void takeItBackTaskLook(BladeFlow flow);
 
+	void takeBackTask(BladeFlow flow);
 }

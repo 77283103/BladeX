@@ -236,4 +236,18 @@ public class WorkController {
 		return R.status(true);
 	}
 
+
+	/**
+	 * 拿回任务
+	 */
+	@PostMapping(value = "takeBack-task")
+	@ApiOperationSupport(order = 14)
+	@ApiOperation(value = "退回操作", notes = "传入流程信息")
+	public R takeBack(@RequestBody BladeFlow flow) {
+		flowBusinessService.takeBackTask(flow);
+		return R.status(true);
+	}
+
+
+
 }
