@@ -6,6 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author tah
@@ -15,6 +16,18 @@ import java.util.List;
 @Builder
 public class FlowNodeResponse implements Serializable{
 	private static final long serialVersionUID = 1L;
+	/**
+	 * 流程参数
+	 */
+	private Map<String, Object> variables;
+	/**
+	 * 审批意见
+	 */
+	private String comment;
+	/**
+	 * 任务id
+	 */
+	private String taskId;
     /**
      * 节点id
      */
