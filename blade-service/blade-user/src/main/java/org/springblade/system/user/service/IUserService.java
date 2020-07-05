@@ -166,6 +166,33 @@ public interface IUserService extends BaseService<User> {
 	/**
 	 * 用于页面中选择用户
 	 * 分页列表
+	 * @param page
+	 * @param user
+	 * @param deptId
+	 * @param tenantId
+	 * @return
 	 */
 	IPage<SelectUserVO> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId);
+
+	/**
+	 * 根据机构id和岗位id获取候选人List
+	 * @param deptId
+	 * @param postId
+	 * @return
+	 */
+	List<User> userInfoByDeptIdAndPostId(String deptId, String postId);
+
+	/**
+	 * 根据userid数组返回候选人list
+	 * @param userIds
+	 * @return
+	 */
+	List<User> userInfoByUserIds(String userIds);
+
+	/**
+	 * 基准人部门部长
+	 * @param benchUserId
+	 * @return
+	 */
+	List<User> userInfoByBenchMinister(String benchUserId);
 }

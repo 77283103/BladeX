@@ -18,11 +18,11 @@ public class FlowNodeResponse implements Serializable{
     /**
      * 节点id
      */
-    private String nodeId;
+    private String id;
     /**
      * 节点名称
      */
-    private String nodeName;
+    private String name;
     /**
      * 执行人的id
      */

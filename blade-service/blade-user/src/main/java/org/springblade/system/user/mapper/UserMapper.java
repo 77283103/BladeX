@@ -69,4 +69,19 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @return
 	 */
 	UserDTO selectUserDTOById(@Param("id")Long id);
+
+	/**
+	 * 根据机构id和岗位id查询用户（流程使用）
+	 * @param deptId
+	 * @param postId
+	 * @return
+	 */
+	List<User> findByDeptAndPost(String deptId, String postId);
+
+	/**
+	 * 基准人的部门部长
+	 * @param benchUserId 基准人id
+	 * @return
+	 */
+	List<User> findByBenchMinister(String benchUserId);
 }
