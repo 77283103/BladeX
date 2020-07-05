@@ -32,7 +32,6 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ActivityInstance;
 import org.flowable.engine.runtime.Execution;
 import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.idm.api.User;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -56,11 +55,16 @@ import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.core.utils.TaskUtil;
+import org.springblade.flow.engine.constant.FlowDesignUserType;
 import org.springblade.flow.engine.constant.FlowEngineConstant;
+import org.springblade.flow.engine.constant.FlowProcessBenchMark;
+import org.springblade.flow.engine.constant.FlowRelationType;
 import org.springblade.flow.engine.utils.FlowCache;
 import org.springblade.flow.engine.utils.FlowableUtils;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
+import org.springblade.system.user.feign.IUserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -85,6 +89,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	private RuntimeService runtimeService;
 	protected ManagementService managementService;
 	protected PermissionServiceImpl permissionService;
+	private IUserClient userClient;
 	@Autowired
 	private IRunFlowableActinstDaoMapper runFlowableActinstDao;
 	@Autowired
@@ -162,15 +167,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			return true;
 		}
 		return false;
-		// 创建变量
-		Map<String, Object> variables = flow.getVariables();
-		if (variables == null) {
-			variables = Kv.create();
-		}
-		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
-		// 完成任务
-		taskService.complete(taskId, variables);
-		return true;
 	}
 
 	/**
@@ -205,14 +201,11 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			// 提交下一节点是UserTask
 			if (targetNode instanceof UserTask) {
 				return createFlowNodeResponseUserTask(targetNode, taskId);
-				return createFlowNodeResponseUserTask(targetNode);
 			}
 			// 提交下一节点是GateWay
 			if (targetNode instanceof Gateway) {
 				// 获取流程全局变量
 				return createFlowNodeResponseGateWay(targetNode, taskEntity, taskId);
-				Map<String, Object> variables = taskEntity.getVariables();
-				return createFlowNodeResponseGateWay(targetNode, variables);
 			}
 			// 都没有满足以上的话，可能是其他类型的节点，流程目前暂不支持
 			throw new FlowableException("无法识别下一节点，下一节点是EndEvent、UserTask、GateWay之外的其他节点");
@@ -246,14 +239,14 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @return
 	 */
 	private List<FlowNodeResponse> createFlowNodeResponseUserTask(FlowNode targetNode, String taskId) {
-	private List<FlowNodeResponse> createFlowNodeResponseUserTask(FlowNode targetNode) {
 		// 获取节点自定义属性
-		/***********************************此处需要实现获取节点自定义属性并返回List<FlowUserResponse>**************************/
+		List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
 		FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 			.id(targetNode.getId())
+			.name(targetNode.getName())
 			.end(false)
-			.userResponseList(null)
+			.userResponseList(candidateUserList)
 			.build();
 		flowNodeResponseList.add(flowNodeResponse);
 		return flowNodeResponseList;
@@ -265,7 +258,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @param targetNode 节点对象
 	 * @return
 	 */
-	private List<FlowNodeResponse> createFlowNodeResponseGateWay(FlowNode targetNode, Map<String, Object> variables) {
 	private List<FlowNodeResponse> createFlowNodeResponseGateWay(FlowNode targetNode, TaskEntity taskEntity, String taskId) {
 		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
 		// 并行网关，所有分支必须执行，无法自由选择
@@ -273,21 +265,20 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			// 遍历并行网关的每一条出线获取每一个节点
 			targetNode.getOutgoingFlows().forEach(sequenceFlow -> {
 				FlowNode targetFlowNode = (FlowNode) sequenceFlow.getTargetFlowElement();
-				// 获取节点自定义属性
-				/***********************************此处需要实现获取节点自定义属性并返回List<FlowUserResponse>**************************/
 				// 获取节点自定义属性并返回人员List
 				List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 				FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 					.id(targetFlowNode.getId())
 					.name(targetFlowNode.getName())
 					.end(false)
-					.userResponseList(null)
+					.userResponseList(candidateUserList)
 					.build();
 				flowNodeResponseList.add(flowNodeResponse);
 			});
 			return flowNodeResponseList;
 		}
 		// 排他网关，所有分支中满足条件的第一个分支会执行，其余均不执行
+		// 注：此处的判断只是为了前台展示下一节点和处理人，流程执行时flowable会根据全局变量自行判断连线的走向
 		if (targetNode instanceof ExclusiveGateway) {
 			Map<String, Object> variables = taskEntity.getVariables();
 			if (null == variables) {
@@ -314,33 +305,34 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 					if (result) {
 						FlowNode flowNodeExclusive = (FlowNode) outLine.getTargetFlowElement();
 						// 获取节点自定义属性
-						/***********************************此处需要实现获取节点自定义属性并返回List<FlowUserResponse>**************************/
+						List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 						FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 							.end(false)
 							.id(flowNodeExclusive.getId())
 							.name(flowNodeExclusive.getName())
-							.userResponseList(null)
+							.userResponseList(candidateUserList)
 							.build();
 						flowNodeResponseList.add(flowNodeResponse);
 						// 排他网关只能有一条线可以走，只要遇到满足条件的就结束循环
-						return flowNodeResponseList;
+						break;
 					}
 				} catch (Exception e) {
 					throw new FlowableException("排他网关连线条件判断时出现异常");
 				}
 			}
-			return null;
+			return flowNodeResponseList;
 		}
-		// 包容网关，可以选择一条或多条出线
+		// 包容网关，可以选择一条或多条出线，此处在前台展示所有可选的节点和用户信息
 		if (targetNode instanceof InclusiveGateway) {
 			targetNode.getOutgoingFlows().forEach(sequenceFlow -> {
 				FlowNode targetNodeInclusive = (FlowNode) sequenceFlow.getTargetFlowElement();
+				List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 				FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 					.end(false)
 					.enableChooseNode(true)
 					.id(targetNodeInclusive.getId())
 					.name(targetNodeInclusive.getName())
-					.userResponseList(null)
+					.userResponseList(candidateUserList)
 					.build();
 				flowNodeResponseList.add(flowNodeResponse);
 			});
@@ -349,19 +341,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		throw new FlowableException("流程暂不支持其他网关类型的处理");
 	}
 
-/*	@Override
-	public List<FlowUserResponse> getCandidateUsers(FlowNode targetNode) {
-		// 获取自定义岗位属性
-		String flowPost = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_POST);
-		// 获取自定义角色属性
-		String flowRole = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_ROLE);
-		// 获取自定义人员属性
-		String flowUser = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_USER);
-		// 获取自定义机构属性
-		String flowDept = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_DEPT);
-
-		return null;
-	}*/
 	/**
 	 * 根据流程自定义属性查询候选人列表
 	 *
@@ -798,10 +777,10 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	@Override
 	public void cancelTask(BladeFlow flow) {
-		if (Func.isEmpty(flow.getProcessInstanceId())){
+		if (Func.isEmpty(flow.getProcessInstanceId())) {
 			throw new ServiceException("流程实例ID不能为空!");
 		}
-		runtimeService.deleteProcessInstance(flow.getProcessInstanceId(),"终止原因");
+		runtimeService.deleteProcessInstance(flow.getProcessInstanceId(), "终止原因");
 	}
 
 
@@ -993,7 +972,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			}
 		});
 		//组装usertask的数据
-		List<User> userList = identityService.createUserQuery().userIds(userCodes).list();
 		if (CollectionUtils.isNotEmpty(userTasks)) {
 			userTasks.forEach(activityInstance -> {
 				FlowNodeVo node = new FlowNodeVo();
@@ -1075,6 +1053,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @param disActivityId     跳转的节点id
 	 * @param processInstanceId 流程实例id
 	 */
+	@Override
 	protected void deleteActivity(String disActivityId, String processInstanceId) {
 
 		String tableName = managementService.getTableName(ActivityInstanceEntity.class);
@@ -1091,20 +1070,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			//查询出该实例走过的每个节点和连线
 			List<ActivityInstance> datas = runtimeService.createNativeActivityInstanceQuery().sql(sql).parameter("processInstanceId", processInstanceId)
 				.parameter("endTime", activityInstance.getEndTime()).list();
-			/*List<String> runActivityIds = new ArrayList<>();
-			if (CollectionUtils.isNotEmpty(datas)) {
-				//拉姆达表达式来把所有的id存到集合里，删除对应的运行时的节点信息和历史的节点信息
-				datas.forEach(ai -> runActivityIds.add(ai.getId()));
-				runFlowableActinstDao.deleteRunActinstsByIds(runActivityIds);
-				hisFlowableActinstDao.deleteHisActinstsByIds(runActivityIds);
-			}*/
 			if (CollectionUtils.isNotEmpty(datas)) {
 				//删除对应的运行时的节点信息和历史的节点信息
-				for (ActivityInstance ac : datas) {
-					runtimeService.createNativeExecutionQuery().sql("delete from act_ru_actinst where ID_=#{disActivityId}")
-						.parameter("disActivityId", ac.getId());
-					historyService.createNativeHistoricActivityInstanceQuery().sql("delete from act_hi_actinst where ID_=#{disActivityId}")
-						.parameter("disActivityId", ac.getId());
 				for(ActivityInstance ac:datas){
 					runFlowableActinstDao.deleteRunActinstsById(ac.getId());
 					hisFlowableActinstDao.deleteHisActinstsById(ac.getId());
