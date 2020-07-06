@@ -69,7 +69,7 @@ public class AuthClientController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入client")
 	public R<IPage<AuthClient>> list(AuthClient authClient, Query query) {
-		IPage<AuthClient> pages = clientService.page(Condition.getPage(query), Condition.getQueryWrapper(authClient));
+		IPage<AuthClient> pages = clientService.pageList(Condition.getPage(query), authClient);
 		return R.data(pages);
 	}
 

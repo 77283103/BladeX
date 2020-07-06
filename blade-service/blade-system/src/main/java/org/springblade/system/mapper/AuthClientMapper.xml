@@ -5,15 +5,9 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="clientResultMap" type="org.springblade.system.entity.AuthClient">
         <result column="id" property="id"/>
-        <result column="create_user" property="createUser"/>
-        <result column="create_time" property="createTime"/>
-        <result column="update_user" property="updateUser"/>
-        <result column="update_time" property="updateTime"/>
-        <result column="status" property="status"/>
-        <result column="is_deleted" property="isDeleted"/>
         <result column="client_id" property="clientId"/>
         <result column="client_secret" property="clientSecret"/>
-        <result column="resources_ids" property="resourceIds"/>
+        <result column="resource_ids" property="resourceIds"/>
         <result column="scope" property="scope"/>
         <result column="authorized_grant_types" property="authorizedGrantTypes"/>
         <result column="web_server_redirect_uri" property="webServerRedirectUri"/>
@@ -22,6 +16,47 @@
         <result column="refresh_token_validity" property="refreshTokenValidity"/>
         <result column="additional_information" property="additionalInformation"/>
         <result column="autoapprove" property="autoapprove"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
     </resultMap>
-
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        client_id,
+        client_secret,
+        resource_ids,
+        scope,
+        authorized_grant_types,
+        web_server_redirect_uri,
+        authorities,
+        access_token_validity,
+        refresh_token_validity,
+        additional_information,
+        autoapprove,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="clientResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM blade_client
+        WHERE is_deleted = 0
+        <if test="client.clientId != null and client.clientId != ''">
+            AND client_id like concat('%',#{client.clientId},'%')
+        </if>
+        <if test="client.clientSecret != null and client.clientSecret != ''">
+            AND client_secret like concat('%',#{client.clientSecret},'%')
+        </if>
+    </select>
 </mapper>

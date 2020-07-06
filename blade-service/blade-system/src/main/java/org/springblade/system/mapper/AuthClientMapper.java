@@ -17,6 +17,7 @@
 package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.system.entity.AuthClient;
 
 /**
@@ -25,5 +26,11 @@ import org.springblade.system.entity.AuthClient;
  * @author Chill
  */
 public interface AuthClientMapper extends BaseMapper<AuthClient> {
-
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param client
+	 * @return
+	 */
+	IPage<AuthClient> pageList(IPage<AuthClient> page, AuthClient client);
 }
