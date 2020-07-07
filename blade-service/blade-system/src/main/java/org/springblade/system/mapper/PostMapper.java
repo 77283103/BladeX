@@ -18,6 +18,7 @@ package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.Post;
 import org.springblade.system.vo.PostVO;
 
@@ -29,6 +30,14 @@ import java.util.List;
  * @author Chill
  */
 public interface PostMapper extends BaseMapper<Post> {
+
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param post
+	 * @return
+	 */
+	IPage<Post> pageList(@Param("page")IPage<Post> page, @Param("post")Post post);
 
 	/**
 	 * 自定义分页

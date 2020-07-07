@@ -69,7 +69,7 @@ public class PostController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入post")
 	public R<IPage<PostVO>> list(Post post, Query query) {
-		IPage<Post> pages = postService.page(Condition.getPage(query), Condition.getQueryWrapper(post));
+		IPage<Post> pages = postService.pageList(Condition.getPage(query), post);
 		return R.data(PostWrapper.build().pageVO(pages));
 	}
 

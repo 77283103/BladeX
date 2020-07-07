@@ -37,4 +37,34 @@
             and is_deleted = 0
     </select>
 
+    <sql id="baseColumnList">
+        id,
+        tenant_id,
+        category,
+        post_code,
+        post_name,
+        sort,
+        remark,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="postResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM blade_post
+        WHERE is_deleted = 0
+        <if test="post.postCode != null and post.postCode != ''">
+            AND post_code like concat('%',#{post.postCode},'%')
+        </if>
+        <if test="post.postName != null and post.postName != ''">
+            AND post_name like concat('%',#{post.postName},'%')
+        </if>
+    </select>
+
 </mapper>
