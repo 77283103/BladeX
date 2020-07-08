@@ -38,6 +38,11 @@ import java.util.stream.Collectors;
 public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implements IPostService {
 
 	@Override
+	public IPage<Post> pageList(IPage<Post> page, Post post) {
+		return baseMapper.pageList(page, post);
+	}
+
+	@Override
 	public IPage<PostVO> selectPostPage(IPage<PostVO> page, PostVO post) {
 		return page.setRecords(baseMapper.selectPostPage(page, post));
 	}

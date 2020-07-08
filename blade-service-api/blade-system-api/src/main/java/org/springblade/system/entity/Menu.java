@@ -43,86 +43,65 @@ public class Menu extends TenantEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 主键
+	 * 上级菜单
 	 */
-	@JsonSerialize(using = ToStringSerializer.class)
-	@ApiModelProperty(value = "主键")
-	@TableId(value = "id", type = IdType.ASSIGN_ID)
-	private Long id;
-
-	/**
-	 * 菜单父主键
-	 */
-	@JsonSerialize(using = ToStringSerializer.class)
-	@ApiModelProperty(value = "菜单父主键")
+	@ApiModelProperty(value = "上级菜单")
 	private Long parentId;
-
+	/**
+	 * 英文名称
+	 */
+	@ApiModelProperty(value = "英文名称")
+	private String englishName;
 	/**
 	 * 菜单编号
 	 */
 	@ApiModelProperty(value = "菜单编号")
 	private String code;
-
 	/**
 	 * 菜单名称
 	 */
 	@ApiModelProperty(value = "菜单名称")
 	private String name;
-
 	/**
 	 * 菜单别名
 	 */
 	@ApiModelProperty(value = "菜单别名")
 	private String alias;
-
 	/**
-	 * 请求地址
+	 * 路由地址
 	 */
-	@ApiModelProperty(value = "请求地址")
+	@ApiModelProperty(value = "路由地址")
 	private String path;
-
 	/**
-	 * 菜单资源
+	 * 菜单图标
 	 */
-	@ApiModelProperty(value = "菜单资源")
+	@ApiModelProperty(value = "菜单图标")
 	private String source;
-
 	/**
 	 * 排序
 	 */
 	@ApiModelProperty(value = "排序")
 	private Integer sort;
-
 	/**
 	 * 菜单类型
 	 */
 	@ApiModelProperty(value = "菜单类型")
 	private Integer category;
-
 	/**
 	 * 操作按钮类型
 	 */
 	@ApiModelProperty(value = "操作按钮类型")
 	private Integer action;
-
 	/**
 	 * 是否打开新页面
 	 */
 	@ApiModelProperty(value = "是否打开新页面")
 	private Integer isOpen;
-
 	/**
 	 * 备注
 	 */
 	@ApiModelProperty(value = "备注")
 	private String remark;
-
-	/**
-	 * 是否已删除
-	 */
-	@TableLogic
-	@ApiModelProperty(value = "是否已删除")
-	private Integer isDeleted;
 
 
 	@Override
