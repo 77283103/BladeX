@@ -17,6 +17,7 @@
 package org.springblade.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.entity.Post;
 import org.springblade.system.vo.PostVO;
@@ -29,6 +30,14 @@ import java.util.List;
  * @author Chill
  */
 public interface IPostService extends BaseService<Post> {
+
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param post
+	 * @return
+	 */
+	IPage<Post> pageList(IPage<Post> page, Post post);
 
 	/**
 	 * 自定义分页
