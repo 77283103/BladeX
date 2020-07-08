@@ -17,6 +17,7 @@
 package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.system.entity.Param;
 
 /**
@@ -25,5 +26,5 @@ import org.springblade.system.entity.Param;
  * @author Chill
  */
 public interface ParamMapper extends BaseMapper<Param> {
-
+	IPage<Param> pageList(IPage<Param> page, Param param);
 }

@@ -16,5 +16,26 @@
         <result column="param_value" property="paramValue"/>
         <result column="remark" property="remark"/>
     </resultMap>
-
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        param_name,
+        param_key,
+        param_value,
+        remark,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="paramResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM blade_param
+        WHERE is_deleted = 0
+    </select>
 </mapper>

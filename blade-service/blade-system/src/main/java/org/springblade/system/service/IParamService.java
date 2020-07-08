@@ -16,6 +16,7 @@
  */
 package org.springblade.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.entity.Param;
 
@@ -34,4 +35,5 @@ public interface IParamService extends BaseService<Param> {
 	 */
 	String getValue(String paramKey);
 
+	IPage<Param> pageList(IPage<Param> page, Param param);
 }

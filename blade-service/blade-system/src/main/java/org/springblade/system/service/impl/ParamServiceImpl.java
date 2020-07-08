@@ -16,6 +16,7 @@
  */
 package org.springblade.system.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.system.entity.Param;
@@ -36,5 +37,8 @@ public class ParamServiceImpl extends BaseServiceImpl<ParamMapper, Param> implem
 		Param param = this.getOne(Wrappers.<Param>query().lambda().eq(Param::getParamKey, paramKey));
 		return param.getParamValue();
 	}
-
+	@Override
+	public IPage<Param> pageList(IPage<Param> page, Param param) {
+		return baseMapper.pageList(page, param);
+	}
 }
