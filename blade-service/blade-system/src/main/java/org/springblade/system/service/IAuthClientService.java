@@ -18,19 +18,19 @@ package org.springblade.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.system.entity.AuthClient;
+import org.springblade.system.entity.ClientEntity;
 
 /**
  *  服务类
  *
  * @author Chill
  */
-public interface IAuthClientService extends BaseService<AuthClient> {
+public interface IAuthClientService extends BaseService<ClientEntity> {
 	/**
 	 * 分页查询
 	 * @param page
 	 * @param client
 	 * @return
 	 */
-	IPage<AuthClient> pageList(IPage<AuthClient> page, AuthClient client);
+	IPage<ClientEntity> pageList(IPage<ClientEntity> page, ClientEntity client);
 }

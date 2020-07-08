@@ -29,8 +29,10 @@ import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.system.entity.AuthClient;
+import org.springblade.system.entity.ClientEntity;
 import org.springblade.system.service.IAuthClientService;
+import org.springblade.system.vo.ClientVO;
+import org.springblade.system.wrapper.ClientWrapper;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -57,9 +59,9 @@ public class AuthClientController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入client")
-	public R<AuthClient> detail(AuthClient authClient) {
-		AuthClient detail = clientService.getOne(Condition.getQueryWrapper(authClient));
-		return R.data(detail);
+	public R<ClientVO> detail(String id) {
+		ClientEntity detail = clientService.getById(id);
+		return R.data(ClientWrapper.build().entityVO(detail));
 	}
 
 	/**
@@ -68,8 +70,8 @@ public class AuthClientController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入client")
-	public R<IPage<AuthClient>> list(AuthClient authClient, Query query) {
-		IPage<AuthClient> pages = clientService.pageList(Condition.getPage(query), authClient);
+	public R<IPage<ClientEntity>> list(ClientEntity clientEntity, Query query) {
+		IPage<ClientEntity> pages = clientService.pageList(Condition.getPage(query), clientEntity);
 		return R.data(pages);
 	}
 
@@ -79,8 +81,8 @@ public class AuthClientController extends BladeController {
 	@PostMapping("/save")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "新增", notes = "传入client")
-	public R save(@Valid @RequestBody AuthClient authClient) {
-		return R.status(clientService.save(authClient));
+	public R save(@Valid @RequestBody ClientEntity clientEntity) {
+		return R.status(clientService.save(clientEntity));
 	}
 
 	/**
@@ -89,8 +91,8 @@ public class AuthClientController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "修改", notes = "传入client")
-	public R update(@Valid @RequestBody AuthClient authClient) {
-		return R.status(clientService.updateById(authClient));
+	public R update(@Valid @RequestBody ClientEntity clientEntity) {
+		return R.status(clientService.updateById(clientEntity));
 	}
 
 	/**
@@ -99,8 +101,8 @@ public class AuthClientController extends BladeController {
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "新增或修改", notes = "传入client")
-	public R submit(@Valid @RequestBody AuthClient authClient) {
-		return R.status(clientService.saveOrUpdate(authClient));
+	public R submit(@Valid @RequestBody ClientEntity clientEntity) {
+		return R.status(clientService.saveOrUpdate(clientEntity));
 	}
 
 

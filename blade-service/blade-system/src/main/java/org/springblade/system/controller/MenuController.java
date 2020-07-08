@@ -67,8 +67,8 @@ public class MenuController extends BladeController {
 	@PreAuth(RoleConstant.HAS_ROLE_ADMINISTRATOR)
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入menu")
-	public R<MenuVO> detail(Menu menu) {
-		Menu detail = menuService.getOne(Condition.getQueryWrapper(menu));
+	public R<MenuVO> detail(String id) {
+		Menu detail = menuService.getById(id);
 		return R.data(MenuWrapper.build().entityVO(detail));
 	}
 

@@ -33,7 +33,7 @@ import org.springblade.core.mp.base.BaseEntity;
 @TableName("blade_client")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Client对象", description = "Client对象")
-public class AuthClient extends BaseEntity {
+public class ClientEntity extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 

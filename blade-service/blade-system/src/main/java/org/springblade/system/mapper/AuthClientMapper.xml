@@ -3,7 +3,7 @@
 <mapper namespace="org.springblade.system.mapper.AuthClientMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="clientResultMap" type="org.springblade.system.entity.AuthClient">
+    <resultMap id="clientResultMap" type="org.springblade.system.entity.ClientEntity">
         <result column="id" property="id"/>
         <result column="client_id" property="clientId"/>
         <result column="client_secret" property="clientSecret"/>

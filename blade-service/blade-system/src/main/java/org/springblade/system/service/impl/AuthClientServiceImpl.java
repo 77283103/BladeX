@@ -18,7 +18,7 @@ package org.springblade.system.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.system.entity.AuthClient;
+import org.springblade.system.entity.ClientEntity;
 import org.springblade.system.mapper.AuthClientMapper;
 import org.springblade.system.service.IAuthClientService;
 import org.springframework.stereotype.Service;
@@ -29,10 +29,10 @@ import org.springframework.stereotype.Service;
  * @author Chill
  */
 @Service
-public class AuthClientServiceImpl extends BaseServiceImpl<AuthClientMapper, AuthClient> implements IAuthClientService {
+public class AuthClientServiceImpl extends BaseServiceImpl<AuthClientMapper, ClientEntity> implements IAuthClientService {
 
 	@Override
-	public IPage<AuthClient> pageList(IPage<AuthClient> page, AuthClient client) {
+	public IPage<ClientEntity> pageList(IPage<ClientEntity> page, ClientEntity client) {
 		return baseMapper.pageList(page, client);
 	}
 }

@@ -18,19 +18,19 @@ package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.system.entity.AuthClient;
+import org.springblade.system.entity.ClientEntity;
 
 /**
  * Mapper 接口
  *
  * @author Chill
  */
-public interface AuthClientMapper extends BaseMapper<AuthClient> {
+public interface AuthClientMapper extends BaseMapper<ClientEntity> {
 	/**
 	 * 分页查询
 	 * @param page
 	 * @param client
 	 * @return
 	 */
-	IPage<AuthClient> pageList(IPage<AuthClient> page, AuthClient client);
+	IPage<ClientEntity> pageList(IPage<ClientEntity> page, ClientEntity client);
 }
