@@ -21,7 +21,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.core.mp.support.Query;
 import org.springblade.system.entity.Dict;
 import org.springblade.system.vo.DictVO;
-import org.springblade.system.vo.MenuVO;
 
 import java.util.List;
 import java.util.Map;
@@ -115,10 +114,18 @@ public interface IDictService extends IService<Dict> {
 
     Boolean deleteIds(String ids);
 
-	/**
+	/**pageList
 	 * 根据codes获取字典(code以“，”分隔)
 	 * @param codes
 	 * @return
 	 */
 	Map<String, List<Dict>> dictionaryByCodes(List<String> codes);
+
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param dict
+	 * @return
+	 */
+	IPage<Dict> pageList(IPage<Dict> page, Dict dict);
 }

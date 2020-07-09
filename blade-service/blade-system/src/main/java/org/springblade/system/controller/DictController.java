@@ -31,12 +31,9 @@ import org.springblade.core.tool.node.INode;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
 import org.springblade.system.entity.Dict;
-import org.springblade.system.entity.DictBiz;
 import org.springblade.system.service.IDictService;
 import org.springblade.system.vo.DictVO;
-import org.springblade.system.vo.MenuVO;
 import org.springblade.system.wrapper.DictWrapper;
-import org.springblade.system.wrapper.MenuWrapper;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -85,6 +82,16 @@ public class DictController extends BladeController {
 		List<Dict> list = dictService.list(Condition.getQueryWrapper(dict, Dict.class).lambda().orderByAsc(Dict::getSort));
 		DictWrapper dictWrapper = new DictWrapper();
 		return R.data(dictWrapper.listNodeVO(list));
+	}
+	/**
+	 * 分页 针对elementUI版本
+	 */
+	@GetMapping("/page-list")
+	@ApiOperationSupport(order = 2)
+	@ApiOperation(value = "分页", notes = "传入dict")
+	public R<IPage<DictVO>> list(Dict dict, Query query) {
+		IPage<Dict> pages = dictService.pageList(Condition.getPage(query), dict);
+		return R.data(DictWrapper.build().pageVO(pages));
 	}
 
 	/**
