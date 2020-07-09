@@ -81,4 +81,12 @@ public class DeptVO extends Dept implements INode {
 	 */
 	private String deptCategoryName;
 
+	/**
+	 * 创建人姓名
+	 */
+	private String createUserName;
+	/**
+	 * 修改人姓名
+	 */
+	private String updateUserName;
 }

@@ -37,5 +37,11 @@
             <include refid="baseColumnList"></include>
         FROM blade_param
         WHERE is_deleted = 0
+        <if test="param.paramName != null and param.paramName != ''">
+            AND param_name like concat('%',#{param.paramName},'%')
+        </if>
+        <if test="param.paramKey != null and param.paramKey != ''">
+            AND param_key like concat('%',#{param.paramKey},'%')
+        </if>
     </select>
 </mapper>
