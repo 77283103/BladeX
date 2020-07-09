@@ -225,18 +225,4 @@ public class UserController {
 		ExcelUtil.export(response, "用户数据模板", "用户数据表", list, UserExcel.class);
 	}
 
-
-	/**
-	 * 根据id获取用户名
-	 */
-	@GetMapping("/select")
-	@ApiOperationSupport(order = 15)
-	@ApiOperation(value = "根据id获取用户名", notes = "传入bladeUser")
-	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
-	public R<List<User>> select(User user, BladeUser bladeUser) {
-		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user);
-		List<User> list = userService.list(queryWrapper.lambda().eq(User::getId, bladeUser.getUserId()));
-		return R.data(list);
-	}
-
 }
