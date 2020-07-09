@@ -4,9 +4,10 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="menuResultMap" type="org.springblade.system.entity.Menu">
-        <id column="id" property="id"/>
-        <result column="code" property="code"/>
+        <result column="id" property="id"/>
         <result column="parent_id" property="parentId"/>
+        <result column="english_name" property="englishName"/>
+        <result column="code" property="code"/>
         <result column="name" property="name"/>
         <result column="alias" property="alias"/>
         <result column="path" property="path"/>
@@ -17,6 +18,13 @@
         <result column="is_open" property="isOpen"/>
         <result column="remark" property="remark"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="tenant_id" property="tenantId"/>
     </resultMap>
 
     <resultMap id="menuVOResultMap" type="org.springblade.system.vo.MenuVO">
@@ -69,6 +77,9 @@
         </if>
         <if test="param2.alias!=null and param2.alias!=''">
             and menu.alias like concat(concat('%', #{param2.alias}),'%')
+        </if>
+        <if test="param2.englishName!=null and param2.englishName!=''">
+            and menu.english_name like concat(concat('%', #{param2.englishName}),'%')
         </if>
         ORDER BY menu.sort
     </select>
