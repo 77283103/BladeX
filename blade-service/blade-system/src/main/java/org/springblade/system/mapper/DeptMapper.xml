@@ -42,6 +42,8 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="has_children" property="hasChildren"/>
+        <result column="create_user_name" property="createUserName"/>
+        <result column="update_user_name" property="updateUserName"/>
     </resultMap>
 
     <resultMap id="treeNodeResultMap" type="org.springblade.core.tool.node.TreeNode">
@@ -62,17 +64,23 @@
 
     <select id="lazyList" resultMap="deptVOResultMap">
         SELECT
-            dept.* ,
-            (
-                SELECT
-                    CASE WHEN count(1) > 0 THEN 1 ELSE 0 END
-                FROM
-                    blade_dept
-                WHERE
-                    parent_id = dept.id and is_deleted = 0
-            ) AS "has_children"
+        userTable.real_name AS create_user_name,
+        userTable2.real_name AS update_user_name,
+        dept.* ,
+        (
+        SELECT
+        CASE WHEN count(1) > 0 THEN 1 ELSE 0 END
         FROM
-            blade_dept dept
+        blade_dept
+        WHERE
+        parent_id = dept.id and is_deleted = 0
+        ) AS "has_children"
+        FROM
+        blade_dept dept
+        LEFT JOIN blade_user userTable
+        ON dept.create_user = userTable.id
+        LEFT JOIN blade_user userTable2
+        ON dept.update_user = userTable2.id
         WHERE dept.is_deleted = 0
         <if test="param1!=null and param1!=''">
             and dept.tenant_id = #{param1}
@@ -99,25 +107,25 @@
         ORDER BY sort
     </select>
 
-    <select id="lazyTree" resultMap="treeNodeResultMap" >
+    <select id="lazyTree" resultMap="treeNodeResultMap">
         SELECT
-            dept.id,
-            dept.parent_id,
-            dept.dept_name AS title,
-            dept.id AS "value",
-            dept.id AS "key",
-            (
-                SELECT
-                    CASE WHEN count(1) > 0 THEN 1 ELSE 0 END
-                FROM
-                    blade_dept
-                WHERE
-                    parent_id = dept.id and is_deleted = 0
-            ) AS "has_children"
+        dept.id,
+        dept.parent_id,
+        dept.dept_name AS title,
+        dept.id AS "value",
+        dept.id AS "key",
+        (
+        SELECT
+        CASE WHEN count(1) > 0 THEN 1 ELSE 0 END
         FROM
-            blade_dept dept
+        blade_dept
         WHERE
-            dept.parent_id = #{param2} AND dept.is_deleted = 0
+        parent_id = dept.id and is_deleted = 0
+        ) AS "has_children"
+        FROM
+        blade_dept dept
+        WHERE
+        dept.parent_id = #{param2} AND dept.is_deleted = 0
         <if test="param1!=null and param1!=''">
             and dept.tenant_id = #{param1}
         </if>

@@ -51,6 +51,9 @@ public class MenuVO extends Menu implements INode {
 	@JsonSerialize(using = ToStringSerializer.class)
 	private Long parentId;
 
+	@JsonSerialize(using = ToStringSerializer.class)
+	private Integer category;
+
 	/**
 	 * 子孙节点
 	 */
