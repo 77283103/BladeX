@@ -89,5 +89,5 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 * @param dict
 	 * @return
 	 */
-	IPage<DictBiz> pageList(IPage<DictBiz> page, DictBiz dict);
+	IPage<DictBiz> pageList(@Param("page") IPage<DictBiz> page, @Param("dict") DictBiz dict);
 }

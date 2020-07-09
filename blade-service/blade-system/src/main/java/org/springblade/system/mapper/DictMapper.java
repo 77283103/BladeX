@@ -40,7 +40,7 @@ public interface DictMapper extends BaseMapper<Dict> {
 	 * @param dict
 	 * @return
 	 */
-	List<DictVO> selectDictPage(IPage page, DictVO dict);
+	List<DictVO> selectDictPage(@Param("page") IPage page, @Param("dict") DictVO dict);
 
 	/**
 	 * 获取字典表对应中文
@@ -95,5 +95,5 @@ public interface DictMapper extends BaseMapper<Dict> {
 	 * @param dict
 	 * @return
 	 */
-	IPage<Dict> pageList(IPage<Dict> page, Dict dict);
+	IPage<Dict> pageList(@Param("page") IPage<Dict> page, @Param("dict") Dict dict);
 }
