@@ -18,8 +18,10 @@ package org.springblade.system.mapper;
 
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
+import org.springblade.system.entity.Dict;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.vo.DictBizVO;
 import org.springblade.system.vo.DictVO;
@@ -81,4 +83,11 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 * @return
 	 */
 	List<DictBiz> dictionaryByCodes(@Param("codes") List<String> codes);
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param dict
+	 * @return
+	 */
+	IPage<DictBiz> pageList(IPage<DictBiz> page, DictBiz dict);
 }
