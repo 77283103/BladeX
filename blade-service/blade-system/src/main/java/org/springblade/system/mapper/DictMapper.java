@@ -22,7 +22,6 @@ import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.Dict;
 import org.springblade.system.vo.DictVO;
-import org.springblade.system.vo.MenuVO;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,7 @@ public interface DictMapper extends BaseMapper<Dict> {
 	 * @param dict
 	 * @return
 	 */
-	List<DictVO> selectDictPage(IPage page, DictVO dict);
+	List<DictVO> selectDictPage(@Param("page") IPage page, @Param("dict") DictVO dict);
 
 	/**
 	 * 获取字典表对应中文
@@ -89,4 +88,12 @@ public interface DictMapper extends BaseMapper<Dict> {
 	 */
 	@MapKey("code")
 	List<Dict> dictionaryByCodes(@Param("codes") List<String> codes);
+
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param dict
+	 * @return
+	 */
+	IPage<Dict> pageList(@Param("page") IPage<Dict> page, @Param("dict") Dict dict);
 }

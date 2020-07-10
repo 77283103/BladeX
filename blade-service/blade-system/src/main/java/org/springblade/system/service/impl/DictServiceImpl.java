@@ -34,13 +34,10 @@ import org.springblade.system.entity.Dict;
 import org.springblade.system.mapper.DictMapper;
 import org.springblade.system.service.IDictService;
 import org.springblade.system.vo.DictVO;
-import org.springblade.system.vo.MenuVO;
 import org.springblade.system.wrapper.DictWrapper;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -176,5 +173,10 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 		}
 		Map<String, List<Dict>> collect = dictList.stream().collect(Collectors.groupingBy(Dict::getCode));
 		return collect;
+	}
+
+	@Override
+	public IPage<Dict> pageList(IPage<Dict> page, Dict dict) {
+		return baseMapper.pageList(page, dict);
 	}
 }

@@ -20,6 +20,7 @@ package org.springblade.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.core.mp.support.Query;
+import org.springblade.system.entity.Dict;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.vo.DictBizVO;
 import org.springblade.system.vo.DictVO;
@@ -121,4 +122,11 @@ public interface IDictBizService extends IService<DictBiz> {
 	 * @return
 	 */
 	Map<String, List<DictBiz>> dictionaryByCodes(List<String> codes);
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param dict
+	 * @return
+	 */
+	IPage<DictBiz> pageList(IPage<DictBiz> page, DictBiz dict);
 }

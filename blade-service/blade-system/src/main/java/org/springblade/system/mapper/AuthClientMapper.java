@@ -18,6 +18,7 @@ package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.ClientEntity;
 
 /**
@@ -32,5 +33,5 @@ public interface AuthClientMapper extends BaseMapper<ClientEntity> {
 	 * @param client
 	 * @return
 	 */
-	IPage<ClientEntity> pageList(IPage<ClientEntity> page, ClientEntity client);
+	IPage<ClientEntity> pageList(@Param("page") IPage<ClientEntity> page,@Param("client") ClientEntity client);
 }

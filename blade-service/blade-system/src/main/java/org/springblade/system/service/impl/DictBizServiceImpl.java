@@ -169,4 +169,8 @@ public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> impl
 		Map<String, List<DictBiz>> collect = dictBizs.stream().collect(Collectors.groupingBy(DictBiz::getCode));
 		return collect;
 	}
+	@Override
+	public IPage<DictBiz> pageList(IPage<DictBiz> page, DictBiz dict) {
+		return baseMapper.pageList(page, dict);
+	}
 }

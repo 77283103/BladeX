@@ -32,7 +32,24 @@
         <result column="value" property="value"/>
         <result column="key" property="key"/>
     </resultMap>
-
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        parent_id,
+        code,
+        dict_key,
+        dict_value,
+        sort,
+        remark,
+        is_sealed,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
     <select id="selectDictPage" resultMap="dictResultMap">
         select * from blade_dict where is_deleted = 0
     </select>
@@ -102,6 +119,19 @@
         </if>
         ORDER BY dict.sort
     </select>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="dictResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM blade_dict
+        WHERE is_deleted = 0 And  parent_id =0
+        <if test="dict.code != null and dict.code != ''">
+            AND code like concat('%',#{dict.code},'%')
+        </if>
+        <if test="dict.dictValue != null and dict.dictValue != ''">
+            AND dict_value like concat('%',#{dict.dictValue},'%')
+        </if>
 
+    </select>
 
 </mapper>

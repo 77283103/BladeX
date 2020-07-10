@@ -30,6 +30,7 @@ import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.node.INode;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
+import org.springblade.system.entity.Dict;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.service.IDictBizService;
 import org.springblade.system.vo.DictBizVO;
@@ -83,7 +84,16 @@ public class DictBizController extends BladeController {
 		List<DictBiz> list = dictService.list(Condition.getQueryWrapper(dict, DictBiz.class).lambda().orderByAsc(DictBiz::getSort));
 		return R.data(DictBizWrapper.build().listNodeVO(list));
 	}
-
+	/**
+	 * 分页 针对elementUI版本
+	 */
+	@GetMapping("/page-list")
+	@ApiOperationSupport(order = 2)
+	@ApiOperation(value = "分页", notes = "传入dict")
+	public R<IPage<DictBizVO>> list(DictBiz dict, Query query) {
+		IPage<DictBiz> pages = dictService.pageList(Condition.getPage(query), dict);
+		return R.data(DictBizWrapper.build().pageVO(pages));
+	}
 	/**
 	 * 顶级列表
 	 */
