@@ -31,7 +31,10 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.TopMenu;
+import org.springblade.system.mapper.TopMenuMapper;
 import org.springblade.system.service.ITopMenuService;
+import org.springblade.system.vo.TopMenuVO;
+import org.springblade.system.wrapper.TopMenuWrapper;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -66,14 +69,14 @@ public class TopMenuController extends BladeController {
 	}
 
 	/**
-	 * 分页 顶部菜单表
+	 * 分页 代码自定义代号
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入topMenu")
-	public R<IPage<TopMenu>> list(TopMenu topMenu, Query query) {
-		IPage<TopMenu> pages = topMenuService.page(Condition.getPage(query), Condition.getQueryWrapper(topMenu));
-		return R.data(pages);
+	@ApiOperation(value = "分页", notes = "传入topmenu")
+	public R<IPage<TopMenuVO>> list(TopMenu topmenu, Query query) {
+		IPage<TopMenu> pages = topMenuService.pageList(Condition.getPage(query), topmenu);
+		return R.data(TopMenuWrapper.build().pageVO(pages));
 	}
 
 	/**

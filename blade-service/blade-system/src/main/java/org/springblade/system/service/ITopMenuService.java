@@ -16,6 +16,7 @@
  */
 package org.springblade.system.service;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.entity.TopMenu;
 
@@ -39,4 +40,11 @@ public interface ITopMenuService extends BaseService<TopMenu> {
 	 */
 	boolean grant(@NotEmpty List<Long> topMenuIds, @NotEmpty List<Long> menuIds);
 
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param topmenu
+	 * @return
+	 */
+	IPage<TopMenu> pageList(IPage<TopMenu> page, TopMenu topmenu);
 }

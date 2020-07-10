@@ -16,6 +16,7 @@
  */
 package org.springblade.system.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -61,4 +62,8 @@ public class TopMenuServiceImpl extends BaseServiceImpl<TopMenuMapper, TopMenu> 
 		return true;
 	}
 
+	@Override
+	public IPage<TopMenu> pageList(IPage<TopMenu> page, TopMenu topmenu) {
+		return baseMapper.pageList(page, topmenu);
+	}
 }

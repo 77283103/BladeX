@@ -17,14 +17,23 @@
 package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.system.entity.TopMenu;
+import org.springblade.system.wrapper.ParamWrapper;
 
 /**
  * 顶部菜单表 Mapper 接口
  *
  * @author BladeX
- * @since 2019-07-14
+ * @since 2019-07-14topmenuResultMap
  */
 public interface TopMenuMapper extends BaseMapper<TopMenu> {
 
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param topmenu
+	 * @return
+	 */
+	IPage<TopMenu> pageList(IPage<TopMenu> page, TopMenu topmenu);
 }
