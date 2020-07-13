@@ -16,6 +16,7 @@
  */
 package org.springblade.system.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.system.entity.DataScope;
 import org.springblade.system.mapper.DataScopeMapper;
@@ -31,4 +32,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataScopeServiceImpl extends BaseServiceImpl<DataScopeMapper, DataScope> implements IDataScopeService {
 
+	@Override
+	public IPage<DataScope> pageList(IPage<DataScope> page, DataScope DataScope) {
+		return baseMapper.pageList(page, DataScope);
+	}
 }

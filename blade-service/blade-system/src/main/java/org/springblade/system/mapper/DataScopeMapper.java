@@ -17,6 +17,7 @@
 package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.system.entity.DataScope;
 
 /**
@@ -26,5 +27,13 @@ import org.springblade.system.entity.DataScope;
  * @since 2019-06-23
  */
 public interface DataScopeMapper extends BaseMapper<DataScope> {
+
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param DataScope
+	 * @return
+	 */
+	IPage<DataScope> pageList(IPage<DataScope> page, DataScope DataScope);
 
 }
