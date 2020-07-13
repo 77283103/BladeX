@@ -63,13 +63,13 @@ public class DataScopeController extends BladeController {
 	}
 
 	/**
-	 * 分页
+	 * 分页 代码自定义代号
 	 */
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入dataScope")
-	public R<IPage<DataScopeVO>> list(DataScope dataScope, Query query) {
-		IPage<DataScope> pages = dataScopeService.page(Condition.getPage(query), Condition.getQueryWrapper(dataScope));
+	@ApiOperation(value = "分页", notes = "传入DataScope")
+	public R<IPage<DataScopeVO>> list(DataScope DataScope, Query query) {
+		IPage<DataScope> pages = dataScopeService.pageList(Condition.getPage(query), DataScope);
 		return R.data(DataScopeWrapper.build().pageVO(pages));
 	}
 
