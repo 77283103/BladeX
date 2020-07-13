@@ -30,6 +30,7 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.constant.RoleConstant;
@@ -88,6 +89,18 @@ public class UserController {
 	public R<UserVO> info(BladeUser user) {
 		User detail = userService.getById(user.getUserId());
 		return R.data(UserWrapper.build().entityVO(detail));
+	}
+
+	/**
+	 * 用户列表
+	 */
+	@GetMapping("/user-list")
+	@ApiOperationSupport(order = 11)
+	@ApiOperation(value = "用户列表", notes = "传入user")
+	public R<List<User>> userList(User user, BladeUser bladeUser) {
+		QueryWrapper<User> queryWrapper = Condition.getQueryWrapper(user);
+		List<User> list = userService.list((!AuthUtil.isAdministrator()) ? queryWrapper.lambda().eq(User::getTenantId, bladeUser.getTenantId()) : queryWrapper);
+		return R.data(list);
 	}
 
 	/**

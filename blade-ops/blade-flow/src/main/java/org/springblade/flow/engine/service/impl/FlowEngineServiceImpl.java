@@ -135,7 +135,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 			flowExecution.setStartUserId(execution.getStartUserId());
 			User taskUser = UserCache.getUserByTaskUser(execution.getStartUserId());
 			if (taskUser != null) {
-				flowExecution.setStartUser(taskUser.getName());
+				flowExecution.setStartUser(taskUser.getRealName());
 			}
 			flowExecution.setStartTime(execution.getStartTime());
 			flowExecution.setExecutionId(execution.getId());
@@ -192,7 +192,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 							User user = UserCache.getUser(TaskUtil.getUserId(taskUser));
 							if (user != null) {
 								flow.setAssignee(historicActivityInstance.getAssignee());
-								flow.setAssigneeName(user.getName());
+								flow.setAssigneeName(user.getRealName());
 							}
 						}
 					}
@@ -202,7 +202,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 					User user = UserCache.getUser(TaskUtil.getUserId(historicActivityInstance.getAssignee()));
 					if (user != null) {
 						flow.setAssignee(historicActivityInstance.getAssignee());
-						flow.setAssigneeName(user.getName());
+						flow.setAssigneeName(user.getRealName());
 					}
 				}
 				// 获取意见评论内容
