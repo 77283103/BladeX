@@ -70,7 +70,6 @@ public class BladeUserDetailsServiceImpl implements UserDetailsService {
 			throw new UserDeniedAuthorizationException(TokenUtil.TENANT_NOT_FOUND);
 		}
 		String tenantId = StringUtils.isBlank(headerTenant) ? paramTenant : headerTenant;
-
 		// 获取租户信息
 		R<Tenant> tenant = sysClient.getTenant(tenantId);
 		if (tenant.isSuccess()) {
@@ -80,10 +79,8 @@ public class BladeUserDetailsServiceImpl implements UserDetailsService {
 		} else {
 			throw new UserDeniedAuthorizationException(TokenUtil.USER_HAS_NO_TENANT);
 		}
-
 		// 获取用户类型
 		String userType = Func.toStr(request.getHeader(TokenUtil.USER_TYPE_HEADER_KEY), TokenUtil.DEFAULT_USER_TYPE);
-
 		// 远程调用返回数据
 		R<UserInfo> result;
 		// 根据不同用户类型调用对应的接口返回数据，用户可自行拓展
@@ -94,59 +91,67 @@ public class BladeUserDetailsServiceImpl implements UserDetailsService {
 		} else {
 			result = userClient.userInfo(tenantId, username);
 		}
+		return creatBladeUserDetails(result, departId);
+	}
 
-		// 判断返回信息
-		if (result.isSuccess()) {
-			UserInfo userInfo = result.getData();
-			UserDTO user = userInfo.getUser();
-			if (user == null || user.getId() == null) {
-				throw new UsernameNotFoundException(TokenUtil.USER_NOT_FOUND);
-			}
-
-			String roleName = "";
-			List<UserDepartDTO> userDepartList = user.getUserDepartList();
-			if(StringUtils.isEmpty(departId)){
-				List<String> roleAliasList = userDepartList.stream().map(UserDepartDTO::getRoleAlias).collect(Collectors.toList());
-				Set<Long> deptIdsSet = userDepartList.stream().map(UserDepartDTO::getDeptId).collect(Collectors.toSet());
-				Set<Long> roleIdsSet = userDepartList.stream().map(UserDepartDTO::getRoleId).collect(Collectors.toSet());
-				Set<Long> postIdsSet = userDepartList.stream().map(UserDepartDTO::getPostId).collect(Collectors.toSet());
-				//
-				user.setDeptId(Func.join(deptIdsSet, StringPool.COMMA));
-				user.setRoleId(Func.join(roleIdsSet,StringPool.COMMA));
-				user.setPostId(Func.join(postIdsSet,StringPool.COMMA));
-				roleName = Func.join(roleAliasList);
-			} else{
-				Map<Long, UserDepartDTO> userDepartMap = userDepartList.stream().collect(Collectors.toMap(UserDepartDTO::getId, d -> d));
-				UserDepartDTO userDepart = userDepartMap.get(Func.toLong(departId));
-				user.setDeptId(Func.toStr(userDepart.getDeptId()));
-				user.setPostId(Func.toStr(userDepart.getPostId()));
-				user.setRoleId(Func.toStr(userDepart.getRoleId()));
-				roleName = userDepart.getRoleAlias();
-			}
-			if (Func.isEmpty(roleName)) {
-				throw new UserDeniedAuthorizationException(TokenUtil.USER_HAS_NO_ROLE);
-			}
-
-			return new BladeUserDetails(
-				user.getId(),
-				user.getTenantId(),
-				user.getRealName(),
-				user.getDeptId(),
-				user.getPostId(),
-				user.getRoleId(),
-				roleName,
-				Func.toStr(user.getAvatar(), TokenUtil.DEFAULT_AVATAR),
-				username,
-				AuthConstant.ENCRYPT + user.getPassword(),
-				true,
-				true,
-				true,
-				true,
-				AuthorityUtils.commaSeparatedStringToAuthorityList(roleName),
-				user.getUserDepartList());
-		} else {
+	/**
+	 * 组装用户信息
+	 * @param result 用户信息查询结果
+	 * @param departId 身份信息
+	 * @return 用户信息
+	 */
+	private BladeUserDetails creatBladeUserDetails(R<UserInfo> result, String departId){
+		if (!result.isSuccess()) {
 			throw new UsernameNotFoundException(result.getMsg());
 		}
+		UserInfo userInfo = result.getData();
+		UserDTO user = userInfo.getUser();
+		if (user == null || user.getId() == null) {
+			throw new UsernameNotFoundException(TokenUtil.USER_NOT_FOUND);
+		}
+		// 角色名集合
+		String roleNames = "";
+		List<UserDepartDTO> userDepartList = user.getUserDepartList();
+		// 身份id为空，则是未选择身份信息，拥有所有身份权限。
+		if(StringUtils.isEmpty(departId)){
+			List<String> roleAliasList = userDepartList.stream().map(UserDepartDTO::getRoleAlias).collect(Collectors.toList());
+			Set<Long> deptIdsSet = userDepartList.stream().map(UserDepartDTO::getDeptId).collect(Collectors.toSet());
+			Set<Long> roleIdsSet = userDepartList.stream().map(UserDepartDTO::getRoleId).collect(Collectors.toSet());
+			Set<Long> postIdsSet = userDepartList.stream().map(UserDepartDTO::getPostId).collect(Collectors.toSet());
+			//
+			user.setDeptId(Func.join(deptIdsSet, StringPool.COMMA));
+			user.setRoleId(Func.join(roleIdsSet,StringPool.COMMA));
+			user.setPostId(Func.join(postIdsSet,StringPool.COMMA));
+			roleNames = Func.join(roleAliasList);
+		} else{ // 身份id不为空则是选择了身份，只拥有所选择身份的权限
+			Map<Long, UserDepartDTO> userDepartMap = userDepartList.stream().collect(Collectors.toMap(UserDepartDTO::getId, d -> d));
+			UserDepartDTO userDepart = userDepartMap.get(Func.toLong(departId));
+			user.setDeptId(Func.toStr(userDepart.getDeptId()));
+			user.setPostId(Func.toStr(userDepart.getPostId()));
+			user.setRoleId(Func.toStr(userDepart.getRoleId()));
+			roleNames = userDepart.getRoleAlias();
+		}
+		if (Func.isEmpty(roleNames)) {
+			throw new UserDeniedAuthorizationException(TokenUtil.USER_HAS_NO_ROLE);
+		}
+
+		return new BladeUserDetails(
+			user.getId(),
+			user.getTenantId(),
+			user.getRealName(),
+			user.getDeptId(),
+			user.getPostId(),
+			user.getRoleId(),
+			roleNames,
+			Func.toStr(user.getAvatar(), TokenUtil.DEFAULT_AVATAR),
+			user.getAccount(),
+			AuthConstant.ENCRYPT + user.getPassword(),
+			true,
+			true,
+			true,
+			true,
+			AuthorityUtils.commaSeparatedStringToAuthorityList(roleNames),
+			user.getUserDepartList());
 	}
 
 }

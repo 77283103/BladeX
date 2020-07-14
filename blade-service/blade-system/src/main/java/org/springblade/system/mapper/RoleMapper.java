@@ -69,10 +69,9 @@ public interface RoleMapper extends BaseMapper<Role> {
 	 */
 	List<String> getRoleAliases(Long[] ids);
 
-
 	/**
 	 * 根据父级id查询
-	 * @param idList
+	 * @param idsList
 	 * @return
 	 */
 	List<Role> selectRoleByParentId(@Param("idsList") Set<Long> idsList);

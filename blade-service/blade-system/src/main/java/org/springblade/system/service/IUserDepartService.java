@@ -13,10 +13,4 @@ import java.util.List;
  */
 public interface IUserDepartService extends IService<UserDepartEntity> {
 
-	/**
-	 * 根据当前登录用户查询身份信息
-	 * @param userId
-	 * @return
-	 */
-	List<UserDepartEntity> currentUserDepart(Long userId);
 }

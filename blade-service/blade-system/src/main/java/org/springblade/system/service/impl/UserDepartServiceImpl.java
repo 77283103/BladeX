@@ -19,12 +19,4 @@ import java.util.List;
 @Service
 public class UserDepartServiceImpl extends ServiceImpl<UserDepartMapper, UserDepartEntity> implements IUserDepartService {
 
-	@Override
-	public List<UserDepartEntity> currentUserDepart(Long userId) {
-		UserDepartEntity userDepart = new UserDepartEntity();
-		userDepart.setUserId(userId);
-		QueryWrapper<UserDepartEntity> queryWrapper = Condition.getQueryWrapper(userDepart);
-		List<UserDepartEntity> userDepartEntities = baseMapper.selectList(queryWrapper);
-		return userDepartEntities;
-	}
 }

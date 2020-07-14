@@ -65,6 +65,8 @@ public interface UserMapper extends BaseMapper<User> {
 
 	/**
 	 * 根据id查询
+	 * @param id
+	 * @return
 	 */
 	UserDTO selectUserDTOById(@Param("id")Long id);
 }

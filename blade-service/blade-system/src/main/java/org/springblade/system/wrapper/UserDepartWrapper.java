@@ -17,15 +17,8 @@ public class UserDepartWrapper extends BaseEntityWrapper<UserDepartEntity, UserD
  	}
 
 	@Override
-	public UserDepartVO entityVO(UserDepartEntity user_depart) {
-		UserDepartVO user_departVO = BeanUtil.copy(user_depart, UserDepartVO.class);
-
-		//User createUser = UserCache.getUser(user_depart.getCreateUser());
-		//User updateUser = UserCache.getUser(user_depart.getUpdateUser());
-		//user_departVO.setCreateUserName(createUser.getName());
-		//user_departVO.setUpdateUserName(updateUser.getName());
-
-		return user_departVO;
+	public UserDepartVO entityVO(UserDepartEntity userDepart) {
+		return BeanUtil.copy(userDepart, UserDepartVO.class);
 	}
 
 }
