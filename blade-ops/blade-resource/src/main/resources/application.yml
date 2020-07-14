@@ -4,9 +4,9 @@ server:
 
 oss:
   enable: true
-  name: qiniu
+  name: minio
   tenant-mode: true
-  endpoint: prt1thnw3.bkt.clouddn.com
-  access-key: N_Loh1ngBqcJovwiAJqR91Ifj2vgOWHOf8AwBA_h
-  secret-key: AuzuA1KHAbkIndCU0dB3Zfii2O3crHNODDmpxHRS
+  endpoint: http://39.98.158.74:9000/
+  access-key: minioadmin
+  secret-key: minioadmin
   bucket-name: bladex
