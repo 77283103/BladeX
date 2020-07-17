@@ -162,4 +162,8 @@ public class SysClient implements ISysClient {
 		return R.data(paramService.getValue(paramKey));
 	}
 
+	@Override
+	public Long getDeptNewId(Long id) {
+		return deptService.getDeptNewId(id);
+	}
 }

@@ -65,4 +65,12 @@ public interface DeptMapper extends BaseMapper<Dept> {
 	 */
 	List<String> getDeptNames(Long[] ids);
 
+	/**
+	 * 根据部门当前id获取最新部门
+	 *
+	 * @param id
+	 * @return
+	 */
+	Dept getDeptNewId(Long id);
+
 }
