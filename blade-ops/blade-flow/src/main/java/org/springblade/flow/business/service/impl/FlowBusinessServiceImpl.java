@@ -966,7 +966,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 */
 	@Override
 	public List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow) {
-
 		List<FlowNodeVo> backNods = new ArrayList<>();
 		/* 当前任务的节点 */
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
@@ -1003,8 +1002,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			activityInstances.addAll(inclusiveGateways);
 			activityInstances.sort(Comparator.comparing(ActivityInstance::getEndTime));
 		}
-
-
 		/* 分组节点 */
 		int count = 0;
 		int sun = 0;
@@ -1047,9 +1044,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 						parallelGatewayUserTasks.remove(currActivityInstance);
 						inclusiveGatewayUserTasks.remove(currActivityInstance);
 					}
-					/*if (parallelGatewayUserTasks.containsKey(currActivityInstance)) {
-						parallelGatewayUserTasks.get(currActivityInstance).add(activityInstance);
-					}*/
 				}
 			}
 		}
@@ -1108,7 +1102,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		List<FlowNodeVo> datas = backNods.stream().collect(
 			Collectors.collectingAndThen(Collectors.toCollection(() ->
 				new TreeSet<>(Comparator.comparing(nodeVo -> nodeVo.getNodeId()))), ArrayList::new));
-
 		/* 排序 */
 		datas.sort(Comparator.comparing(FlowNodeVo::getEndTime));
 		return datas;
