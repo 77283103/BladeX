@@ -171,7 +171,7 @@ public class MenuController extends BladeController {
 	/**
 	 * 前端菜单数据
 	 */
-	@GetMapping("/routes")
+	@PostMapping("/routes")
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "前端菜单数据", notes = "前端菜单数据")
 	public R<List<MenuVO>> routes(BladeUser user, Long topMenuId) {
