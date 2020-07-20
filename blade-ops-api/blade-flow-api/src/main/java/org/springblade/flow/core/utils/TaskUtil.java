@@ -16,11 +16,11 @@
  */
 package org.springblade.flow.core.utils;
 
+import org.springblade.core.launch.constant.FlowConstant;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
 
-import static org.springblade.core.launch.constant.FlowConstant.TASK_USR_PREFIX;
 
 /**
  * 工作流任务工具类
@@ -35,7 +35,7 @@ public class TaskUtil {
 	 * @return taskUser
 	 */
 	public static String getTaskUser() {
-		return StringUtil.format("{}{}", TASK_USR_PREFIX, AuthUtil.getUserId());
+		return StringUtil.format("{}{}", FlowConstant.TASK_USR_PREFIX, AuthUtil.getUserId());
 	}
 
 	/**
@@ -45,7 +45,7 @@ public class TaskUtil {
 	 * @return taskUser
 	 */
 	public static String getTaskUser(String userId) {
-		return StringUtil.format("{}{}", TASK_USR_PREFIX, userId);
+		return StringUtil.format("{}{}", FlowConstant.TASK_USR_PREFIX, userId);
 	}
 
 
@@ -56,7 +56,7 @@ public class TaskUtil {
 	 * @return userId
 	 */
 	public static Long getUserId(String taskUser) {
-		return Func.toLong(StringUtil.removePrefix(taskUser, TASK_USR_PREFIX));
+		return Func.toLong(StringUtil.removePrefix(taskUser, FlowConstant.TASK_USR_PREFIX));
 	}
 
 	/**
@@ -66,6 +66,16 @@ public class TaskUtil {
 	 */
 	public static String getCandidateGroup() {
 		return AuthUtil.getUserRole();
+	}
+
+
+	/**
+	 * 获取岗位格式
+	 * @param postId 岗位id
+	 * @return
+	 */
+	public static String getPostId(String postId){
+		return StringUtil.format("{}{}", FlowConstant.TASK_POST_PREFIX, postId);
 	}
 
 }
