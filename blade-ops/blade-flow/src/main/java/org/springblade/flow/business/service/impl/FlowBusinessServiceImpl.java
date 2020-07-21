@@ -18,30 +18,48 @@ package org.springblade.flow.business.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
-import org.flowable.engine.HistoryService;
-import org.flowable.engine.TaskService;
+import org.flowable.bpmn.constants.BpmnXMLConstants;
+import org.flowable.bpmn.model.FlowNode;
+import org.flowable.bpmn.model.Process;
+import org.flowable.common.engine.impl.identity.Authentication;
+import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.history.HistoricProcessInstanceQuery;
 import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.runtime.ActivityInstance;
+import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
+import org.flowable.task.service.impl.persistence.entity.TaskEntity;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
 import org.springblade.core.tool.utils.StringUtil;
+import org.springblade.flow.business.common.CommentTypeEnum;
+import org.springblade.flow.business.common.ObjectUtils;
+import org.springblade.flow.business.common.cmd.BackUserTaskCmd;
 import org.springblade.flow.business.service.FlowBusinessService;
 import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.constant.FlowEngineConstant;
 import org.springblade.flow.engine.utils.FlowCache;
+import org.springblade.flow.engine.utils.FlowableUtils;
+import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.TaskRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 流程业务实现类
@@ -54,6 +72,10 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 
 	private TaskService taskService;
 	private HistoryService historyService;
+	private RepositoryService repositoryService;
+	private RuntimeService runtimeService;
+	protected ManagementService managementService;
+	protected PermissionServiceImpl permissionService;
 
 	@Override
 	public IPage<BladeFlow> selectClaimPage(IPage<BladeFlow> page, BladeFlow bladeFlow) {
@@ -319,6 +341,144 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 	 */
 	private HistoricProcessInstance getHistoricProcessInstance(String processInstanceId) {
 		return historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
+	}
+
+	/**
+	 * 查询可以退回的节点
+	 */
+	@Override
+	public List<FlowNodeResponse> backNodes(String taskId){
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+		String processInstanceId = taskEntity.getProcessInstanceId();
+		String currActId = taskEntity.getTaskDefinitionKey();
+		String processDefinitionId = taskEntity.getProcessDefinitionId();
+		Process process = repositoryService.getBpmnModel(processDefinitionId).getMainProcess();
+		FlowNode currentFlowElement = (FlowNode) process.getFlowElement(currActId, true);
+		List<ActivityInstance> activitys = runtimeService.createActivityInstanceQuery()
+			.processInstanceId(processInstanceId).finished().orderByActivityInstanceStartTime().asc().list();
+		List<String> activityIds = activitys.stream()
+			.filter(activity -> activity.getActivityType().equals(BpmnXMLConstants.ELEMENT_TASK_USER))
+			.filter(activity -> !activity.getActivityId().equals(currActId)).map(ActivityInstance::getActivityId)
+			.distinct().collect(Collectors.toList());
+		List<FlowNodeResponse> result = new ArrayList<>();
+		for (String activityId : activityIds) {
+			FlowNode toBackFlowElement = (FlowNode) process.getFlowElement(activityId, true);
+			if (FlowableUtils.isReachable(process, toBackFlowElement, currentFlowElement)) {
+				FlowNodeResponse vo = new FlowNodeResponse();
+				vo.setNodeId(activityId);
+				vo.setNodeName(toBackFlowElement.getName());
+				result.add(vo);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * 退回操作
+	 * @param taskRequest 退回信息
+	 * @return
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public boolean backTask(TaskRequest taskRequest){
+		String taskId = taskRequest.getTaskId();
+		// 获取当前登录人
+		BladeUser user = AuthUtil.getUser();
+		String userId =String.valueOf(user.getUserId());
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		String backSysMessage = "退回到" + taskRequest.getActivityName() + "。";
+		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.TH,
+			backSysMessage + taskRequest.getMessage());
+		String targetRealActivityId = managementService.executeCommand(
+			new BackUserTaskCmd(runtimeService, taskRequest.getTaskId(), taskRequest.getActivityId()));
+		// 退回发起者处理,退回到发起者,默认设置任务执行人为发起者
+		if (FlowEngineConstant.INITIATOR.equals(targetRealActivityId)) {
+			String initiator = runtimeService.createProcessInstanceQuery()
+				.processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId();
+			List<Task> newTasks = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).list();
+			for (Task newTask : newTasks) {
+				// 约定：发起者节点为 __initiator__
+				if (FlowEngineConstant.INITIATOR.equals(newTask.getTaskDefinitionKey())) {
+					if (ObjectUtils.isEmpty(newTask.getAssignee())) {
+						taskService.setAssignee(newTask.getId(), initiator);
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 增加审批意见
+	 * @param taskId
+	 * @param processInstanceId
+	 * @param userId
+	 * @param type
+	 * @param message
+	 */
+	@Override
+	public void addComment(String taskId, String processInstanceId, String userId, CommentTypeEnum type,
+						   String message) {
+		Authentication.setAuthenticatedUserId(userId);
+		type = type == null ? CommentTypeEnum.SP : type;
+		message = (message == null || message.length() == 0) ? type.getName() : message;
+		taskService.addComment(taskId, processInstanceId, type.toString(), message);
+	}
+
+	/**
+	 * 是否可以转办任务
+	 *
+	 * 1.任务所有人可以转办
+	 *
+	 * 2.任务执行人可以转办，但要求任务非委派状态
+	 *
+	 * 3.被转办人不能是当前任务执行人
+	 *
+	 * @param flow
+	 * @return
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void assignTask(BladeFlow flow) {
+		// 任务id
+		String taskId = flow.getTaskId();
+		// 转办人员id
+		String assignee = TaskUtil.getTaskUser("1285030425345622018");
+		// 当前人员id
+		BladeUser user = AuthUtil.getUser();
+		String userId =String.valueOf(user.getUserId());
+		// 是否可以转办任务，如果不可以的话直接被异常处理拦截
+		Task task = permissionService.validateAssignPermissionOnTask(taskId, userId, assignee);
+		this.addComment(taskId, task.getProcessInstanceId(), userId,CommentTypeEnum.ZB, flow.getComment());
+		taskService.setAssignee(task.getId(), assignee);
+	}
+
+	/**
+	 * 是否可以委派任务
+	 *
+	 * 1.任务所有人可以委派
+	 *
+	 * 2.任务执行人可以委派
+	 *
+	 * 3.被委派人不能是任务所有人和当前任务执行人
+	 *
+	 * @param flow
+	 * @return
+	 */
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public void delegateTask(BladeFlow flow) {
+		// 任务id
+		String taskId = flow.getTaskId();
+		// 委托人员id
+		String delegater = TaskUtil.getTaskUser("1285030425345622018");
+		// 当前人员id
+		BladeUser user = AuthUtil.getUser();
+		String userId =String.valueOf(user.getUserId());
+		// 是否可以委派任务，如果不可以的话直接被异常处理拦截
+		Task task =permissionService.validateDelegatePermissionOnTask(taskId, userId, delegater);
+		this.addComment(taskId, task.getProcessInstanceId(), userId,CommentTypeEnum.WP, flow.getComment());
+		taskService.delegateTask(task.getId(), delegater);
 	}
 
 }

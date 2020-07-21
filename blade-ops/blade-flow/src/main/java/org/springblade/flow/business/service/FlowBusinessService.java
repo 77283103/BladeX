@@ -17,7 +17,12 @@
 package org.springblade.flow.business.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.TaskRequest;
+
+import java.util.List;
 
 /**
  * 流程业务类
@@ -69,4 +74,47 @@ public interface FlowBusinessService {
 	 * @return boolean
 	 */
 	boolean completeTask(BladeFlow leave);
+
+	/**
+	 * 查询可以退回的节点
+	 * @param taskId 执行实例id
+	 * @return
+	 *
+	 */
+	List<FlowNodeResponse> backNodes(String taskId);
+
+	/**
+	 * 退回操作
+	 * @param taskRequest 退回信息
+	 * @return
+	 */
+	boolean backTask(TaskRequest taskRequest);
+
+	/**
+	 * 转办任务
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	void assignTask(BladeFlow flow);
+
+	/**
+	 * 委托任务
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	void delegateTask(BladeFlow flow);
+
+	/**
+	 * 新增审批意见
+	 *
+	 * @param taskId
+	 * @param processInstanceId
+	 * @param userId
+	 * @param type
+	 * @param message
+	 */
+	void addComment(String taskId, String processInstanceId, String userId, CommentTypeEnum type, String message);
+
 }

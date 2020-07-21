@@ -61,6 +61,8 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 			Kv variables = Kv.create()
 				.set(ProcessConstant.TASK_VARIABLE_CREATE_USER, SecureUtil.getUserName())
 				.set("taskUser", TaskUtil.getTaskUser(leave.getTaskUser()))
+				.set("taskUser1", TaskUtil.getTaskUser("1123598821738675203"))
+				.set("taskUser2", TaskUtil.getTaskUser("1123598821738675204"))
 				.set("days", DateUtil.between(leave.getStartTime(), leave.getEndTime()).toDays());
 			R<BladeFlow> result = flowClient.startProcessInstanceById(leave.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(leave.getId())), variables);
 			if (result.isSuccess()) {
