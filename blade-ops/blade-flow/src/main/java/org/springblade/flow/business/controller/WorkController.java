@@ -22,6 +22,7 @@ import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.flowable.engine.TaskService;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
@@ -31,7 +32,11 @@ import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
+import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.TaskRequest;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 流程事务通用接口
@@ -140,6 +145,52 @@ public class WorkController {
 	public R deleteTask(@ApiParam("任务id") String taskId, @ApiParam("删除原因") String reason) {
 		taskService.deleteTask(taskId, reason);
 		return R.success("删除任务成功");
+	}
+
+	/**
+	 * 查询可以退回的节点
+	 *
+	 * @param taskId 任务id
+	 */
+	@GetMapping("backSearch-task")
+	@ApiOperationSupport(order = 9)
+	@ApiOperation(value = "退回节点查询", notes = "传入流程信息")
+	public R<List<FlowNodeResponse>> searchBackNodes(@ApiParam("任务id") String taskId) {
+		return R.data(flowBusinessService.backNodes(taskId));
+	}
+
+	/**
+	 * 退回操作
+	 *
+	 * @param taskRequest
+	 * @return
+	 */
+	@PutMapping(value = "/back-task")
+	@ApiOperationSupport(order = 10)
+	@ApiOperation(value = "退回操作", notes = "传入退回信息")
+	public R back(@RequestBody TaskRequest taskRequest) {
+		return R.status(flowBusinessService.backTask(taskRequest));
+	}
+
+	/**
+	 * 转办任务
+	 */
+	@PostMapping("assign-task")
+	@ApiOperationSupport(order = 11)
+	@ApiOperation(value = "转办操作", notes = "传入流程信息")
+	public R assign(@RequestBody BladeFlow flow) {
+		flowBusinessService.assignTask(flow);
+		return R.status(true);
+	}
+	/**
+	 * 委派任务
+	 */
+	@PutMapping(value = "delegate-task")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "委派操作", notes = "传入流程信息")
+	public R delegate(@RequestBody BladeFlow flow) {
+		flowBusinessService.delegateTask(flow);
+		return R.status(true);
 	}
 
 }
