@@ -56,7 +56,6 @@ public class WorkController {
 	private TaskService taskService;
 	private FlowEngineService flowEngineService;
 	private FlowBusinessService flowBusinessService;
-	private IBorrowFlowService iBorrowFlowService;
 
 	/**
 	 * 发起事务列表页
@@ -110,6 +109,17 @@ public class WorkController {
 	@ApiOperation(value = "办结事务列表页", notes = "传入流程信息")
 	public R<IPage<BladeFlow>> doneList(@ApiParam("流程信息") BladeFlow bladeFlow, Query query) {
 		IPage<BladeFlow> pages = flowBusinessService.selectDonePage(Condition.getPage(query), bladeFlow);
+		return R.data(pages);
+	}
+
+	/**
+	 * 已退回列表页
+	 */
+	@GetMapping("doneBack-list")
+	@ApiOperationSupport(order = 19)
+	@ApiOperation(value = "已退回列表页", notes = "传入流程信息")
+	public R<IPage<BladeFlow>> doBackList(@ApiParam("流程信息") BladeFlow bladeFlow, Query query) {
+		IPage<BladeFlow> pages = flowBusinessService.selectDoBackPage(Condition.getPage(query), bladeFlow);
 		return R.data(pages);
 	}
 
@@ -222,7 +232,7 @@ public class WorkController {
 	 * 委派返回
 	 */
 	@PostMapping(value = "delegate-bask")
-	@ApiOperationSupport(order = 12)
+	@ApiOperationSupport(order = 14)
 	@ApiOperation(value = "委派操作", notes = "传入流程信息")
 	public R delegateBack(@RequestBody BladeFlow flow) {
 		return R.status(flowBusinessService.delegateBack(flow));
@@ -232,7 +242,7 @@ public class WorkController {
 	 * 发起人终止流程
 	 */
 	@PostMapping("cancel-task")
-	@ApiOperationSupport(order = 11)
+	@ApiOperationSupport(order = 15)
 	@ApiOperation(value = "发起人终止流程", notes = "传入流程信息")
 	public R cancel(@RequestBody BladeFlow flow) {
 		flowBusinessService.cancelTask(flow);
@@ -243,7 +253,7 @@ public class WorkController {
 	 * 查看退回节点
 	 */
 	@PostMapping(value = "takeItBackLook-task")
-	@ApiOperationSupport(order = 13)
+	@ApiOperationSupport(order = 16)
 	@ApiOperation(value = "查看退回节点操作", notes = "传入流程信息")
 	public R<List<FlowNodeVo>> takeItBackLook(@RequestBody BladeFlow flow) {
 		return R.data(flowBusinessService.takeItBackTaskLook(flow));
@@ -254,7 +264,7 @@ public class WorkController {
 	 * 退回任务
 	 */
 	@PostMapping(value = "takeItBack-task")
-	@ApiOperationSupport(order = 13)
+	@ApiOperationSupport(order = 17)
 	@ApiOperation(value = "退回操作", notes = "传入流程信息")
 	public R takeItBack(@RequestBody BladeFlow flow) {
 		return R.status(flowBusinessService.takeItBackTask(flow));
@@ -265,7 +275,7 @@ public class WorkController {
 	 * 拿回任务
 	 */
 	@PostMapping(value = "takeBack-task")
-	@ApiOperationSupport(order = 14)
+	@ApiOperationSupport(order = 18)
 	@ApiOperation(value = "退回操作", notes = "传入流程信息")
 	public R takeBack(@RequestBody BladeFlow flow) {
 

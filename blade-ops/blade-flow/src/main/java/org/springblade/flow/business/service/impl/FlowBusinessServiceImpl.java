@@ -118,7 +118,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		Map<String, Object> variables = Kv.create();
 		/* 增加评论 */
 		if (StringUtil.isNoneBlank(processInstanceId, comment)) {
-			taskService.addComment(taskId, processInstanceId, comment);
+			//taskService.addComment(taskId, processInstanceId, String.valueOf(CommentTypeEnum.TJ), comment);
+			String userId = this.getLoginId();
+			this.addComment(taskId, processInstanceId, userId, CommentTypeEnum.SP, comment);
 		}
 		/* 当前节点id */
 		String currActId = taskEntity.getTaskDefinitionKey();
@@ -651,6 +653,13 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		return page;
 	}
 
+	@Override
+	public IPage<BladeFlow> selectDoBackPage(IPage<BladeFlow> page, BladeFlow bladeFlow) {
+
+
+		return page;
+	}
+
 	/**
 	 * 构建流程
 	 *
@@ -912,8 +921,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			taskEntity.setAssignee(flow.getAssignee());
 			taskService.saveTask(taskEntity);
 			/* 3.添加退回意见 */
-			this.addComment(flow.getTaskId(), flow.getAssignee(), flow.getProcessInstanceId(),
-				CommentTypeEnum.TH, flow.getComment());
+			String userId = this.getLoginId();
+			this.addComment(flow.getTaskId(), taskEntity.getProcessInstanceId(), userId, CommentTypeEnum.TH, flow.getComment());
 			/* 4.处理提交人节点（对发起人进行特殊处理） */
 			FlowNode activity = null;
 			BpmnModel bpmnModel = this.repositoryService.getBpmnModel(taskEntity.getProcessDefinitionId());
@@ -1000,6 +1009,11 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (CollectionUtils.isNotEmpty(inclusiveGateways)) {
 			activityInstances.addAll(inclusiveGateways);
 			activityInstances.sort(Comparator.comparing(ActivityInstance::getEndTime));
+		}
+		if(activityInstances.get(activityInstances.size()-1).getActivityType().equals("parallelGateway")||activityInstances.get(activityInstances.size()-1).getActivityType().equals("inclusiveGateway")){
+			if ((parallelGatewaies.size() % 2 != 0)||(inclusiveGateways.size() % 2 != 0)) {
+				activityInstances.remove(activityInstances.size()-1);
+			}
 		}
 		/* 分组节点 */
 		int count = 0;
