@@ -17,7 +17,6 @@
 package org.springblade.system.user.service;
 
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.user.dto.UserDTO;

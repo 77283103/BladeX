@@ -18,14 +18,9 @@ package org.springblade.system.user.wrapper;
 
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.core.tool.utils.Func;
-import org.springblade.system.cache.DictCache;
-import org.springblade.system.cache.SysCache;
-import org.springblade.system.entity.Tenant;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.vo.UserVO;
 
-import java.util.List;
 import java.util.Objects;
 
 /**
