@@ -57,9 +57,9 @@ public class DataScopeController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入dataScope")
-	public R<DataScope> detail(DataScope dataScope) {
+	public R<DataScopeVO> detail(DataScope dataScope) {
 		DataScope detail = dataScopeService.getOne(Condition.getQueryWrapper(dataScope));
-		return R.data(detail);
+		return R.data(DataScopeWrapper.build().entityVO(detail));
 	}
 
 	/**
@@ -68,8 +68,8 @@ public class DataScopeController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入DataScope")
-	public R<IPage<DataScopeVO>> list(DataScope DataScope, Query query) {
-		IPage<DataScope> pages = dataScopeService.pageList(Condition.getPage(query), DataScope);
+	public R<IPage<DataScopeVO>> list(DataScope dataScope, Query query) {
+		IPage<DataScope> pages = dataScopeService.pageList(Condition.getPage(query), dataScope);
 		return R.data(DataScopeWrapper.build().pageVO(pages));
 	}
 
