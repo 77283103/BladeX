@@ -37,6 +37,10 @@ public class BladeFlow implements Serializable {
 	 */
 	private String taskId;
 	/**
+	 * 下一办理人id
+	 */
+	private String userId;
+	/**
 	 * 任务名称
 	 */
 	private String taskName;

@@ -43,7 +43,7 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @param tenantId
 	 * @return
 	 */
-	List<User> selectUserPage(IPage<User> page, @Param("user") User user, @Param("deptIdList") List<Long> deptIdList, @Param("tenantId") String tenantId);
+	List<User> userPage(IPage<User> page, @Param("user") User user, @Param("deptIdList") List<Long> deptIdList, @Param("tenantId") String tenantId);
 
 	/**
 	 * 获取用户

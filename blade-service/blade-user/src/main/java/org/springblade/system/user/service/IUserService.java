@@ -24,6 +24,7 @@ import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.excel.UserExcel;
+import org.springblade.system.user.vo.SelectUserVO;
 import org.springblade.system.user.vo.UserVO;
 
 import java.util.List;
@@ -68,7 +69,7 @@ public interface IUserService extends BaseService<User> {
 	 * @param tenantId
 	 * @return
 	 */
-	IPage<UserVO> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId);
+	IPage<UserVO> userPage(IPage<User> page, User user, Long deptId, String tenantId);
 
 	/**
 	 * 用户信息
@@ -161,4 +162,10 @@ public interface IUserService extends BaseService<User> {
 	 * @return
 	 */
 	boolean updateStatus(String id, Integer isEnable);
+
+	/**
+	 * 用于页面中选择用户
+	 * 分页列表
+	 */
+	IPage<SelectUserVO> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId);
 }

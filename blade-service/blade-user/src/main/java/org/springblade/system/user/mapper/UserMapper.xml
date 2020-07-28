@@ -72,7 +72,7 @@
         account, password, real_name, real_name, email, phone, birthday, sex, role_id, dept_id
     </sql>
 
-    <select id="selectUserPage" resultMap="userResultMap">
+    <select id="userPage" resultMap="userResultMap">
         SELECT
             a.*
         FROM

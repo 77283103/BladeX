@@ -443,12 +443,13 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		// 任务id
 		String taskId = flow.getTaskId();
 		// 转办人员id
-		String assignee = TaskUtil.getTaskUser("1285030425345622018");
+		String assignee = TaskUtil.getTaskUser(flow.getUserId());
 		// 当前人员id
 		BladeUser user = AuthUtil.getUser();
 		String userId =String.valueOf(user.getUserId());
 		// 是否可以转办任务，如果不可以的话直接被异常处理拦截
-		Task task = permissionService.validateAssignPermissionOnTask(taskId, userId, assignee);
+//		Task task = permissionService.validateAssignPermissionOnTask(taskId, userId, assignee);
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		this.addComment(taskId, task.getProcessInstanceId(), userId,CommentTypeEnum.ZB, flow.getComment());
 		taskService.setAssignee(task.getId(), assignee);
 	}
