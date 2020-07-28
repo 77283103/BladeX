@@ -68,8 +68,8 @@ public class ApiScopeController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入dataScope")
-	public R<IPage<ApiScopeVO>> list(ApiScope dataScope, Query query) {
-		IPage<ApiScope> pages = apiScopeService.page(Condition.getPage(query), Condition.getQueryWrapper(dataScope));
+	public R<IPage<ApiScopeVO>> list(ApiScope apiScope, Query query) {
+		IPage<ApiScope> pages = apiScopeService.pageList(Condition.getPage(query), apiScope);
 		return R.data(ApiScopeWrapper.build().pageVO(pages));
 	}
 

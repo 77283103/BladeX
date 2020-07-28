@@ -16,6 +16,7 @@
  */
 package org.springblade.system.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.system.entity.ApiScope;
 import org.springblade.system.mapper.ApiScopeMapper;
@@ -31,4 +32,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class ApiScopeServiceImpl extends BaseServiceImpl<ApiScopeMapper, ApiScope> implements IApiScopeService {
 
+	@Override
+	public IPage<ApiScope> pageList(IPage<Object> page, ApiScope apiScope) {
+		return baseMapper.pageList(page, apiScope);
+	}
 }
