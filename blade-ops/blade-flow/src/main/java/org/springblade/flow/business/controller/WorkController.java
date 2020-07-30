@@ -122,6 +122,16 @@ public class WorkController {
 	}
 
 	/**
+	 * 点击完成按钮查询下一节点和办理人信息返回前台
+	 */
+	@GetMapping("complete-before")
+	@ApiOperationSupport(order = 13)
+	@ApiOperation(value = "提交前的处理", notes = "传入流程信息")
+	public R<List<FlowNodeResponse>> completeTempResult(@ApiParam("任务信息") String taskId){
+		return R.data(flowBusinessService.completeTempResult(taskId));
+	}
+
+	/**
 	 * 完成任务
 	 *
 	 * @param flow 请假信息

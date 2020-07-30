@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
 
 import java.util.List;
@@ -116,5 +117,13 @@ public interface FlowBusinessService {
 	 * @param message
 	 */
 	void addComment(String taskId, String processInstanceId, String userId, CommentTypeEnum type, String message);
+
+	/**
+	 * 首次点击提交时返回前台的信息，提示用户下一节点和办理人信息
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	List<FlowNodeResponse> completeTempResult(String taskId);
 
 }
