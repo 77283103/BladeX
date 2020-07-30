@@ -117,4 +117,9 @@ public interface FlowBusinessService {
 	 */
 	void addComment(String taskId, String processInstanceId, String userId, CommentTypeEnum type, String message);
 
+	/**
+	 * 发起人终止流程
+	 * @param flow
+	 */
+	void cancelTask(BladeFlow flow);
 }

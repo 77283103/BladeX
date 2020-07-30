@@ -32,6 +32,7 @@ import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
@@ -148,7 +149,6 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		if (bladeFlow.getEndDate() != null) {
 			historyQuery.startedBefore(bladeFlow.getEndDate());
 		}
-
 		// 查询列表
 		List<HistoricProcessInstance> historyList = historyQuery.listPage(Func.toInt((page.getCurrent() - 1) * page.getSize()), Func.toInt(page.getSize()));
 
@@ -423,6 +423,14 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		type = type == null ? CommentTypeEnum.SP : type;
 		message = (message == null || message.length() == 0) ? type.getName() : message;
 		taskService.addComment(taskId, processInstanceId, type.toString(), message);
+	}
+
+	@Override
+	public void cancelTask(BladeFlow flow) {
+		if (Func.isEmpty(flow.getProcessInstanceId())){
+			throw new ServiceException("流程实例ID不能为空!");
+		}
+		runtimeService.deleteProcessInstance(flow.getProcessInstanceId(),"终止原因");
 	}
 
 	/**

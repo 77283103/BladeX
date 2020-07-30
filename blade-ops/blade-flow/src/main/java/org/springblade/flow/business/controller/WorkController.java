@@ -192,5 +192,14 @@ public class WorkController {
 		flowBusinessService.delegateTask(flow);
 		return R.status(true);
 	}
-
+	/**
+	 * 发起人终止流程
+	 */
+	@PostMapping("cancel-task")
+	@ApiOperationSupport(order = 11)
+	@ApiOperation(value = "发起人终止流程", notes = "传入流程信息")
+	public R cancel(@RequestBody BladeFlow flow) {
+		flowBusinessService.cancelTask(flow);
+		return R.status(true);
+	}
 }
