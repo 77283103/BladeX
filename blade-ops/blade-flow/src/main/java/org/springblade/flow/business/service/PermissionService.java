@@ -17,14 +17,6 @@ import java.util.List;
  * @date 2020年3月24日
  */
 public interface PermissionService {
-	/**
-	 * 校验用户是否可以执行任务
-	 *
-	 * @param taskId
-	 * @param userId
-	 * @return
-	 */
-	Task validateExcutePermissionOnTask(String taskId, String userId);
 
 	/**
 	 * 是否可以委派任务

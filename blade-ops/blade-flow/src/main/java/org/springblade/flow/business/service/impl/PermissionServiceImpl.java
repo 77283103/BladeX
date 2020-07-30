@@ -21,15 +21,6 @@ public class PermissionServiceImpl implements PermissionService {
 	@Autowired
 	protected TaskService taskService;
 
-	@Override
-	public Task validateExcutePermissionOnTask(String taskId, String userId) {
-		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		if (task == null) {
-			throw new FlowableObjectNotFoundException("待办ID: " + taskId + "不存在");
-		}
-		throw new FlowableNoPermissionException("用户无权限");
-	}
-
 	/**
 	 * 是否可以委派任务
 	 *

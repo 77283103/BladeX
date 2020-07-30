@@ -1,15 +1,20 @@
 package org.springblade.flow.engine.vo;
 
+import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
- * @author 庄金明
- * @date 2020年3月24日
+ * @author tah
+ * @date 2020-7-29
  */
 @Data
-public class FlowNodeResponse {
+@Builder
+public class FlowNodeResponse implements Serializable{
+	private static final long serialVersionUID = 1L;
     /**
      * 节点id
      */
@@ -31,5 +36,16 @@ public class FlowNodeResponse {
      * 任务节点结束时间
      */
     private Date endTime;
-
+	/**
+	 * 处理人信息列表
+	 */
+	private List<FlowUserResponse> userResponseList;
+	/**
+	 * 是否为结束节点
+	 */
+	private boolean end;
+	/**
+	 * 是否可以选择节点
+	 */
+	private boolean enableChooseNode;
 }

@@ -49,6 +49,8 @@ public interface FlowEngineConstant {
 
 	String END_EVENT = "endEvent";
 
+	String USER_EVENT = "userEvent";
+
 	String INITIATOR = "__initiator__";
 	String SPECIAL_GATEWAY_BEGIN_SUFFIX = "_begin";
 	String SPECIAL_GATEWAY_END_SUFFIX = "_end";
