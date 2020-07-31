@@ -64,7 +64,11 @@ public class RoleVO extends Role implements INode {
 		}
 		return this.children;
 	}
-
+	/**
+	 * 是否有子孙节点
+	 */
+	@JsonInclude(JsonInclude.Include.NON_EMPTY)
+	private Boolean hasChildren;
 	/**
 	 * 上级角色
 	 */

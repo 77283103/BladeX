@@ -27,6 +27,17 @@
         <result column="value" property="value"/>
         <result column="key" property="key"/>
     </resultMap>
+    <resultMap id="roleVOResultMap" type="org.springblade.system.vo.RoleVO">
+        <id column="id" property="id"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="role_name" property="roleName"/>
+        <result column="sort" property="sort"/>
+        <result column="role_alias" property="roleAlias"/>
+        <result column="remark" property="remark"/>
+        <result column="is_enable" property="isEnable"/>
+        <result column="has_children" property="hasChildren"/>
+
+    </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -82,5 +93,30 @@
         </foreach>
         and is_deleted = 0
     </select>
-
+    <!--懒加载列表-->
+    <select id="lazyList"  resultMap="roleVOResultMap">
+        SELECT
+        role.*,
+        (
+        SELECT
+        CASE WHEN count( 1 ) > 0 THEN 1 ELSE 0 END
+        FROM
+        blade_role
+        WHERE
+        parent_id = role.id AND is_deleted = 0
+        ) AS "has_children"
+        FROM
+        blade_role role
+        WHERE role.is_deleted = 0
+        <if test="param1!=null">
+            and role.parent_id = #{param1}
+        </if>
+        <if test="param2.roleName!=null and param2.roleName!=''">
+            and role.role_name like concat(concat('%', #{param2.roleName}),'%')
+        </if>
+        <if test="param2.roleAlias!=null and param2.roleAlias!=''">
+            and role.role_alias like concat(concat('%', #{param2.roleAlias}),'%')
+        </if>
+        ORDER BY role.sort
+    </select>
 </mapper>
