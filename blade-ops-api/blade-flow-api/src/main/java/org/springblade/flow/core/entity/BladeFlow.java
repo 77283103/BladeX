@@ -89,6 +89,10 @@ public class BladeFlow implements Serializable {
 	 */
 	private String processDefinitionId;
 	/**
+	 * 跳转的任务ID
+	 */
+	private String distFlowElementId;
+	/**
 	 * 流程标识
 	 */
 	private String processDefinitionKey;

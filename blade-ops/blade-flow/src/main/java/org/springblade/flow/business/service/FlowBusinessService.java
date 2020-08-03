@@ -17,6 +17,7 @@
 package org.springblade.flow.business.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
@@ -131,5 +132,10 @@ public interface FlowBusinessService {
 	 * @param flow
 	 */
 	void cancelTask(BladeFlow flow);
+
+
+	R takeItBackTask(BladeFlow flow);
+
+	R takeItBackTaskLook(BladeFlow flow);
 
 }

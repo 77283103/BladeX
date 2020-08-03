@@ -23,11 +23,16 @@ import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.common.engine.impl.identity.Authentication;
+import org.flowable.editor.language.json.converter.util.CollectionUtils;
 import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.history.HistoricProcessInstanceQuery;
+import org.flowable.engine.impl.persistence.entity.ActivityInstanceEntity;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ActivityInstance;
+import org.flowable.engine.runtime.Execution;
+import org.flowable.engine.runtime.ProcessInstance;
+import org.flowable.idm.api.User;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
@@ -36,6 +41,7 @@ import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
@@ -46,6 +52,7 @@ import org.springblade.flow.business.common.cmd.BackUserTaskCmd;
 import org.springblade.flow.business.service.FlowBusinessService;
 import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.constant.FlowEngineConstant;
 import org.springblade.flow.engine.utils.FlowCache;
@@ -68,7 +75,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @AllArgsConstructor
-public class FlowBusinessServiceImpl implements FlowBusinessService {
+public class FlowBusinessServiceImpl extends BaseProcessService implements FlowBusinessService {
 
 	private TaskService taskService;
 	private HistoryService historyService;
@@ -624,6 +631,7 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		runtimeService.deleteProcessInstance(flow.getProcessInstanceId(),"终止原因");
 	}
 
+
 	/**
 	 * 是否可以转办任务
 	 * <p>
@@ -677,6 +685,201 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		Task task = permissionService.validateDelegatePermissionOnTask(taskId, userId, delegater);
 		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.WP, flow.getComment());
 		taskService.delegateTask(task.getId(), delegater);
+	}
+
+	@Override
+	public R takeItBackTask(BladeFlow flow) {
+		flow.setDistFlowElementId("usertask1");
+		R<String> returnVo = null;
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
+		//1.把当前的节点设置为空
+		if (taskEntity != null) {
+			//2.设置审批人
+			taskEntity.setAssignee(flow.getAssignee());
+			taskService.saveTask(taskEntity);
+			//3.添加驳回意见
+			this.addComment(flow.getTaskId(), flow.getAssignee(), flow.getProcessInstanceId(),
+				CommentTypeEnum.TH, flow.getComment());
+			//4.处理提交人节点（对发起人进行特殊处理）
+			FlowNode activity = null;
+			BpmnModel bpmnModel = this.repositoryService.getBpmnModel(taskEntity.getProcessDefinitionId());
+			List<Process> processes = bpmnModel.getProcesses();
+			for (Process process : processes){
+				//需要驳回节点的id
+				FlowElement flowElement = process.getFlowElementMap().get(flow.getDistFlowElementId());
+				if (flowElement != null) {
+					activity = (FlowNode) flowElement;
+					break;
+				}
+			}
+			FlowNode distActivity = activity;
+			if (distActivity != null) {
+				if ("提交人".equals(distActivity.getName())) {
+					ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(taskEntity.getProcessInstanceId()).singleResult();
+					runtimeService.setVariable(flow.getProcessInstanceId(),"initiator", processInstance.getStartUserId());
+				}
+			}
+			//5.删除节点
+			//this.deleteActivity(flow.getDistFlowElementId(), taskEntity.getProcessInstanceId());
+			List<String> executionIds = new ArrayList<>();
+			//6.判断节点是不是子流程内部的节点
+			/*if (flowableBpmnModelService.checkActivitySubprocessByActivityId(taskEntity.getProcessDefinitionId(),
+				backTaskVo.getDistFlowElementId())
+				&& flowableBpmnModelService.checkActivitySubprocessByActivityId(taskEntity.getProcessDefinitionId(),
+				taskEntity.getTaskDefinitionKey())) {
+				//6.1 子流程内部驳回
+				Execution executionTask = runtimeService.createExecutionQuery().executionId(taskEntity.getExecutionId()).singleResult();
+				String parentId = executionTask.getParentId();
+				List<Execution> executions = runtimeService.createExecutionQuery().parentId(parentId).list();
+				executions.forEach(execution -> executionIds.add(execution.getId()));
+				this.moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId());
+			} else {*/
+			//6.2 普通驳回
+			List<Execution> executions = runtimeService.createExecutionQuery().parentId(taskEntity.getProcessInstanceId()).list();
+			executions.forEach(execution -> executionIds.add(execution.getId()));
+			runtimeService.createChangeActivityStateBuilder().moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId()).changeState();
+			//}
+			returnVo.isSuccess();
+			returnVo.setMsg("执行成功");
+		} else {
+			returnVo.setMsg("执行失败");
+		}
+		return returnVo;
+	}
+
+	@Override
+	public R takeItBackTaskLook(BladeFlow flow) {
+		R<String> returnVo = null;
+		List<FlowNodeVo> backNods = new ArrayList<>();
+		//当前任务的节点
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getExecutionId()).singleResult();
+		//得到当前任务的key
+		String currActId = taskEntity.getTaskDefinitionKey();
+		//获取运行节点表中usertask（已经审完的节点）
+		String sql = "select t.* from act_ru_actinst t where t.ACT_TYPE_ = 'userTask' " +
+			" and t.PROC_INST_ID_=#{processInstanceId} and t.END_TIME_ is not null ";
+		List<ActivityInstance> activityInstances = runtimeService.createNativeActivityInstanceQuery().sql(sql)
+			.parameter("processInstanceId", flow.getProcessInstanceId())
+			.list();
+		//获取运行节点表的parallelGateway节点并出重
+		sql = "SELECT t.ID_, t.REV_,t.PROC_DEF_ID_,t.PROC_INST_ID_,t.EXECUTION_ID_,t.ACT_ID_, t.TASK_ID_, t.CALL_PROC_INST_ID_, t.ACT_NAME_, t.ACT_TYPE_, " +
+			" t.ASSIGNEE_, t.START_TIME_, max(t.END_TIME_) as END_TIME_, t.DURATION_, t.DELETE_REASON_, t.TENANT_ID_" +
+			" FROM  act_ru_actinst t WHERE t.ACT_TYPE_ = 'parallelGateway' AND t.PROC_INST_ID_ = #{processInstanceId} and t.END_TIME_ is not null" +
+			" and t.ACT_ID_ <> #{actId} GROUP BY t.act_id_";
+		List<ActivityInstance> parallelGatewaies = runtimeService.createNativeActivityInstanceQuery().sql(sql)
+			.parameter("processInstanceId", flow.getProcessInstanceId())
+			.parameter("actId", currActId)
+			.list();
+		//排序
+		if (CollectionUtils.isNotEmpty(parallelGatewaies)) {
+			activityInstances.addAll(parallelGatewaies);
+			activityInstances.sort(Comparator.comparing(ActivityInstance::getEndTime));
+		}
+		//分组节点
+		int count = 0;
+		Map<ActivityInstance, List<ActivityInstance>> parallelGatewayUserTasks = new HashMap<>();
+		List<ActivityInstance> userTasks = new ArrayList<>();
+		ActivityInstance currActivityInstance = null;
+		for (ActivityInstance activityInstance : activityInstances) {
+			if (BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL.equals(activityInstance.getActivityType())) {
+				count++;
+				if (count % 2 != 0) {
+					List<ActivityInstance> datas = new ArrayList<>();
+					currActivityInstance = activityInstance;
+					parallelGatewayUserTasks.put(currActivityInstance, datas);
+				}
+			}
+			if (BpmnXMLConstants.ELEMENT_TASK_USER.equals(activityInstance.getActivityType())) {
+				if (count % 2 == 0) {
+					userTasks.add(activityInstance);
+				} else {
+					if (parallelGatewayUserTasks.containsKey(currActivityInstance)) {
+						parallelGatewayUserTasks.get(currActivityInstance).add(activityInstance);
+					}
+				}
+			}
+		}
+		//组装人员名称 查询审批通过节点的历史
+		List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
+			.processInstanceId(flow.getProcessInstanceId()).finished().list();
+		Map<String, List<HistoricTaskInstance>> taskInstanceMap = new HashMap<>();
+		List<String> userCodes = new ArrayList<>();
+		historicTaskInstances.forEach(historicTaskInstance -> {
+			userCodes.add(historicTaskInstance.getAssignee());
+			String taskDefinitionKey = historicTaskInstance.getTaskDefinitionKey();
+			if (taskInstanceMap.containsKey(historicTaskInstance.getTaskDefinitionKey())) {
+				taskInstanceMap.get(taskDefinitionKey).add(historicTaskInstance);
+			} else {
+				List<HistoricTaskInstance> tasks = new ArrayList<>();
+				tasks.add(historicTaskInstance);
+				taskInstanceMap.put(taskDefinitionKey, tasks);
+			}
+		});
+		//组装usertask的数据
+		List<User> userList = identityService.createUserQuery().userIds(userCodes).list();
+		if (CollectionUtils.isNotEmpty(userTasks)) {
+			userTasks.forEach(activityInstance -> {
+				FlowNodeVo node = new FlowNodeVo();
+				node.setNodeId(activityInstance.getActivityId());
+				node.setNodeName(activityInstance.getActivityName());
+				node.setEndTime(activityInstance.getEndTime());
+				node.setUserName("");
+				backNods.add(node);
+			});
+		}
+		//组装会签节点数据
+		if (!taskInstanceMap.isEmpty()) {
+			parallelGatewayUserTasks.forEach((activity, activities) -> {
+				FlowNodeVo node = new FlowNodeVo();
+				node.setNodeId(activity.getActivityId());
+				node.setEndTime(activity.getEndTime());
+				StringBuffer nodeNames = new StringBuffer("会签:");
+				StringBuffer userNames = new StringBuffer("审批人员:");
+				node.setNodeName(nodeNames.toString());
+				node.setUserName(userNames.toString());
+				backNods.add(node);
+			});
+		}
+		//去重合并
+		List<FlowNodeVo> datas = backNods.stream().collect(
+			Collectors.collectingAndThen(Collectors.toCollection(() ->
+				new TreeSet<>(Comparator.comparing(nodeVo -> nodeVo.getNodeId()))), ArrayList::new));
+
+		//排序
+		datas.sort(Comparator.comparing(FlowNodeVo::getEndTime));
+		return returnVo;
+	}
+
+	/**
+	 * 删除跳转的历史节点信息
+	 *
+	 * @param disActivityId     跳转的节点id
+	 * @param processInstanceId 流程实例id
+	 */
+	protected void deleteActivity(String disActivityId, String processInstanceId) {
+
+		String tableName = managementService.getTableName(ActivityInstanceEntity.class);
+		String sql = "select t.* from " + tableName + " t where t.PROC_INST_ID_=#{processInstanceId} and t.ACT_ID_ = #{disActivityId} " +
+			" order by t.END_TIME_ ASC";
+		//查询该实例将要删除的节点
+		List<ActivityInstance> disActivities = runtimeService.createNativeActivityInstanceQuery().sql(sql)
+			.parameter("processInstanceId", processInstanceId)
+			.parameter("disActivityId", disActivityId).list();
+		//删除运行时和历史节点信息
+		if (CollectionUtils.isNotEmpty(disActivities)) {
+			ActivityInstance activityInstance = disActivities.get(0);
+			sql = "select t.* from " + tableName + " t where t.PROC_INST_ID_=#{processInstanceId} and (t.END_TIME_ >= #{endTime} or t.END_TIME_ is null)";
+			//查询出该实例走过的每个节点和连线
+			List<ActivityInstance> datas = runtimeService.createNativeActivityInstanceQuery().sql(sql).parameter("processInstanceId", processInstanceId)
+				.parameter("endTime", activityInstance.getEndTime()).list();
+			List<String> runActivityIds = new ArrayList<>();
+			if (CollectionUtils.isNotEmpty(datas)) {
+				//拉姆达表达式来把所有的id存到集合里，删除对应的运行时的节点信息和历史的节点信息
+				datas.forEach(ai -> runActivityIds.add(ai.getId()));
+				//runFlowableActinstDao.deleteRunActinstsByIds(runActivityIds);
+				//hisFlowableActinstDao.deleteHisActinstsByIds(runActivityIds);
+			}
+		}
 	}
 }
 

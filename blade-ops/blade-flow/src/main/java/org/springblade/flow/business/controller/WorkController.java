@@ -212,4 +212,28 @@ public class WorkController {
 		flowBusinessService.cancelTask(flow);
 		return R.status(true);
 	}
+
+	/**
+	 * 查看退回节点
+	 */
+	@PostMapping(value = "takeItBackLook-task")
+	@ApiOperationSupport(order = 13)
+	@ApiOperation(value = "查看退回节点操作", notes = "传入流程信息")
+	public R takeItBackLook(@RequestBody BladeFlow flow) {
+		flowBusinessService.takeItBackTaskLook(flow);
+		return R.status(true);
+	}
+
+
+	/**
+	 * 退回任务
+	 */
+	@PostMapping(value = "takeItBack-task")
+	@ApiOperationSupport(order = 13)
+	@ApiOperation(value = "退回操作", notes = "传入流程信息")
+	public R takeItBack(@RequestBody BladeFlow flow) {
+		flowBusinessService.takeItBackTask(flow);
+		return R.status(true);
+	}
+
 }
