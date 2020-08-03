@@ -138,9 +138,9 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 			QueryWrapper<Dict> queryWrapper = new QueryWrapper<Dict>();
 			queryWrapper.eq("parent_id", id);
 			List<Dict> DictList = this.baseMapper.selectList(queryWrapper);
+			result.add(id);
 			for (Dict dict : DictList) {
 				temp.add(dict.getId());
-				result.add(id);
 				result.add(dict.getId());
 				if (temp.size() != 0 && temp != null) {
 					selectChild(temp);
@@ -160,6 +160,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 	public Boolean deleteIds(String ids){
 		List<Long> idList =Func.toLongList(ids);
 		//递归查询
+		result =new ArrayList<>();
 		this.selectChild(idList);
 		 return removeByIds(result);
 
