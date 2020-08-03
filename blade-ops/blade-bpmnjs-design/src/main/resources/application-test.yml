@@ -1,0 +1,6 @@
+#数据源配置
+spring:
+  datasource:
+    url: ${blade.datasource.flow.test.url}
+    username: ${blade.datasource.flow.test.username}
+    password: ${blade.datasource.flow.test.password}
