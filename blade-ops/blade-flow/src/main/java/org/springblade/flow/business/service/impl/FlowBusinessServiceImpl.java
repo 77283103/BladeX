@@ -51,6 +51,7 @@ import org.springblade.flow.engine.constant.FlowEngineConstant;
 import org.springblade.flow.engine.utils.FlowCache;
 import org.springblade.flow.engine.utils.FlowableUtils;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,42 +104,49 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		return true;
 	}
 
+	/**
+	 * 点击通过按钮时，查询下一节点和人员信息
+	 *
+	 * @param taskId
+	 * @return
+	 */
 	@Override
 	public List<FlowNodeResponse> completeTempResult(String taskId) {
 		// 获取taskEntity对象
-        TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();;
-        String currActId = taskEntity.getTaskDefinitionKey();
-        // 流程定义id
-        String processDefinitionId = taskEntity.getProcessDefinitionId();
-        Process process = repositoryService.getBpmnModel(processDefinitionId).getMainProcess();
-        // 获取当前节点
-        FlowNode currentFlowElement = (FlowNode) process.getFlowElement(currActId, true);
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+		// 当前节点id
+		String currActId = taskEntity.getTaskDefinitionKey();
+		// 流程定义id
+		String processDefinitionId = taskEntity.getProcessDefinitionId();
+		// 获取流程实例对象
+		Process process = repositoryService.getBpmnModel(processDefinitionId).getMainProcess();
+		// 获取当前节点
+		FlowNode currentFlowElement = (FlowNode) process.getFlowElement(currActId, true);
 		// 获取当前节点的连线数
 		List<SequenceFlow> outgoingFlows = currentFlowElement.getOutgoingFlows();
 		// 只有一条出线
 		if (outgoingFlows.size() == 1) {
+			// 获取并判断下一节点是结束节点EndEvent、用户节点UserTask、网关节点GateWay
 			FlowNode targetNode = (FlowNode) outgoingFlows.get(0).getTargetFlowElement();
-			// 判断下一节点是结束节点EndEvent、用户节点UserTask、网关节点GateWay
+			// EndEvent只要提示节点信息即可
 			if (targetNode instanceof EndEvent) {
-				// 结束节点只要提示节点信息即可
 				return createFlowNodeResponseEnd(targetNode);
-			} else if (targetNode instanceof UserTask) {
-				// 提交下一节点是用户
+			}
+			// 提交下一节点是UserTask
+			if (targetNode instanceof UserTask) {
 				return createFlowNodeResponseUserTask(targetNode);
-			} else if (targetNode instanceof Gateway) {
-				// 提交下一节点是网关
+			}
+			// 提交下一节点是GateWay
+			if (targetNode instanceof Gateway) {
+				// 获取流程全局变量
 				Map<String, Object> variables = taskEntity.getVariables();
 				return createFlowNodeResponseGateWay(targetNode, variables);
-			} else {
-				throw new FlowableException("无法识别下一节点，下一节点是EndEvent、UserTask、GateWay之外的其他节点");
 			}
-		// 多条出线
-		} else if (outgoingFlows.size() > 1) {
-			// 取每一条连线返回前台
-			return createFlowNodeResponseMultiLines(outgoingFlows);
-		// 其他情况
+			// 都没有满足以上的话，可能是其他类型的节点，流程目前暂不支持
+			throw new FlowableException("无法识别下一节点，下一节点是EndEvent、UserTask、GateWay之外的其他节点");
 		} else {
-			throw new FlowableException("未找到流程出线");
+			// 目前流程不允许多条出线的情况
+			throw new FlowableException("未找到流程出线或找到多条出线");
 		}
 	}
 
@@ -152,6 +160,7 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
 		FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 			.nodeId(targetNode.getId())
+			.nodeName("结束节点")
 			.end(true)
 			.build();
 		flowNodeResponseList.add(flowNodeResponse);
@@ -185,8 +194,7 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 	 */
 	private List<FlowNodeResponse> createFlowNodeResponseGateWay(FlowNode targetNode, Map<String, Object> variables) {
 		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
-		// 判断网关类型，不同类型网关有不同的处理方式，暂未使用包容网关（包容网关可以自由选择一条或多条分支），该操作可以通过多分支实现
-		// 并行网关
+		// 并行网关，所有分支必须执行，无法自由选择
 		if (targetNode instanceof ParallelGateway) {
 			// 遍历并行网关的每一条出线获取每一个节点
 			targetNode.getOutgoingFlows().forEach(sequenceFlow -> {
@@ -202,8 +210,9 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 				flowNodeResponseList.add(flowNodeResponse);
 			});
 			return flowNodeResponseList;
-			// 排他网关
-		} else if (targetNode instanceof ExclusiveGateway) {
+		}
+		// 排他网关，所有分支中满足条件的第一个分支会执行，其余均不执行
+		if (targetNode instanceof ExclusiveGateway) {
 			if (null == variables) {
 				throw new FlowableException("未获取到流程参数");
 			}
@@ -226,13 +235,13 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 					ScriptEngine engine = manager.getEngineByName("js");
 					boolean result = (boolean) engine.eval(conditionExpression);
 					if (result) {
-						FlowNode flowNode = (FlowNode) outLine.getTargetFlowElement();
+						FlowNode flowNodeExclusive = (FlowNode) outLine.getTargetFlowElement();
 						// 获取节点自定义属性
 						/***********************************此处需要实现获取节点自定义属性并返回List<FlowUserResponse>**************************/
 						FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 							.end(false)
-							.nodeId(flowNode.getId())
-							.nodeName(flowNode.getName())
+							.nodeId(flowNodeExclusive.getId())
+							.nodeName(flowNodeExclusive.getName())
 							.userResponseList(null)
 							.build();
 						flowNodeResponseList.add(flowNodeResponse);
@@ -244,34 +253,38 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 				}
 			}
 			return null;
-		} else {
-			throw new FlowableException("流程暂不支持其他网关类型的处理");
 		}
+		// 包容网关，可以选择一条或多条出线
+		if (targetNode instanceof InclusiveGateway) {
+			targetNode.getOutgoingFlows().forEach(sequenceFlow -> {
+				FlowNode targetNodeInclusive = (FlowNode) sequenceFlow.getTargetFlowElement();
+				FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
+					.end(false)
+					.enableChooseNode(true)
+					.nodeId(targetNodeInclusive.getId())
+					.nodeName(targetNodeInclusive.getName())
+					.userResponseList(null)
+					.build();
+				flowNodeResponseList.add(flowNodeResponse);
+			});
+			return flowNodeResponseList;
+		}
+		throw new FlowableException("流程暂不支持其他网关类型的处理");
 	}
 
-	/**
-	 * 封装【多分支】的FlowNodeResponseList
-	 *
-	 * @return
-	 */
-	private List<FlowNodeResponse> createFlowNodeResponseMultiLines(List<SequenceFlow> outgoingFlows) {
-		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
-		// 遍历每条出线，构造flowNodeResponse对象
-		outgoingFlows.forEach(sequenceFlow -> {
-			FlowNode targetFlowNode = (FlowNode) sequenceFlow.getTargetFlowElement();
-			// 获取节点自定义属性
-			/***********************************此处需要实现获取节点自定义属性并返回List<FlowUserResponse>**************************/
-			FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
-				.nodeId(targetFlowNode.getId())
-				.nodeName(targetFlowNode.getName())
-				.end(false)
-				.enableChooseNode(true)
-				.userResponseList(null)
-				.build();
-			flowNodeResponseList.add(flowNodeResponse);
-		});
-		return flowNodeResponseList;
-	}
+/*	@Override
+	public List<FlowUserResponse> getCandidateUsers(FlowNode targetNode) {
+		// 获取自定义岗位属性
+		String flowPost = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_POST);
+		// 获取自定义角色属性
+		String flowRole = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_ROLE);
+		// 获取自定义人员属性
+		String flowUser = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_USER);
+		// 获取自定义机构属性
+		String flowDept = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_DEPT);
+
+		return null;
+	}*/
 
 	@Override
 	public IPage<BladeFlow> selectClaimPage(IPage<BladeFlow> page, BladeFlow bladeFlow) {
@@ -629,7 +642,7 @@ public class FlowBusinessServiceImpl implements FlowBusinessService {
 		// 任务id
 		String taskId = flow.getTaskId();
 		// 转办人员id
-		String assignee = TaskUtil.getTaskUser(flow.getUserId());
+		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
 		// 当前人员id
 		BladeUser user = AuthUtil.getUser();
 		String userId = String.valueOf(user.getUserId());
