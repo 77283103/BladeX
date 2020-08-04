@@ -21,7 +21,6 @@ import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
-import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
 
 import java.util.List;
@@ -136,6 +135,6 @@ public interface FlowBusinessService {
 
 	R takeItBackTask(BladeFlow flow);
 
-	R takeItBackTaskLook(BladeFlow flow);
+	void takeItBackTaskLook(BladeFlow flow);
 
 }

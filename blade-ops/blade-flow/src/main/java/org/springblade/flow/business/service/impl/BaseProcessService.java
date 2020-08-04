@@ -7,8 +7,6 @@ import org.flowable.engine.runtime.ActivityInstance;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springblade.flow.business.mapper.IHisFlowableActinstDao;
-import org.springblade.flow.business.mapper.IRunFlowableActinstDao;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -38,8 +36,8 @@ public abstract class BaseProcessService {
     protected HistoryService historyService;
     @Autowired
     protected IdentityService identityService;
-    private IRunFlowableActinstDao runFlowableActinstDao;
-    private IHisFlowableActinstDao hisFlowableActinstDao;
+    //private IRunFlowableActinstDao runFlowableActinstDao;
+    //private IHisFlowableActinstDao hisFlowableActinstDao;
 
 
 	/**
@@ -68,8 +66,8 @@ public abstract class BaseProcessService {
             if (CollectionUtils.isNotEmpty(datas)) {
                 //拉姆达表达式来把所有的id存到集合里，删除对应的运行时的节点信息和历史的节点信息
                 datas.forEach(ai -> runActivityIds.add(ai.getId()));
-                runFlowableActinstDao.deleteRunActinstsByIds(runActivityIds);
-                hisFlowableActinstDao.deleteHisActinstsByIds(runActivityIds);
+                //runFlowableActinstDao.deleteRunActinstsByIds(runActivityIds);
+                //hisFlowableActinstDao.deleteHisActinstsByIds(runActivityIds);
             }
         }
     }

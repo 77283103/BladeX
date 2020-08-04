@@ -28,6 +28,7 @@ import org.flowable.engine.*;
 import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.history.HistoricProcessInstanceQuery;
 import org.flowable.engine.impl.persistence.entity.ActivityInstanceEntity;
+import org.flowable.engine.impl.util.CommandContextUtil;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ActivityInstance;
 import org.flowable.engine.runtime.Execution;
@@ -58,7 +59,6 @@ import org.springblade.flow.engine.constant.FlowEngineConstant;
 import org.springblade.flow.engine.utils.FlowCache;
 import org.springblade.flow.engine.utils.FlowableUtils;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
-import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -689,7 +689,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	@Override
 	public R takeItBackTask(BladeFlow flow) {
-		flow.setDistFlowElementId("usertask1");
+		flow.setDistFlowElementId("usertask4");
 		R<String> returnVo = null;
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
 		//1.把当前的节点设置为空
@@ -720,7 +720,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				}
 			}
 			//5.删除节点
-			//this.deleteActivity(flow.getDistFlowElementId(), taskEntity.getProcessInstanceId());
+			this.deleteActivity(flow.getDistFlowElementId(), taskEntity.getProcessInstanceId());
 			List<String> executionIds = new ArrayList<>();
 			//6.判断节点是不是子流程内部的节点
 			/*if (flowableBpmnModelService.checkActivitySubprocessByActivityId(taskEntity.getProcessDefinitionId(),
@@ -748,11 +748,11 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	}
 
 	@Override
-	public R takeItBackTaskLook(BladeFlow flow) {
+	public void takeItBackTaskLook(BladeFlow flow) {
 		R<String> returnVo = null;
 		List<FlowNodeVo> backNods = new ArrayList<>();
 		//当前任务的节点
-		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getExecutionId()).singleResult();
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
 		//得到当前任务的key
 		String currActId = taskEntity.getTaskDefinitionKey();
 		//获取运行节点表中usertask（已经审完的节点）
@@ -847,7 +847,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 		//排序
 		datas.sort(Comparator.comparing(FlowNodeVo::getEndTime));
-		return returnVo;
 	}
 
 	/**
@@ -872,12 +871,14 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			//查询出该实例走过的每个节点和连线
 			List<ActivityInstance> datas = runtimeService.createNativeActivityInstanceQuery().sql(sql).parameter("processInstanceId", processInstanceId)
 				.parameter("endTime", activityInstance.getEndTime()).list();
-			List<String> runActivityIds = new ArrayList<>();
 			if (CollectionUtils.isNotEmpty(datas)) {
-				//拉姆达表达式来把所有的id存到集合里，删除对应的运行时的节点信息和历史的节点信息
-				datas.forEach(ai -> runActivityIds.add(ai.getId()));
-				//runFlowableActinstDao.deleteRunActinstsByIds(runActivityIds);
-				//hisFlowableActinstDao.deleteHisActinstsByIds(runActivityIds);
+				//删除对应的运行时的节点信息和历史的节点信息
+				for(ActivityInstance ac:datas){
+					runtimeService.createNativeExecutionQuery().sql("delete from act_ru_actinst where ID_=#{disActivityId}")
+						.parameter("disActivityId", ac.getId());
+					historyService.createNativeHistoricActivityInstanceQuery().sql("delete from act_hi_actinst where ID_=#{disActivityId}")
+						.parameter("disActivityId", ac.getId());
+				}
 			}
 		}
 	}
