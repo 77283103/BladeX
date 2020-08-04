@@ -116,5 +116,5 @@ public interface FlowEngineConstant {
 	String EXECUTION_ID = "executionId";
 	String FILE_EXTENSION_BAR = ".bar";
 	String FILE_EXTENSION_ZIP = ".zip";
-
+	String CATEGORY_PREFIX = "flow_";
 }

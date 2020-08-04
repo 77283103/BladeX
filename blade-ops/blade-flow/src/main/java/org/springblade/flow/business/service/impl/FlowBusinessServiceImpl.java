@@ -355,8 +355,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 		HistoricProcessInstanceQuery historyQuery = historyService.createHistoricProcessInstanceQuery().startedBy(taskUser).orderByProcessInstanceStartTime().desc();
 
-		if (bladeFlow.getCategory() != null) {
-			historyQuery.processDefinitionCategory(bladeFlow.getCategory());
+		if (Func.isNoneBlank(bladeFlow.getCategory())) {
+			historyQuery.processDefinitionCategory(FlowEngineConstant.CATEGORY_PREFIX + bladeFlow.getCategory());
 		}
 		if (bladeFlow.getBeginDate() != null) {
 			historyQuery.startedAfter(bladeFlow.getBeginDate());
@@ -425,7 +425,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			.includeProcessVariables().orderByHistoricTaskInstanceEndTime().desc();
 
 		if (bladeFlow.getCategory() != null) {
-			doneQuery.processCategoryIn(Func.toStrList(bladeFlow.getCategory()));
+			doneQuery.processCategoryIn(Func.toStrListAddPrefix(FlowEngineConstant.CATEGORY_PREFIX, bladeFlow.getCategory()));
 		}
 		if (bladeFlow.getBeginDate() != null) {
 			doneQuery.taskCompletedAfter(bladeFlow.getBeginDate());
