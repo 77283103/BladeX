@@ -23,16 +23,23 @@ package org.springblade.flow.engine.constant;
  */
 public interface FlowEngineConstant {
 
+	String GET_USER_TYPE = "getUserType";
 
 	String NAME_SPACE = "http://flowable.org/bpmn/barcode";
 
 	String FLOW_POST = "post";
 
-	String FLOW_ROLE = "role";
-
 	String FLOW_USER = "user";
 
+	String FLOW_RELATION_TYPE = "relationtype";
+
+	String FLOW_BENCHMARK = "benchmark";
+
 	String FLOW_DEPT = "dept";
+
+	String FLOW_TRUE = "${true}";
+
+	String FLOW_FALSE = "${false}";
 
 	String FLOWABLE_BASE_PACKAGES = "org.flowable.ui";
 

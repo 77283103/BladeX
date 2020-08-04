@@ -25,6 +25,7 @@ import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.SecureUtil;
+import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.utils.*;
 import org.springblade.system.cache.ParamCache;
@@ -49,6 +50,7 @@ import org.springblade.system.user.wrapper.UserWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -118,12 +120,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	/**
 	 * 更新人员身份信息
+	 *
 	 * @param user
 	 * @return
 	 */
 	private boolean submitUserDepart(UserDTO user) {
 		List<UserDepartDTO> userDepartList = user.getUserDepartList();
-		if(CollectionUtil.isNotEmpty(userDepartList)){
+		if (CollectionUtil.isNotEmpty(userDepartList)) {
 			userDepartService.delByUserId(user.getId());
 			List<UserDepartEntity> collect = userDepartList.stream().map(depart -> {
 				depart.setUserId(user.getId());
@@ -261,6 +264,21 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		List<User> userList = baseMapper.userPage(page, user, deptIdList, tenantId);
 		page.setRecords(userList);
 		return UserWrapper.build().userToSelectUserpageVO(page);
+	}
+
+	@Override
+	public List<User> userInfoByDeptIdAndPostId(String deptId, String postId) {
+		return baseMapper.findByDeptAndPost(deptId, postId);
+	}
+
+	@Override
+	public List<User> userInfoByUserIds(String userIds) {
+		return baseMapper.selectBatchIds(Arrays.asList(userIds.split(",")));
+	}
+
+	@Override
+	public List<User> userInfoByBenchMinister(String benchUserId) {
+		return baseMapper.findByBenchMinister(benchUserId);
 	}
 
 }
