@@ -47,7 +47,8 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="status" property="status"/>
-        <collection property="userDepartList" ofType="org.springblade.system.dto.UserDepartDTO" select="selectDepart" column="id">
+        <collection property="userDepartList" ofType="org.springblade.system.dto.UserDepartDTO" select="selectDepart"
+                    column="id">
             <result column="id" property="id"/>
             <result column="user_id" property="userId"/>
             <result column="role_id" property="roleId"/>
@@ -74,9 +75,9 @@
 
     <select id="userPage" resultMap="userResultMap">
         SELECT
-            a.*
+        a.*
         FROM
-            blade_user a
+        blade_user a
         where a.is_deleted = 0
         <if test="tenantId!=null and tenantId != ''">
             and a.tenant_id = #{tenantId}
@@ -135,25 +136,25 @@
 
     <select id="exportUser" resultType="org.springblade.system.user.excel.UserExcel">
         SELECT
-            a.id,
-            a.account,
-            a.real_name,
-            a.email,
-            a.phone,
-            a.landline,
-            a.birthday,
-            group_concat(b.role_id Separator ',') AS role_id,
-            group_concat(b.dept_id Separator ',') AS dept_id,
-            group_concat(b.post_id Separator ',') AS post_id,
-            group_concat(r.role_name Separator ',') AS role_name,
-            group_concat(d.dept_name Separator ',') AS dept_name,
-            group_concat(p.post_name Separator ',') AS post_name
+        a.id,
+        a.account,
+        a.real_name,
+        a.email,
+        a.phone,
+        a.landline,
+        a.birthday,
+        group_concat(b.role_id Separator ',') AS role_id,
+        group_concat(b.dept_id Separator ',') AS dept_id,
+        group_concat(b.post_id Separator ',') AS post_id,
+        group_concat(r.role_name Separator ',') AS role_name,
+        group_concat(d.dept_name Separator ',') AS dept_name,
+        group_concat(p.post_name Separator ',') AS post_name
         FROM
-            blade_user a
-            LEFT JOIN blade_user_depart b ON a.id = b.user_id
-            LEFT JOIN blade_role r ON b.role_id = r.id
-            LEFT JOIN blade_dept d ON b.dept_id = d.id
-            LEFT JOIN blade_post p ON b.post_id = p.id
+        blade_user a
+        LEFT JOIN blade_user_depart b ON a.id = b.user_id
+        LEFT JOIN blade_role r ON b.role_id = r.id
+        LEFT JOIN blade_dept d ON b.dept_id = d.id
+        LEFT JOIN blade_post p ON b.post_id = p.id
         where a.is_deleted = 0
         <if test="tenantId!=null and tenantId != ''">
             and a.tenant_id = #{tenantId}
@@ -189,6 +190,12 @@
             blade_user
         WHERE is_deleted = 0
         AND id = #{id}
+    </select>
+    <select id="findByDeptAndPost" resultType="org.springblade.system.user.entity.User">
+        SELECT * from blade_user WHERE is_deleted = 0
+    </select>
+    <select id="findByBenchMinister" resultType="org.springblade.system.user.entity.User">
+        SELECT * FROM blade_user WHERE is_deleted = 0
     </select>
 
 </mapper>
