@@ -23,6 +23,17 @@ package org.springblade.flow.engine.constant;
  */
 public interface FlowEngineConstant {
 
+
+	String NAME_SPACE = "http://flowable.org/bpmn/barcode";
+
+	String FLOW_POST = "post";
+
+	String FLOW_ROLE = "role";
+
+	String FLOW_USER = "user";
+
+	String FLOW_DEPT = "dept";
+
 	String FLOWABLE_BASE_PACKAGES = "org.flowable.ui";
 
 	String SUFFIX = ".bpmn20.xml";
