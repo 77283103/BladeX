@@ -68,6 +68,10 @@
             <artifactId>flowable-json-converter</artifactId>
             <version>${flowable.version}</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

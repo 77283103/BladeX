@@ -17,9 +17,9 @@ public class FlowUserResponse implements Serializable{
 	/**
 	 * 用户id
 	 */
-	private String userId;
+	private String id;
 	/**
 	 * 用户姓名
 	 */
-	private String userName;
+	private String name;
 }
