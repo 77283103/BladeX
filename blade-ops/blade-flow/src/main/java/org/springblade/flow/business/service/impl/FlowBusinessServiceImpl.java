@@ -90,9 +90,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	protected ManagementService managementService;
 	protected PermissionServiceImpl permissionService;
 	private IUserClient userClient;
-	@Autowired
 	private IRunFlowableActinstDaoMapper runFlowableActinstDao;
-	@Autowired
 	private IHisFlowableActinstDaoMapper hisFlowableActinstDao;
 
 	/**

@@ -49,17 +49,11 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
             // 版本
             model.setVersion(model.getVersion() + 1);
             repositoryService.saveModel(model);
-//            String bpmnXml = BpmnConverterUtil.converterXmlToJson(values.getFirst("bpmn_xml")).toString();
             String bpmnXml = values.getFirst("bpmn_xml");
-            //============================================================
             //直接保持xml文件
             repositoryService.addModelEditorSource(model.getId(), bpmnXml.getBytes("utf-8"));
-            //============================================================
-            repositoryService.addModelEditorSourceExtra(model.getId(),
-                    values.getFirst("svg_xml").getBytes("utf-8"));
         } catch (Exception e) {
             LOG.error("Error saving model", e);
-          //  throw new ActivitiException("Error saving model", e);
         }
     }
 
