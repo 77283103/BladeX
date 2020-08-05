@@ -134,13 +134,13 @@ public class WorkController {
 	/**
 	 * 完成任务
 	 *
-	 * @param flow 请假信息
+	 * @param flowList
 	 */
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "完成任务", notes = "传入流程信息")
-	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponse> flow) {
-		return R.status(flowBusinessService.completeTask(flow));
+	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponse> flowList) {
+		return R.status(flowBusinessService.completeTask(flowList));
 	}
 
 	/**

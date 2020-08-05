@@ -258,6 +258,10 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 */
 	private List<FlowNodeResponse> createFlowNodeResponseGateWay(FlowNode targetNode, TaskEntity taskEntity, String taskId) {
 		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
+		// 根据网关进出线条数判断网关是开始还是结束，条数为1则表示改网关为合并网关
+//		if(targetNode.getOutgoingFlows().size() == 1){
+//
+//		}
 		// 并行网关，所有分支必须执行，无法自由选择
 		if (targetNode instanceof ParallelGateway) {
 			// 遍历并行网关的每一条出线获取每一个节点
@@ -358,7 +362,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (getUserType.equals(FlowDesignUserType.USERS)) {
 			// 获取自定义人员属性，格式为：usera,userb,userc...
 //			String flowUser = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_USER);
-			String flowUser = "1123598821738675204,1123598821738675203,1277149137980149761";
+			String flowUser = "1123598821738675204,1123598821738675203,1277149137980149761,1277149681025077250,1277150805048217601,1285030425345622018,1285042582066003970,1285045699214016514";
 			if (null == flowUser) {
 				throw new FlowableException("固定人员流程设计方式未获取到自定义人员信息");
 			}
