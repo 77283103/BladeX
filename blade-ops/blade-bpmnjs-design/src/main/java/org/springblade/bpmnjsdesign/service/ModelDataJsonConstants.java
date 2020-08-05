@@ -1,4 +1,4 @@
-package org.springblade.bpmnjsDesign.service;
+package org.springblade.bpmnjsdesign.service;
 
 /**
  * TODO
