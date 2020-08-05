@@ -11,6 +11,7 @@ import org.springblade.common.constant.CommonConstant;
 
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +42,7 @@ public class ContractAccordingController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入according")
+	@PreAuth("hasPermission('contract:according:detail')")
 	public R<ContractAccordingVO> detail(ContractAccordingEntity according) {
 		ContractAccordingEntity detail = accordingService.getOne(Condition.getQueryWrapper(according));
 		return R.data(ContractAccordingWrapper.build().entityVO(detail));
@@ -52,6 +54,7 @@ public class ContractAccordingController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入according")
+	@PreAuth("hasPermission('contract:according:list')")
 	public R<IPage<ContractAccordingVO>> list(ContractAccordingEntity according, Query query) {
 		IPage<ContractAccordingEntity> pages = accordingService.pageList(Condition.getPage(query), according);
 		return R.data(ContractAccordingWrapper.build().pageVO(pages));
@@ -60,9 +63,10 @@ public class ContractAccordingController extends BladeController {
 	/**
 	 * 新增
 	 */
-	@PostMapping("/save")
+	@PostMapping("/add")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入according")
+	@PreAuth("hasPermission('contract:according:add')")
 	public R save(@Valid @RequestBody ContractAccordingEntity according) {
 		return R.status(accordingService.save(according));
 	}
@@ -73,6 +77,7 @@ public class ContractAccordingController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入according")
+	@PreAuth("hasPermission('contract:according:update')")
 	public R update(@Valid @RequestBody ContractAccordingEntity according) {
 		return R.status(accordingService.updateById(according));
 	}
@@ -83,6 +88,7 @@ public class ContractAccordingController extends BladeController {
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
+	@PreAuth("hasPermission('contract:according:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(accordingService.deleteLogic(Func.toLongList(ids)));
 	}
