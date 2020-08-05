@@ -71,10 +71,9 @@ public interface FlowBusinessService {
 	/**
 	 * 完成任务
 	 *
-	 * @param leave 请假信息
 	 * @return boolean
 	 */
-	boolean completeTask(BladeFlow leave);
+	boolean completeTask(List<FlowNodeResponse> flowNodeResponseList);
 
 	/**
 	 * 查询可以退回的节点
@@ -121,7 +120,6 @@ public interface FlowBusinessService {
 	/**
 	 * 首次点击提交时返回前台的信息，提示用户下一节点和办理人信息
 	 *
-	 * @param flow
 	 * @return void
 	 */
 	List<FlowNodeResponse> completeTempResult(String taskId);

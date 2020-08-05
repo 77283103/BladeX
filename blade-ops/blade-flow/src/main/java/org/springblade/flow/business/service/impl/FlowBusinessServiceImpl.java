@@ -91,20 +91,22 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	/**
 	 * 提交操作
 	 *
-	 * @param flow
+	 * @param flowNodeResponseList
 	 * @return
 	 */
 	@Override
-	public boolean completeTask(BladeFlow flow) {
+	public boolean completeTask(List<FlowNodeResponse> flowNodeResponseList) {
+		FlowNodeResponse flow = flowNodeResponseList.get(0);
 		String taskId = flow.getTaskId();
-		String processInstanceId = flow.getProcessInstanceId();
+		// 获取taskEntity对象
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+		String processInstanceId = taskEntity.getProcessInstanceId();
 		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
+		Map<String, Object> variables = Kv.create();
 		// 增加评论
 		if (StringUtil.isNoneBlank(processInstanceId, comment)) {
 			taskService.addComment(taskId, processInstanceId, comment);
 		}
-		// 获取taskEntity对象
-		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
 		// 当前节点id
 		String currActId = taskEntity.getTaskDefinitionKey();
 		// 流程定义id
@@ -113,19 +115,51 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		Process process = repositoryService.getBpmnModel(processDefinitionId).getMainProcess();
 		// 获取当前节点
 		FlowNode currentFlowElement = (FlowNode) process.getFlowElement(currActId, true);
+		// 获取下一节点，多出线的情况在首次提交时已经判断过了
 		FlowNode targetFlowElement = (FlowNode) currentFlowElement.getOutgoingFlows().get(0).getTargetFlowElement();
-		targetFlowElement.getOutgoingFlows().forEach(sequenceFlow -> {
-			sequenceFlow.setConditionExpression("${true}");
-		});
-		// 创建变量
-		Map<String, Object> variables = flow.getVariables();
-		if (variables == null) {
-			variables = Kv.create();
+		// 提交下一节点是UserTask
+		if (targetFlowElement instanceof UserTask) {
+			// 将下一审批人赋给全局变量
+			variables.put(targetFlowElement.getId(), TaskUtil.getTaskUser(flow.getUserResponseList().get(0).getId()));
+			// 完成任务
+			taskService.complete(taskId, variables);
+			return true;
 		}
-		variables.put(ProcessConstant.PASS_KEY, flow.isPass());
-		// 完成任务
-		taskService.complete(taskId, variables);
-		return true;
+		// 提交下一节点是排他或并行网关
+		if (targetFlowElement instanceof ExclusiveGateway || targetFlowElement instanceof ParallelGateway) {
+			// 根据前台返回的节点List和用户List给全局变量赋值
+			// 此处只要给参数循环赋值即可，无需关心执行单条或多条分支，flowable会自行判断，只要保证相应节点有任务处理人即可
+			flowNodeResponseList.forEach(flowNodeResponse -> {
+				variables.put(flowNodeResponse.getId(), flowNodeResponse.getUserResponseList().get(0).getId());
+			});
+			// 完成任务
+			taskService.complete(taskId, variables);
+			return true;
+		}
+		// 提交下一节点是包容网关
+		if (targetFlowElement instanceof InclusiveGateway) {
+			// 遍历每一条连线获取目标节点id
+			targetFlowElement.getOutgoingFlows().forEach(sequenceFlow -> {
+				String nodeId = sequenceFlow.getTargetFlowElement().getId();
+				// 用目标节点id作为条件过滤前台返回的List
+				List<FlowNodeResponse> result = flowNodeResponseList.stream()
+					.filter(flowNodeResponse -> flowNodeResponse.getId().equals(nodeId))
+					.collect(Collectors.toList());
+				// 如果结果不为空，表示需要提交给该节点，将该条连线的条件设置为true
+				if(null != result){
+					// 根据前台返回节点信息确定需要给哪个连线设置true
+					sequenceFlow.setConditionExpression(FlowEngineConstant.FLOW_TRUE);
+				}
+			});
+			// 设置任务处理人
+			flowNodeResponseList.forEach(flowNodeResponse -> {
+				variables.put(flowNodeResponse.getId(),flowNodeResponse.getUserResponseList().get(0).getId());
+			});
+			// 完成任务
+			taskService.complete(taskId, variables);
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -152,18 +186,19 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (outgoingFlows.size() == 1) {
 			// 获取并判断下一节点是结束节点EndEvent、用户节点UserTask、网关节点GateWay
 			FlowNode targetNode = (FlowNode) outgoingFlows.get(0).getTargetFlowElement();
-			// EndEvent只要提示节点信息即可
+			// EndEvent节点直接提交流程
 			if (targetNode instanceof EndEvent) {
+				taskService.complete(taskId);
 				return createFlowNodeResponseEnd(targetNode);
 			}
 			// 提交下一节点是UserTask
 			if (targetNode instanceof UserTask) {
-				return createFlowNodeResponseUserTask(targetNode,taskId);
+				return createFlowNodeResponseUserTask(targetNode, taskId);
 			}
 			// 提交下一节点是GateWay
 			if (targetNode instanceof Gateway) {
 				// 获取流程全局变量
-				return createFlowNodeResponseGateWay(targetNode, taskEntity,taskId);
+				return createFlowNodeResponseGateWay(targetNode, taskEntity, taskId);
 			}
 			// 都没有满足以上的话，可能是其他类型的节点，流程目前暂不支持
 			throw new FlowableException("无法识别下一节点，下一节点是EndEvent、UserTask、GateWay之外的其他节点");
@@ -196,7 +231,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @param targetNode 节点对象
 	 * @return
 	 */
-	private List<FlowNodeResponse> createFlowNodeResponseUserTask(FlowNode targetNode,String taskId) {
+	private List<FlowNodeResponse> createFlowNodeResponseUserTask(FlowNode targetNode, String taskId) {
 		// 获取节点自定义属性
 		List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
@@ -216,14 +251,14 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @param targetNode 节点对象
 	 * @return
 	 */
-	private List<FlowNodeResponse> createFlowNodeResponseGateWay(FlowNode targetNode, TaskEntity taskEntity,String taskId) {
+	private List<FlowNodeResponse> createFlowNodeResponseGateWay(FlowNode targetNode, TaskEntity taskEntity, String taskId) {
 		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
 		// 并行网关，所有分支必须执行，无法自由选择
 		if (targetNode instanceof ParallelGateway) {
 			// 遍历并行网关的每一条出线获取每一个节点
 			targetNode.getOutgoingFlows().forEach(sequenceFlow -> {
 				FlowNode targetFlowNode = (FlowNode) sequenceFlow.getTargetFlowElement();
-				// 获取节点自定义属性
+				// 获取节点自定义属性并返回人员List
 				List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 				FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 					.id(targetFlowNode.getId())
@@ -238,7 +273,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		// 排他网关，所有分支中满足条件的第一个分支会执行，其余均不执行
 		// 注：此处的判断只是为了前台展示下一节点和处理人，流程执行时flowable会根据全局变量自行判断连线的走向
 		if (targetNode instanceof ExclusiveGateway) {
-			Map<String,Object> variables = taskEntity.getVariables();
+			Map<String, Object> variables = taskEntity.getVariables();
 			if (null == variables) {
 				throw new FlowableException("未获取到流程参数");
 			}
@@ -301,6 +336,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	/**
 	 * 根据流程自定义属性查询候选人列表
+	 *
 	 * @param targetNode
 	 * @param taskId
 	 * @return
@@ -323,7 +359,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			}
 			userClient.userInfoByUserIds(flowUser).forEach(user -> {
 				FlowUserResponse flowUserResponse = FlowUserResponse.builder()
-					.id(user.getAccount())
+					.id(user.getId().toString())
 					.name(user.getRealName())
 					.build();
 				flowUserResponseList.add(flowUserResponse);
@@ -343,7 +379,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			}
 			userClient.userInfoByDeptAndPost(flowDept, flowPost).forEach(user -> {
 				FlowUserResponse flowUserResponse = FlowUserResponse.builder()
-					.id(user.getAccount())
+					.id(user.getId().toString())
 					.name(user.getRealName())
 					.build();
 				flowUserResponseList.add(flowUserResponse);
@@ -367,7 +403,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			if (flowBenchMark.equals(FlowProcessBenchMark.PROCESS_CREATER)) {
 				// 开始节点的流程启动者等于当前登录人
 				if (targetNode instanceof StartEvent) {
-					benchUser = AuthUtil.getUser().getAccount();
+					benchUser = AuthUtil.getUser().getUserId().toString();
 				}
 				// 获取taskEntity对象
 				TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -382,13 +418,13 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			}
 			// 当前审批人为基准人
 			if (flowBenchMark.equals(FlowProcessBenchMark.PROCESS_CURRENT_USER)) {
-				benchUser = AuthUtil.getUser().getAccount();
+				benchUser = AuthUtil.getUser().getUserId().toString();
 			}
 			switch (flowRelationType) {
 				case FlowRelationType.BENCHMARK_MINISTER:
 					userClient.userInfoByBenchMinister(benchUser).forEach(user -> {
 						FlowUserResponse flowUserResponse = FlowUserResponse.builder()
-							.id(user.getAccount())
+							.id(user.getId().toString())
 							.name(user.getRealName())
 							.build();
 						flowUserResponseList.add(flowUserResponse);
@@ -982,7 +1018,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				.parameter("endTime", activityInstance.getEndTime()).list();
 			if (CollectionUtils.isNotEmpty(datas)) {
 				//删除对应的运行时的节点信息和历史的节点信息
-				for(ActivityInstance ac:datas){
+				for (ActivityInstance ac : datas) {
 					runtimeService.createNativeExecutionQuery().sql("delete from act_ru_actinst where ID_=#{disActivityId}")
 						.parameter("disActivityId", ac.getId());
 					historyService.createNativeHistoricActivityInstanceQuery().sql("delete from act_hi_actinst where ID_=#{disActivityId}")
@@ -992,5 +1028,3 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		}
 	}
 }
-
-/******************************************************************************************************************/
