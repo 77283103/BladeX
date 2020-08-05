@@ -139,8 +139,9 @@ public class WorkController {
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "完成任务", notes = "传入流程信息")
-	public R completeTask(@ApiParam("任务信息") @RequestBody BladeFlow flow) {
-		return R.status(flowBusinessService.completeTask(flow));
+	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponse> flowList) {
+		System.out.println(flowList);
+		return R.success("成功");
 	}
 
 	/**
