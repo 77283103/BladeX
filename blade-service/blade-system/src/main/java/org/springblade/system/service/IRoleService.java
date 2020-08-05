@@ -19,10 +19,12 @@ package org.springblade.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.entity.Role;
+import org.springblade.system.vo.DictVO;
 import org.springblade.system.vo.RoleVO;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 服务类
@@ -98,5 +100,10 @@ public interface IRoleService extends BaseService<Role> {
 	 * @return
 	 */
 	boolean removeByIdsAndSon(List<Long> idsList);
+
+	/**
+	 * 获取蓝夹杂列表
+	 */
+	List<RoleVO> lazyList(Long parentId, Map<String, Object> param);
 
 }

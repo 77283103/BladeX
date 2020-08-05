@@ -41,7 +41,7 @@
         <if test="according.name != null and according.name != ''">
             AND name like concat('%',#{according.name},'%')
         </if>
-        <if test="test.status != null and test.status != ''">
+        <if test="according.status != null and according.status != ''">
             AND status = #{according.status}
         </if>
     </select>

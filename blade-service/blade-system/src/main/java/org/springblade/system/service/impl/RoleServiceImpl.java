@@ -30,6 +30,7 @@ import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.dto.RoleDTO;
 import org.springblade.system.entity.Role;
 import org.springblade.system.entity.RoleMenu;
 import org.springblade.system.entity.RoleScope;
@@ -37,6 +38,7 @@ import org.springblade.system.mapper.RoleMapper;
 import org.springblade.system.service.IRoleMenuService;
 import org.springblade.system.service.IRoleScopeService;
 import org.springblade.system.service.IRoleService;
+import org.springblade.system.vo.DictVO;
 import org.springblade.system.vo.RoleVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -182,5 +184,11 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
 		}
 		return idsSet;
 	}
-
+	@Override
+	public List<RoleVO> lazyList(Long parentId, Map<String, Object> param) {
+		if (Func.isEmpty(Func.toStr(param.get("parentId")))) {
+			parentId = null;
+		}
+		return baseMapper.lazyList(parentId, param);
+	}
 }

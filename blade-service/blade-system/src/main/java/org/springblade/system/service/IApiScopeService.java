@@ -16,6 +16,8 @@
  */
 package org.springblade.system.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.entity.ApiScope;
 
@@ -26,5 +28,13 @@ import org.springblade.system.entity.ApiScope;
  * @since 2019-06-23
  */
 public interface IApiScopeService extends BaseService<ApiScope> {
+
+	/**
+	 * 分页查询
+	 * @param page
+	 * @param apiScope
+	 * @return
+	 */
+	IPage<ApiScope> pageList(IPage<Object> page, ApiScope apiScope);
 
 }

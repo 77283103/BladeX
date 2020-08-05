@@ -32,8 +32,10 @@ import org.springblade.core.tool.node.INode;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Role;
 import org.springblade.system.service.IRoleService;
+import org.springblade.system.vo.DictVO;
 import org.springblade.system.vo.GrantVO;
 import org.springblade.system.vo.RoleVO;
+import org.springblade.system.wrapper.DictWrapper;
 import org.springblade.system.wrapper.RoleWrapper;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -70,21 +72,22 @@ public class RoleController extends BladeController {
 	}
 
 	/**
-	 * 列表
+	 * 懒加载列表
+	 *
+	 * @return
 	 */
 	@GetMapping("/list")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "roleName", value = "参数名称", paramType = "query", dataType = "string"),
 		@ApiImplicitParam(name = "roleAlias", value = "角色别名", paramType = "query", dataType = "string")
 	})
-	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "列表", notes = "传入role")
-	public R<List<INode>> list(@ApiIgnore @RequestParam Map<String, Object> role, BladeUser bladeUser) {
-		QueryWrapper<Role> queryWrapper = Condition.getQueryWrapper(role, Role.class);
-		List<Role> list = roleService.list((!bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID)) ? queryWrapper.lambda().eq(Role::getTenantId, bladeUser.getTenantId()) : queryWrapper);
-		return R.data(RoleWrapper.build().listNodeVO(list));
+	@PreAuth(RoleConstant.HAS_ROLE_ADMINISTRATOR)
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "懒加载列表", notes = "传入role")
+	public R<List<RoleVO>> lazyList(Long parentId, @ApiIgnore @RequestParam Map<String, Object> role) {
+		List<RoleVO> list = roleService.lazyList(parentId,role );
+		return R.data(RoleWrapper.build().listNodeLazyVO(list));
 	}
-
 	/**
 	 * 获取角色树形结构
 	 */

@@ -51,6 +51,12 @@ public class DictVO extends Dict implements INode {
 	private Long parentId;
 
 	/**
+	 * 是否已封存
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	private Integer isSealed;
+
+	/**
 	 * 子孙节点
 	 */
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)

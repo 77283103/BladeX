@@ -133,9 +133,9 @@ public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> impl
 			QueryWrapper<DictBiz> queryWrapper = new QueryWrapper<DictBiz>();
 			queryWrapper.eq("parent_id", id);
 			List<DictBiz> DictList = this.baseMapper.selectList(queryWrapper);
+			result.add(id);
 			for (DictBiz dict : DictList) {
 				temp.add(dict.getId());
-				result.add(id);
 				result.add(dict.getId());
 				if (temp.size() != 0 && temp != null) {
 					selectChild(temp);
@@ -155,6 +155,7 @@ public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> impl
 	public Boolean deleteIds(String ids){
 		List<Long> idList =Func.toLongList(ids);
 		//递归查询
+		result =new ArrayList<>();
 		this.selectChild(idList);
 		return removeByIds(result);
 

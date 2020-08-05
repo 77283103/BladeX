@@ -24,6 +24,7 @@ import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.entity.Role;
+import org.springblade.system.vo.DictVO;
 import org.springblade.system.vo.RoleVO;
 
 import java.util.List;
@@ -50,6 +51,12 @@ public class RoleWrapper extends BaseEntityWrapper<Role, RoleVO> {
 			Role parent = SysCache.getRole(role.getParentId());
 			roleVO.setParentName(parent.getRoleName());
 		}
+		// 是否具有子节点 在此处判断
+		if (null != roleVO.getChildren() && roleVO.getChildren().size()>0){
+			roleVO.setHasChildren(true);
+		} else {
+			roleVO.setHasChildren(false);
+		}
 		return roleVO;
 	}
 
@@ -58,5 +65,7 @@ public class RoleWrapper extends BaseEntityWrapper<Role, RoleVO> {
 		List<INode> collect = list.stream().map(this::entityVO).collect(Collectors.toList());
 		return ForestNodeMerger.merge(collect);
 	}
-
+	public List<RoleVO> listNodeLazyVO(List<RoleVO> list) {
+		return ForestNodeMerger.merge(list);
+	}
 }

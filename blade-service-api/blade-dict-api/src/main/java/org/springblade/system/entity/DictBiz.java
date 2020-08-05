@@ -94,6 +94,7 @@ public class DictBiz implements Serializable {
 	/**
 	 * 是否已封存
 	 */
+	@JsonSerialize(using = ToStringSerializer.class)
 	@ApiModelProperty(value = "是否已封存")
 	private Integer isSealed;
 

@@ -33,7 +33,7 @@ import org.springframework.stereotype.Service;
 public class DataScopeServiceImpl extends BaseServiceImpl<DataScopeMapper, DataScope> implements IDataScopeService {
 
 	@Override
-	public IPage<DataScope> pageList(IPage<DataScope> page, DataScope DataScope) {
-		return baseMapper.pageList(page, DataScope);
+	public IPage<DataScope> pageList(IPage<DataScope> page, DataScope dataScope) {
+		return baseMapper.pageList(page, dataScope);
 	}
 }
