@@ -32,8 +32,6 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
     /**
      * 保存模型
      */
-//    public void saveModelXml(@PathVariable String modelId,
-//                             @RequestBody MultiValueMap<String, String> values) {
     public void saveModelXml(String modelId,MultiValueMap<String, String> values) {
         ByteArrayOutputStream outStream = null;
         try {
@@ -50,13 +48,17 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
             model.setVersion(model.getVersion() + 1);
             repositoryService.saveModel(model);
             String bpmnXml = values.getFirst("bpmn_xml");
+//            System.out.println(bpmnXml);
+			bpmnXml = bpmnXml.replaceAll("&lt;","<");
+			bpmnXml = bpmnXml.replaceAll("&gt;",">");
+//			System.out.println(bpmnXml);
             //直接保持xml文件
             repositoryService.addModelEditorSource(model.getId(), bpmnXml.getBytes("utf-8"));
         } catch (Exception e) {
             LOG.error("Error saving model", e);
         }
     }
-
+	//本地测试用
     public void saveModelXml2(String modelId,String values) {
         try {
             Model model = repositoryService.getModel(modelId);
@@ -70,12 +72,9 @@ public class ModelSaveRestResource implements ModelDataJsonConstants {
             // 版本
             model.setVersion(model.getVersion() + 1);
             repositoryService.saveModel(model);
-//            String bpmnXml = BpmnConverterUtil.converterXmlToJson(values.getFirst("bpmn_xml")).toString();
             String bpmnXml = values;
-            //============================================================
             //直接保持xml文件
             repositoryService.addModelEditorSource(model.getId(), bpmnXml.getBytes("utf-8"));
-            //============================================================
         } catch (Exception e) {
             LOG.error("Error saving model", e);
           //  throw new ActivitiException("Error saving model", e);

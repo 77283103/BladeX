@@ -3,6 +3,8 @@ package org.springblade.bpmnjsdesign.service;
 
 import org.flowable.engine.repository.Model;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -19,4 +21,6 @@ public interface ProcessDesignService {
     void deleteModel(String modelId);
 
     String deployModel(String modelId) throws Exception;
+
+	String deployModel2(String modelId, HttpServletRequest request, HttpServletResponse response) throws Exception;
 }
