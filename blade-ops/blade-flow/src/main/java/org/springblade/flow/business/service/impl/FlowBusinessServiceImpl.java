@@ -837,20 +837,47 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		// 任务id
 		String taskId = flow.getTaskId();
 		// 委托人员id
-		String delegater = TaskUtil.getTaskUser("1285030425345622018");
+		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
 		// 当前人员id
 		BladeUser user = AuthUtil.getUser();
 		String userId = String.valueOf(user.getUserId());
 		// 是否可以委派任务，如果不可以的话直接被异常处理拦截
-		Task task = permissionService.validateDelegatePermissionOnTask(taskId, userId, delegater);
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		//Task task = permissionService.validateDelegatePermissionOnTask(taskId, userId, assignee);
 		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.WP, flow.getComment());
-		taskService.delegateTask(task.getId(), delegater);
+		taskService.delegateTask(task.getId(), assignee);
 	}
 
+	/**
+	 * 委派返回
+	 * @param flow
+	 * @return
+	 */
 	@Override
-	public R takeItBackTask(BladeFlow flow) {
-		flow.setDistFlowElementId("usertask4");
-		R<String> returnVo = null;
+	@Transactional(rollbackFor = Exception.class)
+	public boolean delegateBack(BladeFlow flow) {
+		// 任务id
+		String taskId = flow.getTaskId();
+		// 委托人员id
+		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
+		// 当前人员id
+		BladeUser user = AuthUtil.getUser();
+		String userId = String.valueOf(user.getUserId());
+		// 是否可以委派任务，如果不可以的话直接被异常处理拦截
+		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
+		//Task task = permissionService.validateDelegatePermissionOnTask(taskId, userId, assignee);
+		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.WP, flow.getComment());
+		taskService.complete(task.getId());
+		return true;
+	}
+
+
+	/**
+	 * 执行退回功能
+	 *
+	 */
+	@Override
+	public boolean takeItBackTask(BladeFlow flow) {
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
 		//1.把当前的节点设置为空
 		if (taskEntity != null) {
@@ -899,14 +926,17 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			executions.forEach(execution -> executionIds.add(execution.getId()));
 			runtimeService.createChangeActivityStateBuilder().moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId()).changeState();
 			//}
-			returnVo.isSuccess();
-			returnVo.setMsg("执行成功");
+			return true;
 		} else {
-			returnVo.setMsg("执行失败");
+			return false;
 		}
-		return returnVo;
 	}
 
+
+	/**
+	 * 查询可退回的节点信息
+	 *
+	 */
 	@Override
 	public List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow) {
 
@@ -1010,8 +1040,12 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		return datas;
 	}
 
+	/**
+	 * 执行拿回
+	 *
+	 */
 	@Override
-	public void takeBackTask(BladeFlow flow) {
+	public boolean takeBackTask(BladeFlow flow) {
 		//拿回的条件是下一节点不能审批，需要查询出发出的任务，下一节点是否审批了
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
 		String sqlTask = "select t.* from act_ru_actinst t where t.ACT_TYPE_ = 'userTask' " +
@@ -1029,6 +1063,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			.list();
 		if (activitys.size() > 0) {
 			System.out.println("下一节点已审批，不可拿回");
+			return false;
 		} else {
 			String sqlPend = "select t.* from act_ru_actinst t where " +
 				"t.PROC_INST_ID_=#{processInstanceId} and t.END_TIME_ is null  ";
@@ -1048,6 +1083,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			executions.forEach(execution -> executionIds.add(execution.getId()));
 			runtimeService.createChangeActivityStateBuilder().moveExecutionsToSingleActivityId(executionIds, activity.get(0).getActivityId()).changeState();
 			System.out.println("拿回成功");
+			return true;
 		}
 
 	}
