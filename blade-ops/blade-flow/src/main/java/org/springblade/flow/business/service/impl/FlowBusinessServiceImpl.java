@@ -907,7 +907,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	}
 
 	@Override
-	public void takeItBackTaskLook(BladeFlow flow) {
+	public List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow) {
 
 		//runtimeService.createNativeExecutionQuery().sql("delete from act_ru_actinst where ID_='785faac9-d629-11ea-b2f1-9a541bc2bae1' ");
 		//runtimeService.createActivityInstanceQuery().sql("delete from act_ru_actinst where ID_='785faac9-d629-11ea-b2f1-9a541bc2bae1' ");
@@ -1009,6 +1009,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 		//排序
 		datas.sort(Comparator.comparing(FlowNodeVo::getEndTime));
+		return datas;
 	}
 
 	@Override

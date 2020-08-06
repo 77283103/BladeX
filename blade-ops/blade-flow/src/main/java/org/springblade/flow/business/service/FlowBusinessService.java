@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
 import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.TaskRequest;
@@ -134,7 +135,7 @@ public interface FlowBusinessService {
 
 	R takeItBackTask(BladeFlow flow);
 
-	void takeItBackTaskLook(BladeFlow flow);
+	List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow);
 
 	void takeBackTask(BladeFlow flow);
 }
