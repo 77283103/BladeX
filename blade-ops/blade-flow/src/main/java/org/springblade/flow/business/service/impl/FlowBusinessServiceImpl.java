@@ -136,7 +136,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			// 根据前台返回的节点List和用户List给全局变量赋值
 			// 此处只要给参数循环赋值即可，无需关心执行单条或多条分支，flowable会自行判断，只要保证相应节点有任务处理人即可
 			flowNodeResponseReceiveList.forEach(flowNodeResponseReceive -> {
-				variables.put(flowNodeResponseReceive.getId(), TaskUtil.getTaskUser(flowNodeResponseReceive.getUserId()));
+				System.out.println(flowNodeResponseReceive.getUserResponseList().get(0).getId());
+				variables.put(flowNodeResponseReceive.getId(), TaskUtil.getTaskUser(flowNodeResponseReceive.getUserResponseList().get(0).getId()));
 			});
 			// 完成任务
 			taskService.complete(taskId, variables);
@@ -285,7 +286,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		// 排他网关，所有分支中满足条件的第一个分支会执行，其余均不执行
 		// 注：此处的判断只是为了前台展示下一节点和处理人，流程执行时flowable会根据全局变量自行判断连线的走向
 		if (targetNode instanceof ExclusiveGateway) {
-			Map<String, Object> variables = taskEntity.getVariables();
+			Map<String, Object> variables = taskService.getVariables(taskId);
 			if (null == variables) {
 				throw new FlowableException("未获取到流程参数");
 			}
