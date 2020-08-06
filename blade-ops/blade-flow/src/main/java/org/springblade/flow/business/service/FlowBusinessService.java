@@ -21,6 +21,7 @@ import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.TaskRequest;
 
 import java.util.List;
@@ -73,7 +74,7 @@ public interface FlowBusinessService {
 	 *
 	 * @return boolean
 	 */
-	boolean completeTask(List<FlowNodeResponse> flowNodeResponseList);
+	boolean completeTask(List<FlowNodeResponseReceive> flowNodeResponseList);
 
 	/**
 	 * 查询可以退回的节点

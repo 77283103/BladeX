@@ -62,6 +62,7 @@ import org.springblade.flow.engine.constant.FlowRelationType;
 import org.springblade.flow.engine.utils.FlowCache;
 import org.springblade.flow.engine.utils.FlowableUtils;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
 import org.springblade.system.user.feign.IUserClient;
@@ -96,12 +97,12 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	/**
 	 * 提交操作
 	 *
-	 * @param flowNodeResponseList
+	 * @param flowNodeResponseReceiveList
 	 * @return
 	 */
 	@Override
-	public boolean completeTask(List<FlowNodeResponse> flowNodeResponseList) {
-		FlowNodeResponse flow = flowNodeResponseList.get(0);
+	public boolean completeTask(List<FlowNodeResponseReceive> flowNodeResponseReceiveList) {
+		FlowNodeResponseReceive flow = flowNodeResponseReceiveList.get(0);
 		String taskId = flow.getTaskId();
 		// 获取taskEntity对象
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -134,8 +135,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (targetFlowElement instanceof ExclusiveGateway || targetFlowElement instanceof ParallelGateway) {
 			// 根据前台返回的节点List和用户List给全局变量赋值
 			// 此处只要给参数循环赋值即可，无需关心执行单条或多条分支，flowable会自行判断，只要保证相应节点有任务处理人即可
-			flowNodeResponseList.forEach(flowNodeResponse -> {
-				variables.put(flowNodeResponse.getId(), flowNodeResponse.getUserResponseList().get(0).getId());
+			flowNodeResponseReceiveList.forEach(flowNodeResponseReceive -> {
+				variables.put(flowNodeResponseReceive.getId(), TaskUtil.getTaskUser(flowNodeResponseReceive.getUserId()));
 			});
 			// 完成任务
 			taskService.complete(taskId, variables);
@@ -147,8 +148,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			targetFlowElement.getOutgoingFlows().forEach(sequenceFlow -> {
 				String nodeId = sequenceFlow.getTargetFlowElement().getId();
 				// 用目标节点id作为条件过滤前台返回的List
-				List<FlowNodeResponse> result = flowNodeResponseList.stream()
-					.filter(flowNodeResponse -> flowNodeResponse.getId().equals(nodeId))
+				List<FlowNodeResponseReceive> result = flowNodeResponseReceiveList.stream()
+					.filter(flowNodeResponseReceive -> flowNodeResponseReceive.getId().equals(nodeId))
 					.collect(Collectors.toList());
 				// 如果结果不为空，表示需要提交给该节点，将该条连线的条件设置为true
 				if(null != result){
@@ -157,8 +158,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				}
 			});
 			// 设置任务处理人
-			flowNodeResponseList.forEach(flowNodeResponse -> {
-				variables.put(flowNodeResponse.getId(),flowNodeResponse.getUserResponseList().get(0).getId());
+			flowNodeResponseReceiveList.forEach(flowNodeResponseReceive -> {
+				variables.put(flowNodeResponseReceive.getId(),TaskUtil.getTaskUser(flowNodeResponseReceive.getUserId()));
 			});
 			// 完成任务
 			taskService.complete(taskId, variables);
@@ -241,6 +242,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 		List<FlowNodeResponse> flowNodeResponseList = new ArrayList<>();
 		FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
+			.taskId(taskId)
 			.id(targetNode.getId())
 			.name(targetNode.getName())
 			.end(false)
@@ -270,6 +272,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				// 获取节点自定义属性并返回人员List
 				List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 				FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
+					.taskId(taskId)
 					.id(targetFlowNode.getId())
 					.name(targetFlowNode.getName())
 					.end(false)
@@ -310,6 +313,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 						List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 						FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 							.end(false)
+							.taskId(taskId)
 							.id(flowNodeExclusive.getId())
 							.name(flowNodeExclusive.getName())
 							.userResponseList(candidateUserList)
@@ -331,6 +335,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
 				FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 					.end(false)
+					.taskId(taskId)
 					.enableChooseNode(true)
 					.id(targetNodeInclusive.getId())
 					.name(targetNodeInclusive.getName())

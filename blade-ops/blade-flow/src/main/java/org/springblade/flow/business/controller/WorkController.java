@@ -33,6 +33,7 @@ import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.TaskRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -139,7 +140,7 @@ public class WorkController {
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "完成任务", notes = "传入流程信息")
-	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponse> flowList) {
+	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponseReceive> flowList) {
 		return R.status(flowBusinessService.completeTask(flowList));
 	}
 
