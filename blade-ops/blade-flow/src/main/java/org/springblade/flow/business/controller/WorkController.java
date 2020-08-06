@@ -34,6 +34,7 @@ import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.TaskRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -140,7 +141,7 @@ public class WorkController {
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "完成任务", notes = "传入流程信息")
-	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponse> flowList) {
+	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponseReceive> flowList) {
 		return R.status(flowBusinessService.completeTask(flowList));
 	}
 
@@ -196,12 +197,21 @@ public class WorkController {
 	/**
 	 * 委派任务
 	 */
-	@PutMapping(value = "delegate-task")
+	@PostMapping(value = "delegate-task")
 	@ApiOperationSupport(order = 12)
 	@ApiOperation(value = "委派操作", notes = "传入流程信息")
 	public R delegate(@RequestBody BladeFlow flow) {
 		flowBusinessService.delegateTask(flow);
 		return R.status(true);
+	}
+	/**
+	 * 委派返回
+	 */
+	@PostMapping(value = "delegate-bask")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "委派操作", notes = "传入流程信息")
+	public R delegateBack(@RequestBody BladeFlow flow) {
+		return R.status(flowBusinessService.delegateBack(flow));
 	}
 	/**
 	 * 发起人终止流程
@@ -232,8 +242,7 @@ public class WorkController {
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "退回操作", notes = "传入流程信息")
 	public R takeItBack(@RequestBody BladeFlow flow) {
-		flowBusinessService.takeItBackTask(flow);
-		return R.status(true);
+		return R.status(flowBusinessService.takeItBackTask(flow));
 	}
 
 
@@ -244,8 +253,8 @@ public class WorkController {
 	@ApiOperationSupport(order = 14)
 	@ApiOperation(value = "退回操作", notes = "传入流程信息")
 	public R takeBack(@RequestBody BladeFlow flow) {
-		flowBusinessService.takeBackTask(flow);
-		return R.success("拿回成功");
+
+		return R.status(flowBusinessService.takeBackTask(flow));
 	}
 
 

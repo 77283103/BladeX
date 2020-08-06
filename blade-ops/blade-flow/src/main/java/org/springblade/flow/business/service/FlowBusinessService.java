@@ -22,6 +22,7 @@ import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.TaskRequest;
 
 import java.util.List;
@@ -71,10 +72,10 @@ public interface FlowBusinessService {
 
 	/**
 	 * 完成任务
-	 *
+	 * @param flowNodeResponseList 接收前台返回的数据
 	 * @return boolean
 	 */
-	boolean completeTask(List<FlowNodeResponse> flowNodeResponseList);
+	boolean completeTask(List<FlowNodeResponseReceive> flowNodeResponseList);
 
 	/**
 	 * 查询可以退回的节点
@@ -106,7 +107,13 @@ public interface FlowBusinessService {
 	 * @return void
 	 */
 	void delegateTask(BladeFlow flow);
-
+	/**
+	 * 委托返回
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	boolean delegateBack(BladeFlow flow);
 	/**
 	 * 新增审批意见
 	 *
@@ -120,7 +127,7 @@ public interface FlowBusinessService {
 
 	/**
 	 * 首次点击提交时返回前台的信息，提示用户下一节点和办理人信息
-	 *
+	 * @param taskId
 	 * @return void
 	 */
 	List<FlowNodeResponse> completeTempResult(String taskId);
@@ -132,9 +139,27 @@ public interface FlowBusinessService {
 	void cancelTask(BladeFlow flow);
 
 
-	R takeItBackTask(BladeFlow flow);
+	/**
+	 * 退回任务
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	boolean takeItBackTask(BladeFlow flow);
 
+	/**
+	 * 查询可退回节点
+	 *
+	 * @param flow
+	 * @return void
+	 */
 	List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow);
 
-	void takeBackTask(BladeFlow flow);
+	/**
+	 * 拿回任务
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	boolean takeBackTask(BladeFlow flow);
 }
