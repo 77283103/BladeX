@@ -60,7 +60,6 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 			// 启动流程
 			Kv variables = Kv.create()
 				.set(ProcessConstant.TASK_VARIABLE_CREATE_USER, SecureUtil.getUserName())
-				.set("taskUser", TaskUtil.getTaskUser(leave.getTaskUser()))
 				.set("days", DateUtil.between(leave.getStartTime(), leave.getEndTime()).toDays());
 			R<BladeFlow> result = flowClient.startProcessInstanceById(leave.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(leave.getId())), variables);
 			if (result.isSuccess()) {

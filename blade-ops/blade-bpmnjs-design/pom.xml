@@ -31,7 +31,7 @@
         <!--<dependency>
             <groupId>org.springblade</groupId>
             <artifactId>blade-starter-transaction</artifactId>
-        </dependency>-->
+        </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
             <artifactId>blade-dict-api</artifactId>
@@ -41,12 +41,12 @@
             <groupId>org.springblade</groupId>
             <artifactId>blade-scope-api</artifactId>
             <version>${bladex.project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-core-auto</artifactId>
-            <scope>provided</scope>
-        </dependency>
+        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>org.springblade</groupId>-->
+<!--            <artifactId>blade-core-auto</artifactId>-->
+<!--            <scope>provided</scope>-->
+<!--        </dependency>-->
         <dependency>
             <groupId>org.springblade</groupId>
             <artifactId>blade-user-api</artifactId>

@@ -22,16 +22,22 @@ import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import lombok.extern.java.Log;
 import org.flowable.engine.TaskService;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.service.FlowBusinessService;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
+import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.TaskRequest;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 流程事务通用接口
@@ -117,15 +123,25 @@ public class WorkController {
 	}
 
 	/**
+	 * 点击完成按钮查询下一节点和办理人信息返回前台
+	 */
+	@GetMapping("complete-before")
+	@ApiOperationSupport(order = 13)
+	@ApiOperation(value = "提交前的处理", notes = "传入流程信息")
+	public R<List<FlowNodeResponse>> completeTempResult(@ApiParam("任务信息") String taskId){
+		return R.data(flowBusinessService.completeTempResult(taskId));
+	}
+
+	/**
 	 * 完成任务
 	 *
-	 * @param flow 请假信息
+	 * @param flowList
 	 */
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "完成任务", notes = "传入流程信息")
-	public R completeTask(@ApiParam("任务信息") @RequestBody BladeFlow flow) {
-		return R.status(flowBusinessService.completeTask(flow));
+	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponse> flowList) {
+		return R.status(flowBusinessService.completeTask(flowList));
 	}
 
 	/**
@@ -141,5 +157,97 @@ public class WorkController {
 		taskService.deleteTask(taskId, reason);
 		return R.success("删除任务成功");
 	}
+
+	/**
+	 * 查询可以退回的节点
+	 *
+	 * @param taskId 任务id
+	 */
+	@GetMapping("backSearch-task")
+	@ApiOperationSupport(order = 9)
+	@ApiOperation(value = "退回节点查询", notes = "传入流程信息")
+	public R<List<FlowNodeResponse>> searchBackNodes(@ApiParam("任务id") String taskId) {
+		return R.data(flowBusinessService.backNodes(taskId));
+	}
+
+	/**
+	 * 退回操作
+	 *
+	 * @param taskRequest
+	 * @return
+	 */
+	@PutMapping(value = "/back-task")
+	@ApiOperationSupport(order = 10)
+	@ApiOperation(value = "退回操作", notes = "传入退回信息")
+	public R back(@RequestBody TaskRequest taskRequest) {
+		return R.status(flowBusinessService.backTask(taskRequest));
+	}
+
+	/**
+	 * 转办任务
+	 */
+	@PostMapping("assign-task")
+	@ApiOperationSupport(order = 11)
+	@ApiOperation(value = "转办操作", notes = "传入流程信息")
+	public R assign(@RequestBody BladeFlow flow) {
+		flowBusinessService.assignTask(flow);
+		return R.status(true);
+	}
+	/**
+	 * 委派任务
+	 */
+	@PutMapping(value = "delegate-task")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "委派操作", notes = "传入流程信息")
+	public R delegate(@RequestBody BladeFlow flow) {
+		flowBusinessService.delegateTask(flow);
+		return R.status(true);
+	}
+	/**
+	 * 发起人终止流程
+	 */
+	@PostMapping("cancel-task")
+	@ApiOperationSupport(order = 11)
+	@ApiOperation(value = "发起人终止流程", notes = "传入流程信息")
+	public R cancel(@RequestBody BladeFlow flow) {
+		flowBusinessService.cancelTask(flow);
+		return R.status(true);
+	}
+
+	/**
+	 * 查看退回节点
+	 */
+	@PostMapping(value = "takeItBackLook-task")
+	@ApiOperationSupport(order = 13)
+	@ApiOperation(value = "查看退回节点操作", notes = "传入流程信息")
+	public R<List<FlowNodeVo>> takeItBackLook(@RequestBody BladeFlow flow) {
+		return R.data(flowBusinessService.takeItBackTaskLook(flow));
+	}
+
+
+	/**
+	 * 退回任务
+	 */
+	@PostMapping(value = "takeItBack-task")
+	@ApiOperationSupport(order = 13)
+	@ApiOperation(value = "退回操作", notes = "传入流程信息")
+	public R takeItBack(@RequestBody BladeFlow flow) {
+		flowBusinessService.takeItBackTask(flow);
+		return R.status(true);
+	}
+
+
+	/**
+	 * 拿回任务
+	 */
+	@PostMapping(value = "takeBack-task")
+	@ApiOperationSupport(order = 14)
+	@ApiOperation(value = "退回操作", notes = "传入流程信息")
+	public R takeBack(@RequestBody BladeFlow flow) {
+		flowBusinessService.takeBackTask(flow);
+		return R.success("拿回成功");
+	}
+
+
 
 }

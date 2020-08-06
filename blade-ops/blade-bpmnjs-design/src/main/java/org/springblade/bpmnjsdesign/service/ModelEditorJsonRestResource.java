@@ -1,4 +1,4 @@
-package org.springblade.bpmnjsDesign.service;
+package org.springblade.bpmnjsdesign.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;

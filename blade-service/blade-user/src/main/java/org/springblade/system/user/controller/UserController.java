@@ -43,6 +43,7 @@ import org.springblade.system.user.entity.User;
 import org.springblade.system.user.excel.UserExcel;
 import org.springblade.system.user.excel.UserImporter;
 import org.springblade.system.user.service.IUserService;
+import org.springblade.system.user.vo.SelectUserVO;
 import org.springblade.system.user.vo.UserVO;
 import org.springblade.system.user.wrapper.UserWrapper;
 import org.springframework.web.bind.annotation.*;
@@ -104,7 +105,7 @@ public class UserController {
 	}
 
 	/**
-	 * 自定义用户列表
+	 * 自定义用户分页列表
 	 */
 	@GetMapping("/page")
 	@ApiImplicitParams({
@@ -115,7 +116,23 @@ public class UserController {
 	@ApiOperation(value = "列表", notes = "传入account和realName")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R<IPage<UserVO>> page(@ApiIgnore User user, Query query, Long deptId, BladeUser bladeUser) {
-		IPage<UserVO> pages = userService.selectUserPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
+		IPage<UserVO> pages = userService.userPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
+		return R.data(pages);
+	}
+
+	/**
+	 * 用于页面中选择用户
+	 * 分页列表
+	 */
+	@GetMapping("/selectUserPage")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "account", value = "账号名", paramType = "query", dataType = "string"),
+		@ApiImplicitParam(name = "realName", value = "姓名", paramType = "query", dataType = "string")
+	})
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "列表", notes = "传入account和realName")
+	public R<IPage<SelectUserVO>> selectUserPage(@ApiIgnore User user, Query query, Long deptId, BladeUser bladeUser) {
+		IPage<SelectUserVO> pages = userService.selectUserPage(Condition.getPage(query), user, deptId, (bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID) ? StringPool.EMPTY : bladeUser.getTenantId()));
 		return R.data(pages);
 	}
 

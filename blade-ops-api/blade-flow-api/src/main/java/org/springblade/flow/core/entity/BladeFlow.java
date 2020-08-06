@@ -45,7 +45,7 @@ public class BladeFlow implements Serializable {
 	 */
 	private String taskDefinitionKey;
 	/**
-	 * 任务执行人编号
+	 * 任务执行人编号（下一办理人）
 	 */
 	private String assignee;
 	/**
@@ -88,6 +88,10 @@ public class BladeFlow implements Serializable {
 	 * 流程ID
 	 */
 	private String processDefinitionId;
+	/**
+	 * 跳转的任务ID
+	 */
+	private String distFlowElementId;
 	/**
 	 * 流程标识
 	 */

@@ -25,6 +25,7 @@ import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.SecureUtil;
+import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.utils.*;
 import org.springblade.system.cache.ParamCache;
@@ -42,12 +43,14 @@ import org.springblade.system.user.mapper.UserMapper;
 import org.springblade.system.user.service.IUserDepartService;
 import org.springblade.system.user.service.IUserDeptService;
 import org.springblade.system.user.service.IUserService;
+import org.springblade.system.user.vo.SelectUserVO;
 import org.springblade.system.user.vo.UserVO;
 import org.springblade.system.user.wrapper.UserDTOWrapper;
 import org.springblade.system.user.wrapper.UserWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -117,12 +120,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 
 	/**
 	 * 更新人员身份信息
+	 *
 	 * @param user
 	 * @return
 	 */
 	private boolean submitUserDepart(UserDTO user) {
 		List<UserDepartDTO> userDepartList = user.getUserDepartList();
-		if(CollectionUtil.isNotEmpty(userDepartList)){
+		if (CollectionUtil.isNotEmpty(userDepartList)) {
 			userDepartService.delByUserId(user.getId());
 			List<UserDepartEntity> collect = userDepartList.stream().map(depart -> {
 				depart.setUserId(user.getId());
@@ -137,9 +141,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	}
 
 	@Override
-	public IPage<UserVO> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId) {
+	public IPage<UserVO> userPage(IPage<User> page, User user, Long deptId, String tenantId) {
 		List<Long> deptIdList = SysCache.getDeptChildIds(deptId);
-		List<User> userList = baseMapper.selectUserPage(page, user, deptIdList, tenantId);
+		List<User> userList = baseMapper.userPage(page, user, deptIdList, tenantId);
 		page.setRecords(userList);
 		return UserWrapper.build().pageVO(page);
 	}
@@ -252,6 +256,29 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		user.setIsEnable(isEnable);
 		baseMapper.updateById(user);
 		return true;
+	}
+
+	@Override
+	public IPage<SelectUserVO> selectUserPage(IPage<User> page, User user, Long deptId, String tenantId) {
+		List<Long> deptIdList = SysCache.getDeptChildIds(deptId);
+		List<User> userList = baseMapper.userPage(page, user, deptIdList, tenantId);
+		page.setRecords(userList);
+		return UserWrapper.build().userToSelectUserpageVO(page);
+	}
+
+	@Override
+	public List<User> userInfoByDeptIdAndPostId(String deptId, String postId) {
+		return baseMapper.findByDeptAndPost(deptId, postId);
+	}
+
+	@Override
+	public List<User> userInfoByUserIds(String userIds) {
+		return baseMapper.selectBatchIds(Arrays.asList(userIds.split(",")));
+	}
+
+	@Override
+	public List<User> userInfoByBenchMinister(String benchUserId) {
+		return baseMapper.findByBenchMinister(benchUserId);
 	}
 
 }

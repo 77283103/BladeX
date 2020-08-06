@@ -16,6 +16,7 @@
  */
 package org.springblade.system.user.feign;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
@@ -28,6 +29,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 用户服务Feign实现类
@@ -69,5 +72,24 @@ public class UserClient implements IUserClient {
 	public R<Boolean> removeUser(String tenantIds) {
 		return R.data(service.remove(Wrappers.<User>query().lambda().in(User::getTenantId, Func.toLongList(tenantIds))));
 	}
+
+	@Override
+	@GetMapping(USER_INFO_BY_DEPTID_AND_POSTID)
+	public List<User> userInfoByDeptAndPost(String deptId, String postId) {
+		return service.userInfoByDeptIdAndPostId(deptId,postId);
+	}
+
+	@Override
+	@GetMapping(USER_INFO_BY_USERID_ARRAY)
+	public List<User> userInfoByUserIds(String userIds) {
+		return service.userInfoByUserIds(userIds);
+	}
+
+	@Override
+	@GetMapping(USER_INFO_BY_BENCH_MINISTER)
+	public List<User> userInfoByBenchMinister(String benchUserId) {
+		return service.userInfoByBenchMinister(benchUserId);
+	}
+
 
 }
