@@ -29,10 +29,12 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.service.FlowBusinessService;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
+import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.TaskRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -134,13 +136,13 @@ public class WorkController {
 	/**
 	 * 完成任务
 	 *
-	 * @param flow 请假信息
+	 * @param flowList
 	 */
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "完成任务", notes = "传入流程信息")
-	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponse> flow) {
-		return R.status(flowBusinessService.completeTask(flow));
+	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponseReceive> flowList) {
+		return R.status(flowBusinessService.completeTask(flowList));
 	}
 
 	/**
@@ -219,9 +221,8 @@ public class WorkController {
 	@PostMapping(value = "takeItBackLook-task")
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "查看退回节点操作", notes = "传入流程信息")
-	public R takeItBackLook(@RequestBody BladeFlow flow) {
-		flowBusinessService.takeItBackTaskLook(flow);
-		return R.status(true);
+	public R<List<FlowNodeVo>> takeItBackLook(@RequestBody BladeFlow flow) {
+		return R.data(flowBusinessService.takeItBackTaskLook(flow));
 	}
 
 
@@ -245,7 +246,7 @@ public class WorkController {
 	@ApiOperation(value = "退回操作", notes = "传入流程信息")
 	public R takeBack(@RequestBody BladeFlow flow) {
 		flowBusinessService.takeBackTask(flow);
-		return R.status(true);
+		return R.success("拿回成功");
 	}
 
 
