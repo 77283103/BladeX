@@ -420,10 +420,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			String benchUser = "";
 			// 流程启动者为基准人
 			if (flowBenchMark.equals(FlowProcessBenchMark.PROCESS_CREATER)) {
-				// 开始节点的流程启动者等于当前登录人
-				if (targetNode instanceof StartEvent) {
-					benchUser = AuthUtil.getUser().getUserId().toString();
-				}
 				// 获取taskEntity对象
 				TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
 				// 流程定义id

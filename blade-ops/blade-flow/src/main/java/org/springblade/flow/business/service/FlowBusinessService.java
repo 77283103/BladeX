@@ -72,7 +72,7 @@ public interface FlowBusinessService {
 
 	/**
 	 * 完成任务
-	 *
+	 * @param flowNodeResponseList 接收前台返回的数据
 	 * @return boolean
 	 */
 	boolean completeTask(List<FlowNodeResponseReceive> flowNodeResponseList);
@@ -121,7 +121,7 @@ public interface FlowBusinessService {
 
 	/**
 	 * 首次点击提交时返回前台的信息，提示用户下一节点和办理人信息
-	 *
+	 * @param taskId
 	 * @return void
 	 */
 	List<FlowNodeResponse> completeTempResult(String taskId);
