@@ -123,6 +123,11 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		FlowNode currentFlowElement = (FlowNode) process.getFlowElement(currActId, true);
 		// 获取下一节点，多出线的情况在首次提交时已经判断过了
 		FlowNode targetFlowElement = (FlowNode) currentFlowElement.getOutgoingFlows().get(0).getTargetFlowElement();
+		// 如果是结束节点，直接提交流程
+		if (targetFlowElement instanceof EndEvent) {
+			taskService.complete(taskId);
+			return true;
+		}
 		// 提交下一节点是UserTask
 		if (targetFlowElement instanceof UserTask) {
 			// 将下一审批人赋给全局变量
@@ -153,14 +158,14 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 					.filter(flowNodeResponseReceive -> flowNodeResponseReceive.getId().equals(nodeId))
 					.collect(Collectors.toList());
 				// 如果结果不为空，表示需要提交给该节点，将该条连线的条件设置为true
-				if(null != result){
+				if (null != result) {
 					// 根据前台返回节点信息确定需要给哪个连线设置true
 					sequenceFlow.setConditionExpression(FlowEngineConstant.FLOW_TRUE);
 				}
 			});
 			// 设置任务处理人
 			flowNodeResponseReceiveList.forEach(flowNodeResponseReceive -> {
-				variables.put(flowNodeResponseReceive.getId(),TaskUtil.getTaskUser(flowNodeResponseReceive.getUserId()));
+				variables.put(flowNodeResponseReceive.getId(), TaskUtil.getTaskUser(flowNodeResponseReceive.getUserId()));
 			});
 			// 完成任务
 			taskService.complete(taskId, variables);
@@ -193,9 +198,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (outgoingFlows.size() == 1) {
 			// 获取并判断下一节点是结束节点EndEvent、用户节点UserTask、网关节点GateWay
 			FlowNode targetNode = (FlowNode) outgoingFlows.get(0).getTargetFlowElement();
-			// EndEvent节点直接提交流程
+			// EndEvent
 			if (targetNode instanceof EndEvent) {
-				taskService.complete(taskId);
 				return createFlowNodeResponseEnd(targetNode);
 			}
 			// 提交下一节点是UserTask
@@ -891,7 +895,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			FlowNode activity = null;
 			BpmnModel bpmnModel = this.repositoryService.getBpmnModel(taskEntity.getProcessDefinitionId());
 			List<Process> processes = bpmnModel.getProcesses();
-			for (Process process : processes){
+			for (Process process : processes) {
 				//需要拿回节点的id
 				FlowElement flowElement = process.getFlowElementMap().get(flow.getDistFlowElementId());
 				if (flowElement != null) {
@@ -903,7 +907,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			if (distActivity != null) {
 				if ("提交人".equals(distActivity.getName())) {
 					ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(taskEntity.getProcessInstanceId()).singleResult();
-					runtimeService.setVariable(flow.getProcessInstanceId(),"initiator", processInstance.getStartUserId());
+					runtimeService.setVariable(flow.getProcessInstanceId(), "initiator", processInstance.getStartUserId());
 				}
 			}
 			//5.删除节点
@@ -1048,7 +1052,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	public boolean takeBackTask(BladeFlow flow) {
 		//拿回的条件是下一节点不能审批，需要查询出发出的任务，下一节点是否审批了
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
-		String sqlTask= "select t.* from act_ru_actinst t where t.ACT_TYPE_ = 'userTask' " +
+		String sqlTask = "select t.* from act_ru_actinst t where t.ACT_TYPE_ = 'userTask' " +
 			" and t.PROC_INST_ID_=#{processInstanceId} and t.TASK_ID_=#{taskId}";
 		List<ActivityInstance> activity = runtimeService.createNativeActivityInstanceQuery().sql(sqlTask)
 			.parameter("processInstanceId", flow.getProcessInstanceId())
@@ -1061,10 +1065,10 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			.parameter("processInstanceId", flow.getProcessInstanceId())
 			.parameter("endTime", activity.get(0).getEndTime())
 			.list();
-		if(activitys.size()>0){
+		if (activitys.size() > 0) {
 			System.out.println("下一节点已审批，不可拿回");
 			return false;
-		}else{
+		} else {
 			String sqlPend = "select t.* from act_ru_actinst t where " +
 				"t.PROC_INST_ID_=#{processInstanceId} and t.END_TIME_ is null  ";
 			List<ActivityInstance> activityss = runtimeService.createNativeActivityInstanceQuery().sql(sqlPend)
@@ -1072,7 +1076,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				.list();
 			if (CollectionUtils.isNotEmpty(activityss)) {
 				//删除对应的运行时的节点信息和历史的节点信息
-				for(ActivityInstance ac:activityss){
+				for (ActivityInstance ac : activityss) {
 					runFlowableActinstDao.deleteRunActinstsById(ac.getId());
 					hisFlowableActinstDao.deleteHisActinstsById(ac.getId());
 				}
@@ -1114,7 +1118,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				.parameter("endTime", activityInstance.getEndTime()).list();
 			if (CollectionUtils.isNotEmpty(datas)) {
 				//删除对应的运行时的节点信息和历史的节点信息
-				for(ActivityInstance ac:datas){
+				for (ActivityInstance ac : datas) {
 					runFlowableActinstDao.deleteRunActinstsById(ac.getId());
 					hisFlowableActinstDao.deleteHisActinstsById(ac.getId());
 				}

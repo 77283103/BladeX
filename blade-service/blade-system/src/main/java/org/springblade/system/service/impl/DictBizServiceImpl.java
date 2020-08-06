@@ -110,6 +110,7 @@ public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> impl
 		IPage<DictBiz> page = this.page(Condition.getPage(query), Condition.getQueryWrapper(dict, DictBiz.class).lambda().eq(DictBiz::getParentId, parentId).orderByAsc(DictBiz::getSort));
 		return DictBizWrapper.build().pageVO(page);
 	}
+
 	@Override
 	public List<DictBizVO> lazyList(Long parentId, Map<String, Object> param) {
 		if (Func.isEmpty(Func.toStr(param.get("parentId")))) {
@@ -118,30 +119,30 @@ public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> impl
 		return baseMapper.lazyList(parentId, param);
 	}
 
+
+	List<Long> result =new ArrayList<>();
 	/**
 	 * @Description:  根据ids 递归查询子节点
 	 * @Param:  ids
-	 * @return:
+	 * @return:void
 	 * @Author: lm
 	 * @Date:  2020年6月19日
 	 */
-	List<Long> result =new ArrayList<>();
-	// 递归查询
 	public void selectChild(List<Long> ids) {
 		List<Long> temp = new ArrayList<>();
-		for (Long id : ids) {
+		ids.forEach(id -> {
 			QueryWrapper<DictBiz> queryWrapper = new QueryWrapper<DictBiz>();
 			queryWrapper.eq("parent_id", id);
 			List<DictBiz> DictList = this.baseMapper.selectList(queryWrapper);
 			result.add(id);
-			for (DictBiz dict : DictList) {
-				temp.add(dict.getId());
-				result.add(dict.getId());
+			DictList.forEach(dictBiz -> {
+				temp.add(dictBiz.getId());
+				result.add(dictBiz.getId());
 				if (temp.size() != 0 && temp != null) {
 					selectChild(temp);
-				}
-			}
-		}
+				};
+			});
+		});
 	}
 
 	/**
@@ -170,6 +171,7 @@ public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> impl
 		Map<String, List<DictBiz>> collect = dictBizs.stream().collect(Collectors.groupingBy(DictBiz::getCode));
 		return collect;
 	}
+
 	@Override
 	public IPage<DictBiz> pageList(IPage<DictBiz> page, DictBiz dict) {
 		return baseMapper.pageList(page, dict);
