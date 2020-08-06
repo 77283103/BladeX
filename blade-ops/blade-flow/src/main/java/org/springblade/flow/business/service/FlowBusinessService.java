@@ -107,7 +107,13 @@ public interface FlowBusinessService {
 	 * @return void
 	 */
 	void delegateTask(BladeFlow flow);
-
+	/**
+	 * 委托返回
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	boolean delegateBack(BladeFlow flow);
 	/**
 	 * 新增审批意见
 	 *
@@ -133,9 +139,27 @@ public interface FlowBusinessService {
 	void cancelTask(BladeFlow flow);
 
 
-	R takeItBackTask(BladeFlow flow);
+	/**
+	 * 退回任务
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	boolean takeItBackTask(BladeFlow flow);
 
+	/**
+	 * 查询可退回节点
+	 *
+	 * @param flow
+	 * @return void
+	 */
 	List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow);
 
-	void takeBackTask(BladeFlow flow);
+	/**
+	 * 拿回任务
+	 *
+	 * @param flow
+	 * @return void
+	 */
+	boolean takeBackTask(BladeFlow flow);
 }
