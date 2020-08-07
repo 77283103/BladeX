@@ -74,13 +74,13 @@ public class DateUtil {
      */
     public static SimpleDateFormat getSimpleDateFormat(final String pattern) {
         ThreadLocal<SimpleDateFormat> threadLocalSimpleDateFormat = simpleDateFormatMap.get(pattern);
-        // 此处的双重判断和同步是为了防止simpleDateFormatMap这个单例被多次put重复的sdf
+        /* 此处的双重判断和同步是为了防止simpleDateFormatMap这个单例被多次put重复的sdf */
         if (threadLocalSimpleDateFormat == null) {
             synchronized (LOCK_OBJ) {
                 threadLocalSimpleDateFormat = simpleDateFormatMap.get(pattern);
                 if (threadLocalSimpleDateFormat == null) {
-                    // 只有Map中还没有这个pattern的sdf才会生成新的sdf并放入map
-                    // 这里是关键,使用ThreadLocal<SimpleDateFormat>替代原来直接new SimpleDateFormat
+                    /* 只有Map中还没有这个pattern的sdf才会生成新的sdf并放入map */
+                    /* 这里是关键,使用ThreadLocal<SimpleDateFormat>替代原来直接new SimpleDateFormat */
                     threadLocalSimpleDateFormat = new ThreadLocal<SimpleDateFormat>() {
                         @Override
                         protected SimpleDateFormat initialValue() {
@@ -323,17 +323,17 @@ public class DateUtil {
         long nd = 1000 * 24 * 60 * 60;
         long nh = 1000 * 60 * 60;
         long nm = 1000 * 60;
-        // long ns = 1000;
-        // 获得两个时间的毫秒时间差异
+        /* long ns = 1000; */
+        /* 获得两个时间的毫秒时间差异 */
         long diff = endDate.getTime() - nowDate.getTime();
-        // 计算差多少天
+        /* 计算差多少天 */
         long day = diff / nd;
-        // 计算差多少小时
+        /* 计算差多少小时 */
         long hour = diff % nd / nh;
-        // 计算差多少分钟
+        /* 计算差多少分钟 */
         long min = diff % nd % nh / nm;
-        // 计算差多少秒//输出结果
-        // long sec = diff % nd % nh % nm / ns;
+        /* 计算差多少秒 输出结果 */
+        /* long sec = diff % nd % nh % nm / ns; */
         return day + "天" + hour + "小时" + min + "分钟";
     }
 

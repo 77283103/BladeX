@@ -64,17 +64,17 @@ public class FlowClient implements IFlowClient {
 	@Override
 	@PostMapping(START_PROCESS_INSTANCE_BY_ID)
 	public R<BladeFlow> startProcessInstanceById(String processDefinitionId, String businessKey, @RequestBody Map<String, Object> variables) {
-		// 设置流程启动用户
+		/* 设置流程启动用户 */
 		identityService.setAuthenticatedUserId(TaskUtil.getTaskUser());
-		// 获取第一个节点，第一个节点的id约定固定为：【UserTask_first】
+		/* 获取第一个节点，第一个节点的id约定固定为：【UserTask_first】 */
 		FlowElement flowElement = repositoryService.getBpmnModel(processDefinitionId).getMainProcess().getFlowElement(FlowEngineConstant.FLOW_FIRST_ELEMENT);
-		// 开启流程
+		/* 开启流程 */
 		variables.put(FlowEngineConstant.FLOW_START_ELEMENT,"");
 		ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId, businessKey, variables);
 		String processInstanceId = processInstance.getProcessInstanceId();
 		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
 		tasks.forEach(task -> {
-			// 约定：发起者节点为 UserTask_first ,则自动完成任务
+			/* 约定：发起者节点为 UserTask_first ,则自动完成任务 */
 				if (FlowEngineConstant.FLOW_START_ELEMENT.equals(task.getTaskDefinitionKey())) {
 					flowBusinessService.addComment(task.getId(), processInstanceId, AuthUtil.getUserId().toString(), CommentTypeEnum.TJ, null);
 					taskService.setAssignee(task.getId(), AuthUtil.getUserId().toString());
@@ -82,7 +82,7 @@ public class FlowClient implements IFlowClient {
 					taskService.complete(task.getId(),variables);
 				}
 			});
-		// 组装流程通用类
+		/* 组装流程通用类 */
 		BladeFlow flow = new BladeFlow();
 		flow.setProcessInstanceId(processInstance.getId());
 		return R.data(flow);
@@ -91,11 +91,11 @@ public class FlowClient implements IFlowClient {
 	@Override
 	@PostMapping(START_PROCESS_INSTANCE_BY_KEY)
 	public R<BladeFlow> startProcessInstanceByKey(String processDefinitionKey, String businessKey, @RequestBody Map<String, Object> variables) {
-		// 设置流程启动用户
+		/* 设置流程启动用户 */
 		identityService.setAuthenticatedUserId(TaskUtil.getTaskUser());
-		// 开启流程
+		/* 开启流程 */
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey(processDefinitionKey, businessKey, variables);
-		// 组装流程通用类
+		/* 组装流程通用类 */
 		BladeFlow flow = new BladeFlow();
 		flow.setProcessInstanceId(processInstance.getId());
 		return R.data(flow);
@@ -104,15 +104,15 @@ public class FlowClient implements IFlowClient {
 	@Override
 	@PostMapping(COMPLETE_TASK)
 	public R completeTask(String taskId, String processInstanceId, String comment, @RequestBody Map<String, Object> variables) {
-		// 增加评论
+		/* 增加评论 */
 		if (StringUtil.isNoneBlank(processInstanceId, comment)) {
 			taskService.addComment(taskId, processInstanceId, comment);
 		}
-		// 非空判断
+		/* 非空判断 */
 		if (Func.isEmpty(variables)) {
 			variables = Kv.create();
 		}
-		// 完成任务
+		/* 完成任务 */
 		taskService.complete(taskId, variables);
 		return R.success("流程提交成功");
 	}

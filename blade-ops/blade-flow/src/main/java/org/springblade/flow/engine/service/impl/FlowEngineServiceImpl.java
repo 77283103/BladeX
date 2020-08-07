@@ -91,11 +91,11 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 	@Override
 	public IPage<FlowProcess> selectProcessPage(IPage<FlowProcess> page, String category, Integer mode) {
 		ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery().latestVersion().orderByProcessDefinitionKey().asc();
-		// 通用流程
+		/*  通用流程 */
 		if (mode == FlowModeEnum.COMMON.getMode()) {
 			processDefinitionQuery.processDefinitionWithoutTenantId();
 		}
-		// 定制流程
+		/*  定制流程 */
 		else if (!AuthUtil.isAdministrator()) {
 			processDefinitionQuery.processDefinitionTenantId(AuthUtil.getTenantId());
 		}
@@ -161,18 +161,18 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 		Map<String, Integer> activityMap = new HashMap<>(16);
 		for (int i = 0; i < historicActivityInstanceList.size(); i++) {
 			HistoricActivityInstance historicActivityInstance = historicActivityInstanceList.get(i);
-			// 过滤开始节点前的节点
+			/*  过滤开始节点前的节点 */
 			if (StringUtil.isNotBlank(startActivityId) && startActivityId.equals(historicActivityInstance.getActivityId())) {
 				start = true;
 			}
 			if (StringUtil.isNotBlank(startActivityId) && !start) {
 				continue;
 			}
-			// 显示开始节点和结束节点，并且执行人不为空的任务
+			/*  显示开始节点和结束节点，并且执行人不为空的任务 */
 			if (StringUtils.isNotBlank(historicActivityInstance.getAssignee())
 				|| FlowEngineConstant.START_EVENT.equals(historicActivityInstance.getActivityType())
 				|| FlowEngineConstant.END_EVENT.equals(historicActivityInstance.getActivityType())) {
-				// 给节点增加序号
+				/*  给节点增加序号 */
 				Integer activityNum = activityMap.get(historicActivityInstance.getActivityId());
 				if (activityNum == null) {
 					activityMap.put(historicActivityInstance.getActivityId(), activityMap.size());
@@ -183,7 +183,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 				flow.setEndTime(historicActivityInstance.getEndTime());
 				String durationTime = DateUtil.secondToTime(Func.toLong(historicActivityInstance.getDurationInMillis(), 0L) / 1000);
 				flow.setHistoryActivityDurationTime(durationTime);
-				// 获取流程发起人名称
+				/*  获取流程发起人名称 */
 				if (FlowEngineConstant.START_EVENT.equals(historicActivityInstance.getActivityType())) {
 					List<HistoricProcessInstance> processInstanceList = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).orderByProcessInstanceStartTime().asc().list();
 					if (processInstanceList.size() > 0) {
@@ -197,7 +197,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 						}
 					}
 				}
-				// 获取任务执行人名称
+				/*  获取任务执行人名称 */
 				if (StringUtil.isNotBlank(historicActivityInstance.getAssignee())) {
 					User user = UserCache.getUser(TaskUtil.getUserId(historicActivityInstance.getAssignee()));
 					if (user != null) {
@@ -205,7 +205,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 						flow.setAssigneeName(user.getRealName());
 					}
 				}
-				// 获取意见评论内容
+				/*  获取意见评论内容 */
 				if (StringUtil.isNotBlank(historicActivityInstance.getTaskId())) {
 					List<Comment> commentList = taskService.getTaskComments(historicActivityInstance.getTaskId());
 					if (commentList.size() > 0) {
@@ -214,11 +214,11 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 				}
 				flowList.add(flow);
 			}
-			// 过滤结束节点后的节点
+			/*  过滤结束节点后的节点 */
 			if (StringUtils.isNotBlank(endActivityId) && endActivityId.equals(historicActivityInstance.getActivityId())) {
 				boolean temp = false;
 				Integer activityNum = activityMap.get(historicActivityInstance.getActivityId());
-				// 该活动节点，后续节点是否在结束节点之前，在后续节点中是否存在
+				/*  该活动节点，后续节点是否在结束节点之前，在后续节点中是否存在 */
 				for (int j = i + 1; j < historicActivityInstanceList.size(); j++) {
 					HistoricActivityInstance hi = historicActivityInstanceList.get(j);
 					Integer activityNumA = activityMap.get(hi.getActivityId());
@@ -313,7 +313,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 		List<ProcessDefinition> list = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).list();
 		StringBuilder logBuilder = new StringBuilder(500);
 		List<Object> logArgs = new ArrayList<>();
-		// 设置流程分类
+		/*  设置流程分类 */
 		for (ProcessDefinition processDefinition : list) {
 			if (StringUtil.isNotBlank(category)) {
 				repositoryService.setProcessDefinitionCategory(processDefinition.getId(), category);
