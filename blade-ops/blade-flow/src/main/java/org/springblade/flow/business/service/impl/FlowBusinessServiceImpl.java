@@ -856,9 +856,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean delegateBack(BladeFlow flow) {
-		// 任务id
+		/*任务id*/
 		String taskId = flow.getTaskId();
-		// 委托人员id
+		/*委托人员id*/
 		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
 		// 当前人员id
 		BladeUser user = AuthUtil.getUser();
@@ -884,7 +884,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			//2.设置审批人
 			taskEntity.setAssignee(flow.getAssignee());
 			taskService.saveTask(taskEntity);
-			//3.添加拿回意见
+			//3.添加退回意见
 			this.addComment(flow.getTaskId(), flow.getAssignee(), flow.getProcessInstanceId(),
 				CommentTypeEnum.TH, flow.getComment());
 			//4.处理提交人节点（对发起人进行特殊处理）
@@ -892,7 +892,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			BpmnModel bpmnModel = this.repositoryService.getBpmnModel(taskEntity.getProcessDefinitionId());
 			List<Process> processes = bpmnModel.getProcesses();
 			for (Process process : processes) {
-				//需要拿回节点的id
+				//需要退回节点的id
 				FlowElement flowElement = process.getFlowElementMap().get(flow.getDistFlowElementId());
 				if (flowElement != null) {
 					activity = (FlowNode) flowElement;
@@ -921,7 +921,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				executions.forEach(execution -> executionIds.add(execution.getId()));
 				this.moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId());
 			} else {*/
-			//6.2 普通拿回
+			//6.2 普通退回
 			List<Execution> executions = runtimeService.createExecutionQuery().parentId(taskEntity.getProcessInstanceId()).list();
 			executions.forEach(execution -> executionIds.add(execution.getId()));
 			runtimeService.createChangeActivityStateBuilder().moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId()).changeState();
@@ -940,13 +940,12 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	@Override
 	public List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow) {
 
-		R<String> returnVo = null;
 		List<FlowNodeVo> backNods = new ArrayList<>();
-		//当前任务的节点
+		/*当前任务的节点*/
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
-		//得到当前任务的key
+		/*得到当前任务的key*/
 		String currActId = taskEntity.getTaskDefinitionKey();
-		//获取运行节点表中usertask（已经审完的节点）
+		/*获取运行节点表中usertask（已经审完的节点）*/
 		String sql = "select t.* from act_ru_actinst t where t.ACT_TYPE_ = 'userTask' " +
 			" and t.PROC_INST_ID_=#{processInstanceId} and t.END_TIME_ is not null GROUP BY t.act_id_";
 		List<ActivityInstance> activityInstances = runtimeService.createNativeActivityInstanceQuery().sql(sql)
@@ -961,7 +960,11 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			.parameter("processInstanceId", flow.getProcessInstanceId())
 			.parameter("actId", currActId)
 			.list();
-		//排序
+		/*去掉没有走完的网管*/
+		if (parallelGatewaies.size()%2!=0) {
+			parallelGatewaies.remove(parallelGatewaies.size()-1);
+		}
+		/*排序*/
 		if (CollectionUtils.isNotEmpty(parallelGatewaies)) {
 			activityInstances.addAll(parallelGatewaies);
 			activityInstances.sort(Comparator.comparing(ActivityInstance::getEndTime));
