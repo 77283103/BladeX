@@ -23,8 +23,8 @@ public class FlowableUtils {
 			FlowElementsContainer parentElement = process.findParent(sourceElement);
 			if (parentElement instanceof SubProcess) {
 				sourceElement = (SubProcess) parentElement;
-				// by zjm begin
-				// 子流程的结束节点，若目标节点在该子流程中，说明无法到达，返回false
+				/*  by zjm begin */
+				/*  子流程的结束节点，若目标节点在该子流程中，说明无法到达，返回false */
 				if (((SubProcess) sourceElement).getFlowElement(targetElement.getId()) != null) {
 					return false;
 				}
@@ -36,7 +36,7 @@ public class FlowableUtils {
 			return true;
 		}
 		visitedElements.add(sourceElement.getId());
-		// 当前节点能够到达子流程，且目标节点在子流程中，说明可以到达，返回true
+		/*  当前节点能够到达子流程，且目标节点在子流程中，说明可以到达，返回true */
 		if (sourceElement instanceof SubProcess
 			&& ((SubProcess) sourceElement).getFlowElement(targetElement.getId()) != null) {
 			return true;
@@ -98,7 +98,7 @@ public class FlowableUtils {
 		if (activityIdExecutions.isEmpty()) {
 			throw new FlowableException("Active execution could not be found with activity id " + activityId);
 		}
-		// check for a multi instance root execution
+		/*  check for a multi instance root execution */
 		ExecutionEntity miExecution = null;
 		boolean isInsideMultiInstance = false;
 		for (ExecutionEntity possibleMiExecution : activityIdExecutions) {
@@ -128,9 +128,9 @@ public class FlowableUtils {
 	}
 
 	public static String[] getSourceAndTargetRealActivityId(FlowNode sourceFlowElement, FlowNode targetFlowElement) {
-		// 实际应操作的当前节点ID
+		/*  实际应操作的当前节点ID */
 		String sourceRealActivityId = sourceFlowElement.getId();
-		// 实际应操作的目标节点ID
+		/*  实际应操作的目标节点ID */
 		String targetRealActivityId = targetFlowElement.getId();
 		List<String> sourceParentProcesss = FlowableUtils.getParentProcessIds(sourceFlowElement);
 		List<String> targetParentProcesss = FlowableUtils.getParentProcessIds(targetFlowElement);
@@ -170,7 +170,7 @@ public class FlowableUtils {
 			}
 		}
 
-		// 外层到里层排序
+		/*  外层到里层排序 */
 		Map<String, Set<String>> specialGatewayNodesSort = new LinkedHashMap<>();
 		specialGatewayElements.entrySet().stream().sorted((o1, o2) -> o2.getValue().size() - o1.getValue().size())
 			.forEach(entry -> specialGatewayNodesSort.put(entry.getKey(), entry.getValue()));
@@ -210,7 +210,7 @@ public class FlowableUtils {
 				flowElementsContainer = null;
 			}
 		}
-		// 第一层Process为第0个
+		/*  第一层Process为第0个 */
 		Collections.reverse(result);
 		return result;
 	}
@@ -249,10 +249,10 @@ public class FlowableUtils {
 			throw new FlowableException("sourceList and targetList cannot be empty");
 		}
 		if (sourceList.size() == 1 && targetList.size() == 1) {
-			// 都在第0层且不相等
+			/*  都在第0层且不相等 */
 			if (!sourceList.get(0).equals(targetList.get(0))) {
 				return 0;
-			} else {// 都在第0层且相等
+			} else {/*  都在第0层且相等 */
 				return -1;
 			}
 		}
