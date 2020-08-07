@@ -42,9 +42,9 @@ public class ProcessDesignServiceImpl implements ProcessDesignService {
      */
     @Override
     public void createModel(String key,String name, String category, String descp) throws UnsupportedEncodingException{
-        //初始化一个空模型
+        /*初始化一个空模型*/
         Model model = repositoryService.newModel();
-        //设置一些默认信息
+        /*设置一些默认信息*/
         String modelName = name;
         String description = descp;
         int revision = 1;
@@ -88,14 +88,13 @@ public class ProcessDesignServiceImpl implements ProcessDesignService {
      */
     @Override
     public String deployModel(String modelId) throws Exception {
-
-        // 获取模型
-        Model modelData = repositoryService.getModel(modelId);
+        /*获取模型*/
+		Model modelData = repositoryService.getModel(modelId);
         byte[] bytes = repositoryService.getModelEditorSource(modelData.getId());
         if(null == bytes) {
             return "模型数据为空，请先设计流程并成功保存，再进行发布。";
         }
-        //发布流程
+        /*发布流程*/
         String xmlString = new String(bytes, "UTF-8");
         xmlString = xmlString.replaceAll("process_id","barcode:pri");
         xmlString = xmlString.replaceAll("process_namespace","barcode:prn");
@@ -114,15 +113,14 @@ public class ProcessDesignServiceImpl implements ProcessDesignService {
     }
 
     @Override
-	// 实现xml下载
-	public String deployModel2(String modelId, HttpServletRequest request, HttpServletResponse response) throws Exception {
-        // 获取模型
+	/* 实现xml下载*/
+	public String downLoadXml(String modelId, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        /* 获取模型*/
         Model modelData = repositoryService.getModel(modelId);
         byte[] bytes = repositoryService.getModelEditorSource(modelData.getId());
         if(null == bytes) {
             return "模型数据为空，请先设计流程并成功保存，再进行下载。";
         }
-        // 获取字符串，做出来
         String xmlString = new String(bytes, "UTF-8");
         xmlString = xmlString.replaceAll("process_id","barcode:pri");
         xmlString = xmlString.replaceAll("process_namespace","barcode:prn");
@@ -130,24 +128,24 @@ public class ProcessDesignServiceImpl implements ProcessDesignService {
         xmlString = xmlString.replaceAll("multiinstance_condition","barcode:muc");
 		String processName = modelData.getName() + ".bpmn20.xml";
 		String filename = processName;
-		// 告诉浏览器下载的方式以及一些设置
-		// 解决文件名乱码问题，获取浏览器类型，转换对应文件名编码格式，IE要求文件名必须是utf-8, firefo要求是iso-8859-1编码
+		/* 解决文件名乱码问题，获取浏览器类型，转换对应文件名编码格式，IE要求文件名必须是utf-8,
+		firefox要求是iso-8859-1编码
+		 */
 		String agent = request.getHeader("user-agent");
-		if (agent.contains("FireFox")) {
+		String browserType = "FireFox";
+		if (agent.contains(browserType)) {
 			filename = new String(filename.getBytes("UTF-8"), "iso-8859-1");
 		} else {
 			filename = URLEncoder.encode(filename, "UTF-8");
 		}
-		// 设置下载文件的mineType，告诉浏览器下载文件类型
+		/* 设置下载文件的mineType，告诉浏览器下载文件类型 */
 		response.setContentType("text/xml");
-		// 设置一个响应头，无论是否被浏览器解析，都下载
+		/* 设置一个响应头，无论是否被浏览器解析，都下载*/
 		response.setHeader("Content-Disposition", "attachment;filename=" + filename);
-		// 将要下载的文件内容通过输出流写到浏览器
+		/* 将要下载的文件内容通过输出流写到浏览器 */
 		ServletOutputStream outputStream = response.getOutputStream();
 		outputStream.write(xmlString.getBytes());
 		outputStream.flush();
-		//outputStream.close();
-        //return "success";
 		return "";
     }
 }
