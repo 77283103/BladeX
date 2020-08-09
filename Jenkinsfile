@@ -79,7 +79,7 @@ node {
     }
     stage("${project_name}打包") {
         if("${folder_name}" == "bladex"){
-            sh "mvn -f ${folder_name} package"
+            sh "mvn -f ${project_name} package"
         } else {
             sh "mvn -f ${folder_name}/${project_name} package"
         }
