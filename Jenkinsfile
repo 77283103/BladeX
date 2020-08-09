@@ -90,7 +90,7 @@ node {
         def imageName = "${project_name}:${tag}"
         sh "docker tag ${imageName} ${harbor_url}/${harbor_project}/${imageName}"
         // 把镜像推送到harbor
-        withCredentials([usernamePassword(credentialsId: '${harbor_auth}', passwordVariable: 'password', usernameVariable: 'username')]) {
+        withCredentials([usernamePassword(credentialsId: "${harbor_auth}", passwordVariable: 'password', usernameVariable: 'username')]) {
             // 登录harbor
             sh "docker login -u ${username} -p ${password} ${harbor_url}"
             // 推送镜像
