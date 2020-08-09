@@ -6,15 +6,15 @@ node {
         checkout([$class: 'GitSCM', branches: [[name: "*/${branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${git_auth}", url: 'http://39.107.82.113:7990/scm/blad/bladex.git']]])
     }
 
-//    stage('common编译、安装到本地仓库') {
-//        sh "mvn -f blade-common clean install"
-//   }
+    stage('common编译、安装到本地仓库') {
+        sh "mvn -f blade-common clean install"
+    }
 
     stage('api编译、安装到本地仓库') {
         if(${folder_name == 'bladex'}){
             echo "顶级菜单"
         } else{
-            echo "${folder_name"
+            echo "${folder_name}"
         }
     }
 }
