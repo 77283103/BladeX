@@ -3,6 +3,7 @@ def git_auth = "fdc25f60-4334-4a31-94e7-18ddbed0d9ca"
 def harbor_url = "172.17.56.23:8001"
 def harbor_project = "blade"
 def harbor_auth = "45b7cd95-6feb-438a-8d24-914a58bfc847"
+def tag = "2.5.0.RELEASE"
 node {
 
     stage("拉取代码") {
@@ -86,7 +87,7 @@ node {
         } else {
             sh "mvn -f ${folder_name}/${project_name} package dockerfile:build"
         }
-        def imageName = "${project_name}:latest"
+        def imageName = "${project_name}:${tag}"
         sh "docker tag ${imageName} ${harbor_url}/${harbor_project}/${imageName}"
         // 把镜像推送到harbor
         withCredentials([usernamePassword(credentialsId: '${harbor_auth}', passwordVariable: 'password', usernameVariable: 'username')]) {
