@@ -81,7 +81,7 @@ node {
         if("${folder_name}" == "bladex"){
             sh "mvn -f ${project_name} package"
         } else {
-            sh "mvn -f ${folder_name}/${project_name} package docker:build"
+            sh "mvn -f ${folder_name}/${project_name} package dockerfile:build"
         }
     }
 
