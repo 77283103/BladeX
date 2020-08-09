@@ -4,6 +4,9 @@ def harbor_url = "172.17.56.23:8001"
 def harbor_project = "blade"
 def harbor_auth = "45b7cd95-6feb-438a-8d24-914a58bfc847"
 def tag = "2.5.0.RELEASE"
+
+// 参数化构建时，参数名不能用'-'，要用'_'。否则会报错
+// ${变量名} 引用变量时不能用单引号，用双引号
 node {
 
     stage("拉取代码") {
