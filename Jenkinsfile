@@ -6,7 +6,10 @@ node {
         checkout([$class: "GitSCM", branches: [[name: "*/${branch}"]], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: "${git_auth}", url: "http://39.107.82.113:7990/scm/blad/bladex.git"]]])
     }
     stage("所有模块编译、安装到本地仓库") {
-        if("${all-module}" == true){
+        echo "${all-module}"
+    }
+    stage("所有模块编译、安装到本地仓库") {
+        if("${all-module}" = true){
             sh "mvn clean install"
         } else {
             echo "不需要重新编译所有模块……"
