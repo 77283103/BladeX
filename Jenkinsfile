@@ -11,7 +11,7 @@ node {
     }
 
     stage('api编译、安装到本地仓库') {
-        if(${folder_name == 'bladex'}){
+        if("${folder_name}" == 'bladex'){
             echo "顶级菜单"
         } else{
             echo "${folder_name}"
