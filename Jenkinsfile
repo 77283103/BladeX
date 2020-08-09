@@ -7,7 +7,7 @@ node {
     }
 
     stage("所有模块编译、安装到本地仓库") {
-        if("${all-module}"){
+        if(${all-module}){
             sh "mvn clean install"
         } else {
             echo "不需要重新编译所有模块……"
