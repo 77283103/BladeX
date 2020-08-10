@@ -192,7 +192,17 @@
         AND id = #{id}
     </select>
     <select id="findByDeptAndPost" resultType="org.springblade.system.user.entity.User">
-        SELECT * from blade_user WHERE is_deleted = 0
+        SELECT
+	      u.*
+        FROM
+           blade_user u
+	    LEFT JOIN blade_user_depart d
+	    ON u.id = d.user_id
+        where u.is_deleted = 0
+        <if test="deptId!=null and deptId != ''">
+        and d.dept_id = #{deptId}
+        <if test="postId!=null and postId != ''">
+        and d.post_id = #{postId}
     </select>
     <select id="findByBenchMinister" resultType="org.springblade.system.user.entity.User">
         SELECT * FROM blade_user WHERE is_deleted = 0
