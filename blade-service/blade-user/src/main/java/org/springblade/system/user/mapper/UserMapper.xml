@@ -201,11 +201,12 @@
         where u.is_deleted = 0
         <if test="deptId!=null and deptId != ''">
         and d.dept_id = #{deptId}
+        </if>
         <if test="postId!=null and postId != ''">
         and d.post_id = #{postId}
+        </if>
     </select>
     <select id="findByBenchMinister" resultType="org.springblade.system.user.entity.User">
-        SELECT * FROM blade_user WHERE is_deleted = 0
-    </select>
 
+    </select>
 </mapper>
