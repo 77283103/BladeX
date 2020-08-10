@@ -65,6 +65,7 @@ import org.springblade.flow.engine.vo.FlowNodeResponse;
 import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
+import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -360,7 +361,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		List<FlowUserResponse> flowUserResponseList = new ArrayList<>();
 		/* 获取候选人名单获取方式 */
 /* 		String getUserType = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.GET_USER_TYPE); */
-		String getUserType = "1";
+		String getUserType = "2";
 		if ("".equals(getUserType) || null == getUserType) {
 			return null;
 		}
@@ -384,15 +385,18 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 通过岗位方式获取候选人员list */
 		if (getUserType.equals(FlowDesignUserType.POSTS)) {
 			/* 获取自定义岗位属性和机构属性 */
-			String flowPost = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_POST);
-			String flowDept = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_DEPT);
+//			String flowPost = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_POST);
+			String flowPost = "1123598817738675203";
+//			String flowDept = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_DEPT);
+			String flowDept = "1281400947951632385";
 			if (null == flowPost) {
 				throw new FlowableException("未获取到自定义岗位信息");
 			}
 			if (null == flowDept) {
 				throw new FlowableException("未获取到自定义部门信息");
 			}
-			userClient.userInfoByDeptAndPost(flowDept, flowPost).forEach(user -> {
+			List<User> users = userClient.userInfoByDeptAndPost(flowDept, flowPost);
+				users.forEach(user -> {
 				FlowUserResponse flowUserResponse = FlowUserResponse.builder()
 					.id(user.getId().toString())
 					.name(user.getRealName())
