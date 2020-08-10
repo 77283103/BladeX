@@ -195,7 +195,7 @@
         SELECT
 	      u.*
         FROM
-           blade_user u
+        blade_user u
 	    LEFT JOIN blade_user_depart d
 	    ON u.id = d.user_id
         where u.is_deleted = 0
@@ -207,6 +207,22 @@
         </if>
     </select>
     <select id="findByBenchMinister" resultType="org.springblade.system.user.entity.User">
-
+        SELECT
+        u.*
+        FROM
+        blade_user u
+        LEFT JOIN blade_user_depart d
+        ON u.id = d.user_id
+        where u.is_deleted = 0
+        <if test="benchUserId!=null and benchUserId != ''">
+            and d.dept_id = (SELECT
+            d.dept_id
+            FROM
+            blade_user u
+            LEFT JOIN blade_user_depart d ON u.id = d.user_id
+            WHERE
+            d.user_id = #{benchUserId})
+        </if>
+        and d.post_id = '1123598817738675201'
     </select>
 </mapper>
