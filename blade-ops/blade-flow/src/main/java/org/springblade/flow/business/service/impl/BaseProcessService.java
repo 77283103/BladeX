@@ -49,23 +49,23 @@ public abstract class BaseProcessService {
         String tableName = managementService.getTableName(ActivityInstanceEntity.class);
         String sql = "select t.* from " + tableName + " t where t.PROC_INST_ID_=#{processInstanceId} and t.ACT_ID_ = #{disActivityId} " +
                 " order by t.END_TIME_ ASC";
-        //查询该实例将要删除的节点
+        /* 查询该实例将要删除的节点 */
         List<ActivityInstance> disActivities = runtimeService.createNativeActivityInstanceQuery().sql(sql)
                 .parameter("processInstanceId", processInstanceId)
                 .parameter("disActivityId", disActivityId).list();
-        //删除运行时和历史节点信息
+        /* 删除运行时和历史节点信息 */
         if (CollectionUtils.isNotEmpty(disActivities)) {
             ActivityInstance activityInstance = disActivities.get(0);
             sql = "select t.* from " + tableName + " t where t.PROC_INST_ID_=#{processInstanceId} and (t.END_TIME_ >= #{endTime} or t.END_TIME_ is null)";
-            //查询出该实例走过的每个节点和连线
+            /* 查询出该实例走过的每个节点和连线 */
             List<ActivityInstance> datas = runtimeService.createNativeActivityInstanceQuery().sql(sql).parameter("processInstanceId", processInstanceId)
                     .parameter("endTime", activityInstance.getEndTime()).list();
             List<String> runActivityIds = new ArrayList<>();
             if (CollectionUtils.isNotEmpty(datas)) {
-                //拉姆达表达式来把所有的id存到集合里，删除对应的运行时的节点信息和历史的节点信息
+                /* 拉姆达表达式来把所有的id存到集合里，删除对应的运行时的节点信息和历史的节点信息 */
                 datas.forEach(ai -> runActivityIds.add(ai.getId()));
-                //runFlowableActinstDao.deleteRunActinstsByIds(runActivityIds);
-                //hisFlowableActinstDao.deleteHisActinstsByIds(runActivityIds);
+                /* runFlowableActinstDao.deleteRunActinstsByIds(runActivityIds); */
+                /* hisFlowableActinstDao.deleteHisActinstsByIds(runActivityIds); */
             }
         }
     }
@@ -93,8 +93,8 @@ public abstract class BaseProcessService {
     protected TaskEntity createSubTask(TaskEntity ptask, String ptaskId, String assignee) {
         TaskEntity task = null;
         if (ptask != null) {
-            //1.生成子任务
-            //task = (TaskEntity) taskService.newTask(UUIDGenerator.generate());
+            /* 1.生成子任务 */
+            /* task = (TaskEntity) taskService.newTask(UUIDGenerator.generate()); */
 			task = (TaskEntity) taskService.newTask("123456");
             task.setCategory(ptask.getCategory());
             task.setDescription(ptask.getDescription());
