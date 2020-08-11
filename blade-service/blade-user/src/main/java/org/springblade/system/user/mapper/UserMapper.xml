@@ -85,8 +85,8 @@
         <if test="user.tenantId!=null and user.tenantId != ''">
             and a.tenant_id = #{user.tenantId}
         </if>
-        <if test="user.account!=null and user.account != ''">
-            and a.account like concat('%',#{user.account},'%')
+        <if test="user.code!=null and user.code != ''">
+            and a.code like concat('%',#{user.code},'%')
         </if>
         <if test="user.realName!=null and user.realName != ''">
             and a.real_name like concat('%',#{user.realName},'%')
@@ -192,10 +192,37 @@
         AND id = #{id}
     </select>
     <select id="findByDeptAndPost" resultType="org.springblade.system.user.entity.User">
-        SELECT * from blade_user WHERE is_deleted = 0
+        SELECT
+	      u.*
+        FROM
+        blade_user u
+	    LEFT JOIN blade_user_depart d
+	    ON u.id = d.user_id
+        where u.is_deleted = 0
+        <if test="deptId!=null and deptId != ''">
+        and d.dept_id = #{deptId}
+        </if>
+        <if test="postId!=null and postId != ''">
+        and d.post_id = #{postId}
+        </if>
     </select>
     <select id="findByBenchMinister" resultType="org.springblade.system.user.entity.User">
-        SELECT * FROM blade_user WHERE is_deleted = 0
+        SELECT
+        u.*
+        FROM
+        blade_user u
+        LEFT JOIN blade_user_depart d
+        ON u.id = d.user_id
+        where u.is_deleted = 0
+        <if test="benchUserId!=null and benchUserId != ''">
+            and d.dept_id in (SELECT
+            d.dept_id
+            FROM
+            blade_user u
+            LEFT JOIN blade_user_depart d ON u.id = d.user_id
+            WHERE
+            d.user_id = #{benchUserId})
+        </if>
+        and d.post_id = '1123598817738675201'
     </select>
-
 </mapper>
