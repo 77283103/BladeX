@@ -215,7 +215,7 @@
         ON u.id = d.user_id
         where u.is_deleted = 0
         <if test="benchUserId!=null and benchUserId != ''">
-            and d.dept_id = (SELECT
+            and d.dept_id in (SELECT
             d.dept_id
             FROM
             blade_user u
