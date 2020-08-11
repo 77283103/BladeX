@@ -25,7 +25,6 @@ import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.SecureUtil;
-import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.utils.*;
 import org.springblade.system.cache.ParamCache;
@@ -41,7 +40,6 @@ import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.excel.UserExcel;
 import org.springblade.system.user.mapper.UserMapper;
 import org.springblade.system.user.service.IUserDepartService;
-import org.springblade.system.user.service.IUserDeptService;
 import org.springblade.system.user.service.IUserService;
 import org.springblade.system.user.vo.SelectUserVO;
 import org.springblade.system.user.vo.UserVO;
@@ -67,9 +65,7 @@ import static org.springblade.common.constant.CommonConstant.DEFAULT_TENANT_ID;
 @AllArgsConstructor
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements IUserService {
 
-	private IUserDeptService userDeptService;
 	private IUserDepartService userDepartService;
-	private ISysClient sysClient;
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
