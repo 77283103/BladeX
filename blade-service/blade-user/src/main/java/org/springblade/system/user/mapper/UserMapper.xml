@@ -173,7 +173,7 @@
             SELECT
             user_id
             FROM
-            blade_user_dept
+            blade_user_depart
             WHERE
             dept_id IN
             <foreach collection="deptIdList" index="index" item="item" open="(" separator="," close=")">
