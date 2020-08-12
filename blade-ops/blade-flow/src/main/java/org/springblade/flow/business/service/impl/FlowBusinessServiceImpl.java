@@ -1098,6 +1098,22 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	}
 
+	@Override
+	public String btnPermission(String taskId) {
+		/* 获取taskEntity对象 */
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+		/* 当前节点id */
+		String currActId = taskEntity.getTaskDefinitionKey();
+		/* 流程定义id */
+		String processDefinitionId = taskEntity.getProcessDefinitionId();
+		/* 获取流程实例对象 */
+		Process process = repositoryService.getBpmnModel(processDefinitionId).getMainProcess();
+		/* 获取当前节点 */
+		FlowNode targetNode = (FlowNode) process.getFlowElement(currActId, true);
+		/* 获取btnPermission标签值*/
+		return targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.BTN_PERMISSION);
+	}
+
 
 	/**
 	 * 删除跳转的历史节点信息

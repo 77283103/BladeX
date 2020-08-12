@@ -173,4 +173,11 @@ public interface FlowBusinessService {
 	 * @return
 	 */
 	List<FlowUserResponse> getCandidateUsers(FlowNode targetNode, String taskId);
+
+	/**
+	 * 获取审批页面按钮权限
+	 * @param taskId
+	 * @return
+	 */
+	String btnPermission(String taskId);
 }
