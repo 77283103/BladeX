@@ -173,7 +173,7 @@
             SELECT
             user_id
             FROM
-            blade_user_dept
+            blade_user_depart
             WHERE
             dept_id IN
             <foreach collection="deptIdList" index="index" item="item" open="(" separator="," close=")">
@@ -206,6 +206,7 @@
         and d.post_id = #{postId}
         </if>
     </select>
+    <!-- 关系定义：查询基准人所在部门的首席执行官（id=1123598817738675201） -->
     <select id="findByBenchMinister" resultType="org.springblade.system.user.entity.User">
         SELECT
         u.*

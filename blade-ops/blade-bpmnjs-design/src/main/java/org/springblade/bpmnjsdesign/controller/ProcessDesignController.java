@@ -1,10 +1,14 @@
 package org.springblade.bpmnjsdesign.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.flowable.engine.repository.Model;
 import org.springblade.bpmnjsdesign.service.ModelEditorJsonRestResource;
 import org.springblade.bpmnjsdesign.service.ModelSaveRestResource;
 import org.springblade.bpmnjsdesign.service.ProcessDesignService;
-import org.flowable.engine.repository.Model;
+import org.springblade.core.mp.support.Condition;
+import org.springblade.core.mp.support.Query;
+import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
@@ -47,6 +51,15 @@ public class ProcessDesignController {
 	public List<Model> listModel() {
 		List<Model> listModel = processDesignService.listModel();
 		return  listModel;
+	}
+
+	/**
+	 * 查询模型分页处理
+	 */
+	@RequestMapping(value = "/model/list-page", method = RequestMethod.GET)
+	public R<IPage<Model>> listModelPage(String category, Query query, @RequestParam(required = false, defaultValue = "1") Integer mode) {
+		IPage<Model> pages = processDesignService.listModelPage(Condition.getPage(query), category, mode);
+		return R.data(pages);
 	}
 
 	/**

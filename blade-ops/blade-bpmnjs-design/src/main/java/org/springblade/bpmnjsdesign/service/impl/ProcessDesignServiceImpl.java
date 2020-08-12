@@ -1,5 +1,6 @@
 package org.springblade.bpmnjsdesign.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
@@ -8,7 +9,9 @@ import org.flowable.editor.constants.ModelDataJsonConstants;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.repository.Deployment;
 import org.flowable.engine.repository.Model;
+import org.flowable.engine.repository.ModelQuery;
 import org.springblade.bpmnjsdesign.service.ProcessDesignService;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -72,7 +75,16 @@ public class ProcessDesignServiceImpl implements ProcessDesignService {
         return repositoryService.createModelQuery().list();
     }
 
-    /**
+	@Override
+	public IPage<Model> listModelPage(IPage<Model> page, String category, Integer mode) {
+		ModelQuery modelQuery = repositoryService.createModelQuery().latestVersion().orderByLastUpdateTime().asc();
+		List<Model> modelList = modelQuery.listPage(Func.toInt((page.getCurrent() - 1) * page.getSize()), Func.toInt(page.getSize()));
+		page.setTotal(modelQuery.count());
+		page.setRecords(modelList);
+		return page;
+	}
+
+	/**
      * 删除模型
      * @param modelId
      */

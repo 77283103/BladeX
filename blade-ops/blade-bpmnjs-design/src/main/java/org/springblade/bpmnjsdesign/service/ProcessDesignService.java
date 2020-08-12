@@ -1,6 +1,7 @@
 package org.springblade.bpmnjsdesign.service;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.flowable.engine.repository.Model;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,6 +31,12 @@ public interface ProcessDesignService {
     List<Model> listModel();
 
 	/**
+	 * 获取模板列表分页
+	 * @return
+	 */
+	IPage<Model> listModelPage(IPage<Model> page, String category, Integer mode);
+
+	/**
 	 * 删除模板
 	 * @param modelId
 	 */
@@ -52,4 +59,5 @@ public interface ProcessDesignService {
 	 * @throws Exception
 	 */
 	String downLoadXml(String modelId, HttpServletRequest request, HttpServletResponse response) throws Exception;
+
 }
