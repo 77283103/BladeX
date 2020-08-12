@@ -17,12 +17,14 @@
 package org.springblade.flow.business.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.flowable.bpmn.model.FlowNode;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.engine.vo.FlowNodeResponse;
 import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
+import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
 
 import java.util.List;
@@ -162,6 +164,15 @@ public interface FlowBusinessService {
 	 * @return void
 	 */
 	boolean takeBackTask(BladeFlow flow);
+
+	/**
+	 * 根据流程自定义属性查询候选人列表
+	 *
+	 * @param targetNode
+	 * @param taskId
+	 * @return
+	 */
+	List<FlowUserResponse> getCandidateUsers(FlowNode targetNode, String taskId);
 
 	/**
 	 *
