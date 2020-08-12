@@ -42,6 +42,7 @@ import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.support.Kv;
+import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
 import org.springblade.core.tool.utils.StringUtil;
@@ -67,7 +68,6 @@ import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -103,6 +103,10 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 */
 	@Override
 	public boolean completeTask(List<FlowNodeResponseReceive> flowNodeResponseReceiveList) {
+		if(CollectionUtil.isEmpty(flowNodeResponseReceiveList)){
+			logger.error("流程提交时前台返回节点用户信息为空");
+			return false;
+		}
 		FlowNodeResponseReceive flow = flowNodeResponseReceiveList.get(0);
 		String taskId = flow.getTaskId();
 		/* 获取taskEntity对象 */
@@ -142,7 +146,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			/* 根据前台返回的节点List和用户List给全局变量赋值 */
 			/* 此处只要给参数循环赋值即可，无需关心执行单条或多条分支，flowable会自行判断，只要保证相应节点有任务处理人即可 */
 			flowNodeResponseReceiveList.forEach(flowNodeResponseReceive -> {
-				System.out.println(flowNodeResponseReceive.getUserResponseList().get(0).getId());
 				variables.put(flowNodeResponseReceive.getId(), TaskUtil.getTaskUser(flowNodeResponseReceive.getUserResponseList().get(0).getId()));
 			});
 			/* 完成任务 */
@@ -357,29 +360,33 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @param taskId
 	 * @return
 	 */
-	private List<FlowUserResponse> getCandidateUsers(FlowNode targetNode, String taskId) {
+	@Override
+	public List<FlowUserResponse> getCandidateUsers(FlowNode targetNode, String taskId) {
 		List<FlowUserResponse> flowUserResponseList = new ArrayList<>();
 		/* 获取候选人名单获取方式 */
-/* 		String getUserType = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.GET_USER_TYPE); */
-		String getUserType = "2";
+		/*String getUserType = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.GET_USER_TYPE); */
+		String getUserType = "1";
 		if ("".equals(getUserType) || null == getUserType) {
 			return null;
 		}
 		/* 通过固定用户方式获取候选人员list */
 		if (getUserType.equals(FlowDesignUserType.USERS)) {
-			/* 获取自定义人员属性，格式为：usera,userb,userc... */
-/* 			String flowUser = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_USER); */
-			String flowUser = "1123598821738675204,1123598821738675203,1277149137980149761,1277149681025077250,1277150805048217601,1285030425345622018,1285042582066003970,1285045699214016514";
+			/* 获取自定义人员属性，格式为：user1,user2,user3... */
+			/*String flowUser = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_USER);*/
+			String flowUser = "1123598821738675201,1123598821738675202,1123598821738675203,1123598821738675204,1285030425345622018,1293106740696584194";
 			if (null == flowUser) {
 				throw new FlowableException("固定人员流程设计方式未获取到自定义人员信息");
 			}
-			userClient.userInfoByUserIds(flowUser).forEach(user -> {
-				FlowUserResponse flowUserResponse = FlowUserResponse.builder()
-					.id(user.getId().toString())
-					.name(user.getRealName())
-					.build();
-				flowUserResponseList.add(flowUserResponse);
-			});
+			List<User> users = userClient.userInfoByUserIds(flowUser);
+			if(null != users) {
+				users.forEach(user -> {
+					FlowUserResponse flowUserResponse = FlowUserResponse.builder()
+						.id(user.getId().toString())
+						.name(user.getRealName())
+						.build();
+					flowUserResponseList.add(flowUserResponse);
+				});
+			}
 			return flowUserResponseList;
 		}
 		/* 通过岗位方式获取候选人员list */
@@ -396,13 +403,16 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				throw new FlowableException("未获取到自定义部门信息");
 			}
 			List<User> users = userClient.userInfoByDeptAndPost(flowDept, flowPost);
+			/* users为空时直接返回List */
+			if(null != users) {
 				users.forEach(user -> {
-				FlowUserResponse flowUserResponse = FlowUserResponse.builder()
-					.id(user.getId().toString())
-					.name(user.getRealName())
-					.build();
-				flowUserResponseList.add(flowUserResponse);
-			});
+					FlowUserResponse flowUserResponse = FlowUserResponse.builder()
+						.id(user.getId().toString())
+						.name(user.getRealName())
+						.build();
+					flowUserResponseList.add(flowUserResponse);
+				});
+			}
 			return flowUserResponseList;
 		}
 		/* 通过关系定义方式获取候选人员list */
@@ -437,13 +447,16 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			}
 			switch (flowRelationType) {
 				case FlowRelationType.BENCHMARK_MINISTER:
-					userClient.userInfoByBenchMinister(benchUser).forEach(user -> {
-						FlowUserResponse flowUserResponse = FlowUserResponse.builder()
-							.id(user.getId().toString())
-							.name(user.getRealName())
-							.build();
-						flowUserResponseList.add(flowUserResponse);
-					});
+					List<User> users = userClient.userInfoByBenchMinister(benchUser);
+					if(null != users) {
+						users.forEach(user -> {
+							FlowUserResponse flowUserResponse = FlowUserResponse.builder()
+								.id(user.getId().toString())
+								.name(user.getRealName())
+								.build();
+							flowUserResponseList.add(flowUserResponse);
+						});
+					}
 					break;
 				default:
 					break;
@@ -850,6 +863,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	/**
 	 * 委派返回
+	 *
 	 * @param flow
 	 * @return
 	 */
@@ -874,7 +888,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	/**
 	 * 执行退回功能
-	 *
 	 */
 	@Override
 	public boolean takeItBackTask(BladeFlow flow) {
@@ -914,7 +927,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				backTaskVo.getDistFlowElementId())
 				&& flowableBpmnModelService.checkActivitySubprocessByActivityId(taskEntity.getProcessDefinitionId(),
 				taskEntity.getTaskDefinitionKey())) {*/
-				/* 6.1 子流程内部拿回 */
+			/* 6.1 子流程内部拿回 */
 				/*Execution executionTask = runtimeService.createExecutionQuery().executionId(taskEntity.getExecutionId()).singleResult();
 				String parentId = executionTask.getParentId();
 				List<Execution> executions = runtimeService.createExecutionQuery().parentId(parentId).list();
@@ -935,7 +948,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	/**
 	 * 查询可退回的节点信息
-	 *
 	 */
 	@Override
 	public List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow) {
@@ -1041,7 +1053,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	/**
 	 * 执行拿回
-	 *
 	 */
 	@Override
 	public boolean takeBackTask(BladeFlow flow) {
@@ -1085,6 +1096,22 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			return true;
 		}
 
+	}
+
+	@Override
+	public String btnPermission(String taskId) {
+		/* 获取taskEntity对象 */
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+		/* 当前节点id */
+		String currActId = taskEntity.getTaskDefinitionKey();
+		/* 流程定义id */
+		String processDefinitionId = taskEntity.getProcessDefinitionId();
+		/* 获取流程实例对象 */
+		Process process = repositoryService.getBpmnModel(processDefinitionId).getMainProcess();
+		/* 获取当前节点 */
+		FlowNode targetNode = (FlowNode) process.getFlowElement(currActId, true);
+		/* 获取btnPermission标签值*/
+		return targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.BTN_PERMISSION);
 	}
 
 
