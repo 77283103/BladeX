@@ -162,4 +162,11 @@ public interface FlowBusinessService {
 	 * @return void
 	 */
 	boolean takeBackTask(BladeFlow flow);
+
+	/**
+	 *
+	 * @param taskId
+	 * @return
+	 */
+	String btnPermission(String taskId);
 }
