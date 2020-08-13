@@ -1,15 +1,21 @@
 package org.springblade.bpmnjsdesign.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.flowable.engine.repository.Model;
 import org.springblade.bpmnjsdesign.service.ModelEditorJsonRestResource;
 import org.springblade.bpmnjsdesign.service.ModelSaveRestResource;
 import org.springblade.bpmnjsdesign.service.ProcessDesignService;
-import org.flowable.engine.repository.Model;
+import org.springblade.core.mp.support.Condition;
+import org.springblade.core.mp.support.Query;
+import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
@@ -48,6 +54,15 @@ public class ProcessDesignController {
 	}
 
 	/**
+	 * 查询模型分页处理
+	 */
+	@RequestMapping(value = "/model/list-page", method = RequestMethod.GET)
+	public R<IPage<Model>> listModelPage(String category, Query query, @RequestParam(required = false, defaultValue = "1") Integer mode) {
+		IPage<Model> pages = processDesignService.listModelPage(Condition.getPage(query), category, mode);
+		return R.data(pages);
+	}
+
+	/**
 	 * 保存模型
 	 */
 	@RequestMapping(value = "/model/{modelId}/xml/save", method = RequestMethod.POST, produces = "application/json")
@@ -79,27 +94,12 @@ public class ProcessDesignController {
 	}
 
 	/**
-	 * 根据生成的ID部署模型
+	 * 根据生成的ID下载xml文件
 	 * @param modelId
 	 * @return
 	 */
-	@GetMapping(value = "/model/deploy")
-	public String deploy(@RequestParam(name = "modelId") String modelId) throws Exception {
-		return processDesignService.deployModel(modelId);
+	@GetMapping(value = "/model/downLoadXml")
+	public String downLoadXml(@RequestParam(name = "modelId") String modelId,HttpServletRequest request,HttpServletResponse response) throws Exception {
+		return processDesignService.downLoadXml(modelId, request, response);
 	}
-	//===================test========================
-	@GetMapping(value = "/testmodel/savexml")
-	public String testSavemodelXml() throws Exception {
-		String modelId = "79f9a5f2-d6da-11ea-83c4-c83dd4689c4d";
-		String values = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<definitions xmlns=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:omgdc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:omgdi=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" xmlns:flowable=\"http://flowable.org/bpmn\" xmlns:barcode=\"http://flowable.org/bpmn/barcode\" id=\"sample-diagram\" targetNamespace=\"http://www.flowable.org/processdef\" xsi:schemaLocation=\"http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd\">\n  <process id=\"Process_1\" isExecutable=\"true\" process_namespace=\"\" process_id=\"Process_1\">\n    <startEvent id=\"StartEvent_0mbhjvm\" name=\"开始\">\n      <outgoing>SequenceFlow_1dqzg2c</outgoing>\n    </startEvent>\n    <userTask id=\"UserTask_one\" flowable:assignee=\"${UserTask_one}\" barcode:job=\"job1\" barcode:role=\"role1\" barcode:people=\"people1\">\n      <incoming>SequenceFlow_1dqzg2c</incoming>\n      <outgoing>SequenceFlow_1w786rh</outgoing>\n    </userTask>\n    <sequenceFlow id=\"SequenceFlow_1dqzg2c\" sourceRef=\"StartEvent_0mbhjvm\" targetRef=\"UserTask_one\" />\n    <userTask id=\"UserTask_two\" flowable:assignee=\"${UserTask_two}\" barcode:job=\"job2\" barcode:role=\"role2\" barcode:people=\"people2\">\n      <incoming>SequenceFlow_1w786rh</incoming>\n      <outgoing>SequenceFlow_1bto6j3</outgoing>\n    </userTask>\n    <sequenceFlow id=\"SequenceFlow_1w786rh\" sourceRef=\"UserTask_one\" targetRef=\"UserTask_two\" />\n    <endEvent id=\"EndEvent_0kame3v\" name=\"完成\">\n      <incoming>SequenceFlow_1bto6j3</incoming>\n    </endEvent>\n    <sequenceFlow id=\"SequenceFlow_1bto6j3\" sourceRef=\"UserTask_two\" targetRef=\"EndEvent_0kame3v\" />\n  </process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"Process_1\">\n      <bpmndi:BPMNShape id=\"StartEvent_0mbhjvm_di\" bpmnElement=\"StartEvent_0mbhjvm\">\n        <omgdc:Bounds x=\"292\" y=\"82\" width=\"36\" height=\"36\" />\n        <bpmndi:BPMNLabel>\n          <omgdc:Bounds x=\"299\" y=\"125\" width=\"22\" height=\"14\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"UserTask_1qjzhu4_di\" bpmnElement=\"UserTask_one\">\n        <omgdc:Bounds x=\"380\" y=\"60\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"SequenceFlow_1dqzg2c_di\" bpmnElement=\"SequenceFlow_1dqzg2c\">\n        <omgdi:waypoint x=\"328\" y=\"100\" />\n        <omgdi:waypoint x=\"380\" y=\"100\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNShape id=\"UserTask_1bbs1ef_di\" bpmnElement=\"UserTask_two\">\n        <omgdc:Bounds x=\"540\" y=\"60\" width=\"100\" height=\"80\" />\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"SequenceFlow_1w786rh_di\" bpmnElement=\"SequenceFlow_1w786rh\">\n        <omgdi:waypoint x=\"480\" y=\"100\" />\n        <omgdi:waypoint x=\"540\" y=\"100\" />\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNShape id=\"EndEvent_0kame3v_di\" bpmnElement=\"EndEvent_0kame3v\">\n        <omgdc:Bounds x=\"702\" y=\"82\" width=\"36\" height=\"36\" />\n        <bpmndi:BPMNLabel>\n          <omgdc:Bounds x=\"709\" y=\"125\" width=\"22\" height=\"14\" />\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"SequenceFlow_1bto6j3_di\" bpmnElement=\"SequenceFlow_1bto6j3\">\n        <omgdi:waypoint x=\"640\" y=\"100\" />\n        <omgdi:waypoint x=\"702\" y=\"100\" />\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</definitions>\n";
-		modelSaveRestResource.saveModelXml2(modelId, values);
-		return "success";
-	}
-	@GetMapping(value = "/testmodel/deploy")
-	public String testdeploy() throws Exception {
-		String modelId = "79f9a5f2-d6da-11ea-83c4-c83dd4689c4d";
-		return processDesignService.deployModel(modelId);
-	}
-
-
 }

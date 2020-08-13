@@ -123,30 +123,29 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 		return baseMapper.lazyList(parentId, param);
 	}
 
-	/**
-	* @Description:  根据ids 递归查询子节点
-	* @Param:  ids
-	* @return:void
-	* @Author: lm
-	* @Date:  2020年6月19日
-	*/
 	List<Long> result =new ArrayList<>();
-	// 递归查询
+	/**
+	 * @Description:  根据ids 递归查询子节点
+	 * @Param:  ids
+	 * @return:void
+	 * @Author: lm
+	 * @Date:  2020年6月19日
+	 */
 	public void selectChild(List<Long> ids) {
 		List<Long> temp = new ArrayList<>();
-		for (Long id : ids) {
+		ids.forEach(id -> {
 			QueryWrapper<Dict> queryWrapper = new QueryWrapper<Dict>();
 			queryWrapper.eq("parent_id", id);
 			List<Dict> DictList = this.baseMapper.selectList(queryWrapper);
 			result.add(id);
-			for (Dict dict : DictList) {
+			DictList.forEach(dict -> {
 				temp.add(dict.getId());
 				result.add(dict.getId());
 				if (temp.size() != 0 && temp != null) {
 					selectChild(temp);
-				}
-			}
-		}
+				};
+			});
+		});
 	}
 
 	/**
@@ -162,7 +161,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 		//递归查询
 		result =new ArrayList<>();
 		this.selectChild(idList);
-		 return removeByIds(result);
+		return removeByIds(result);
 
 	}
 
