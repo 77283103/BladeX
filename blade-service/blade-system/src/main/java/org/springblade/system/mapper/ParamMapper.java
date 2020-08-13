@@ -26,5 +26,5 @@ import org.springblade.system.entity.Param;
  * @author Chill
  */
 public interface ParamMapper extends BaseMapper<Param> {
-	IPage<Param> pageList(IPage<Param> page, Param param);
+	IPage<Param> pageList(@feign.Param("page") IPage<Param> page, @feign.Param("param") Param param);
 }

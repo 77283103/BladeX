@@ -364,16 +364,16 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	public List<FlowUserResponse> getCandidateUsers(FlowNode targetNode, String taskId) {
 		List<FlowUserResponse> flowUserResponseList = new ArrayList<>();
 		/* 获取候选人名单获取方式 */
-		/*String getUserType = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.GET_USER_TYPE); */
-		String getUserType = "1";
+		String getUserType = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.GET_USER_TYPE);
+//		String getUserType = "1";
 		if ("".equals(getUserType) || null == getUserType) {
 			return null;
 		}
 		/* 通过固定用户方式获取候选人员list */
 		if (getUserType.equals(FlowDesignUserType.USERS)) {
 			/* 获取自定义人员属性，格式为：user1,user2,user3... */
-			/*String flowUser = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_USER);*/
-			String flowUser = "1123598821738675201,1123598821738675202,1123598821738675203,1123598821738675204,1285030425345622018,1293106740696584194";
+			String flowUser = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_USER);
+//			String flowUser = "1123598821738675201,1123598821738675202,1123598821738675203,1123598821738675204,1285030425345622018,1293106740696584194";
 			if (null == flowUser) {
 				throw new FlowableException("固定人员流程设计方式未获取到自定义人员信息");
 			}
