@@ -18,6 +18,9 @@ package org.springblade.flow.engine.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.reactivex.Flowable;
+import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.BladeFlowHistory;
 import org.springblade.flow.engine.entity.FlowModel;
 
 import java.util.List;
@@ -43,4 +46,11 @@ public interface FlowMapper extends BaseMapper<FlowModel> {
 	 * @return
 	 */
 	List<FlowModel> findByParentModelId(String parentModelId);
+
+	/**
+	 * 通过流程实例id获取审批意见列表
+	 * @param ProcessInstanceId 流程实例id
+	 * @return
+	 */
+	List<BladeFlowHistory> getFlowCommentVosByProcessInstanceId(String ProcessInstanceId);
 }
