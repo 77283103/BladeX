@@ -23,11 +23,11 @@ package org.springblade.flow.engine.constant;
  */
 public interface FlowEngineConstant {
 
-	String FLOW_START_ELEMENT = "UserTask_start";
-
-	String FLOW_FIRST_ELEMENT = "UserTask_first";
+	String FLOW_START_EVENT = "startEvent1";
 
 	String GET_USER_TYPE = "getUserType";
+
+	String BTN_PERMISSION = "btnPermission";
 
 	String NAME_SPACE = "http://flowable.org/bpmn/barcode";
 
