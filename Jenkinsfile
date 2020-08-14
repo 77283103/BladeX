@@ -66,7 +66,7 @@ node {
                 "${currentName}" == "blade-system" ||
                 "${currentName}" == "blade-user"){
 
-                sh "mvn -f blade-service/${currentName} clean install"
+                sh "mvn -f blade-service/${currentName} package dockerfile:build"
             }
 
         }
