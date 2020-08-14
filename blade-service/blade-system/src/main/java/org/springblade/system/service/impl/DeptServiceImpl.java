@@ -89,7 +89,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 
 	@Override
 	public List<Dept> getDeptChild(Long deptId) {
-		// 2020-6-19 14:45:40 tah，增加过滤条件，查询未删除的的，即isDeleted=0
+		/* 2020-6-19 14:45:40 tah，增加过滤条件，查询未删除的的，即isDeleted=0 */
 		return baseMapper.selectList(Wrappers.<Dept>query().lambda().like(Dept::getAncestors, deptId).eq(Dept::getIsDeleted, 0));
 	}
 
@@ -123,31 +123,31 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 			String ancestors = parent.getAncestors() + StringPool.COMMA + dept.getParentId();
 			dept.setAncestors(ancestors);
 		}
-		// 根据id是否为空判断做新增还是修改
+		/* 根据id是否为空判断做新增还是修改 */
 		if(null == dept.getId()){
 			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
-			// 保存拼音名称
+			/* 保存拼音名称 */
 			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(),dept.getFullName()));
 			return save(dept);
 		}else{
 			boolean flag = false;
-			// 获取被修改机构的id
+			/* 获取被修改机构的id */
 			Long oldId = dept.getId();
-			// 将被修改机构制作成副本保存一份
+			/* 将被修改机构制作成副本保存一份 */
 			dept.setUpdateDeptId(oldId);
 			dept.setId(null);
 			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
 			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(),dept.getFullName()));
 			save(dept);
-			// 获取机构修改后的id，这个id与oldId不同
+			/* 获取机构修改后的id，这个id与oldId不同 */
 			Long newId = dept.getId();
-			// 逻辑删除被修改记录留存
+			/* 逻辑删除被修改记录留存 */
 			flag = removeDeptIgnoreChild(oldId+"");
-			// 获取修改机构的子级单位集合
+			/* 获取修改机构的子级单位集合 */
 			List<Dept> childDepts = getDeptChild(oldId);
-			// 获取修改后的机构对象
+			/* 获取修改后的机构对象 */
 			Dept deptNew = getById(newId);
-			// 遍历子单位集合修改子单位的父ID和祖籍列表
+			/* 遍历子单位集合修改子单位的父ID和祖籍列表 */
 			for (Dept dept1: childDepts) {
 				dept1.setParentId(newId);
 				dept1.setAncestors(deptNew.getAncestors() + StringPool.COMMA + dept1.getParentId());
@@ -155,5 +155,13 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 			}
 			return flag;
 		}
+	}
+
+	@Override
+	public boolean updateDeptStatus(String deptId, Integer isEnable) {
+		Dept dept = baseMapper.selectById(deptId);
+		dept.setIsEnable(isEnable);
+		baseMapper.updateById(dept);
+		return true;
 	}
 }

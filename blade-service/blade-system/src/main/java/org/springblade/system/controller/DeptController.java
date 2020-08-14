@@ -158,5 +158,18 @@ public class DeptController extends BladeController {
 		return R.status(deptService.removeDept(ids));
 	}
 
-
+	/**
+	 * 修改机构启用状态
+	 * @param id
+	 * @param isEnable
+	 * @return
+	 */
+	@PostMapping("/update-status")
+	@ApiOperationSupport(order = 8)
+	@ApiOperation(value = "修改启用状态", notes = "传入id和状态值")
+	public R updateStatus(@ApiParam(value = "机构id", required = true) @RequestParam String id,
+						  @ApiParam(value = "状态", required = true) @RequestParam Integer isEnable){
+		boolean temp = deptService.updateDeptStatus(id, isEnable);
+		return R.status(temp);
+	}
 }

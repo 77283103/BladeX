@@ -39,9 +39,6 @@ public class ModelEditorJsonRestResource implements ModelDataJsonConstants {
                     jsonObject.put(MODEL_NAME, model.getName());
                 }
                 jsonObject.put(MODEL_ID, model.getId());
-//                JSONObject editorJsonNode = JSON.parseObject(new String(repositoryService.getModelEditorSource(model.getId())));
-                //将json流程转为标准xml流程图
-//                String bpmnXml = BpmnConverterUtil.converterJsonToWebXml(editorJsonNode.toJSONString());
                 String bpmnXml = "";
                 byte[] modelEditorSource = repositoryService.getModelEditorSource(model.getId());
                 if(modelEditorSource != null && modelEditorSource.length > 0){
@@ -50,11 +47,11 @@ public class ModelEditorJsonRestResource implements ModelDataJsonConstants {
                 jsonObject.put("bpmnXml", bpmnXml);
             } catch (Exception e) {
                 LOG.error("创建model的json串失败", e);
-                //throw new FlowableNoPermissionException("无法读取model信息", e);
+                throw new RuntimeException("无法读取model信息", e);
             }
         } else {
             LOG.error("创建model的json串失败[{}]", modelId);
-           // throw new FlowableNoPermissionException("未找到对应模型信息");
+            throw new RuntimeException("未找到对应模型信息");
         }
         return jsonObject;
     }

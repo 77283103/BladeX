@@ -90,6 +90,7 @@ public interface IDeptService extends BaseService<Dept> {
 	 * @return
 	 */
 	boolean removeDept(String ids);
+
 	/**
 	 * 删除部门，忽略子节点，用于父级机构更新
 	 *
@@ -106,4 +107,12 @@ public interface IDeptService extends BaseService<Dept> {
 	 */
 	boolean submit(Dept dept);
 
+	/**
+	 * 修改机构启用状态
+	 *
+	 * @param deptId
+	 * @param isEnable
+	 * @return
+	 */
+	boolean updateDeptStatus(String deptId, Integer isEnable);
 }
