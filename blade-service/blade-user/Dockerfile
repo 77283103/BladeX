@@ -6,7 +6,7 @@ RUN mkdir -p /blade/user
 
 WORKDIR /blade/user
 
-EXPOSE 8102
+EXPOSE 18102
 
 ADD ./target/blade-user.jar ./app.jar
 
