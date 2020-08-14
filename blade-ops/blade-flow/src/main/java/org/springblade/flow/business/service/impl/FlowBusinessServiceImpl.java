@@ -796,6 +796,15 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		taskService.addComment(taskId, processInstanceId, type.toString(), message);
 	}
 
+	/**
+	 * 获取当前登录人id
+	 */
+	public String getLoginId(){
+		BladeUser user = AuthUtil.getUser();
+		String userId = String.valueOf(user.getUserId());
+		return userId;
+	}
+
 	@Override
 	public void cancelTask(BladeFlow flow) {
 		if (Func.isEmpty(flow.getProcessInstanceId())) {
@@ -825,8 +834,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 转办人员id */
 		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
 		/* 当前人员id */
-		BladeUser user = AuthUtil.getUser();
-		String userId = String.valueOf(user.getUserId());
+		String userId = this.getLoginId();
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.ZB, flow.getComment());
 		taskService.setAssignee(task.getId(), assignee);
@@ -851,13 +859,15 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		String taskId = flow.getTaskId();
 		/* 委托人员id */
 		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
-		/* 当前人员id */
-		BladeUser user = AuthUtil.getUser();
-		String userId = String.valueOf(user.getUserId());
+		/* 当前登录人员id */
+		String userId = this.getLoginId();
 		/* 是否可以委派任务，如果不可以的话直接被异常处理拦截 */
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
 		/* Task task = permissionService.validateDelegatePermissionOnTask(taskId, userId, assignee); */
 		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.WP, flow.getComment());
+		/* 当前审核人为当前登录人 */
+		taskService.setAssignee(taskId,userId);
+		/* 执行转办 */
 		taskService.delegateTask(task.getId(), assignee);
 	}
 
@@ -872,16 +882,14 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	public boolean delegateBack(BladeFlow flow) {
 		/* 任务id */
 		String taskId = flow.getTaskId();
-		/* 委托人员id */
-		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
 		/* 当前人员id */
-		BladeUser user = AuthUtil.getUser();
-		String userId = String.valueOf(user.getUserId());
-		/* 是否可以委派任务，如果不可以的话直接被异常处理拦截 */
-		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		/* Task task = permissionService.validateDelegatePermissionOnTask(taskId, userId, assignee); */
-		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.WP, flow.getComment());
-		taskService.complete(task.getId());
+		String userId = this.getLoginId();
+		this.addComment(taskId, flow.getProcessInstanceId(), userId, CommentTypeEnum.WP, flow.getComment());
+		/* 被委派人处理完成任务 */
+		taskService.resolveTask(taskId);
+		/* 2.1生成历史记录创建子任务默认审核通过，为了增加历史记录
+		TaskEntity task = this.createSubTask(taskEntity, params.getUserCode());
+		taskService.complete(task.getId());*/
 		return true;
 	}
 
@@ -890,6 +898,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * 执行退回功能
 	 */
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public boolean takeItBackTask(BladeFlow flow) {
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
 		/* 1.把当前的节点设置为空 */
@@ -897,7 +906,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			/* 2.设置审批人 */
 			taskEntity.setAssignee(flow.getAssignee());
 			taskService.saveTask(taskEntity);
-			/* 3.添加拿回意见 */
+			/* 3.添加退回意见 */
 			this.addComment(flow.getTaskId(), flow.getAssignee(), flow.getProcessInstanceId(),
 				CommentTypeEnum.TH, flow.getComment());
 			/* 4.处理提交人节点（对发起人进行特殊处理） */
@@ -934,7 +943,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				executions.forEach(execution -> executionIds.add(execution.getId()));
 				this.moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId());
 			} else {*/
-			/* 6.2 普通拿回 */
+			/* 6.2 普通退回 */
 			List<Execution> executions = runtimeService.createExecutionQuery().parentId(taskEntity.getProcessInstanceId()).list();
 			executions.forEach(execution -> executionIds.add(execution.getId()));
 			runtimeService.createChangeActivityStateBuilder().moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId()).changeState();
@@ -966,9 +975,16 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 获取运行节点表的parallelGateway节点并出重 */
 		sql = "SELECT t.ID_, t.REV_,t.PROC_DEF_ID_,t.PROC_INST_ID_,t.EXECUTION_ID_,t.ACT_ID_, t.TASK_ID_, t.CALL_PROC_INST_ID_, t.ACT_NAME_, t.ACT_TYPE_, " +
 			" t.ASSIGNEE_, t.START_TIME_, max(t.END_TIME_) as END_TIME_, t.DURATION_, t.DELETE_REASON_, t.TENANT_ID_" +
-			" FROM  act_ru_actinst t WHERE t.ACT_TYPE_ = 'parallelGateway' AND t.PROC_INST_ID_ = #{processInstanceId} and t.END_TIME_ is not null" +
+			" FROM  act_ru_actinst t WHERE t.ACT_TYPE_ = #{actType} AND t.PROC_INST_ID_ = #{processInstanceId} and t.END_TIME_ is not null" +
 			" and t.ACT_ID_ <> #{actId} GROUP BY t.act_id_";
 		List<ActivityInstance> parallelGatewaies = runtimeService.createNativeActivityInstanceQuery().sql(sql)
+			.parameter("actType", "parallelGateway")
+			.parameter("processInstanceId", flow.getProcessInstanceId())
+			.parameter("actId", currActId)
+			.list();
+		/* 查询包容网关节点并出重 */
+		List<ActivityInstance> inclusiveGateways = runtimeService.createNativeActivityInstanceQuery().sql(sql)
+			.parameter("actType", "inclusiveGateway")
 			.parameter("processInstanceId", flow.getProcessInstanceId())
 			.parameter("actId", currActId)
 			.list();
@@ -977,27 +993,57 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			activityInstances.addAll(parallelGatewaies);
 			activityInstances.sort(Comparator.comparing(ActivityInstance::getEndTime));
 		}
+		if (CollectionUtils.isNotEmpty(inclusiveGateways)) {
+			activityInstances.addAll(inclusiveGateways);
+			activityInstances.sort(Comparator.comparing(ActivityInstance::getEndTime));
+		}
+
+
 		/* 分组节点 */
 		int count = 0;
+		int sun = 0;
+		String type = null;
 		Map<ActivityInstance, List<ActivityInstance>> parallelGatewayUserTasks = new HashMap<>();
+		Map<ActivityInstance, List<ActivityInstance>> inclusiveGatewayUserTasks = new HashMap<>();
 		List<ActivityInstance> userTasks = new ArrayList<>();
 		ActivityInstance currActivityInstance = null;
 		for (ActivityInstance activityInstance : activityInstances) {
+			sun++;
 			if (BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL.equals(activityInstance.getActivityType())) {
 				count++;
+				type="parallelGateway";
 				if (count % 2 != 0) {
 					List<ActivityInstance> datas = new ArrayList<>();
 					currActivityInstance = activityInstance;
 					parallelGatewayUserTasks.put(currActivityInstance, datas);
 				}
 			}
+			if ("inclusiveGateway".equals(activityInstance.getActivityType())) {
+				count++;
+				type="inclusiveGateway";
+				if (count % 2 != 0) {
+					List<ActivityInstance> datas = new ArrayList<>();
+					currActivityInstance = activityInstance;
+					inclusiveGatewayUserTasks.put(currActivityInstance, datas);
+				}
+			}
 			if (BpmnXMLConstants.ELEMENT_TASK_USER.equals(activityInstance.getActivityType())) {
 				if (count % 2 == 0) {
 					userTasks.add(activityInstance);
 				} else {
-					if (parallelGatewayUserTasks.containsKey(currActivityInstance)) {
+					if("parallelGateway".equals(type)||parallelGatewayUserTasks.containsKey(currActivityInstance)){
 						parallelGatewayUserTasks.get(currActivityInstance).add(activityInstance);
 					}
+					if("inclusiveGateway".equals(type)||inclusiveGatewayUserTasks.containsKey(currActivityInstance)){
+						inclusiveGatewayUserTasks.get(currActivityInstance).add(activityInstance);
+					}
+					if(activityInstances.size()==sun){
+						parallelGatewayUserTasks.remove(currActivityInstance);
+						inclusiveGatewayUserTasks.remove(currActivityInstance);
+					}
+					/*if (parallelGatewayUserTasks.containsKey(currActivityInstance)) {
+						parallelGatewayUserTasks.get(currActivityInstance).add(activityInstance);
+					}*/
 				}
 			}
 		}
@@ -1028,9 +1074,20 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				backNods.add(node);
 			});
 		}
-		/* 组装会签节点数据 */
 		if (!taskInstanceMap.isEmpty()) {
+			/* 组装并行网关会签节点数据 */
 			parallelGatewayUserTasks.forEach((activity, activities) -> {
+				FlowNodeVo node = new FlowNodeVo();
+				node.setNodeId(activity.getActivityId());
+				node.setEndTime(activity.getEndTime());
+				StringBuffer nodeNames = new StringBuffer("会签:");
+				StringBuffer userNames = new StringBuffer("审批人员:");
+				node.setNodeName(nodeNames.toString());
+				node.setUserName(userNames.toString());
+				backNods.add(node);
+			});
+			/* 组装包容网关会签节点数据 */
+			inclusiveGatewayUserTasks.forEach((activity, activities) -> {
 				FlowNodeVo node = new FlowNodeVo();
 				node.setNodeId(activity.getActivityId());
 				node.setEndTime(activity.getEndTime());
@@ -1053,6 +1110,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	/**
 	 * 执行拿回
+	 *
 	 */
 	@Override
 	public boolean takeBackTask(BladeFlow flow) {
@@ -1087,7 +1145,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 					hisFlowableActinstDao.deleteHisActinstsById(ac.getId());
 				}
 			}
-			/* 6.2 普通拿回 */
+			/* 6.2 拿回 */
 			List<String> executionIds = new ArrayList<>();
 			List<Execution> executions = runtimeService.createExecutionQuery().parentId(flow.getProcessInstanceId()).list();
 			executions.forEach(execution -> executionIds.add(execution.getId()));
@@ -1147,4 +1205,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			}
 		}
 	}
+
+
 }
