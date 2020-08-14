@@ -19,6 +19,7 @@ node {
     stage("编译、安装到本地仓库") {
         for(int i=0; i<selectedInstallProjectNames.length; i++){
             def currentInstallName = selectedInstallProjectNames[i];
+            sh "echo '${currentInstallName}编译！'"
             if("${currentInstallName}" == "blade-common"){
                 sh "mvn -f blade-common clean install"
             }else if("${currentInstallName}" == "blade-flow-api" || "${currentInstallName}" == "blade-resource-api"){
