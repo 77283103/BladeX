@@ -19,6 +19,7 @@ package org.springblade.flow.engine.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.BladeFlowHistory;
 import org.springblade.flow.engine.entity.FlowExecution;
 import org.springblade.flow.engine.entity.FlowModel;
 import org.springblade.flow.engine.entity.FlowProcess;
@@ -70,7 +71,7 @@ public interface FlowEngineService extends IService<FlowModel> {
 	 * @param endActivityId     结束节点id
 	 * @return
 	 */
-	List<BladeFlow> historyFlowList(String processInstanceId, String startActivityId, String endActivityId);
+	List<BladeFlowHistory> historyFlowList(String processInstanceId, String startActivityId, String endActivityId);
 
 	/**
 	 * 变更流程状态

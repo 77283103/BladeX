@@ -41,11 +41,15 @@ public class BladeFlowHistory implements Serializable {
 	 */
 	private String taskName;
 	/**
+	 * 节点id
+	 */
+	private String taskId;
+	/**
 	 * 任务定义Key
 	 */
 	private String taskDefinitionKey;
 	/**
-	 * 任务执行人编号（下一办理人）
+	 * 任务执行人编号
 	 */
 	private String assignee;
 	/**
@@ -93,8 +97,14 @@ public class BladeFlowHistory implements Serializable {
 	 */
 	private String comment;
 	/**
+	 * 任务意见文本
+	 */
+	private String fullMsg;
+	/**
 	 * 操作名称
 	 */
 	private String type;
+
+
 
 }

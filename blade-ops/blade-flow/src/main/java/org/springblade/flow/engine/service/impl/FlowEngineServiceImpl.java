@@ -155,15 +155,16 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 		return page;
 	}
 
-	public List<BladeFlowHistory> historyFlowListBla(String processInstanceId, String startActivityId, String endActivityId) {
+	@Override
+	public List<BladeFlowHistory> historyFlowList(String processInstanceId, String startActivityId, String endActivityId) {
 		List<BladeFlowHistory> flowListHistory = baseMapper.getFlowCommentVosByProcessInstanceId(processInstanceId);
 		flowListHistory.forEach(flow -> {
 			flow.setType(CommentTypeEnum.getEnumMsgByType(flow.getType()));
 		});
 		return flowListHistory;
 	}
-	@Override
-	public List<BladeFlow> historyFlowList(String processInstanceId, String startActivityId, String endActivityId) {
+
+	public List<BladeFlow> historyFlowListBla(String processInstanceId, String startActivityId, String endActivityId) {
 		List<BladeFlow> flowList = new LinkedList<>();
 		List<HistoricActivityInstance> historicActivityInstanceList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).orderByHistoricActivityInstanceStartTime().asc().orderByHistoricActivityInstanceEndTime().asc().list();
 		boolean start = false;

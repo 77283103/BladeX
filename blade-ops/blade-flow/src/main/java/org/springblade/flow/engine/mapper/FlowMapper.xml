@@ -55,18 +55,17 @@
       SELECT
         t1.ID_,
         t1.TYPE_ AS type,
-        t1.TIME_ AS time,
-        t1.USER_ID_ AS userId,
-        t2.FIRST_ AS userName,
+        t1.TIME_ AS createTime,
+        t1.USER_ID_ AS assignee,
+        t2.real_name AS assigneeName,
         t1.TASK_ID_ AS taskId,
         t1.PROC_INST_ID_ AS processInstanceId,
-        t1.MESSAGE_ AS message,
-        CONVERT (FULL_MSG_ USING utf8) AS fullMsg
+        t1.MESSAGE_ AS comment
     FROM
         act_hi_comment t1
-    INNER JOIN act_id_user t2 ON t1.USER_ID_ = t2.ID_
+    INNER JOIN blade_user t2 ON t1.USER_ID_ = t2.id
     WHERE
-        t1.PROC_INST_ID_ = #{value} and ACTION_='AddComment'
+        t1.PROC_INST_ID_ = #{_value} and ACTION_='AddComment'
     ORDER BY
 	t1.TIME_ ASC
     </select>
