@@ -21,11 +21,22 @@ node {
             def currentInstallName = selectedInstallProjectNames[i];
             sh "echo '${currentInstallName}编译！'"
             if("${currentInstallName}" == "blade-common"){
+
                 sh "mvn -f blade-common clean install"
+
             }else if("${currentInstallName}" == "blade-flow-api" || "${currentInstallName}" == "blade-resource-api"){
+
                 sh "mvn -f blade-ops-api/${currentInstallName} clean install"
-            } else{
+
+            }else if("${currentInstallName}" == "blade-contract-api" ||
+                "${currentInstallName}" == "blade-desk-api" ||
+                "${currentInstallName}" == "blade-dict-api" ||
+                "${currentInstallName}" == "blade-scope-api" ||
+                "${currentInstallName}" == "blade-system-api" ||
+                "${currentInstallName}" == "blade-user-api" ||)
+
                 sh "mvn -f blade-service-api/${currentInstallName} clean install"
+
             }
         }
     }
