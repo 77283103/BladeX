@@ -33,7 +33,7 @@ node {
                 "${currentInstallName}" == "blade-dict-api" ||
                 "${currentInstallName}" == "blade-scope-api" ||
                 "${currentInstallName}" == "blade-system-api" ||
-                "${currentInstallName}" == "blade-user-api" ||)
+                "${currentInstallName}" == "blade-user-api")
 
                 sh "mvn -f blade-service-api/${currentInstallName} clean install"
 
