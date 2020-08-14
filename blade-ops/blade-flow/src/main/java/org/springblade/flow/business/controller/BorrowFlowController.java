@@ -6,10 +6,13 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
+
+import org.flowable.engine.TaskService;
 import org.springblade.core.boot.ctrl.BladeController;
 
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -17,6 +20,8 @@ import org.springblade.flow.business.service.IBorrowFlowService;
 import org.springblade.flow.core.entity.BorrowFlowEntity;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+
+import java.util.function.BinaryOperator;
 
 
 /**
@@ -31,6 +36,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public class BorrowFlowController extends BladeController {
 
 	private final IBorrowFlowService borrowFlowService;
+	private TaskService taskService;
 
 
 	/**
@@ -52,7 +58,11 @@ public class BorrowFlowController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入borrow_flow")
 	public R save(@Valid @RequestBody BorrowFlowEntity borrowFlow) {
-		return R.status(borrowFlowService.save(borrowFlow));
+		borrowFlowService.save(borrowFlow);
+//		BladeUser user =;
+//		String message ="传阅至";
+//		taskService.addComment(borrowFlow.getTaskId(), borrowFlow.getProcessInstanceId(), "传阅信息", message);
+		return R.status(true);
 	}
 
 	/**

@@ -28,7 +28,9 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.service.FlowBusinessService;
+import org.springblade.flow.business.service.IBorrowFlowService;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.BorrowFlowEntity;
 import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.entity.FlowProcess;
@@ -54,6 +56,7 @@ public class WorkController {
 	private TaskService taskService;
 	private FlowEngineService flowEngineService;
 	private FlowBusinessService flowBusinessService;
+	private IBorrowFlowService iBorrowFlowService;
 
 	/**
 	 * 发起事务列表页
@@ -224,6 +227,7 @@ public class WorkController {
 	public R delegateBack(@RequestBody BladeFlow flow) {
 		return R.status(flowBusinessService.delegateBack(flow));
 	}
+
 	/**
 	 * 发起人终止流程
 	 */
@@ -267,6 +271,7 @@ public class WorkController {
 
 		return R.status(flowBusinessService.takeBackTask(flow));
 	}
+
 
 
 
