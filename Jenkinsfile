@@ -65,7 +65,7 @@ node {
                 sh "docker rmi ${existImageId}"
                 sh "echo 成功删除镜像"
             }
-
+            sh "echo ${currentName}开始打包"
             // 打包并推送镜像
             if("${currentName}" == "blade-auth" || "${currentName}" == "blade-gateway"){
                 sh "mvn -f ${currentName} clean package dockerfile:build"
@@ -85,11 +85,11 @@ node {
                 sh "mvn -f blade-service/${currentName} clean package dockerfile:build"
             }
 
-            sh "echo ${currentName}镜像推送成功"
+            sh "echo ${currentName}打包并镜像推送成功"
 
             // 启动镜像
 
-            sh "docker run -it -p ${currentPort}:${currentPort} -e \"SPRING_PROFILES_ACTIVE=test\" ${currentName}:2.5.0.RELEASE"
+            sh "docker run -d -p ${currentPort}:${currentPort} -e \"SPRING_PROFILES_ACTIVE=test\" ${currentName}:2.5.0.RELEASE"
             sh "echo ${currentName}镜像启动成功"
         }
 
