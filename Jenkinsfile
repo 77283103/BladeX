@@ -67,8 +67,6 @@ node {
             def existImageId = sh (script:"docker images | grep -w ${currentName} | awk \'{print \$3}\'", returnStdout:true)
             if("${existImageId}"){
                 sh "docker rmi ${existImageId}"
-            }else{
-                sh "echo ${currentName}镜像不存在"
             }
 
             sh "echo ${currentName}开始打包"
