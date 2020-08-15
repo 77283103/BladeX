@@ -12,4 +12,4 @@ ADD ./target/blade-desk.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 
-CMD ["--sever.port=8105"]
+CMD ["--sever.port=8105", "-Xmx128m"]

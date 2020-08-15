@@ -12,4 +12,4 @@ ADD ./target/blade-bpmnjs-design.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 
-CMD ["--sever.port=9008"]
+CMD ["--sever.port=9008", "-Xmx128m"]

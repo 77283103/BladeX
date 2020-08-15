@@ -12,4 +12,4 @@ ADD ./target/blade-flow.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 
-CMD ["--sever.port=8008"]
+CMD ["--sever.port=8008", "-Xmx128m"]
