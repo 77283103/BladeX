@@ -1,6 +1,6 @@
 FROM anapsix/alpine-java:8_server-jre_unlimited
 
-MAINTAINER smallchill@163.com
+MAINTAINER feng
 
 RUN mkdir -p /blade/gateway
 
