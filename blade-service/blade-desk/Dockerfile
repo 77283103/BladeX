@@ -1,6 +1,6 @@
 FROM anapsix/alpine-java:8_server-jre_unlimited
 
-MAINTAINER smallchill@163.com
+MAINTAINER feng
 
 RUN mkdir -p /blade/desk
 
@@ -12,4 +12,4 @@ ADD ./target/blade-desk.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 
-CMD ["--spring.profiles.active=test"]
+CMD ["--sever.port=8105"]

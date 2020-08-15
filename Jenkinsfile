@@ -50,41 +50,63 @@ node {
             def currentName = "${currentProjectInfo}".split("@")[0]
             // 当前项目端口
             def currentPort = "${currentProjectInfo}".split("@")[1]
-            //
+
+            // 查询容器是否存在，存在则删除
+            def existContainerId = sh (script:'docker ps -a | grep -w ${currentName}:2.5.0.RELEASE | awk \'{print $1}\'', returnStdout:true)
+            if("${existContainerId}"){
+                sh "docker stop ${existContainerId}"
+                sh "docker rm ${existContainerId}"
+                sh "echo 成功删除容器"
+            }
+
+            // 查询镜像是否存在，存在则删除
+            def existImageId = sh (script:'docker images | grep -w ${currentName} | awk \'{print $3}\'', returnStdout:true)
+            if("${existImageId}"){
+                sh "docker rmi ${existImageId}"
+                sh "echo 成功删除镜像"
+            }
+
+            // 打包并推送镜像
             if("${currentName}" == "blade-auth" || "${currentName}" == "blade-gateway"){
-                sh "mvn -f ${currentName} package dockerfile:build"
+                sh "mvn -f ${currentName} clean package dockerfile:build"
             }
             else if("${currentName}" == "blade-bpmnjs-design" ||
                  "${currentName}" == "blade-flow" ||
                  "${currentName}" == "blade-log" ||
                  "${currentName}" == "blade-resource"){
 
-                sh "mvn -f blade-ops/${currentName} package dockerfile:build"
+                sh "mvn -f blade-ops/${currentName} clean package dockerfile:build"
             }
             else if("${currentName}" == "blade-contract" ||
                 "${currentName}" == "blade-desk" ||
                 "${currentName}" == "blade-system" ||
                 "${currentName}" == "blade-user"){
 
-                sh "mvn -f blade-service/${currentName} package dockerfile:build"
+                sh "mvn -f blade-service/${currentName} clean package dockerfile:build"
             }
 
-        }
+            sh "echo ${currentName}镜像推送成功"
 
-        sh "docker images"
+            // 启动镜像
+
+            sh "docker run -it -p ${currentPort}:${currentPort} -e "SPRING_PROFILES_ACTIVE=test" ${currentName}:2.5.0.RELEASE"
+            sh "echo ${currentName}镜像启动成功"
+        }
 
         // ============向harbor仓库推送镜像，暂时不需要===================
 
- //       def imageName = "${project_name}:${tag}"
-//        sh "docker tag ${imageName} ${harbor_url}/${harbor_project}/${imageName}"
+        /*
+        def imageName = "${project_name}:${tag}"
+        sh "docker tag ${imageName} ${harbor_url}/${harbor_project}/${imageName}"
         // 把镜像推送到harbor
-//        withCredentials([usernamePassword(credentialsId: "${harbor_auth}", passwordVariable: 'password', usernameVariable: 'username')]) {
+        withCredentials([usernamePassword(credentialsId: "${harbor_auth}", passwordVariable: 'password', usernameVariable: 'username')]) {
             // 登录harbor
-//            sh "docker login -u ${username} -p ${password} ${harbor_url}"
+            sh "docker login -u ${username} -p ${password} ${harbor_url}"
             // 推送镜像
-//            sh "docker push ${harbor_url}/${harbor_project}/${imageName}"
-//            sh "echo '镜像推送成功！'"
-//        }
+            sh "docker push ${harbor_url}/${harbor_project}/${imageName}"
+            sh "echo '镜像推送成功！'"
+        }
+        */
     }
 
 
