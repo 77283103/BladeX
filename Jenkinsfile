@@ -53,7 +53,7 @@ node {
 
             sh "echo 检查${currentName}容器是否存在"
             // 查询容器是否存在，存在则删除
-            def existContainerId = sh (script:"docker ps -a | grep -w ${currentName}:2.5.0.RELEASE | awk \'{print $1}\'", returnStdout:true)
+            def existContainerId = sh (script:"docker ps -a | grep -w ${currentName}:2.5.0.RELEASE | awk \'{print \$1}\'", returnStdout:true)
             if("${existContainerId}"){
                 sh "docker stop ${existContainerId}"
                 sh "docker rm ${existContainerId}"
@@ -64,7 +64,7 @@ node {
 
             // 查询镜像是否存在，存在则删除
             sh "echo 检查${currentName}镜像是否存在"
-            def existImageId = sh (script:"docker images | grep -w ${currentName} | awk \'{print $3}\'", returnStdout:true)
+            def existImageId = sh (script:"docker images | grep -w ${currentName} | awk \'{print \$3}\'", returnStdout:true)
             if("${existImageId}"){
                 sh "docker rmi ${existImageId}"
                 sh "echo 成功删除镜像"
