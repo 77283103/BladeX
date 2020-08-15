@@ -89,7 +89,7 @@ node {
 
             // 启动镜像
 
-            sh "docker run -it -p ${currentPort}:${currentPort} -e "SPRING_PROFILES_ACTIVE=test" ${currentName}:2.5.0.RELEASE"
+            sh "docker run -it -p ${currentPort}:${currentPort} -e \"SPRING_PROFILES_ACTIVE=test\" ${currentName}:2.5.0.RELEASE"
             sh "echo ${currentName}镜像启动成功"
         }
 
