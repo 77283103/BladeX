@@ -7,7 +7,7 @@ import org.springblade.contract.entity.ContractAccordingEntity;
 /**
  *  服务类
  *
- * @author Feng
+ * @author feng
  */
 public interface IContractAccordingService extends BaseService<ContractAccordingEntity> {
 

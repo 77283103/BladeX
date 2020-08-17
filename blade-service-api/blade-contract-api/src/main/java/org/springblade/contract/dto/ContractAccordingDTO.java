@@ -7,7 +7,7 @@ import org.springblade.contract.entity.ContractAccordingEntity;
 /**
  *  模型DTO
  *
- * @author Chill
+ * @author feng
  */
 @Data
 @EqualsAndHashCode(callSuper = true)

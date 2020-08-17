@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 /**
  *  实体类
  *
- * @author Chill
+ * @author feng
  */
 @Data
 @TableName("contract_according")

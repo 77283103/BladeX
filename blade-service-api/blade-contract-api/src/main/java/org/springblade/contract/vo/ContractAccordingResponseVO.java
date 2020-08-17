@@ -3,15 +3,17 @@ package org.springblade.contract.vo;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractAccordingEntity;
+import io.swagger.annotations.ApiModel;
 
 /**
- *  模型VO
+ *  返回模型VO
  *
- * @author Chill
+ * @author feng
  */
 @Data
+@ApiModel(description = "返回对象")
 @EqualsAndHashCode(callSuper = true)
-public class ContractAccordingVO extends ContractAccordingEntity {
+public class ContractAccordingResponseVO extends ContractAccordingEntity {
 
 	private static final long serialVersionUID = 1L;
 
