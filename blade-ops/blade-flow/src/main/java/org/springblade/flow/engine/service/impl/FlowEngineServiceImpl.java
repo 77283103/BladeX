@@ -47,7 +47,9 @@ import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.FileUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
+import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.BladeFlowHistory;
 import org.springblade.flow.core.enums.FlowModeEnum;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.constant.FlowEngineConstant;
@@ -154,7 +156,15 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 	}
 
 	@Override
-	public List<BladeFlow> historyFlowList(String processInstanceId, String startActivityId, String endActivityId) {
+	public List<BladeFlowHistory> historyFlowList(String processInstanceId, String startActivityId, String endActivityId) {
+		List<BladeFlowHistory> flowListHistory = baseMapper.getFlowCommentVosByProcessInstanceId(processInstanceId);
+		flowListHistory.forEach(flow -> {
+			flow.setType(CommentTypeEnum.getEnumMsgByType(flow.getType()));
+		});
+		return flowListHistory;
+	}
+
+	public List<BladeFlow> historyFlowListBla(String processInstanceId, String startActivityId, String endActivityId) {
 		List<BladeFlow> flowList = new LinkedList<>();
 		List<HistoricActivityInstance> historicActivityInstanceList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).orderByHistoricActivityInstanceStartTime().asc().orderByHistoricActivityInstanceEndTime().asc().list();
 		boolean start = false;
