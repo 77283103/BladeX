@@ -139,7 +139,8 @@ public class ProcessDesignServiceImpl implements ProcessDesignService {
         xmlString = xmlString.replaceAll("multiinstance_type","barcode:mut");
         xmlString = xmlString.replaceAll("multiinstance_condition","barcode:muc");
 		xmlString = xmlString.replaceFirst("Process_1","Process_" + System.currentTimeMillis());
-        String processName = modelData.getName() + ".bpmn20.xml";
+		xmlString = xmlString.replaceAll("barcode:barcode:","barcode:");
+		String processName = modelData.getName() + ".bpmn20.xml";
 		String filename = processName;
 		/* 解决文件名乱码问题，获取浏览器类型，转换对应文件名编码格式，IE要求文件名必须是utf-8,
 		firefox要求是iso-8859-1编码
