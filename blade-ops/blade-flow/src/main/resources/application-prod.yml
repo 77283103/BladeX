@@ -1,6 +1,6 @@
 #数据源配置
 spring:
   datasource:
-    url: ${blade.datasource.flow.prod.url}
-    username: ${blade.datasource.flow.prod.username}
-    password: ${blade.datasource.flow.prod.password}
+    url: ${blade.datasource.prod.url}
+    username: ${blade.datasource.prod.username}
+    password: ${blade.datasource.prod.password}
