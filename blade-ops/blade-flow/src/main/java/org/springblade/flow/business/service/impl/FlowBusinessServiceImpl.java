@@ -835,9 +835,13 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
 		/* 当前人员id */
 		String userId = this.getLoginId();
-		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.ZB, flow.getComment());
-		taskService.setAssignee(task.getId(), assignee);
+		/* 创建子任务 */
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+		TaskEntity task = this.createSubTask(taskEntity, TaskUtil.getTaskUser(userId));
+		taskService.complete(task.getId());
+		this.addComment(task.getId(), task.getProcessInstanceId(), userId, CommentTypeEnum.ZB, flow.getComment());
+		/* 执行转办 */
+		taskService.setAssignee(taskId, assignee);
 	}
 
 	/**
@@ -883,13 +887,15 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 任务id */
 		String taskId = flow.getTaskId();
 		/* 当前人员id */
-		String userId = this.getLoginId();
-		this.addComment(taskId, flow.getProcessInstanceId(), userId, CommentTypeEnum.WP, flow.getComment());
-		/* 被委派人处理完成任务 */
+		String userId =this.getLoginId();
+		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
+		/* 创建子任务 */
+		TaskEntity task = this.createSubTask(taskEntity, TaskUtil.getTaskUser(userId));
+		taskService.complete(task.getId());
+		/* 被委派人把任务返回给委派人 */
 		taskService.resolveTask(taskId);
-		/* 2.1生成历史记录创建子任务默认审核通过，为了增加历史记录
-		TaskEntity task = this.createSubTask(taskEntity, params.getUserCode());
-		taskService.complete(task.getId());*/
+		/* 生成历史记录 */
+		this.addComment(task.getId(), flow.getProcessInstanceId(), userId, CommentTypeEnum.WPFH, flow.getComment());
 		return true;
 	}
 
@@ -914,7 +920,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			BpmnModel bpmnModel = this.repositoryService.getBpmnModel(taskEntity.getProcessDefinitionId());
 			List<Process> processes = bpmnModel.getProcesses();
 			for (Process process : processes) {
-				/* 需要拿回节点的id */
+				/* 需要退回节点的id */
 				FlowElement flowElement = process.getFlowElementMap().get(flow.getDistFlowElementId());
 				if (flowElement != null) {
 					activity = (FlowNode) flowElement;
@@ -1179,7 +1185,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @param disActivityId     跳转的节点id
 	 * @param processInstanceId 流程实例id
 	 */
-	@Override
 	protected void deleteActivity(String disActivityId, String processInstanceId) {
 
 		String tableName = managementService.getTableName(ActivityInstanceEntity.class);
@@ -1205,6 +1210,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			}
 		}
 	}
+
 
 
 }
