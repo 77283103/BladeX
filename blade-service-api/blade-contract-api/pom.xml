@@ -12,6 +12,12 @@
     <artifactId>blade-contract-api</artifactId>
     <name>${project.artifactId}</name>
     <version>${bladex.project.version}</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-common</artifactId>
+        </dependency>
+    </dependencies>
     <packaging>jar</packaging>
 
 </project>

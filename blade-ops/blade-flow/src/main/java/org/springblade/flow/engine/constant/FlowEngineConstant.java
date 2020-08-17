@@ -27,7 +27,7 @@ public interface FlowEngineConstant {
 
 	String GET_USER_TYPE = "get_user_type";
 
-	String BTN_PERMISSION = "btnPermission";
+	String BTN_PERMISSION = "btnList";
 
 	String NAME_SPACE = "http://flowable.org/bpmn/barcode";
 
