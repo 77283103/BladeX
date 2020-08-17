@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 /**
  *  服务实现类
  *
- * @author Feng
+ * @author feng
  */
 @Service
 public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccordingMapper, ContractAccordingEntity> implements IContractAccordingService {
