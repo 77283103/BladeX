@@ -66,6 +66,7 @@ import org.springblade.flow.engine.vo.FlowNodeResponse;
 import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
 import org.springblade.flow.engine.vo.FlowUserResponse;
 import org.springblade.flow.engine.vo.TaskRequest;
+import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
@@ -92,6 +93,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	protected ManagementService managementService;
 	protected PermissionServiceImpl permissionService;
 	private IUserClient userClient;
+	private ISysClient sysClient;
 	private IRunFlowableActinstDaoMapper runFlowableActinstDao;
 	private IHisFlowableActinstDaoMapper hisFlowableActinstDao;
 
@@ -275,7 +277,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			targetNode.getOutgoingFlows().forEach(sequenceFlow -> {
 				FlowNode targetFlowNode = (FlowNode) sequenceFlow.getTargetFlowElement();
 				/* 获取节点自定义属性并返回人员List */
-				List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
+				List<FlowUserResponse> candidateUserList = getCandidateUsers(targetFlowNode, taskId);
 				FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 					.taskId(taskId)
 					.id(targetFlowNode.getId())
@@ -315,7 +317,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 					if (result) {
 						FlowNode flowNodeExclusive = (FlowNode) outLine.getTargetFlowElement();
 						/* 获取节点自定义属性 */
-						List<FlowUserResponse> candidateUserList = getCandidateUsers(targetNode, taskId);
+						List<FlowUserResponse> candidateUserList = getCandidateUsers(flowNodeExclusive, taskId);
 						FlowNodeResponse flowNodeResponse = FlowNodeResponse.builder()
 							.end(false)
 							.taskId(taskId)
@@ -365,16 +367,14 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		List<FlowUserResponse> flowUserResponseList = new ArrayList<>();
 		/* 获取候选人名单获取方式 */
 		String getUserType = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.GET_USER_TYPE);
-//		String getUserType = "1";
-		if ("".equals(getUserType) || null == getUserType) {
+		if (Func.isEmpty(getUserType)) {
 			return null;
 		}
 		/* 通过固定用户方式获取候选人员list */
 		if (getUserType.equals(FlowDesignUserType.USERS)) {
 			/* 获取自定义人员属性，格式为：user1,user2,user3... */
 			String flowUser = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_USER);
-//			String flowUser = "1123598821738675201,1123598821738675202,1123598821738675203,1123598821738675204,1285030425345622018,1293106740696584194";
-			if (null == flowUser) {
+			if (Func.isEmpty(flowUser)) {
 				throw new FlowableException("固定人员流程设计方式未获取到自定义人员信息");
 			}
 			List<User> users = userClient.userInfoByUserIds(flowUser);
@@ -392,14 +392,13 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 通过岗位方式获取候选人员list */
 		if (getUserType.equals(FlowDesignUserType.POSTS)) {
 			/* 获取自定义岗位属性和机构属性 */
-//			String flowPost = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_POST);
-			String flowPost = "1123598817738675203";
-//			String flowDept = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_DEPT);
-			String flowDept = "1281400947951632385";
-			if (null == flowPost) {
+			String flowPost = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_POST);
+			String flowDept = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_DEPT);
+			flowDept = sysClient.getDeptNewId(Long.parseLong(flowDept)).toString();
+			if (Func.isEmpty(flowPost)) {
 				throw new FlowableException("未获取到自定义岗位信息");
 			}
-			if (null == flowDept) {
+			if (Func.isEmpty(flowDept)) {
 				throw new FlowableException("未获取到自定义部门信息");
 			}
 			List<User> users = userClient.userInfoByDeptAndPost(flowDept, flowPost);

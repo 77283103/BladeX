@@ -49,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 流程远程调用实现类
@@ -71,7 +72,12 @@ public class FlowClient implements IFlowClient {
 		/* 设置流程启动用户 */
 		identityService.setAuthenticatedUserId(TaskUtil.getTaskUser());
 		/* 获取主流程开始节点 */
-		FlowNode startEvent =(FlowNode) repositoryService.getBpmnModel(processDefinitionId).getMainProcess().getFlowElement(FlowEngineConstant.FLOW_START_EVENT);
+		//FlowNode startEvent =(FlowNode) repositoryService.getBpmnModel(processDefinitionId).getMainProcess().getFlowElement(FlowEngineConstant.FLOW_START_EVENT);
+		FlowNode startEvent =(FlowNode) repositoryService.getBpmnModel(processDefinitionId)
+													.getMainProcess().getFlowElements()
+													.stream()
+													.filter(flowElement -> flowElement instanceof StartEvent)
+													.collect(Collectors.toList()).get(0);
 		/* 获取第一个用户节点id，即起草人节点，开始节点之后有且仅有一个用户节点 */
 		FlowNode firstNode =(FlowNode) startEvent.getOutgoingFlows().get(0).getTargetFlowElement();
 		/* 获取第一个用户节点id，自动提交流程 */

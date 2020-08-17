@@ -68,6 +68,14 @@ public interface IDeptService extends BaseService<Dept> {
 	String getDeptIds(String tenantId, String deptNames);
 
 	/**
+	 * 根据部门当前id获取部门最新ID，流程设计阶段保存的部门id可能在使用流程时会更新
+	 *
+	 * @param id
+	 * @return
+	 */
+	Long getDeptNewId(Long id);
+
+	/**
 	 * 获取部门名
 	 *
 	 * @param deptIds

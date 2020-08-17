@@ -40,6 +40,7 @@ public interface ISysClient {
 	String MENU = API_PREFIX + "/menu";
 	String DEPT = API_PREFIX + "/dept";
 	String DEPT_IDS = API_PREFIX + "/dept-ids";
+	String DEPT_NEW_ID = API_PREFIX + "/dept-new-id";
 	String DEPT_NAME = API_PREFIX + "/dept-name";
 	String DEPT_NAMES = API_PREFIX + "/dept-names";
 	String DEPT_CHILD = API_PREFIX + "/dept-child";
@@ -85,6 +86,15 @@ public interface ISysClient {
 	 */
 	@GetMapping(DEPT_IDS)
 	R<String> getDeptIds(@RequestParam("tenantId") String tenantId, @RequestParam("deptNames") String deptNames);
+
+	/**
+	 * 根据部门当前id获取部门最新id，因为每次更新部门信息都会创建一条新的记录同时关联之前的数据
+	 *
+	 * @param id 部门当前id
+	 * @return 部门最新id
+	 */
+	@GetMapping(DEPT_NEW_ID)
+	Long getDeptNewId(@RequestParam("id") Long id);
 
 	/**
 	 * 获取部门名

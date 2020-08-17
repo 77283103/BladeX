@@ -46,6 +46,11 @@ public class ISysClientFallback implements ISysClient {
 	}
 
 	@Override
+	public Long getDeptNewId(Long id) {
+		return null;
+	}
+
+	@Override
 	public R<String> getDeptName(Long id) {
 		return R.fail("获取数据失败");
 	}

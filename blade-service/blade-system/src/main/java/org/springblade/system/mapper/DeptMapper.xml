@@ -144,4 +144,10 @@
         </foreach>
         and is_deleted = 0
     </select>
+    <select id="getDeptNewId" resultType="org.springblade.system.entity.Dept">
+        select dept.* from blade_dept dept
+        <if test="id != null and id != ''">
+            where dept.update_dept_id = ${id}
+        </if>
+    </select>
 </mapper>

@@ -23,9 +23,9 @@ package org.springblade.flow.engine.constant;
  */
 public interface FlowEngineConstant {
 
-	String FLOW_START_EVENT = "startEvent1";
+//	String FLOW_START_EVENT = "startEvent1";
 
-	String GET_USER_TYPE = "getUserType";
+	String GET_USER_TYPE = "get_user_type";
 
 	String BTN_PERMISSION = "btnPermission";
 
@@ -35,9 +35,9 @@ public interface FlowEngineConstant {
 
 	String FLOW_USER = "user";
 
-	String FLOW_RELATION_TYPE = "relationtype";
+	String FLOW_RELATION_TYPE = "relation_type";
 
-	String FLOW_BENCHMARK = "benchmark";
+	String FLOW_BENCHMARK = "bench_mark";
 
 	String FLOW_DEPT = "dept";
 
