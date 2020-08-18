@@ -11,4 +11,10 @@
         <result column="post_id" property="postId"/>
     </resultMap>
 
+    <update id="updateByDept">
+        update blade_user_depart
+        set dept_id=${newDeptId}
+        where dept_id = ${oldDeptId}
+    </update>
+
 </mapper>

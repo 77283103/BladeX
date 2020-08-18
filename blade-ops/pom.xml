@@ -25,6 +25,7 @@
         <module>blade-zipkin</module>
         <module>blade-xxljob</module>
         <module>blade-xxljob-admin</module>
+        <module>blade-bpmnjs-design</module>
     </modules>
 
 </project>

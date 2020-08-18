@@ -17,6 +17,7 @@
 package org.springblade.system.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import lombok.AllArgsConstructor;
 import org.springblade.common.utils.ChinessToPinyin;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -30,6 +31,7 @@ import org.springblade.system.mapper.DeptMapper;
 import org.springblade.system.service.IDeptService;
 import org.springblade.system.vo.DeptVO;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -41,7 +43,11 @@ import java.util.stream.Collectors;
  * @author Chill
  */
 @Service
+@AllArgsConstructor
 public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implements IDeptService {
+
+	private UserDepartServiceImpl userDepartService;
+	private DeptMapper deptMapper;
 
 	@Override
 	public List<DeptVO> lazyList(String tenantId, Long parentId, Map<String, Object> param) {
@@ -89,7 +95,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 
 	@Override
 	public List<Dept> getDeptChild(Long deptId) {
-		// 2020-6-19 14:45:40 tah，增加过滤条件，查询未删除的的，即isDeleted=0
+		/* 2020-6-19 14:45:40 tah，增加过滤条件，查询未删除的的，即isDeleted=0 */
 		return baseMapper.selectList(Wrappers.<Dept>query().lambda().like(Dept::getAncestors, deptId).eq(Dept::getIsDeleted, 0));
 	}
 
@@ -103,11 +109,12 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 	}
 
 	@Override
-	public boolean removeDeptIgnoreChild(String ids){
+	public boolean removeDeptIgnoreChild(String ids) {
 		return removeByIds(Func.toLongList(ids));
 	}
 
 	@Override
+	@Transactional
 	public boolean submit(Dept dept) {
 		if (Func.isEmpty(dept.getParentId())) {
 			dept.setTenantId(AuthUtil.getTenantId());
@@ -123,37 +130,61 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 			String ancestors = parent.getAncestors() + StringPool.COMMA + dept.getParentId();
 			dept.setAncestors(ancestors);
 		}
-		// 根据id是否为空判断做新增还是修改
-		if(null == dept.getId()){
+		/* 根据id是否为空判断做新增还是修改 */
+		if (null == dept.getId()) {
 			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
-			// 保存拼音名称
-			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(),dept.getFullName()));
+			/* 保存拼音名称 */
+			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(), dept.getFullName()));
 			return save(dept);
-		}else{
-			boolean flag = false;
-			// 获取被修改机构的id
+		} else {
+			/* 获取被修改机构的id */
 			Long oldId = dept.getId();
-			// 将被修改机构制作成副本保存一份
+			/* 将被修改机构制作成副本保存一份 */
 			dept.setUpdateDeptId(oldId);
 			dept.setId(null);
 			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
-			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(),dept.getFullName()));
+			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(), dept.getFullName()));
 			save(dept);
-			// 获取机构修改后的id，这个id与oldId不同
+			/* 获取机构修改后的id，这个id与oldId不同 */
 			Long newId = dept.getId();
-			// 逻辑删除被修改记录留存
-			flag = removeDeptIgnoreChild(oldId+"");
-			// 获取修改机构的子级单位集合
+			/* 逻辑删除被修改记录留存 */
+			removeDeptIgnoreChild(oldId.toString());
+			/* 获取修改机构的子级单位集合 */
 			List<Dept> childDepts = getDeptChild(oldId);
-			// 获取修改后的机构对象
+			/* 获取修改后的机构对象 */
 			Dept deptNew = getById(newId);
-			// 遍历子单位集合修改子单位的父ID和祖籍列表
-			for (Dept dept1: childDepts) {
-				dept1.setParentId(newId);
-				dept1.setAncestors(deptNew.getAncestors() + StringPool.COMMA + dept1.getParentId());
-				flag = saveOrUpdate(dept1);
-			}
-			return flag;
+			/* 遍历子单位集合修改子单位的父ID和祖籍列表 */
+			childDepts.forEach(deptChild -> {
+				deptChild.setParentId(newId);
+				deptChild.setAncestors(deptNew.getAncestors() + StringPool.COMMA + deptChild.getParentId());
+				saveOrUpdate(deptChild);
+			});
+			userDepartService.updateByDept(newId, oldId);
+			return true;
 		}
+	}
+
+	@Override
+	public boolean updateDeptStatus(String deptId, Integer isEnable) {
+		Dept dept = baseMapper.selectById(deptId);
+		dept.setIsEnable(isEnable);
+		baseMapper.updateById(dept);
+		return true;
+	}
+
+	@Override
+	public Long getDeptNewId(Long id) {
+		Long newId;
+		Dept dept =  deptMapper.getDeptNewId(id);
+		/*dept为空，说明机构没有被更新过，直接返回id*/
+		if(null == dept){
+			return id;
+		}
+		/*dept不为空，说明机构被更新过，向下递归查询*/
+		do{
+			newId = dept.getId();
+			dept = deptMapper.getDeptNewId(dept.getId());
+		}while (null != dept);
+		return newId;
 	}
 }

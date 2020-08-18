@@ -43,7 +43,8 @@ FLOWABLE.APP_URL = {
     },
 
     getModelBpmn20ExportUrl: function (modelId) {
-        return FLOWABLE.CONFIG.contextRoot + '/app/rest/models/' + modelId + '/bpmn20?version=' + Date.now();
+        // return FLOWABLE.CONFIG.contextRoot + '/app/rest/models/' + modelId + '/bpmn20?version=' + Date.now();
+        return FLOWABLE.CONFIG.contextRoot + '/barcode/rest/models/' + modelId + '/bpmn20?version=' + Date.now();
     },
 
     getCloneModelsUrl: function (modelId) {

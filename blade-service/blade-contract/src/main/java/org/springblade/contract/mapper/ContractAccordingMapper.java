@@ -7,7 +7,7 @@ import org.springblade.contract.entity.ContractAccordingEntity;
 /**
  *  Mapper 接口
  *
- * @author Feng
+ * @author feng
  */
 public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEntity> {
 

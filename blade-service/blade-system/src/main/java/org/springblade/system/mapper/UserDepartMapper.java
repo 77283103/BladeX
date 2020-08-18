@@ -10,4 +10,12 @@ import org.springblade.system.entity.UserDepartEntity;
  */
 public interface UserDepartMapper extends BaseMapper<UserDepartEntity> {
 
+	/**
+	 * 修改
+	 *
+	 * @param newDeptId
+	 * @param oldDeptId
+	 * @return
+	 */
+	int updateByDept(Long newDeptId, Long oldDeptId);
 }

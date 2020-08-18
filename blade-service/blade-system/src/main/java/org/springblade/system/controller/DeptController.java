@@ -54,7 +54,6 @@ import static org.springblade.core.cache.constant.CacheConstant.SYS_CACHE;
 @AllArgsConstructor
 @RequestMapping("/dept")
 @Api(value = "部门", tags = "部门")
-@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 public class DeptController extends BladeController {
 
 	private IDeptService deptService;
@@ -65,6 +64,7 @@ public class DeptController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入dept")
+	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R<DeptVO> detail(Dept dept) {
 		Dept detail = deptService.getOne(Condition.getQueryWrapper(dept));
 		return R.data(DeptWrapper.build().entityVO(detail));
@@ -80,6 +80,7 @@ public class DeptController extends BladeController {
 	})
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "列表", notes = "传入dept")
+	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R<List<INode>> list(@ApiIgnore @RequestParam Map<String, Object> dept, BladeUser bladeUser) {
 		QueryWrapper<Dept> queryWrapper = Condition.getQueryWrapper(dept, Dept.class);
 		List<Dept> list = deptService.list((!bladeUser.getTenantId().equals(BladeConstant.ADMIN_TENANT_ID)) ? queryWrapper.lambda().eq(Dept::getTenantId, bladeUser.getTenantId()) : queryWrapper);
@@ -96,6 +97,7 @@ public class DeptController extends BladeController {
 	})
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "懒加载列表", notes = "传入dept")
+	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R<List<INode>> lazyList(@ApiIgnore @RequestParam Map<String, Object> dept, Long parentId, BladeUser bladeUser) {
 		List<DeptVO> list = deptService.lazyList(bladeUser.getTenantId(), parentId, dept);
 		return R.data(DeptWrapper.build().listNodeLazyVO(list));
@@ -120,6 +122,7 @@ public class DeptController extends BladeController {
 	@GetMapping("/lazy-tree")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "懒加载树形结构", notes = "树形结构")
+	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R<List<DeptVO>> lazyTree(String tenantId, Long parentId, BladeUser bladeUser) {
 		List<DeptVO> tree = deptService.lazyTree(Func.toStrWithEmpty(tenantId, bladeUser.getTenantId()), parentId);
 		return R.data(tree);
@@ -131,6 +134,7 @@ public class DeptController extends BladeController {
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "新增或修改", notes = "传入dept")
+	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R submit(@Valid @RequestBody Dept dept) {
 		if (deptService.submit(dept)) {
 			CacheUtil.clear(SYS_CACHE);
@@ -148,10 +152,24 @@ public class DeptController extends BladeController {
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "删除", notes = "传入ids")
+	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		CacheUtil.clear(SYS_CACHE);
 		return R.status(deptService.removeDept(ids));
 	}
 
-
+	/**
+	 * 修改机构启用状态
+	 * @param id
+	 * @param isEnable
+	 * @return
+	 */
+	@PostMapping("/update-status")
+	@ApiOperationSupport(order = 8)
+	@ApiOperation(value = "修改启用状态", notes = "传入id和状态值")
+	public R updateStatus(@ApiParam(value = "机构id", required = true) @RequestParam String id,
+						  @ApiParam(value = "状态", required = true) @RequestParam Integer isEnable){
+		boolean temp = deptService.updateDeptStatus(id, isEnable);
+		return R.status(temp);
+	}
 }

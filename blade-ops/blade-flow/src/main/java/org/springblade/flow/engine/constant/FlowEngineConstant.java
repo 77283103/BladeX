@@ -23,7 +23,25 @@ package org.springblade.flow.engine.constant;
  */
 public interface FlowEngineConstant {
 
-	String FLOWABLE_BASE_PACKAGES = "org.flowable.ui";
+//	String FLOW_START_EVENT = "startEvent1";
+
+	String GET_USER_TYPE = "get_user_type";
+
+	String BTN_PERMISSION = "btnList";
+
+	String NAME_SPACE = "http://flowable.org/bpmn/barcode";
+
+	String FLOW_POST = "post";
+
+	String FLOW_USER = "user";
+
+	String FLOW_RELATION_TYPE = "relation_type";
+
+	String FLOW_BENCHMARK = "bench_mark";
+
+	String FLOW_DEPT = "dept";
+
+	String FLOW_TRUE = "${true}";
 
 	String SUFFIX = ".bpmn20.xml";
 
@@ -35,10 +53,6 @@ public interface FlowEngineConstant {
 
 	String STATUS_CLAIM = "claim";
 
-	String STATUS_SEND = "send";
-
-	String STATUS_DONE = "done";
-
 	String STATUS_FINISHED = "finished";
 
 	String STATUS_UNFINISHED = "unfinished";
@@ -49,4 +63,9 @@ public interface FlowEngineConstant {
 
 	String END_EVENT = "endEvent";
 
+	String INITIATOR = "__initiator__";
+
+	String SPECIAL_GATEWAY_BEGIN_SUFFIX = "_begin";
+
+	String SPECIAL_GATEWAY_END_SUFFIX = "_end";
 }

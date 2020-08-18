@@ -16,12 +16,17 @@
  */
 package org.springblade.system.user.wrapper;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.system.user.entity.User;
+import org.springblade.system.user.vo.SelectUserVO;
 import org.springblade.system.user.vo.UserVO;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 包装类,返回视图层所需的字段
@@ -39,4 +44,24 @@ public class UserWrapper extends BaseEntityWrapper<User, UserVO> {
 		return Objects.requireNonNull(BeanUtil.copy(user, UserVO.class));
 	}
 
+	/**
+	 * 备选用户实体类集合包装
+	 * @param user
+	 * @return
+	 */
+	private SelectUserVO entitySelectVO(User user) {
+		return Objects.requireNonNull(BeanUtil.copy(user, SelectUserVO.class));
+	}
+
+	/**
+	 * 备选用户实体类集合包装
+	 * @param page
+	 * @return
+	 */
+	public IPage<SelectUserVO> userToSelectUserpageVO(IPage<User> page) {
+		List<SelectUserVO> records = page.getRecords().stream().map(this::entitySelectVO).collect(Collectors.toList());
+		IPage<SelectUserVO> pageVo = new Page<>(page.getCurrent(), page.getSize(), page.getTotal());
+		pageVo.setRecords(records);
+		return pageVo;
+	}
 }

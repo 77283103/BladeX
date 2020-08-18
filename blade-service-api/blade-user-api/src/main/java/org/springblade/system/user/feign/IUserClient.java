@@ -28,6 +28,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 /**
  * User Feign接口类
  *
@@ -44,6 +46,9 @@ public interface IUserClient {
 	String USER_INFO_BY_ACCOUNT = API_PREFIX + "/user-info-by-account";
 	String SAVE_USER = API_PREFIX + "/save-user";
 	String REMOVE_USER = API_PREFIX + "/remove-user";
+	String USER_INFO_BY_DEPTID_AND_POSTID = API_PREFIX + "/user-info-by-deptAndPost";
+	String USER_INFO_BY_USERID_ARRAY = API_PREFIX + "/user-info-by-userIdArray";
+	String USER_INFO_BY_BENCH_MINISTER = API_PREFIX + "/user-Info-by-bench-minister";
 
 	/**
 	 * 获取用户信息
@@ -92,5 +97,27 @@ public interface IUserClient {
 	 */
 	@PostMapping(REMOVE_USER)
 	R<Boolean> removeUser(@RequestParam("tenantIds") String tenantIds);
+
+	/**
+	 * 根据机构和岗位获取用户List
+	 *
+	 * @param deptId 机构id
+	 * @param postId 岗位id
+	 * @return
+	 */
+	@GetMapping(USER_INFO_BY_DEPTID_AND_POSTID)
+	List<User> userInfoByDeptAndPost(@RequestParam("deptId") String deptId, @RequestParam("postId") String postId);
+
+	/**
+	 * 根据userIds返回userList
+	 */
+	@GetMapping(USER_INFO_BY_USERID_ARRAY)
+	List<User> userInfoByUserIds(@RequestParam("userIds") String userIds);
+
+	/**
+	 * 获取基准人的部门部长
+	 */
+	@GetMapping(USER_INFO_BY_BENCH_MINISTER)
+	List<User> userInfoByBenchMinister(@RequestParam("benchUserId") String benchUserId);
 
 }

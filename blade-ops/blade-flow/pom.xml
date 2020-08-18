@@ -68,6 +68,10 @@
             <artifactId>flowable-json-converter</artifactId>
             <version>${flowable.version}</version>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -75,16 +79,12 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>${dockerfile.maven.plugin.version}</version>
                 <configuration>
-                    <username>${docker.username}</username>
-                    <password>${docker.password}</password>
-                    <repository>${docker.registry.url}/${docker.namespace}/${project.artifactId}</repository>
-                    <tag>${project.version}</tag>
-                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                    <repository>${project.artifactId}</repository>
                     <buildArgs>
                         <JAR_FILE>target/${project.build.finalName}.jar</JAR_FILE>
                     </buildArgs>
-                    <skip>false</skip>
                 </configuration>
             </plugin>
             <plugin>

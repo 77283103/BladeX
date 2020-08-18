@@ -18,8 +18,8 @@ package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import feign.Param;
 import org.springblade.system.entity.TopMenu;
-import org.springblade.system.wrapper.ParamWrapper;
 
 /**
  * 顶部菜单表 Mapper 接口
@@ -35,5 +35,5 @@ public interface TopMenuMapper extends BaseMapper<TopMenu> {
 	 * @param topmenu
 	 * @return
 	 */
-	IPage<TopMenu> pageList(IPage<TopMenu> page, TopMenu topmenu);
+	IPage<TopMenu> pageList(@Param("page") IPage<TopMenu> page, @Param("topmenu") TopMenu topmenu);
 }

@@ -68,6 +68,14 @@ public interface IDeptService extends BaseService<Dept> {
 	String getDeptIds(String tenantId, String deptNames);
 
 	/**
+	 * 根据部门当前id获取部门最新ID，流程设计阶段保存的部门id可能在使用流程时会更新
+	 *
+	 * @param id
+	 * @return
+	 */
+	Long getDeptNewId(Long id);
+
+	/**
 	 * 获取部门名
 	 *
 	 * @param deptIds
@@ -90,6 +98,7 @@ public interface IDeptService extends BaseService<Dept> {
 	 * @return
 	 */
 	boolean removeDept(String ids);
+
 	/**
 	 * 删除部门，忽略子节点，用于父级机构更新
 	 *
@@ -106,4 +115,12 @@ public interface IDeptService extends BaseService<Dept> {
 	 */
 	boolean submit(Dept dept);
 
+	/**
+	 * 修改机构启用状态
+	 *
+	 * @param deptId
+	 * @param isEnable
+	 * @return
+	 */
+	boolean updateDeptStatus(String deptId, Integer isEnable);
 }

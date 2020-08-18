@@ -1,6 +1,6 @@
 FROM bladex/alpine-java:8_server-jre_cn_unlimited
 
-MAINTAINER smallchill@163.com
+MAINTAINER feng
 
 RUN mkdir -p /blade/flow
 
@@ -12,4 +12,4 @@ ADD ./target/blade-flow.jar ./app.jar
 
 ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
 
-CMD ["--spring.profiles.active=test"]
+CMD ["--sever.port=8008", "-Xmx128m"]

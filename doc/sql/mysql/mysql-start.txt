@@ -1,0 +1,1 @@
+docker run -d --name mysql5.7 -p 3306:3306 --restart always --privileged=true -v /opt/tools/mysql/conf:/etc/mysql -v /opt/tools/mysql/data:/var/lib/mysql -e MYSQL_ROOT_PASSWORD="barcode" mysql:5.7.31

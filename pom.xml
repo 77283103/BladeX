@@ -23,6 +23,7 @@
         <spring.cloud.version>Greenwich.SR5</spring.cloud.version>
         <spring.platform.version>Cairo-SR8</spring.platform.version>
 
+        <dockerfile.maven.plugin.version>1.3.6</dockerfile.maven.plugin.version>
         <!-- 推荐使用Harbor -->
         <docker.registry.url>192.168.0.157</docker.registry.url>
         <docker.registry.host>http://${docker.registry.url}:2375</docker.registry.host>
@@ -175,9 +176,6 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>dockerfile-maven-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

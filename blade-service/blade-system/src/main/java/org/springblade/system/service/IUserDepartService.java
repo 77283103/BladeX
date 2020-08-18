@@ -13,4 +13,12 @@ import java.util.List;
  */
 public interface IUserDepartService extends IService<UserDepartEntity> {
 
+	/**
+	 * 修改
+	 *
+	 * @param newDeptId
+	 * @param oldDeptId
+	 * @return
+	 */
+	boolean updateByDept(Long newDeptId, Long oldDeptId);
 }

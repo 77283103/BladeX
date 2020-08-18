@@ -47,7 +47,8 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="status" property="status"/>
-        <collection property="userDepartList" ofType="org.springblade.system.dto.UserDepartDTO" select="selectDepart" column="id">
+        <collection property="userDepartList" ofType="org.springblade.system.dto.UserDepartDTO" select="selectDepart"
+                    column="id">
             <result column="id" property="id"/>
             <result column="user_id" property="userId"/>
             <result column="role_id" property="roleId"/>
@@ -72,11 +73,11 @@
         account, password, real_name, real_name, email, phone, birthday, sex, role_id, dept_id
     </sql>
 
-    <select id="selectUserPage" resultMap="userResultMap">
+    <select id="userPage" resultMap="userResultMap">
         SELECT
-            a.*
+        a.*
         FROM
-            blade_user a
+        blade_user a
         where a.is_deleted = 0
         <if test="tenantId!=null and tenantId != ''">
             and a.tenant_id = #{tenantId}
@@ -84,8 +85,8 @@
         <if test="user.tenantId!=null and user.tenantId != ''">
             and a.tenant_id = #{user.tenantId}
         </if>
-        <if test="user.account!=null and user.account != ''">
-            and a.account like concat('%',#{user.account},'%')
+        <if test="user.code!=null and user.code != ''">
+            and a.code like concat('%',#{user.code},'%')
         </if>
         <if test="user.realName!=null and user.realName != ''">
             and a.real_name like concat('%',#{user.realName},'%')
@@ -135,25 +136,25 @@
 
     <select id="exportUser" resultType="org.springblade.system.user.excel.UserExcel">
         SELECT
-            a.id,
-            a.account,
-            a.real_name,
-            a.email,
-            a.phone,
-            a.landline,
-            a.birthday,
-            group_concat(b.role_id Separator ',') AS role_id,
-            group_concat(b.dept_id Separator ',') AS dept_id,
-            group_concat(b.post_id Separator ',') AS post_id,
-            group_concat(r.role_name Separator ',') AS role_name,
-            group_concat(d.dept_name Separator ',') AS dept_name,
-            group_concat(p.post_name Separator ',') AS post_name
+        a.id,
+        a.account,
+        a.real_name,
+        a.email,
+        a.phone,
+        a.landline,
+        a.birthday,
+        group_concat(b.role_id Separator ',') AS role_id,
+        group_concat(b.dept_id Separator ',') AS dept_id,
+        group_concat(b.post_id Separator ',') AS post_id,
+        group_concat(r.role_name Separator ',') AS role_name,
+        group_concat(d.dept_name Separator ',') AS dept_name,
+        group_concat(p.post_name Separator ',') AS post_name
         FROM
-            blade_user a
-            LEFT JOIN blade_user_depart b ON a.id = b.user_id
-            LEFT JOIN blade_role r ON b.role_id = r.id
-            LEFT JOIN blade_dept d ON b.dept_id = d.id
-            LEFT JOIN blade_post p ON b.post_id = p.id
+        blade_user a
+        LEFT JOIN blade_user_depart b ON a.id = b.user_id
+        LEFT JOIN blade_role r ON b.role_id = r.id
+        LEFT JOIN blade_dept d ON b.dept_id = d.id
+        LEFT JOIN blade_post p ON b.post_id = p.id
         where a.is_deleted = 0
         <if test="tenantId!=null and tenantId != ''">
             and a.tenant_id = #{tenantId}
@@ -172,7 +173,7 @@
             SELECT
             user_id
             FROM
-            blade_user_dept
+            blade_user_depart
             WHERE
             dept_id IN
             <foreach collection="deptIdList" index="index" item="item" open="(" separator="," close=")">
@@ -190,5 +191,39 @@
         WHERE is_deleted = 0
         AND id = #{id}
     </select>
-
+    <select id="findByDeptAndPost" resultType="org.springblade.system.user.entity.User">
+        SELECT
+	      u.*
+        FROM
+        blade_user u
+	    LEFT JOIN blade_user_depart d
+	    ON u.id = d.user_id
+        where u.is_deleted = 0
+        <if test="deptId!=null and deptId != ''">
+        and d.dept_id = #{deptId}
+        </if>
+        <if test="postId!=null and postId != ''">
+        and d.post_id = #{postId}
+        </if>
+    </select>
+    <!-- 关系定义：查询基准人所在部门的首席执行官（id=1123598817738675201） -->
+    <select id="findByBenchMinister" resultType="org.springblade.system.user.entity.User">
+        SELECT
+        u.*
+        FROM
+        blade_user u
+        LEFT JOIN blade_user_depart d
+        ON u.id = d.user_id
+        where u.is_deleted = 0
+        <if test="benchUserId!=null and benchUserId != ''">
+            and d.dept_id in (SELECT
+            d.dept_id
+            FROM
+            blade_user u
+            LEFT JOIN blade_user_depart d ON u.id = d.user_id
+            WHERE
+            d.user_id = #{benchUserId})
+        </if>
+        and d.post_id = '1123598817738675201'
+    </select>
 </mapper>

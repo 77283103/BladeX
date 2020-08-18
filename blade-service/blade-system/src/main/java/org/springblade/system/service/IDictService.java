@@ -112,6 +112,12 @@ public interface IDictService extends IService<Dict> {
 	 */
 	List<DictVO> lazyList(Long parentId, Map<String, Object> param);
 
+	/**
+	 * 根据ids 删除父级及其子级
+	 *
+	 * @param ids
+	 * @return
+	 */
     Boolean deleteIds(String ids);
 
 	/**pageList

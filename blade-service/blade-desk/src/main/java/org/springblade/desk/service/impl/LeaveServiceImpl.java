@@ -50,29 +50,27 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	// @GlobalTransactional
+	/* @GlobalTransactional */
 	public boolean startProcess(ProcessLeave leave) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.LEAVE_KEY);
 		if (Func.isEmpty(leave.getId())) {
-			// 保存leave
+			/*保存leave*/
 			leave.setApplyTime(DateUtil.now());
 			save(leave);
-			// 启动流程
+			/* 启动流程 */
 			Kv variables = Kv.create()
 				.set(ProcessConstant.TASK_VARIABLE_CREATE_USER, SecureUtil.getUserName())
-				.set("taskUser", TaskUtil.getTaskUser(leave.getTaskUser()))
 				.set("days", DateUtil.between(leave.getStartTime(), leave.getEndTime()).toDays());
 			R<BladeFlow> result = flowClient.startProcessInstanceById(leave.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(leave.getId())), variables);
 			if (result.isSuccess()) {
 				log.debug("流程已启动,流程ID:" + result.getData().getProcessInstanceId());
-				// 返回流程id写入leave
+				/* 返回流程id写入leave */
 				leave.setProcessInstanceId(result.getData().getProcessInstanceId());
 				updateById(leave);
 			} else {
 				throw new ServiceException("开启流程失败");
 			}
 		} else {
-
 			updateById(leave);
 		}
 		return true;
