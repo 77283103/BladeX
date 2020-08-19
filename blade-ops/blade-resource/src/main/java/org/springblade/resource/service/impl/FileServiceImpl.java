@@ -55,6 +55,9 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileEntity> imp
 			BladeFile bladeFile = ossBuilder.template().putFile(file.getOriginalFilename(), file.getInputStream());
 			/* 保存文件信息 */
 			BeanUtil.copy(bladeFile,fileVO);
+			fileVO.setName(bladeFile.getOriginalName());
+			fileVO.setGenerateName(bladeFile.getName());
+			fileVO.setSize(this.getPrintSize(file.getSize()));
 			super.save(fileVO);
 			return fileVO;
 		} catch (Exception e) {
@@ -95,5 +98,39 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileEntity> imp
 	public List<FileVO> getByIds(String ids) {
 		List<FileEntity> fileEntityList = baseMapper.selectBatchIds(Func.toLongList(ids));
 		return FileWrapper.build().listVO(fileEntityList);
+	}
+
+	/**
+	 * 把字节数B转化为KB、MB、GB
+	 * @param size 文件大小
+	 * @return
+	 */
+	private String getPrintSize(long size) {
+		/* 如果字节数少于1024，则直接以B为单位，否则先除于1024，后3位因太少无意义 */
+		int fileUnit = 1024;
+
+		if (size < fileUnit) {
+			return size + "B";
+		} else {
+			size = size / fileUnit;
+		}
+		/* 如果原字节数除于1024之后，少于1024，则可以直接以KB作为单位 */
+		/* 因为还没有到达要使用另一个单位的时候 */
+		/* 接下去以此类推 */
+		if (size < fileUnit) {
+			return size + "KB";
+		} else {
+			size = size / fileUnit;
+		}
+		if (size < fileUnit) {
+			/* 因为如果以MB为单位的话，要保留最后1位小数 */
+			/* 因此，把此数乘以100之后再取余 */
+			size = size * 100;
+			return (size / 100) + "." + (size % 100) + "MB";
+		} else {
+			/* 否则如果要以GB为单位的，先除于1024再作同样的处理 */
+			size = size * 100 / 1024;
+			return (size / 100) + "." + (size % 100) + "GB";
+		}
 	}
 }

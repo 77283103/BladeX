@@ -33,13 +33,19 @@ public class FileEntity extends BaseEntity {
 	private String domain;
 	/**
 	 * 文件名
+	 * Element-UI自动读取name字段为展示名称，不能修改
 	 */
 	@ApiModelProperty(value = "文件名")
 	private String name;
 	/**
-	 * 初始文件名
+	 * 自动生成的文件名
 	 */
-	@ApiModelProperty(value = "初始文件名")
-	private String originalName;
+	@ApiModelProperty(value = "自动生成的文件名")
+	private String generateName;
+	/**
+	 * 文件大小
+	 */
+	@ApiModelProperty(value = "文件大小")
+	private String size;
 
 }

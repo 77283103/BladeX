@@ -8,7 +8,8 @@
         <result column="link" property="link"/>
         <result column="domain" property="domain"/>
         <result column="name" property="name"/>
-        <result column="original_name" property="originalName"/>
+        <result column="generate_name" property="generateName"/>
+        <result column="size" property="size"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
@@ -23,7 +24,8 @@
         link,
         domain,
         name,
-        original_name,
+        generate_name,
+        size,
         is_deleted,
         create_user,
         create_dept,
