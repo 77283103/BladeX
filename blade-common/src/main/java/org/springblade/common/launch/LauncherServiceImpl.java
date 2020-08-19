@@ -45,11 +45,11 @@ public class LauncherServiceImpl implements LauncherService {
 		// PropsUtil.setProperty(props, "blade.log.elk.destination", LauncherConstant.elkAddr(profile));
 
 		// seata注册地址
-		// PropsUtil.setProperty(props, "seata.service.grouplist.default", LauncherConstant.seataAddr(profile));
+		 PropsUtil.setProperty(props, "seata.service.grouplist.default", LauncherConstant.seataAddr(profile));
 		// seata注册group格式
-		// PropsUtil.setProperty(props, "seata.tx-service-group", LauncherConstant.seataServiceGroup(appName));
+		 PropsUtil.setProperty(props, "seata.tx-service-group", LauncherConstant.seataServiceGroup(appName));
 		// seata配置服务group
-		// PropsUtil.setProperty(props, "seata.service.vgroup-mapping.".concat(LauncherConstant.seataServiceGroup(appName)), LauncherConstant.DEFAULT_MODE);
+		 PropsUtil.setProperty(props, "seata.service.vgroup-mapping.".concat(LauncherConstant.seataServiceGroup(appName)), LauncherConstant.DEFAULT_MODE);
 		// seata注册模式配置
 		// PropsUtil.setProperty(props, "seata.registry.type", LauncherConstant.NACOS_MODE);
 		// PropsUtil.setProperty(props, "seata.registry.nacos.server-addr", LauncherConstant.nacosAddr(profile));
