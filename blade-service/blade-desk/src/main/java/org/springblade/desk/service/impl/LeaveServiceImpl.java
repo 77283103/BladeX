@@ -16,6 +16,7 @@
  */
 package org.springblade.desk.service.impl;
 
+import io.seata.spring.annotation.GlobalTransactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.log.exception.ServiceException;
@@ -32,7 +33,6 @@ import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.feign.IFlowClient;
 import org.springblade.flow.core.utils.FlowUtil;
-import org.springblade.flow.core.utils.TaskUtil;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +50,7 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	/* @GlobalTransactional */
+	@GlobalTransactional
 	public boolean startProcess(ProcessLeave leave) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.LEAVE_KEY);
 		if (Func.isEmpty(leave.getId())) {
