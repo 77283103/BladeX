@@ -41,15 +41,5 @@ public class FileEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "初始文件名")
 	private String originalName;
-	/**
-	 * 实体类名
-	 */
-	@ApiModelProperty(value = "实体类名")
-	private String refBussinessEntity;
-	/**
-	 * 字段名称
-	 */
-	@ApiModelProperty(value = "字段名称")
-	private String refBussinessField;
 
 }

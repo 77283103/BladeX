@@ -1,12 +1,12 @@
 package org.springblade.resource.feign;
 
 import lombok.AllArgsConstructor;
-import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.service.IFileService;
-import org.springblade.resource.vo.FileVO;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -23,10 +23,13 @@ public class FileClient implements IFileClient{
 
 	@Override
 	@PostMapping(ADD_FILE)
-	public R save(@Valid FileVO file) {
-		if (null == file.getMultipartFile()){
-			throw new ServiceException("请选择文件");
-		}
+	public R save(@Valid MultipartFile file) {
 		return R.data(fileService.addFile(file));
+	}
+
+	@Override
+	@PostMapping(DEL_FILE)
+	public R remove(String ids) {
+		return R.status(fileService.del(Func.toLongList(ids)));
 	}
 }

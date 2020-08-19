@@ -2,6 +2,7 @@ package org.springblade.resource.feign;
 
 import org.springblade.core.tool.api.R;
 import org.springblade.resource.vo.FileVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -13,7 +14,12 @@ import javax.validation.Valid;
 public class IFileClientFallback implements IFileClient {
 
 	@Override
-	public R save(@Valid FileVO file) {
+	public R save(@Valid MultipartFile file) {
+		return R.fail("远程调用失败");
+	}
+
+	@Override
+	public R remove(String ids) {
 		return R.fail("远程调用失败");
 	}
 }
