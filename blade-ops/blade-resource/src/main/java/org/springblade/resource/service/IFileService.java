@@ -45,4 +45,11 @@ public interface IFileService extends BaseService<FileEntity> {
 	 * @return
 	 */
 	boolean del(List<Long> ids);
+
+	/**
+	 * 根据文件ids查询
+	 * @param ids
+	 * @return
+	 */
+	List<FileVO> getByIds(String ids);
 }

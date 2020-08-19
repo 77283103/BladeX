@@ -3,13 +3,16 @@ package org.springblade.resource.feign;
 import io.swagger.annotations.ApiParam;
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tool.api.R;
+import org.springblade.resource.vo.FileVO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  *  <类说明>   ： 文件管理
@@ -18,13 +21,14 @@ import javax.validation.Valid;
  */
 @FeignClient(
 	value = AppConstant.APPLICATION_RESOURCE_NAME,
-	fallback = ISmsClientFallback.class
+	fallback = IFileClientFallback.class
 )
 public interface IFileClient {
 
 	String API_PREFIX = "/client";
-	String ADD_FILE = API_PREFIX + "/add";
-	String DEL_FILE = API_PREFIX + "/remove";
+	String ADD_FILE = API_PREFIX + "/file-add";
+	String DEL_FILE = API_PREFIX + "/file-remove";
+	String FILES_INFO = API_PREFIX + "/files-info";
 
 
 	/**
@@ -41,5 +45,13 @@ public interface IFileClient {
 	 * @return R
 	 */
 	@PostMapping(DEL_FILE)
-	R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids);
+	R remove(@ApiParam(value = "主键集合", required = true) @RequestParam List<Long> ids);
+
+	/**
+	 * 根据文件ids查询
+	 * @param ids id以逗号分隔
+	 * @return R
+	 */
+	@GetMapping(FILES_INFO)
+	R<List<FileVO>> getByIds(@ApiParam(value = "主键集合", required = true) @RequestParam String ids);
 }

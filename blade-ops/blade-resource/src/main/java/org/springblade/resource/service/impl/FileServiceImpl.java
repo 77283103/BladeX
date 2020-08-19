@@ -8,11 +8,13 @@ import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.oss.model.BladeFile;
 import org.springblade.core.oss.props.OssProperties;
 import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.builder.oss.OssBuilder;
 import org.springblade.resource.entity.FileEntity;
 import org.springblade.resource.mapper.FileMapper;
 import org.springblade.resource.service.IFileService;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.resource.wrapper.FileWrapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -80,10 +82,18 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileEntity> imp
 	public boolean del(List<Long> ids) {
 		// 所有要删除的对象
 		List<FileEntity> fileEntities = baseMapper.selectBatchIds(ids);
+		/* 删除文件服务器中的文件 */
 		fileEntities.forEach(fileEntity -> {
 			ossBuilder.template().removeFile(fileEntity.getName());
 		});
+		/* 删除表中数据*/
 		baseMapper.deleteBatchIds(ids);
 		return true;
+	}
+
+	@Override
+	public List<FileVO> getByIds(String ids) {
+		List<FileEntity> fileEntityList = baseMapper.selectBatchIds(Func.toLongList(ids));
+		return FileWrapper.build().listVO(fileEntityList);
 	}
 }

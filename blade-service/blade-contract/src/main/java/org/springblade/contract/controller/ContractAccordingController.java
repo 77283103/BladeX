@@ -33,8 +33,8 @@ import org.springblade.contract.service.IContractAccordingService;
  */
 @RestController
 @AllArgsConstructor
-	@RequestMapping("/according")
-@Api(value = "", tags = "")
+@RequestMapping("/according")
+@Api(value = "合同依据", tags = "合同依据")
 public class ContractAccordingController extends BladeController {
 
 	private IContractAccordingService accordingService;
@@ -47,7 +47,7 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperation(value = "详情", notes = "传入according")
 	@PreAuth("hasPermission('contract:according:detail')")
 	public R<ContractAccordingResponseVO> detail(@RequestParam Long id) {
-		ContractAccordingEntity detail = accordingService.getById(id);
+		ContractAccordingEntity detail = accordingService.selectById(id);
 		return R.data(ContractAccordingWrapper.build().entityVO(detail));
 	}
 
@@ -100,7 +100,7 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
 	@PreAuth("hasPermission('contract:according:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-		return R.status(accordingService.deleteLogic(Func.toLongList(ids)));
+		return R.status(accordingService.del(ids));
 	}
 
 }
