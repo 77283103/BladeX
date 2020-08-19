@@ -1,9 +1,11 @@
 package org.springblade.flow.business.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.AllArgsConstructor;
+
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.flow.business.mapper.BorrowFlowMapper;
-import org.springblade.flow.business.service.IBorrowFlowService;
+import org.springblade.flow.business.service.BorrowFlowService;
 import org.springblade.flow.core.entity.BorrowFlowEntity;
 
 import org.springframework.stereotype.Service;
@@ -14,7 +16,8 @@ import org.springframework.stereotype.Service;
  * @author Liu Meng
  */
 @Service
-public class BorrowFlowServiceImpl extends BaseServiceImpl<BorrowFlowMapper, BorrowFlowEntity> implements IBorrowFlowService {
+@AllArgsConstructor
+public class BorrowFlowServiceImpl extends BaseServiceImpl<BorrowFlowMapper, BorrowFlowEntity> implements BorrowFlowService {
 
 	private BorrowFlowMapper borrowFlowMapper;
 	/**

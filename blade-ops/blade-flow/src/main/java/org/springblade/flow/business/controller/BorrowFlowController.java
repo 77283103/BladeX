@@ -6,17 +6,23 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
+
+import org.flowable.engine.TaskService;
 import org.springblade.core.boot.ctrl.BladeController;
 
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
-import org.springblade.core.secure.annotation.PreAuth;
+
+import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.flow.business.service.IBorrowFlowService;
+import org.springblade.flow.business.service.BorrowFlowService;
 import org.springblade.flow.core.entity.BorrowFlowEntity;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+
+
 
 
 /**
@@ -30,7 +36,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 @Api(value = "传阅", tags = "传阅")
 public class BorrowFlowController extends BladeController {
 
-	private final IBorrowFlowService borrowFlowService;
+	private final BorrowFlowService borrowFlowService;
+	private TaskService taskService;
 
 
 	/**
@@ -40,6 +47,9 @@ public class BorrowFlowController extends BladeController {
 	@ApiOperationSupport(order = 14)
 	@ApiOperation(value = "传入传阅信息", notes = "")
 	public R<IPage<BorrowFlowEntity>> doneList(@ApiParam("传阅信息") BorrowFlowEntity borrowFlowEntity, Query query) {
+		// 获取当前登录人的ID
+		BladeUser user = AuthUtil.getUser();
+		borrowFlowEntity.setGetPersonId(user.getUserId());
 		IPage<BorrowFlowEntity> pages = borrowFlowService.selectBorrowPage(Condition.getPage(query), borrowFlowEntity);
 		return R.data(pages);
 	}
@@ -52,7 +62,13 @@ public class BorrowFlowController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入borrow_flow")
 	public R save(@Valid @RequestBody BorrowFlowEntity borrowFlow) {
-		return R.status(borrowFlowService.save(borrowFlow));
+		// 获取当前登录人的ID
+		BladeUser user = AuthUtil.getUser();
+		borrowFlow.setSendPersonId(user.getUserId());
+		borrowFlowService.save(borrowFlow);
+		String message ="传阅至";
+		taskService.addComment(borrowFlow.getTaskId(), borrowFlow.getProcessInstanceId(), "传阅信息", message);
+		return R.status(true);
 	}
 
 	/**

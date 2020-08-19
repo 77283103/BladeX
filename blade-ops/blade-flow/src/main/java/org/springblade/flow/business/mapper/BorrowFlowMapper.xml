@@ -48,7 +48,7 @@
         SELECT
             <include refid="baseColumnList"></include>
         FROM blade_borrow_flow
-        WHERE is_deleted = 0
+        WHERE is_deleted = 0 and get_person_id= #{borrowFlow.getPersonId}
         <if test="borrowFlow.processDefinitionName != null and borrowFlow.processDefinitionName != ''">
             AND process_definition_name like concat('%',#{borrowFlow.processDefinitionName},'%')
         </if>

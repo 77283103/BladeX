@@ -27,12 +27,12 @@ public class BorrowFlowEntity extends BaseEntity {
 	 * 传阅人id
 	 */
 	@ApiModelProperty(value = "传阅人id")
-	private Integer sendPersonId;
+	private Long sendPersonId;
 	/**
 	 * 被传阅人id
 	 */
 	@ApiModelProperty(value = "被传阅人id")
-	private Integer getPersonId;
+	private Long getPersonId;
 	/**
 	 * 流程名称
 	 */
