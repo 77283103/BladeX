@@ -1,5 +1,5 @@
 // git凭证id
-def git_auth = "fdc25f60-4334-4a31-94e7-18ddbed0d9ca"
+// def git_auth = "fdc25f60-4334-4a31-94e7-18ddbed0d9ca"
 def harbor_url = "172.17.56.23:8001"
 def harbor_project = "blade"
 def harbor_auth = "45b7cd95-6feb-438a-8d24-914a58bfc847"
