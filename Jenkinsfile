@@ -1,5 +1,11 @@
+/*
+ 	blade-auth@8100,blade-gateway@8080,blade-user@8102,blade-system@8106,blade-desk@8105,blade-contract@8107,blade-log@8103,blade-resource@8010,blade-flow@8008,blade-bpmnjs-design@9008
+ 	认证中心,网关,用户中心,系统管理,工作台,合同管理,日志管理,资源中心,工作流,流程设计器
+ 	blade-common,blade-flow-api,blade-resource-api,blade-contract-api,blade-desk-api,blade-dict-api,blade-scope-api,blade-system-api,blade-user-api
+ */
 // git凭证id
 // def git_auth = "fdc25f60-4334-4a31-94e7-18ddbed0d9ca"
+def git_auth = "fdc25f60-4334-4a31-94e7-18ddbed0d9ca"
 def harbor_url = "172.17.56.23:8001"
 def harbor_project = "blade"
 def harbor_auth = "45b7cd95-6feb-438a-8d24-914a58bfc847"
