@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.common.collect.Sets;
 import lombok.AllArgsConstructor;
+import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -186,7 +187,7 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
 	}
 	@Override
 	public List<RoleVO> lazyList(Long parentId, Map<String, Object> param) {
-		if (Func.isEmpty(Func.toStr(param.get("parentId")))) {
+		if (Func.isEmpty(Func.toStr(param.get(CommonConstant.PARENT_ID)))) {
 			parentId = null;
 		}
 		return baseMapper.lazyList(parentId, param);

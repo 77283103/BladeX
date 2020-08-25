@@ -65,4 +65,12 @@ public interface IPostService extends BaseService<Post> {
 	 */
 	List<String> getPostNames(String postIds);
 
+	/**
+	 * 查询是否有重复的岗位id
+	 *
+	 * @param postCode 岗位id
+	 * @return
+	 */
+	boolean getByCode(String postCode);
+
 }

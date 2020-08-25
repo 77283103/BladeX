@@ -106,14 +106,14 @@ public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> impl
 
 	@Override
 	public IPage<DictBizVO> childList(Map<String, Object> dict, Long parentId, Query query) {
-		dict.remove("parentId");
+		dict.remove(CommonConstant.PARENT_ID);
 		IPage<DictBiz> page = this.page(Condition.getPage(query), Condition.getQueryWrapper(dict, DictBiz.class).lambda().eq(DictBiz::getParentId, parentId).orderByAsc(DictBiz::getSort));
 		return DictBizWrapper.build().pageVO(page);
 	}
 
 	@Override
 	public List<DictBizVO> lazyList(Long parentId, Map<String, Object> param) {
-		if (Func.isEmpty(Func.toStr(param.get("parentId")))) {
+		if (Func.isEmpty(Func.toStr(param.get(CommonConstant.PARENT_ID)))) {
 			parentId = null;
 		}
 		return baseMapper.lazyList(parentId, param);

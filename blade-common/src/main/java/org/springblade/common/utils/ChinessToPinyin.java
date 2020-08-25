@@ -37,7 +37,7 @@ public class ChinessToPinyin {
 		StringBuffer buffer = new StringBuffer();
 		char[] arr = chinese.toCharArray();
 		for (char anArr : arr) {
-			// 如果是ASCII 字符或者是标点符号，就忽略
+			/* 如果是ASCII 字符或者是标点符号，就忽略*/
 			if (anArr <= 128 ) {
 				buffer.append(anArr);
 			} else {

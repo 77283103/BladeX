@@ -110,14 +110,14 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 
 	@Override
 	public IPage<DictVO> childList(Map<String, Object> dict, Long parentId, Query query) {
-		dict.remove("parentId");
+		dict.remove(CommonConstant.PARENT_ID);
 		IPage<Dict> page = this.page(Condition.getPage(query), Condition.getQueryWrapper(dict, Dict.class).lambda().eq(Dict::getParentId, parentId).orderByAsc(Dict::getSort));
 		return DictWrapper.build().pageVO(page);
 	}
 
 	@Override
 	public List<DictVO> lazyList(Long parentId, Map<String, Object> param) {
-		if (Func.isEmpty(Func.toStr(param.get("parentId")))) {
+		if (Func.isEmpty(Func.toStr(param.get(CommonConstant.PARENT_ID)))) {
 			parentId = null;
 		}
 		return baseMapper.lazyList(parentId, param);
@@ -136,9 +136,9 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 		ids.forEach(id -> {
 			QueryWrapper<Dict> queryWrapper = new QueryWrapper<Dict>();
 			queryWrapper.eq("parent_id", id);
-			List<Dict> DictList = this.baseMapper.selectList(queryWrapper);
+			List<Dict> dictList = this.baseMapper.selectList(queryWrapper);
 			result.add(id);
-			DictList.forEach(dict -> {
+			dictList.forEach(dict -> {
 				temp.add(dict.getId());
 				result.add(dict.getId());
 				if (temp.size() != 0 && temp != null) {

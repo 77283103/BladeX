@@ -19,6 +19,7 @@ package org.springblade.system.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.SecureUtil;
@@ -61,11 +62,10 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 	private IRoleMenuService roleMenuService;
 	private IRoleScopeService roleScopeService;
 	private ITopMenuSettingService topMenuSettingService;
-	private final static String PARENT_ID = "parentId";
 
 	@Override
 	public List<MenuVO> lazyList(Long parentId, Map<String, Object> param) {
-		if (Func.isEmpty(Func.toStr(param.get(PARENT_ID)))) {
+		if (Func.isEmpty(Func.toStr(param.get(CommonConstant.PARENT_ID)))) {
 			parentId = null;
 		}
 		return baseMapper.lazyList(parentId, param);
@@ -73,7 +73,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
 
 	@Override
 	public List<MenuVO> lazyMenuList(Long parentId, Map<String, Object> param) {
-		if (Func.isEmpty(Func.toStr(param.get(PARENT_ID)))) {
+		if (Func.isEmpty(Func.toStr(param.get(CommonConstant.PARENT_ID)))) {
 			parentId = null;
 		}
 		return baseMapper.lazyMenuList(parentId, param);

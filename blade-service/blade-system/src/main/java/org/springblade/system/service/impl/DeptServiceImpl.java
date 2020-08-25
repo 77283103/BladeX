@@ -18,6 +18,7 @@ package org.springblade.system.service.impl;
 
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
+import org.springblade.common.constant.CommonConstant;
 import org.springblade.common.utils.ChinessToPinyin;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -38,9 +39,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * 服务实现类
+ * 机构管理服务实现类
  *
- * @author Chill
+ * @author 田爱华
+ * @date 2020-8-25 14:05:13
  */
 @Service
 @AllArgsConstructor
@@ -54,11 +56,11 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 		if (AuthUtil.isAdministrator()) {
 			tenantId = StringPool.EMPTY;
 		}
-		String paramTenantId = Func.toStr(param.get("tenantId"));
+		String paramTenantId = Func.toStr(param.get(BladeConstant.DB_TENANT_KEY));
 		if (Func.isNotEmpty(paramTenantId) && AuthUtil.isAdministrator()) {
 			tenantId = paramTenantId;
 		}
-		Object paramParentId = param.get("parentId");
+		Object paramParentId = param.get(CommonConstant.PARENT_ID);
 		if (Func.isEmpty(paramParentId)) {
 			parentId = null;
 		}
@@ -114,7 +116,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = Exception.class)
 	public boolean submit(Dept dept) {
 		if (Func.isEmpty(dept.getParentId())) {
 			dept.setTenantId(AuthUtil.getTenantId());
@@ -132,6 +134,11 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 		}
 		/* 根据id是否为空判断做新增还是修改 */
 		if (null == dept.getId()) {
+			/*根据机构编号查询结果集的数量，超过0条表示机构编号重复，只验证新增操作*/
+			Integer recordCount = baseMapper.selectCount(Wrappers.<Dept>query().lambda().eq(Dept::getRecordNumber, dept.getRecordNumber()).eq(Dept::getIsDeleted,0));
+			if(recordCount > 0){
+				throw new ServiceException("机构编号已存在，请检查输入是否有误");
+			}
 			dept.setIsDeleted(BladeConstant.DB_NOT_DELETED);
 			/* 保存拼音名称 */
 			dept.setPinyinName(ChinessToPinyin.deptToPinyin(dept.getDeptName(), dept.getFullName()));
