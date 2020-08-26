@@ -18,7 +18,6 @@
         <module>blade-admin</module>
         <module>blade-develop</module>
         <module>blade-flow</module>
-        <module>blade-flow-design</module>
         <module>blade-log</module>
         <module>blade-resource</module>
         <module>blade-turbine</module>
