@@ -7,6 +7,7 @@ import org.springblade.resource.vo.FileVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * 文件管理 服务类
@@ -29,7 +30,7 @@ public interface IFileService extends BaseService<FileEntity> {
 	 * @return FileVO
 	 * @throws IOException
 	 */
-	FileVO addFile(FileVO file);
+	FileVO addFile(MultipartFile file);
 
 	/**
 	 * 更新文件
@@ -37,4 +38,18 @@ public interface IFileService extends BaseService<FileEntity> {
 	 * @param file 文件
 	 */
 	void updateFile(String url, MultipartFile file);
+
+	/**
+	 * 批量删除
+	 * @param ids
+	 * @return
+	 */
+	boolean del(List<Long> ids);
+
+	/**
+	 * 根据文件ids查询
+	 * @param ids
+	 * @return
+	 */
+	List<FileVO> getByIds(String ids);
 }

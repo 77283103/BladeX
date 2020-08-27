@@ -79,6 +79,10 @@
         FROM
         blade_user a
         where a.is_deleted = 0
+        <if test="user.account != null and user.account != ''">
+            AND account like concat('%',#{user.account},'%')
+        </if>
+
         <if test="tenantId!=null and tenantId != ''">
             and a.tenant_id = #{tenantId}
         </if>

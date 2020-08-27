@@ -24,16 +24,20 @@ import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Param;
 import org.springblade.system.service.IParamService;
 import org.springblade.system.vo.ParamVO;
 import org.springblade.system.wrapper.ParamWrapper;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.Map;
 
 import static org.springblade.core.cache.constant.CacheConstant.PARAM_CACHE;
@@ -52,14 +56,14 @@ public class ParamController extends BladeController {
 	private IParamService paramService;
 
 	/**
-	 * 详情
+	 * 参数详情
 	 */
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入param")
-	public R<Param> detail(Param param) {
-		Param detail = paramService.getOne(Condition.getQueryWrapper(param));
-		return R.data(detail);
+	public R<Param> detail(String id) {
+		Param detail = paramService.getById(id);
+		return R.data(ParamWrapper.build().entityVO(detail));
 	}
 
 	/**
@@ -74,27 +78,39 @@ public class ParamController extends BladeController {
 	}
 
 	/**
-	 * 新增或修改
+	 * 新增或修改参数信息
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "新增或修改", notes = "传入param")
+	@PreAuth(RoleConstant.HAS_ROLE_ADMINISTRATOR)
 	public R submit(@Valid @RequestBody Param param) {
-		CacheUtil.clear(PARAM_CACHE);
-		return R.status(paramService.saveOrUpdate(param));
+		try {
+			paramService.saveOrUpdate(param);
+			CacheUtil.clear(PARAM_CACHE);
+		/*数据库设置唯一约束，捕获到该异常后返回编号冲突*/
+		} catch (DuplicateKeyException e) {
+			e.printStackTrace();
+			return R.fail("编号冲突");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return R.status(false);
+		}
+		return R.status(true);
 	}
 
-
 	/**
-	 * 删除
+	 * 删除参数信息
 	 */
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
+	@PreAuth(RoleConstant.HAS_ROLE_ADMINISTRATOR)
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-		CacheUtil.clear(PARAM_CACHE);
-		return R.status(paramService.deleteLogic(Func.toLongList(ids)));
+		if(paramService.deleteLogic(Func.toLongList(ids))){
+			CacheUtil.clear(PARAM_CACHE);
+			return R.status(true);
+		}
+		return R.status(false);
 	}
-
-
 }

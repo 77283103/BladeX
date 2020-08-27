@@ -18,14 +18,7 @@ public class ContractAccordingWrapper extends BaseEntityWrapper<ContractAccordin
 
 	@Override
 	public ContractAccordingResponseVO entityVO(ContractAccordingEntity according) {
-		ContractAccordingResponseVO accordingResponseVO = BeanUtil.copy(according, ContractAccordingResponseVO.class);
-
-		//User createUser = UserCache.getUser(according.getCreateUser());
-		//User updateUser = UserCache.getUser(according.getUpdateUser());
-		//accordingResponseVO.setCreateUserName(createUser.getName());
-		//accordingResponseVO.setUpdateUserName(updateUser.getName());
-
-		return accordingResponseVO;
+		return BeanUtil.copy(according, ContractAccordingResponseVO.class);
 	}
 
 }

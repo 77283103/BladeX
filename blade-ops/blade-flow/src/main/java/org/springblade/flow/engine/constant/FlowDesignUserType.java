@@ -3,6 +3,7 @@ package org.springblade.flow.engine.constant;
 /**
  * 流程设计时通过什么方式获取用户数据
  * @author tah
+ * @date 2020-8-26
  */
 public interface FlowDesignUserType {
 	/**

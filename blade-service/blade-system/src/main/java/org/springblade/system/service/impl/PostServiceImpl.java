@@ -61,4 +61,9 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
 		return baseMapper.getPostNames(Func.toLongArray(postIds));
 	}
 
+	@Override
+	public boolean getByCode(String postCode) {
+		return false;
+	}
+
 }

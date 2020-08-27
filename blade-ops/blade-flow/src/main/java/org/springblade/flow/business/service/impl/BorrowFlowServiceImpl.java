@@ -11,22 +11,17 @@ import org.springblade.flow.core.entity.BorrowFlowEntity;
 import org.springframework.stereotype.Service;
 
 /**
- * 借阅 服务实现类
+ * 传阅 服务实现类
  *
  * @author Liu Meng
+ * @date 2020-8-26
  */
 @Service
 @AllArgsConstructor
 public class BorrowFlowServiceImpl extends BaseServiceImpl<BorrowFlowMapper, BorrowFlowEntity> implements BorrowFlowService {
 
 	private BorrowFlowMapper borrowFlowMapper;
-	/**
-	 * @Description: 传阅信息查询列表
-	 * @Param:
-	 * @return:
-	 * @Author: lm
-	 * @Date: 2020/8/12 15:08
-	 */
+
 	@Override
 	public IPage<BorrowFlowEntity> selectBorrowPage(IPage<BorrowFlowEntity> page, BorrowFlowEntity borrowFlowEntity) {
 		return this.borrowFlowMapper.pageList(page,borrowFlowEntity);

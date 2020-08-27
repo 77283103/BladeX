@@ -22,22 +22,19 @@ import io.swagger.annotations.ApiOperation;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
 import org.flowable.engine.TaskService;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.service.FlowBusinessService;
-import org.springblade.flow.business.service.IBorrowFlowService;
 import org.springblade.flow.core.entity.BladeFlow;
-import org.springblade.flow.core.entity.BorrowFlowEntity;
 import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
-import org.springblade.flow.engine.vo.FlowNodeResponse;
-import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
-import org.springblade.flow.engine.vo.TaskRequest;
+import org.springblade.flow.business.vo.FlowNodeResponse;
+import org.springblade.flow.business.vo.FlowNodeResponseReceive;
+import org.springblade.flow.business.vo.TaskRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,7 +42,8 @@ import java.util.List;
 /**
  * 流程事务通用接口
  *
- * @author Chill
+ * @author 史智伟、田爱华、冯志非
+ * @date 2020-8-26
  */
 @RestController
 @AllArgsConstructor
@@ -56,7 +54,6 @@ public class WorkController {
 	private TaskService taskService;
 	private FlowEngineService flowEngineService;
 	private FlowBusinessService flowBusinessService;
-	private IBorrowFlowService iBorrowFlowService;
 
 	/**
 	 * 发起事务列表页
@@ -146,7 +143,6 @@ public class WorkController {
 		return R.data(flowBusinessService.completeTempResult(taskId));
 	}
 
-
 	/**
 	 * 完成任务
 	 *
@@ -208,6 +204,7 @@ public class WorkController {
 		flowBusinessService.assignTask(flow);
 		return R.status(true);
 	}
+
 	/**
 	 * 委派任务
 	 */
@@ -218,6 +215,7 @@ public class WorkController {
 		flowBusinessService.delegateTask(flow);
 		return R.status(true);
 	}
+
 	/**
 	 * 委派返回
 	 */
@@ -227,7 +225,6 @@ public class WorkController {
 	public R delegateBack(@RequestBody BladeFlow flow) {
 		return R.status(flowBusinessService.delegateBack(flow));
 	}
-
 	/**
 	 * 发起人终止流程
 	 */
@@ -249,7 +246,6 @@ public class WorkController {
 		return R.data(flowBusinessService.takeItBackTaskLook(flow));
 	}
 
-
 	/**
 	 * 退回任务
 	 */
@@ -259,7 +255,6 @@ public class WorkController {
 	public R takeItBack(@RequestBody BladeFlow flow) {
 		return R.status(flowBusinessService.takeItBackTask(flow));
 	}
-
 
 	/**
 	 * 拿回任务
@@ -271,8 +266,4 @@ public class WorkController {
 
 		return R.status(flowBusinessService.takeBackTask(flow));
 	}
-
-
-
-
 }

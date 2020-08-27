@@ -1,19 +1,3 @@
-/*
- *      Copyright (c) 2018-2028, Chill Zhuang All rights reserved.
- *
- *  Redistribution and use in source and binary forms, with or without
- *  modification, are permitted provided that the following conditions are met:
- *
- *  Redistributions of source code must retain the above copyright notice,
- *  this list of conditions and the following disclaimer.
- *  Redistributions in binary form must reproduce the above copyright
- *  notice, this list of conditions and the following disclaimer in the
- *  documentation and/or other materials provided with the distribution.
- *  Neither the name of the dreamlu.net developer nor the names of its
- *  contributors may be used to endorse or promote products derived from
- *  this software without specific prior written permission.
- *  Author: Chill 庄骞 (smallchill@163.com)
- */
 package org.springblade.flow.business.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -40,14 +24,12 @@ import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.flow.business.common.CommentTypeEnum;
-import org.springblade.flow.business.common.ObjectUtils;
 import org.springblade.flow.business.common.cmd.BackUserTaskCmd;
 import org.springblade.flow.business.mapper.IHisFlowableActinstDaoMapper;
 import org.springblade.flow.business.mapper.IRunFlowableActinstDaoMapper;
@@ -62,10 +44,10 @@ import org.springblade.flow.engine.constant.FlowProcessBenchMark;
 import org.springblade.flow.engine.constant.FlowRelationType;
 import org.springblade.flow.engine.utils.FlowCache;
 import org.springblade.flow.engine.utils.FlowableUtils;
-import org.springblade.flow.engine.vo.FlowNodeResponse;
-import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
-import org.springblade.flow.engine.vo.FlowUserResponse;
-import org.springblade.flow.engine.vo.TaskRequest;
+import org.springblade.flow.business.vo.FlowNodeResponse;
+import org.springblade.flow.business.vo.FlowNodeResponseReceive;
+import org.springblade.flow.business.vo.FlowUserResponse;
+import org.springblade.flow.business.vo.TaskRequest;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
@@ -80,7 +62,8 @@ import java.util.stream.Collectors;
 /**
  * 流程业务实现类
  *
- * @author Chill
+ * @author 田爱华、史智伟
+ * @date 2020-8-26
  */
 @Service
 @AllArgsConstructor
@@ -91,7 +74,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	private RepositoryService repositoryService;
 	private RuntimeService runtimeService;
 	protected ManagementService managementService;
-	protected PermissionServiceImpl permissionService;
 	private IUserClient userClient;
 	private ISysClient sysClient;
 	private IRunFlowableActinstDaoMapper runFlowableActinstDao;
@@ -755,25 +737,25 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		BladeUser user = AuthUtil.getUser();
 		String userId = String.valueOf(user.getUserId());
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		String backSysMessage = "退回到" + taskRequest.getActivityName() + "。";
+		String backSysMessage = "退回到" + taskRequest.getNodeName() + "。";
 		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.TH,
 			backSysMessage + taskRequest.getMessage());
 		String targetRealActivityId = managementService.executeCommand(
-			new BackUserTaskCmd(runtimeService, taskRequest.getTaskId(), taskRequest.getActivityId()));
+			new BackUserTaskCmd(runtimeService, taskRequest.getTaskId(), taskRequest.getNodeId()));
 		/* 退回发起者处理,退回到发起者,默认设置任务执行人为发起者 */
-		if (FlowEngineConstant.INITIATOR.equals(targetRealActivityId)) {
-			String initiator = runtimeService.createProcessInstanceQuery()
-				.processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId();
-			List<Task> newTasks = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).list();
-			for (Task newTask : newTasks) {
-				/* 约定：发起者节点为 __initiator__ */
-				if (FlowEngineConstant.INITIATOR.equals(newTask.getTaskDefinitionKey())) {
-					if (ObjectUtils.isEmpty(newTask.getAssignee())) {
-						taskService.setAssignee(newTask.getId(), initiator);
-					}
-				}
-			}
-		}
+//		if (FlowEngineConstant.INITIATOR.equals(targetRealActivityId)) {
+//			String initiator = runtimeService.createProcessInstanceQuery()
+//				.processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId();
+//			List<Task> newTasks = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).list();
+//			for (Task newTask : newTasks) {
+//				/* 约定：发起者节点为 __initiator__ */
+//				if (FlowEngineConstant.INITIATOR.equals(newTask.getTaskDefinitionKey())) {
+//					if (Func.isEmpty(newTask.getAssignee())) {
+//						taskService.setAssignee(newTask.getId(), initiator);
+//					}
+//				}
+//			}
+//		}
 		return true;
 	}
 
@@ -844,12 +826,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	}
 
 	/**
-	 * 是否可以委派任务
-	 * <p>
+	 * 委派
 	 * 1.任务所有人可以委派
-	 * <p>
 	 * 2.任务执行人可以委派
-	 * <p>
 	 * 3.被委派人不能是任务所有人和当前任务执行人
 	 *
 	 * @param flow
@@ -866,7 +845,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		String userId = this.getLoginId();
 		/* 是否可以委派任务，如果不可以的话直接被异常处理拦截 */
 		Task task = taskService.createTaskQuery().taskId(taskId).singleResult();
-		/* Task task = permissionService.validateDelegatePermissionOnTask(taskId, userId, assignee); */
 		this.addComment(taskId, task.getProcessInstanceId(), userId, CommentTypeEnum.WP, flow.getComment());
 		/* 当前审核人为当前登录人 */
 		taskService.setAssignee(taskId,userId);
@@ -1005,8 +983,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		int count = 0;
 		int sun = 0;
 		String type = null;
-		Map<ActivityInstance, List<ActivityInstance>> parallelGatewayUserTasks = new HashMap<>();
-		Map<ActivityInstance, List<ActivityInstance>> inclusiveGatewayUserTasks = new HashMap<>();
+		Map<ActivityInstance, List<ActivityInstance>> parallelGatewayUserTasks = new HashMap<>(16);
+		Map<ActivityInstance, List<ActivityInstance>> inclusiveGatewayUserTasks = new HashMap<>(16);
 		List<ActivityInstance> userTasks = new ArrayList<>();
 		ActivityInstance currActivityInstance = null;
 		for (ActivityInstance activityInstance : activityInstances) {
@@ -1049,7 +1027,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 组装人员名称 查询审批通过节点的历史 */
 		List<HistoricTaskInstance> historicTaskInstances = historyService.createHistoricTaskInstanceQuery()
 			.processInstanceId(flow.getProcessInstanceId()).finished().list();
-		Map<String, List<HistoricTaskInstance>> taskInstanceMap = new HashMap<>();
+		Map<String, List<HistoricTaskInstance>> taskInstanceMap = new HashMap<>(16);
 		List<String> userCodes = new ArrayList<>();
 		historicTaskInstances.forEach(historicTaskInstance -> {
 			userCodes.add(historicTaskInstance.getAssignee());

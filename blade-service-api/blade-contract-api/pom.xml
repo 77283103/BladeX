@@ -17,6 +17,11 @@
             <groupId>org.springblade</groupId>
             <artifactId>blade-common</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-resource-api</artifactId>
+            <version>${bladex.project.version}</version>
+        </dependency>
     </dependencies>
     <packaging>jar</packaging>
 

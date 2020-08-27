@@ -47,7 +47,7 @@ public class BorrowFlowController extends BladeController {
 	@ApiOperationSupport(order = 14)
 	@ApiOperation(value = "传入传阅信息", notes = "")
 	public R<IPage<BorrowFlowEntity>> doneList(@ApiParam("传阅信息") BorrowFlowEntity borrowFlowEntity, Query query) {
-		// 获取当前登录人的ID
+		/* 获取当前登录人的ID */
 		BladeUser user = AuthUtil.getUser();
 		borrowFlowEntity.setGetPersonId(user.getUserId());
 		IPage<BorrowFlowEntity> pages = borrowFlowService.selectBorrowPage(Condition.getPage(query), borrowFlowEntity);
@@ -62,7 +62,7 @@ public class BorrowFlowController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入borrow_flow")
 	public R save(@Valid @RequestBody BorrowFlowEntity borrowFlow) {
-		// 获取当前登录人的ID
+		/* 获取当前登录人的ID */
 		BladeUser user = AuthUtil.getUser();
 		borrowFlow.setSendPersonId(user.getUserId());
 		borrowFlowService.save(borrowFlow);

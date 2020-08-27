@@ -3,6 +3,7 @@ package org.springblade.flow.engine.constant;
 /**
  * 关系定义类型，后续可扩展
  * @author tah
+ * @date 2020-8-26
  */
 public interface FlowRelationType {
 

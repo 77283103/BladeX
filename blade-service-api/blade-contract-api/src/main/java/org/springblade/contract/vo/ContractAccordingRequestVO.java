@@ -1,5 +1,7 @@
 package org.springblade.contract.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.core.mp.base.BaseEntity;
@@ -24,6 +26,12 @@ import javax.validation.constraints.NotNull;
 public class ContractAccordingRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 主键ID
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	private Long id;
 
 	@NotBlank(message = "依据名称不能为空")
 	@ApiModelProperty(value="依据名称",required = true)

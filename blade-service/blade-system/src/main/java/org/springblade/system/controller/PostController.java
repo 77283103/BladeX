@@ -24,6 +24,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.BladeUser;
@@ -33,15 +34,19 @@ import org.springblade.system.entity.Post;
 import org.springblade.system.service.IPostService;
 import org.springblade.system.vo.PostVO;
 import org.springblade.system.wrapper.PostWrapper;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 
+import static org.springblade.core.cache.constant.CacheConstant.PARAM_CACHE;
+
 /**
  * 岗位表 控制器
  *
- * @author Chill
+ * @author 田爱华
+ * @date 2020-8-25 13:30:43
  */
 @RestController
 @AllArgsConstructor
@@ -52,13 +57,13 @@ public class PostController extends BladeController {
 	private IPostService postService;
 
 	/**
-	 * 详情
+	 * 岗位详情
 	 */
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入post")
-	public R<PostVO> detail(Post post) {
-		Post detail = postService.getOne(Condition.getQueryWrapper(post));
+	public R<PostVO> detail(String id) {
+		Post detail = postService.getById(id);
 		return R.data(PostWrapper.build().entityVO(detail));
 	}
 
@@ -73,7 +78,6 @@ public class PostController extends BladeController {
 		return R.data(PostWrapper.build().pageVO(pages));
 	}
 
-
 	/**
 	 * 自定义分页 岗位表
 	 */
@@ -86,33 +90,24 @@ public class PostController extends BladeController {
 	}
 
 	/**
-	 * 新增 岗位表
-	 */
-	@PostMapping("/save")
-	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "新增", notes = "传入post")
-	public R save(@Valid @RequestBody Post post) {
-		return R.status(postService.save(post));
-	}
-
-	/**
-	 * 修改 岗位表
-	 */
-	@PostMapping("/update")
-	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入post")
-	public R update(@Valid @RequestBody Post post) {
-		return R.status(postService.updateById(post));
-	}
-
-	/**
 	 * 新增或修改 岗位表
 	 */
 	@PostMapping("/submit")
-	@ApiOperationSupport(order = 6)
+	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "新增或修改", notes = "传入post")
 	public R submit(@Valid @RequestBody Post post) {
-		return R.status(postService.saveOrUpdate(post));
+		try {
+			postService.saveOrUpdate(post);
+			CacheUtil.clear(PARAM_CACHE);
+			/*数据库设置唯一约束，捕获到该异常后返回编号冲突*/
+		} catch (DuplicateKeyException e) {
+			e.printStackTrace();
+			return R.fail("编号冲突");
+		} catch (Exception e) {
+			e.printStackTrace();
+			return R.status(false);
+		}
+		return R.status(true);
 	}
 
 
@@ -120,17 +115,23 @@ public class PostController extends BladeController {
 	 * 删除 岗位表
 	 */
 	@PostMapping("/remove")
-	@ApiOperationSupport(order = 7)
+	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-		return R.status(postService.deleteLogic(Func.toLongList(ids)));
+		try {
+			postService.deleteLogic(Func.toLongList(ids));
+		}catch (Exception e){
+			e.printStackTrace();
+			return R.status(false);
+		}
+		return R.status(true);
 	}
 
 	/**
 	 * 下拉数据源
 	 */
 	@GetMapping("/select")
-	@ApiOperationSupport(order = 8)
+	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "下拉数据源", notes = "传入post")
 	public R<List<Post>> select(String tenantId, BladeUser bladeUser) {
 		List<Post> list = postService.list(Wrappers.<Post>query().lambda().eq(Post::getTenantId, Func.toStrWithEmpty(tenantId, bladeUser.getTenantId())));

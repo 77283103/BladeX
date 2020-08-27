@@ -19,11 +19,10 @@ package org.springblade.flow.engine.constant;
 /**
  * 流程常量.
  *
- * @author zhuangqian
+ * @author 田爱华
+ * @date 2020-8-26
  */
 public interface FlowEngineConstant {
-
-//	String FLOW_START_EVENT = "startEvent1";
 
 	String GET_USER_TYPE = "get_user_type";
 
@@ -58,12 +57,6 @@ public interface FlowEngineConstant {
 	String STATUS_UNFINISHED = "unfinished";
 
 	String STATUS_FINISH = "finish";
-
-	String START_EVENT = "startEvent";
-
-	String END_EVENT = "endEvent";
-
-	String INITIATOR = "__initiator__";
 
 	String SPECIAL_GATEWAY_BEGIN_SUFFIX = "_begin";
 

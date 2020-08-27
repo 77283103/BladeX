@@ -19,7 +19,7 @@ package org.springblade.desk;
 import org.springblade.core.cloud.feign.EnableBladeFeign;
 import org.springblade.core.launch.BladeApplication;
 import org.springblade.core.launch.constant.AppConstant;
-import org.springframework.cloud.client.SpringCloudApplication;
+import org.springblade.core.transaction.annotation.SeataCloudApplication;
 
 /**
  * Desk启动器
@@ -27,8 +27,7 @@ import org.springframework.cloud.client.SpringCloudApplication;
  * @author Chill
  */
 @EnableBladeFeign
-@SpringCloudApplication
-// @SeataCloudApplication
+@SeataCloudApplication
 public class DeskApplication {
 
 	public static void main(String[] args) {

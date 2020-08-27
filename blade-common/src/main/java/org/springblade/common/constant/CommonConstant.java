@@ -24,6 +24,21 @@ package org.springblade.common.constant;
 public interface CommonConstant {
 
 	/**
+	 * 组织机构类别名称
+	 */
+	String DEPT_CATEGORY_NAME = "deptCategoryName";
+
+	/**
+	 * 组织机构类别id
+	 */
+	String ORG_CATEGORY = "org_category";
+
+	/**
+	 * 父级id
+	 */
+	String PARENT_ID = "parentId";
+
+	/**
 	 * sword 系统名
 	 */
 	String SWORD_NAME = "sword";
@@ -39,16 +54,6 @@ public interface CommonConstant {
 	Long TOP_PARENT_ID = 0L;
 
 	/**
-	 * 顶级父节点名称
-	 */
-	String TOP_PARENT_NAME = "顶级";
-
-	/**
-	 * 未封存状态值
-	 */
-	Integer NOT_SEALED_ID = 0;
-
-	/**
 	 * 默认密码
 	 */
 	String DEFAULT_PASSWORD = "123456";
@@ -61,11 +66,6 @@ public interface CommonConstant {
 	 * 默认密码参数值
 	 */
 	String DEFAULT_PARAM_PASSWORD = "account.initPassword";
-
-	/**
-	 * 默认排序字段
-	 */
-	String SORT_FIELD = "sort";
 
 	/**
 	 * 数据权限类型

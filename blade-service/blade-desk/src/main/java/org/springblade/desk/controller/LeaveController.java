@@ -20,6 +20,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.common.cache.CacheNames;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.desk.entity.ProcessLeave;
 import org.springblade.desk.service.ILeaveService;
 import org.springblade.system.user.cache.UserCache;
@@ -47,7 +48,9 @@ public class LeaveController extends BladeController implements CacheNames {
 	@GetMapping("detail")
 	public R<ProcessLeave> detail(Long businessId) {
 		ProcessLeave detail = leaveService.getById(businessId);
-		detail.getFlow().setAssigneeName(UserCache.getUser(detail.getCreateUser()).getRealName());
+		if(Func.isNotEmpty(detail)){
+			detail.getFlow().setAssigneeName(UserCache.getUser(detail.getCreateUser()).getRealName());
+		}
 		return R.data(detail);
 	}
 

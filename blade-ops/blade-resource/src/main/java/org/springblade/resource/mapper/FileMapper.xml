@@ -8,9 +8,8 @@
         <result column="link" property="link"/>
         <result column="domain" property="domain"/>
         <result column="name" property="name"/>
-        <result column="original_name" property="originalName"/>
-        <result column="ref_bussiness_entity" property="refBussinessEntity"/>
-        <result column="ref_bussiness_field" property="refBussinessField"/>
+        <result column="generate_name" property="generateName"/>
+        <result column="size" property="size"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
@@ -25,9 +24,8 @@
         link,
         domain,
         name,
-        original_name,
-        ref_bussiness_entity,
-        ref_bussiness_field,
+        generate_name,
+        size,
         is_deleted,
         create_user,
         create_dept,
@@ -44,12 +42,6 @@
         WHERE is_deleted = 0
         <if test="file.name != null and file.name != ''">
             AND name like concat('%',#{file.name},'%')
-        </if>
-        <if test="file.refBussinessEntity != null and file.refBussinessEntity != ''">
-            AND ref_bussiness_entity like concat('%',#{file.refBussinessEntity},'%')
-        </if>
-        <if test="file.refBussinessField != null and file.refBussinessField != ''">
-            AND ref_bussiness_field like concat('%',#{file.refBussinessField},'%')
         </if>
     </select>
 </mapper>

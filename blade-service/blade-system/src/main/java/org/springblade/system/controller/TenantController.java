@@ -22,6 +22,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.mp.support.Condition;
@@ -183,7 +184,7 @@ public class TenantController extends BladeController {
 		Tenant tenant = tenantService.getOne(Wrappers.<Tenant>query().lambda().eq(Tenant::getDomain, domain));
 		Kv kv = Kv.create();
 		if (tenant != null) {
-			kv.set("tenantId", tenant.getTenantId())
+			kv.set(BladeConstant.DB_TENANT_KEY, tenant.getTenantId())
 				.set("domain", tenant.getDomain())
 				.set("backgroundUrl", tenant.getBackgroundUrl());
 		}

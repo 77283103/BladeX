@@ -19,7 +19,7 @@ package org.springblade.flow;
 import org.springblade.core.cloud.feign.EnableBladeFeign;
 import org.springblade.core.launch.BladeApplication;
 import org.springblade.core.launch.constant.AppConstant;
-import org.springframework.cloud.client.SpringCloudApplication;
+import org.springblade.core.transaction.annotation.SeataCloudApplication;
 
 /**
  * Flowable启动器
@@ -27,8 +27,7 @@ import org.springframework.cloud.client.SpringCloudApplication;
  * @author Chill
  */
 @EnableBladeFeign
-//@SeataCloudApplication
-@SpringCloudApplication
+@SeataCloudApplication
 public class FlowApplication {
 
 	public static void main(String[] args) {
