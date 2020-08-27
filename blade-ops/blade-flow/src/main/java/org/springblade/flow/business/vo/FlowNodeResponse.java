@@ -1,7 +1,9 @@
-package org.springblade.flow.engine.vo;
+package org.springblade.flow.business.vo;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -12,7 +14,8 @@ import java.util.Map;
  * @author tah
  * @date 2020-7-29
  */
-@Data
+@Setter
+@Getter
 @Builder
 public class FlowNodeResponse implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -44,7 +47,6 @@ public class FlowNodeResponse implements Serializable{
      * 执行人姓名
      */
     private String userName;
-
     /**
      * 任务节点结束时间
      */

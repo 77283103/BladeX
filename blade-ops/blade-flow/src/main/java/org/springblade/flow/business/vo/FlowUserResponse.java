@@ -1,16 +1,18 @@
-package org.springblade.flow.engine.vo;
+package org.springblade.flow.business.vo;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * @author tah
  * @date 2020-7-29
  */
-@Data
+@Setter
+@Getter
 @Builder
 public class FlowUserResponse implements Serializable{
 	private static final long serialVersionUID = 1L;

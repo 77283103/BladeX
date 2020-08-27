@@ -18,7 +18,6 @@ package org.springblade.flow.business.feign;
 
 import lombok.AllArgsConstructor;
 import org.flowable.bpmn.model.*;
-import org.flowable.bpmn.model.Process;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.IdentityService;
 import org.flowable.engine.RepositoryService;
@@ -26,8 +25,6 @@ import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.support.Kv;
@@ -39,14 +36,12 @@ import org.springblade.flow.business.service.impl.FlowBusinessServiceImpl;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.feign.IFlowClient;
 import org.springblade.flow.core.utils.TaskUtil;
-import org.springblade.flow.engine.constant.FlowEngineConstant;
-import org.springblade.flow.engine.vo.FlowUserResponse;
+import org.springblade.flow.business.vo.FlowUserResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,7 +49,8 @@ import java.util.stream.Collectors;
 /**
  * 流程远程调用实现类
  *
- * @author Chill
+ * @author 田爱华
+ * @date 2020-8-26
  */
 @RestController
 @AllArgsConstructor
@@ -72,7 +68,6 @@ public class FlowClient implements IFlowClient {
 		/* 设置流程启动用户 */
 		identityService.setAuthenticatedUserId(TaskUtil.getTaskUser());
 		/* 获取主流程开始节点 */
-		//FlowNode startEvent =(FlowNode) repositoryService.getBpmnModel(processDefinitionId).getMainProcess().getFlowElement(FlowEngineConstant.FLOW_START_EVENT);
 		FlowNode startEvent =(FlowNode) repositoryService.getBpmnModel(processDefinitionId)
 													.getMainProcess().getFlowElements()
 													.stream()

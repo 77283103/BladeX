@@ -16,9 +16,6 @@ import java.util.UUID;
 
 /**
  * @author : bruce.liu
- * @title: : BaseProcessService
- * @projectName : flowable
- * @description: 基本的流程service
  * @date : 2019/12/220:50
  */
 public abstract class BaseProcessService {

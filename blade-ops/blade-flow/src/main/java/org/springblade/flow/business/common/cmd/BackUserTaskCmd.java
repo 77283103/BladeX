@@ -27,8 +27,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author 庄金明
- * @date 2020年3月23日
+ * <功能><退回的命令实现类>
+ *     <代码业务逻辑还需要整理>
+ *
+ * @author 田爱华
+ * @date 2020年8月26日
  */
 public class BackUserTaskCmd implements Command<String>, Serializable {
 
@@ -58,89 +61,89 @@ public class BackUserTaskCmd implements Command<String>, Serializable {
 		String processDefinitionId = task.getProcessDefinitionId();
 		Process process = ProcessDefinitionUtil.getProcess(processDefinitionId);
 		FlowNode sourceFlowElement = (FlowNode) process.getFlowElement(sourceActivityId, true);
-		// 只支持从用户任务退回
+		/* 只支持从用户任务退回 */
 		if (!(sourceFlowElement instanceof UserTask)) {
 			throw new FlowableException("Task with id:" + taskId + " is not a UserTask");
 		}
 		FlowNode targetFlowElement = (FlowNode) process.getFlowElement(targetActivityId, true);
-		// 退回节点到当前节点不可达到，不允许退回
+		/* 退回节点到当前节点不可达到，不允许退回 */
 		if (!FlowableUtils.isReachable(process, targetFlowElement, sourceFlowElement)) {
 			throw new FlowableException("Cannot back to [" + targetActivityId + "]");
 		}
-		// ps:目标节点如果相对当前节点是在子流程内部，则无法直接退回，目前处理是只能退回到子流程开始节点
+		/* ps:目标节点如果相对当前节点是在子流程内部，则无法直接退回，目前处理是只能退回到子流程开始节点 */
 		String[] sourceAndTargetRealActivityId = FlowableUtils.getSourceAndTargetRealActivityId(sourceFlowElement,
 			targetFlowElement);
-		// 实际应操作的当前节点ID
+		/* 实际应操作的当前节点ID */
 		String sourceRealActivityId = sourceAndTargetRealActivityId[0];
-		// 实际应操作的目标节点ID
+		/* 实际应操作的目标节点ID */
 		String targetRealActivityId = sourceAndTargetRealActivityId[1];
 
 		Map<String, Set<String>> specialGatewayNodes = FlowableUtils.getSpecialGatewayElements(process);
-		// 当前节点处在的并行网关list
+		/* 当前节点处在的并行网关list */
 		List<String> sourceInSpecialGatewayList = new ArrayList<>();
-		// 目标节点处在的并行网关list
+		/* 目标节点处在的并行网关list */
 		List<String> targetInSpecialGatewayList = new ArrayList<>();
 		setSpecialGatewayList(sourceRealActivityId, targetRealActivityId, specialGatewayNodes,
 			sourceInSpecialGatewayList, targetInSpecialGatewayList);
 
-		// 实际应筛选的节点ID
+		/* 实际应筛选的节点ID */
 		Set<String> sourceRealAcitivtyIds = null;
-		// 若退回目标节点相对当前节点在并行网关中，则要找到相对当前节点最近的这个并行网关，后续做特殊处理
+		/* 若退回目标节点相对当前节点在并行网关中，则要找到相对当前节点最近的这个并行网关，后续做特殊处理 */
 		String targetRealSpecialGateway = null;
 
-		// 1.目标节点和当前节点都不在并行网关中
+		/* 1.目标节点和当前节点都不在并行网关中 */
 		if (targetInSpecialGatewayList.isEmpty() && sourceInSpecialGatewayList.isEmpty()) {
 			sourceRealAcitivtyIds = Sets.newHashSet(sourceRealActivityId);
 		}
-		// 2.目标节点不在并行网关中、当前节点在并行网关中
+		/* 2.目标节点不在并行网关中、当前节点在并行网关中 */
 		else if (targetInSpecialGatewayList.isEmpty() && !sourceInSpecialGatewayList.isEmpty()) {
 			sourceRealAcitivtyIds = specialGatewayNodes.get(sourceInSpecialGatewayList.get(0));
 		}
-		// 3.目标节点在并行网关中、当前节点不在并行网关中
+		/* 3.目标节点在并行网关中、当前节点不在并行网关中 */
 		else if (!targetInSpecialGatewayList.isEmpty() && sourceInSpecialGatewayList.isEmpty()) {
 			sourceRealAcitivtyIds = Sets.newHashSet(sourceRealActivityId);
 			targetRealSpecialGateway = targetInSpecialGatewayList.get(0);
 		}
-		// 4.目标节点和当前节点都在并行网关中
+		/* 4.目标节点和当前节点都在并行网关中 */
 		else {
 			int diffSpecialGatewayLevel = FlowableUtils.getDiffLevel(sourceInSpecialGatewayList,
 				targetInSpecialGatewayList);
-			// 在并行网关同一层且在同一分支
+			/* 在并行网关同一层且在同一分支 */
 			if (diffSpecialGatewayLevel == -1) {
 				sourceRealAcitivtyIds = Sets.newHashSet(sourceRealActivityId);
 			} else {
-				// 当前节点最内层并行网关不被目标节点最内层并行网关包含
-				// 或理解为当前节点相对目标节点在并行网关外
-				// 只筛选当前节点的execution
+				/* 当前节点最内层并行网关不被目标节点最内层并行网关包含 */
+				/* 或理解为当前节点相对目标节点在并行网关外 */
+				/* 只筛选当前节点的execution */
 				if (sourceInSpecialGatewayList.size() == diffSpecialGatewayLevel) {
 					sourceRealAcitivtyIds = Sets.newHashSet(sourceRealActivityId);
 				}
-				// 当前节点相对目标节点在并行网关内，应筛选相对目标节点最近的并行网关的所有节点的execution
+				/* 当前节点相对目标节点在并行网关内，应筛选相对目标节点最近的并行网关的所有节点的execution */
 				else {
 					sourceRealAcitivtyIds = specialGatewayNodes
 						.get(sourceInSpecialGatewayList.get(diffSpecialGatewayLevel));
 				}
-				// 目标节点最内层并行网关包含当前节点最内层并行网关
-				// 或理解为目标节点相对当前节点在并行网关外
-				// 不做处理
+				/* 目标节点最内层并行网关包含当前节点最内层并行网关 */
+				/* 或理解为目标节点相对当前节点在并行网关外 */
+				/* 不做处理 */
 				if (targetInSpecialGatewayList.size() == diffSpecialGatewayLevel) {
 				}
-				// 目标节点相对当前节点在并行网关内
+				/* 目标节点相对当前节点在并行网关内 */
 				else {
 					targetRealSpecialGateway = targetInSpecialGatewayList.get(diffSpecialGatewayLevel);
 				}
 			}
 		}
 
-		// 筛选需要处理的execution
+		/* 筛选需要处理的execution */
 		List<ExecutionEntity> realExecutions = this.getRealExecutions(commandContext, processInstanceId,
 			task.getExecutionId(), sourceRealActivityId, sourceRealAcitivtyIds);
-		// 执行退回，直接跳转到实际的 targetRealActivityId
+		/* 执行退回，直接跳转到实际的 targetRealActivityId */
 		List<String> realExecutionIds = realExecutions.stream().map(ExecutionEntity::getId)
 			.collect(Collectors.toList());
 		runtimeService.createChangeActivityStateBuilder().processInstanceId(processInstanceId)
 			.moveExecutionsToSingleActivityId(realExecutionIds, targetRealActivityId).changeState();
-		// 目标节点相对当前节点处于并行网关内，需要特殊处理，需要手动生成并行网关汇聚节点(_end)的execution数据
+		/* 目标节点相对当前节点处于并行网关内，需要特殊处理，需要手动生成并行网关汇聚节点(_end)的execution数据 */
 		if (targetRealSpecialGateway != null) {
 			createTargetInSpecialGatewayEndExecutions(commandContext, realExecutions, process,
 				targetInSpecialGatewayList, targetRealSpecialGateway);
@@ -164,7 +167,7 @@ public class BackUserTaskCmd implements Command<String>, Serializable {
 	private void createTargetInSpecialGatewayEndExecutions(CommandContext commandContext,
 														   List<ExecutionEntity> excutionEntitys, Process process, List<String> targetInSpecialGatewayList,
 														   String targetRealSpecialGateway) {
-		// 目标节点相对当前节点处于并行网关，需要手动生成并行网关汇聚节点(_end)的execution数据
+		/* 目标节点相对当前节点处于并行网关，需要手动生成并行网关汇聚节点(_end)的execution数据 */
 		String parentExecutionId = excutionEntitys.iterator().next().getParentId();
 		ExecutionEntityManager executionEntityManager = CommandContextUtil.getExecutionEntityManager(commandContext);
 		ExecutionEntity parentExecutionEntity = executionEntityManager.findById(parentExecutionId);
@@ -175,7 +178,7 @@ public class BackUserTaskCmd implements Command<String>, Serializable {
 			String targetInSpecialGatewayEndId = targetInSpecialGateway + FlowEngineConstant.SPECIAL_GATEWAY_END_SUFFIX;
 			FlowNode targetInSpecialGatewayEnd = (FlowNode) process.getFlowElement(targetInSpecialGatewayEndId, true);
 			int nbrOfExecutionsToJoin = targetInSpecialGatewayEnd.getIncomingFlows().size();
-			// 处理目标节点所处的分支以外的分支,即 总分枝数-1 = nbrOfExecutionsToJoin - 1
+			/* 处理目标节点所处的分支以外的分支,即 总分枝数-1 = nbrOfExecutionsToJoin - 1 */
 			for (int i = 0; i < nbrOfExecutionsToJoin - 1; i++) {
 				ExecutionEntity childExecution = executionEntityManager.createChildExecution(parentExecutionEntity);
 				childExecution.setCurrentFlowElement(targetInSpecialGatewayEnd);

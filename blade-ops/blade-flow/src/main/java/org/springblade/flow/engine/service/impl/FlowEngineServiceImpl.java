@@ -27,12 +27,8 @@ import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.bpmn.model.Process;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
-import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.RuntimeService;
-import org.flowable.engine.TaskService;
-import org.flowable.engine.history.HistoricActivityInstance;
-import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.impl.persistence.entity.ExecutionEntityImpl;
 import org.flowable.engine.impl.persistence.entity.ProcessDefinitionEntityImpl;
 import org.flowable.engine.repository.Deployment;
@@ -40,18 +36,14 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.repository.ProcessDefinitionQuery;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.runtime.ProcessInstanceQuery;
-import org.flowable.engine.task.Comment;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.FileUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.flow.business.common.CommentTypeEnum;
-import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.BladeFlowHistory;
 import org.springblade.flow.core.enums.FlowModeEnum;
-import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.engine.constant.FlowEngineConstant;
 import org.springblade.flow.engine.entity.FlowExecution;
 import org.springblade.flow.engine.entity.FlowModel;
@@ -82,8 +74,6 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 	private ObjectMapper objectMapper;
 	private RepositoryService repositoryService;
 	private RuntimeService runtimeService;
-	private HistoryService historyService;
-	private TaskService taskService;
 
 	@Override
 	public IPage<FlowModel> selectFlowPage(IPage<FlowModel> page, FlowModel flowModel) {
@@ -162,88 +152,6 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 			flow.setType(CommentTypeEnum.getEnumMsgByType(flow.getType()));
 		});
 		return flowListHistory;
-	}
-
-	public List<BladeFlow> historyFlowListBla(String processInstanceId, String startActivityId, String endActivityId) {
-		List<BladeFlow> flowList = new LinkedList<>();
-		List<HistoricActivityInstance> historicActivityInstanceList = historyService.createHistoricActivityInstanceQuery().processInstanceId(processInstanceId).orderByHistoricActivityInstanceStartTime().asc().orderByHistoricActivityInstanceEndTime().asc().list();
-		boolean start = false;
-		Map<String, Integer> activityMap = new HashMap<>(16);
-		for (int i = 0; i < historicActivityInstanceList.size(); i++) {
-			HistoricActivityInstance historicActivityInstance = historicActivityInstanceList.get(i);
-			/*  过滤开始节点前的节点 */
-			if (StringUtil.isNotBlank(startActivityId) && startActivityId.equals(historicActivityInstance.getActivityId())) {
-				start = true;
-			}
-			if (StringUtil.isNotBlank(startActivityId) && !start) {
-				continue;
-			}
-			/*  显示开始节点和结束节点，并且执行人不为空的任务 */
-			if (StringUtils.isNotBlank(historicActivityInstance.getAssignee())
-				|| FlowEngineConstant.START_EVENT.equals(historicActivityInstance.getActivityType())
-				|| FlowEngineConstant.END_EVENT.equals(historicActivityInstance.getActivityType())) {
-				/*  给节点增加序号 */
-				Integer activityNum = activityMap.get(historicActivityInstance.getActivityId());
-				if (activityNum == null) {
-					activityMap.put(historicActivityInstance.getActivityId(), activityMap.size());
-				}
-				BladeFlow flow = new BladeFlow();
-				flow.setHistoryActivityName(historicActivityInstance.getActivityName());
-				flow.setCreateTime(historicActivityInstance.getStartTime());
-				flow.setEndTime(historicActivityInstance.getEndTime());
-				String durationTime = DateUtil.secondToTime(Func.toLong(historicActivityInstance.getDurationInMillis(), 0L) / 1000);
-				flow.setHistoryActivityDurationTime(durationTime);
-				/*  获取流程发起人名称 */
-				if (FlowEngineConstant.START_EVENT.equals(historicActivityInstance.getActivityType())) {
-					List<HistoricProcessInstance> processInstanceList = historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).orderByProcessInstanceStartTime().asc().list();
-					if (processInstanceList.size() > 0) {
-						if (StringUtil.isNotBlank(processInstanceList.get(0).getStartUserId())) {
-							String taskUser = processInstanceList.get(0).getStartUserId();
-							User user = UserCache.getUser(TaskUtil.getUserId(taskUser));
-							if (user != null) {
-								flow.setAssignee(historicActivityInstance.getAssignee());
-								flow.setAssigneeName(user.getRealName());
-							}
-						}
-					}
-				}
-				/*  获取任务执行人名称 */
-				if (StringUtil.isNotBlank(historicActivityInstance.getAssignee())) {
-					User user = UserCache.getUser(TaskUtil.getUserId(historicActivityInstance.getAssignee()));
-					if (user != null) {
-						flow.setAssignee(historicActivityInstance.getAssignee());
-						flow.setAssigneeName(user.getRealName());
-					}
-				}
-				/*  获取意见评论内容 */
-				if (StringUtil.isNotBlank(historicActivityInstance.getTaskId())) {
-					List<Comment> commentList = taskService.getTaskComments(historicActivityInstance.getTaskId());
-					if (commentList.size() > 0) {
-						flow.setComment(commentList.get(0).getFullMessage());
-					}
-				}
-				flowList.add(flow);
-			}
-			/*  过滤结束节点后的节点 */
-			if (StringUtils.isNotBlank(endActivityId) && endActivityId.equals(historicActivityInstance.getActivityId())) {
-				boolean temp = false;
-				Integer activityNum = activityMap.get(historicActivityInstance.getActivityId());
-				/*  该活动节点，后续节点是否在结束节点之前，在后续节点中是否存在 */
-				for (int j = i + 1; j < historicActivityInstanceList.size(); j++) {
-					HistoricActivityInstance hi = historicActivityInstanceList.get(j);
-					Integer activityNumA = activityMap.get(hi.getActivityId());
-					boolean numberTemp = activityNumA != null && activityNumA < activityNum;
-					boolean equalsTemp = StringUtils.equals(hi.getActivityId(), historicActivityInstance.getActivityId());
-					if (numberTemp || equalsTemp) {
-						temp = true;
-					}
-				}
-				if (!temp) {
-					break;
-				}
-			}
-		}
-		return flowList;
 	}
 
 	@Override

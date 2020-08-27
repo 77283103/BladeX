@@ -1,8 +1,9 @@
-package org.springblade.flow.engine.vo;
+package org.springblade.flow.business.vo;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -14,7 +15,8 @@ import java.util.Map;
  * 功能：用于接收前台返回的Node信息，lombok版本问题引发不可解析故建此类
  * @date 2020-7-29
  */
-@Data
+@Setter
+@Getter
 @NoArgsConstructor
 public class FlowNodeResponseReceive implements Serializable{
 

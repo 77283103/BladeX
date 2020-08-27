@@ -18,14 +18,13 @@ package org.springblade.flow.business.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.flowable.bpmn.model.FlowNode;
-import org.springblade.core.tool.api.R;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.FlowNodeVo;
-import org.springblade.flow.engine.vo.FlowNodeResponse;
-import org.springblade.flow.engine.vo.FlowNodeResponseReceive;
-import org.springblade.flow.engine.vo.FlowUserResponse;
-import org.springblade.flow.engine.vo.TaskRequest;
+import org.springblade.flow.business.vo.FlowNodeResponse;
+import org.springblade.flow.business.vo.FlowNodeResponseReceive;
+import org.springblade.flow.business.vo.FlowUserResponse;
+import org.springblade.flow.business.vo.TaskRequest;
 
 import java.util.List;
 
@@ -82,7 +81,7 @@ public interface FlowBusinessService {
 	/**
 	 * 查询可以退回的节点
 	 * @param taskId 执行实例id
-	 * @return
+	 * @return 节点List
 	 *
 	 */
 	List<FlowNodeResponse> backNodes(String taskId);
@@ -97,7 +96,7 @@ public interface FlowBusinessService {
 	/**
 	 * 转办任务
 	 *
-	 * @param flow
+	 * @param flow 工作流通用实体类
 	 * @return void
 	 */
 	void assignTask(BladeFlow flow);
@@ -105,38 +104,38 @@ public interface FlowBusinessService {
 	/**
 	 * 委托任务
 	 *
-	 * @param flow
-	 * @return void
+	 * @param flow 工作流通用实体类
+	 * @return
 	 */
 	void delegateTask(BladeFlow flow);
 	/**
 	 * 委托返回
 	 *
-	 * @param flow
-	 * @return void
+	 * @param flow 工作流通用实体类
+	 * @return 是否成功
 	 */
 	boolean delegateBack(BladeFlow flow);
 	/**
 	 * 新增审批意见
 	 *
-	 * @param taskId
-	 * @param processInstanceId
-	 * @param userId
-	 * @param type
-	 * @param message
+	 * @param taskId 待办id
+	 * @param processInstanceId 流程实例id
+	 * @param userId 用户id
+	 * @param type 操作类型
+	 * @param message 审批意见
 	 */
 	void addComment(String taskId, String processInstanceId, String userId, CommentTypeEnum type, String message);
 
 	/**
 	 * 首次点击提交时返回前台的信息，提示用户下一节点和办理人信息
-	 * @param taskId
-	 * @return void
+	 * @param taskId ru_task的id
+	 * @return 节点List
 	 */
 	List<FlowNodeResponse> completeTempResult(String taskId);
 
 	/**
 	 * 发起人终止流程
-	 * @param flow
+	 * @param flow 工作流通用实体类
 	 */
 	void cancelTask(BladeFlow flow);
 
@@ -144,40 +143,40 @@ public interface FlowBusinessService {
 	/**
 	 * 退回任务
 	 *
-	 * @param flow
-	 * @return void
+	 * @param flow 工作流通用实体类
+	 * @return 是否成功
 	 */
 	boolean takeItBackTask(BladeFlow flow);
 
 	/**
 	 * 查询可退回节点
 	 *
-	 * @param flow
-	 * @return void
+	 * @param flow 工作流通用实体类
+	 * @return 节点List
 	 */
 	List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow);
 
 	/**
 	 * 拿回任务
 	 *
-	 * @param flow
-	 * @return void
+	 * @param flow 工作流通用实体类
+	 * @return 是否成功
 	 */
 	boolean takeBackTask(BladeFlow flow);
 
 	/**
 	 * 根据流程自定义属性查询候选人列表
 	 *
-	 * @param targetNode
-	 * @param taskId
-	 * @return
+	 * @param targetNode 节点对象
+	 * @param taskId 待办id
+	 * @return 候选人列表
 	 */
 	List<FlowUserResponse> getCandidateUsers(FlowNode targetNode, String taskId);
 
 	/**
 	 * 获取审批页面按钮权限
-	 * @param taskId
-	 * @return
+	 * @param taskId 待办id
+	 * @return 按钮权限
 	 */
 	String btnPermission(String taskId);
 }
