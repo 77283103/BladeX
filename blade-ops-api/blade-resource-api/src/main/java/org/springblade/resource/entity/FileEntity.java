@@ -46,6 +46,6 @@ public class FileEntity extends BaseEntity {
 	 * 文件大小
 	 */
 	@ApiModelProperty(value = "文件大小")
-	private String size;
+	private String fileSizes;
 
 }

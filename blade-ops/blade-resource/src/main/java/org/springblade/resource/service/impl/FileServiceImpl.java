@@ -57,7 +57,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileEntity> imp
 			BeanUtil.copy(bladeFile,fileVO);
 			fileVO.setName(bladeFile.getOriginalName());
 			fileVO.setGenerateName(bladeFile.getName());
-			fileVO.setSize(this.getPrintSize(file.getSize()));
+			fileVO.setFileSizes(this.getPrintSize(file.getSize()));
 			super.save(fileVO);
 			return fileVO;
 		} catch (Exception e) {

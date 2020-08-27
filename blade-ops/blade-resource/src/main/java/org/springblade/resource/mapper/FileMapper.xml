@@ -9,7 +9,7 @@
         <result column="domain" property="domain"/>
         <result column="name" property="name"/>
         <result column="generate_name" property="generateName"/>
-        <result column="size" property="size"/>
+        <result column="file_sizes" property="fileSizes"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
@@ -25,7 +25,7 @@
         domain,
         name,
         generate_name,
-        size,
+        file_sizes,
         is_deleted,
         create_user,
         create_dept,
