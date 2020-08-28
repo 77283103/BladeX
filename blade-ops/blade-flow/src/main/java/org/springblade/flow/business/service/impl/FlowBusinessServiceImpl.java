@@ -825,11 +825,11 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		String assignee = TaskUtil.getTaskUser(flow.getAssignee());
 		/* 当前人员id */
 		String userId = this.getLoginId();
-		/* 创建子任务 */
+		/* 创建子任务先添加审批意见再完成子任务 */
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
 		TaskEntity task = this.createSubTask(taskEntity, TaskUtil.getTaskUser(userId));
-		taskService.complete(task.getId());
 		this.addComment(task.getId(), task.getProcessInstanceId(), userId, CommentTypeEnum.ZB, flow.getComment());
+		taskService.complete(task.getId());
 		/* 执行转办 */
 		taskService.setAssignee(taskId, assignee);
 	}
@@ -877,11 +877,11 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
 		/* 创建子任务 */
 		TaskEntity task = this.createSubTask(taskEntity, TaskUtil.getTaskUser(userId));
+		/* 生成历史记录 */
+		this.addComment(task.getId(), flow.getProcessInstanceId(), userId, CommentTypeEnum.WPFH, flow.getComment());
 		taskService.complete(task.getId());
 		/* 被委派人把任务返回给委派人 */
 		taskService.resolveTask(taskId);
-		/* 生成历史记录 */
-		this.addComment(task.getId(), flow.getProcessInstanceId(), userId, CommentTypeEnum.WPFH, flow.getComment());
 		return true;
 	}
 
