@@ -72,6 +72,15 @@ public interface FlowBusinessService {
 	IPage<BladeFlow> selectDonePage(IPage<BladeFlow> page, BladeFlow bladeFlow);
 
 	/**
+	 * 已退回列表页
+	 *INNER JOIN blade_user t2
+	 * @param page      分页工具
+	 * @param bladeFlow 流程类
+	 * @return
+	 */
+	IPage<BladeFlow> selectDoBackPage(IPage<BladeFlow> page, BladeFlow bladeFlow);
+
+	/**
 	 * 完成任务
 	 * @param flowNodeResponseList 接收前台返回的数据
 	 * @return boolean
