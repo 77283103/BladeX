@@ -1,7 +1,6 @@
-package org.springblade.flow.business.vo;
+package org.springblade.flow.core.vo;
 
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,7 +13,7 @@ import java.io.Serializable;
 @Setter
 @Getter
 @Builder
-public class FlowUserResponse implements Serializable{
+public class FlowUserRequest implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**
 	 * 用户id

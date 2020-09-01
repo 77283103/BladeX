@@ -22,6 +22,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.springblade.common.constant.flow.FlowEngineConstant;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
@@ -29,7 +30,6 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.flow.engine.constant.FlowEngineConstant;
 import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
 import org.springframework.web.bind.annotation.*;
@@ -116,6 +116,17 @@ public class FlowManagerController {
 						  @RequestParam String category,
 						  @RequestParam(required = false, defaultValue = "") String tenantIds) {
 		return R.status(flowEngineService.deployUpload(files, category, Func.toStrList(tenantIds)));
+	}
+
+	/**
+	 * 下拉数据源
+	 */
+	@GetMapping("/select")
+	@ApiOperationSupport(order = 6)
+	@ApiOperation(value = "下拉数据源")
+	public R<List<FlowProcess>> select() {
+		List<FlowProcess> list = flowEngineService.selectProcessNoPage();
+		return R.data(list);
 	}
 
 }

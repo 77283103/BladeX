@@ -36,6 +36,7 @@ import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.repository.ProcessDefinitionQuery;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.engine.runtime.ProcessInstanceQuery;
+import org.springblade.common.constant.flow.FlowEngineConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.utils.FileUtil;
@@ -44,7 +45,6 @@ import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlowHistory;
 import org.springblade.flow.core.enums.FlowModeEnum;
-import org.springblade.flow.engine.constant.FlowEngineConstant;
 import org.springblade.flow.engine.entity.FlowExecution;
 import org.springblade.flow.engine.entity.FlowModel;
 import org.springblade.flow.engine.entity.FlowProcess;
@@ -305,4 +305,18 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 		}
 	}
 
+	@Override
+	public List<FlowProcess> selectProcessNoPage() {
+		ProcessDefinitionQuery processDefinitionQuery = repositoryService.createProcessDefinitionQuery().latestVersion().orderByProcessDefinitionKey().asc();
+		List<ProcessDefinition> processList = processDefinitionQuery.list();
+		List<FlowProcess> flowProcessList = new ArrayList<>();
+		processList.forEach(processDefinition -> {
+			String deploymentId = processDefinition.getDeploymentId();
+			Deployment deployment = repositoryService.createDeploymentQuery().deploymentId(deploymentId).singleResult();
+			FlowProcess flowProcess = new FlowProcess((ProcessDefinitionEntityImpl) processDefinition);
+			flowProcess.setDeploymentTime(deployment.getDeploymentTime());
+			flowProcessList.add(flowProcess);
+		});
+		return flowProcessList;
+	}
 }

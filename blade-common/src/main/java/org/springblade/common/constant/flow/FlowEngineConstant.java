@@ -14,7 +14,7 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.flow.engine.constant;
+package org.springblade.common.constant.flow;
 
 /**
  * 流程常量.
@@ -23,6 +23,8 @@ package org.springblade.flow.engine.constant;
  * @date 2020-8-26
  */
 public interface FlowEngineConstant {
+
+	String FLOW_PARAMS = "param";
 
 	String GET_USER_TYPE = "get_user_type";
 

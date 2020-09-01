@@ -1,4 +1,4 @@
-package org.springblade.flow.engine.constant;
+package org.springblade.common.constant.flow;
 
 /**
  * 关系定义类型，后续可扩展

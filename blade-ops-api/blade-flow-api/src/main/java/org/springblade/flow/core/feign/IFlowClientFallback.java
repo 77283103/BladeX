@@ -16,10 +16,13 @@
  */
 package org.springblade.flow.core.feign;
 
+import org.springblade.core.mp.base.BaseEntity;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -55,4 +58,8 @@ public class IFlowClientFallback implements IFlowClient {
 		return R.fail("远程调用失败");
 	}
 
+	@Override
+	public R<List<FlowNodeRequest>> startProcessBefore(Map<String,Object> map, String businessType) {
+		return R.fail("远程调用失败");
+	}
 }

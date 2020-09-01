@@ -1,4 +1,4 @@
-package org.springblade.flow.engine.constant;
+package org.springblade.common.constant.flow;
 
 /**
  * 流程设计时通过什么方式获取用户数据

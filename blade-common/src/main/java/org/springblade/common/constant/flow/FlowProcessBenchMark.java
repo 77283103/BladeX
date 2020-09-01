@@ -1,4 +1,4 @@
-package org.springblade.flow.engine.constant;
+package org.springblade.common.constant.flow;
 
 /**
  * 基准人

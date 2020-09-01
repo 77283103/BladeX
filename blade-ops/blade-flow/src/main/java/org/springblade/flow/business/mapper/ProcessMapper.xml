@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.flow.business.mapper.ProcessMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="processResultMap" type="org.springblade.flow.core.entity.ProcessEntity">
+        <result column="id" property="id"/>
+        <result column="process_definition_id" property="processDefinitionId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="business_type" property="businessType"/>
+        <result column="dept_range" property="deptRange"/>
+        <result column="params" property="params"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        process_definition_id,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted,
+        business_type,
+        dept_range,
+        params
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="processResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM blade_process
+        WHERE is_deleted = 0
+        <if test="process.processDefinitionId != null and process.processDefinitionId != ''">
+            AND process_definition_id like concat('%',#{process.processDefinitionId},'%')
+        </if>
+        <if test="process.businessType != null and process.businessType != ''">
+            AND business_type = #{process.businessType}
+        </if>
+    </select>
+</mapper>

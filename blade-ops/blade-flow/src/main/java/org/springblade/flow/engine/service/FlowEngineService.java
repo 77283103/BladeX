@@ -118,4 +118,11 @@ public interface FlowEngineService extends IService<FlowModel> {
 	 * @return
 	 */
 	boolean deleteProcessInstance(String processInstanceId, String deleteReason);
+
+	/**
+	 * 查询部署完成的流程，用于下拉选
+	 *
+	 * @return 流程List
+	 */
+	List<FlowProcess> selectProcessNoPage();
 }

@@ -17,14 +17,18 @@
 package org.springblade.flow.core.feign;
 
 import org.springblade.core.launch.constant.AppConstant;
+import org.springblade.core.mp.base.BaseEntity;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.core.entity.BladeFlow;
+import org.springblade.flow.core.entity.ProcessEntity;
+import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -44,6 +48,7 @@ public interface IFlowClient {
 	String COMPLETE_TASK = API_PREFIX + "/complete-task";
 	String TASK_VARIABLE = API_PREFIX + "/task-variable";
 	String TASK_VARIABLES = API_PREFIX + "/task-variables";
+	String START_PROCESS_BEFORE = API_PREFIX + "/start-process-before";
 
 	/**
 	 * 开启流程
@@ -97,4 +102,15 @@ public interface IFlowClient {
 	 */
 	@GetMapping(TASK_VARIABLES)
 	R<Map<String, Object>> taskVariables(@RequestParam("taskId") String taskId);
+
+	/**
+	 * 通过业务类型获取流程定义信息
+	 *
+	 * @param map 对象转换的map
+	 * @param businessType 业务类型
+	 * @return 流程定义信息List
+	 */
+	@PostMapping(START_PROCESS_BEFORE)
+	R<List<FlowNodeRequest>> startProcessBefore(@RequestBody Map<String, Object> map, @RequestParam("businessType") String businessType);
+
 }

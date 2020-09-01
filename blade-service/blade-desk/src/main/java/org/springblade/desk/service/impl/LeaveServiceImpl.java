@@ -24,6 +24,7 @@ import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.support.Kv;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.desk.entity.ProcessLeave;
@@ -33,8 +34,11 @@ import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.feign.IFlowClient;
 import org.springblade.flow.core.utils.FlowUtil;
+import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.*;
 
 /**
  * 服务实现类
@@ -53,6 +57,7 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 	@GlobalTransactional
 	public boolean startProcess(ProcessLeave leave) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.LEAVE_KEY);
+		/* 调用flow获取流程定义信息 */
 		if (Func.isEmpty(leave.getId())) {
 			/*保存leave*/
 			leave.setApplyTime(DateUtil.now());
@@ -76,4 +81,13 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 		return true;
 	}
 
+	@Override
+	public List<FlowNodeRequest> startProcessBefore(ProcessLeave leave, String businessType) {
+		Map<String, Object> map = BeanUtil.toMap(leave);
+		R<List<FlowNodeRequest>> listR = flowClient.startProcessBefore(map, businessType);
+		if (listR.isSuccess()) {
+			return listR.getData();
+		}
+		throw new ServiceException("发起流程时获取到下一审批人失败");
+	}
 }

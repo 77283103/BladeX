@@ -94,7 +94,7 @@ public interface ISysClient {
 	 * @return 部门最新id
 	 */
 	@GetMapping(DEPT_NEW_ID)
-	Long getDeptNewId(@RequestParam("id") Long id);
+	R<Long> getDeptNewId(@RequestParam("id") Long id);
 
 	/**
 	 * 获取部门名

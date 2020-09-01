@@ -5,12 +5,17 @@ import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.impl.persistence.entity.ExecutionEntity;
-import org.springblade.flow.engine.constant.FlowEngineConstant;
+import org.springblade.common.constant.flow.FlowEngineConstant;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * flowable工具类
+ *
+ * @author blade
+ */
 public class FlowableUtils {
 
 	public static boolean isReachable(Process process, FlowNode sourceElement, FlowNode targetElement,

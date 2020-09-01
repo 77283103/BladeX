@@ -51,7 +51,6 @@ public abstract class BaseProcessService {
         TaskEntity task = null;
         if (ptask != null) {
             /* 1.生成子任务 */
-			//task = (TaskEntity) taskService.newTask(UUID.randomUUID().toString());
 			task = (TaskEntity) taskService.newTask();
             task.setCategory(ptask.getCategory());
             task.setDescription(ptask.getDescription());

@@ -1,8 +1,7 @@
-package org.springblade.flow.business.vo;
+package org.springblade.flow.core.vo;
 
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
@@ -12,12 +11,14 @@ import java.util.Map;
 
 /**
  * @author tah
+ * 功能：用于接收前台返回的Node信息，lombok版本问题引发不可解析故建此类
  * @date 2020-7-29
  */
 @Setter
 @Getter
-@Builder
+@NoArgsConstructor
 public class FlowNodeResponse implements Serializable{
+
 	private static final long serialVersionUID = 1L;
 	/**
 	 * 流程参数
@@ -47,6 +48,7 @@ public class FlowNodeResponse implements Serializable{
      * 执行人姓名
      */
     private String userName;
+
     /**
      * 任务节点结束时间
      */

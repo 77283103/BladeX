@@ -18,6 +18,9 @@ package org.springblade.desk.service;
 
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.desk.entity.ProcessLeave;
+import org.springblade.flow.core.vo.FlowNodeRequest;
+
+import java.util.List;
 
 /**
  * 服务类
@@ -33,5 +36,14 @@ public interface ILeaveService extends BaseService<ProcessLeave> {
 	 * @return boolean
 	 */
 	boolean startProcess(ProcessLeave leave);
+
+	/**
+	 * 发起流程之前根据业务类型返回下一审批节点和审批人
+	 *
+	 * @param leave 业务对象
+	 * @param businessType 业务类型
+	 * @return 可以提交的节点（包含审批人）
+	 */
+	List<FlowNodeRequest> startProcessBefore(ProcessLeave leave, String businessType);
 
 }

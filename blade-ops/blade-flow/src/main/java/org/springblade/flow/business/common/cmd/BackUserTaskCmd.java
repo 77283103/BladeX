@@ -16,7 +16,7 @@ import org.flowable.engine.impl.util.CommandContextUtil;
 import org.flowable.engine.impl.util.ProcessDefinitionUtil;
 import org.flowable.task.api.Task;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
-import org.springblade.flow.engine.constant.FlowEngineConstant;
+import org.springblade.common.constant.flow.FlowEngineConstant;
 import org.springblade.flow.engine.utils.FlowableUtils;
 
 import java.io.Serializable;

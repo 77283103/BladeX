@@ -30,10 +30,10 @@ import org.springblade.flow.business.service.FlowBusinessService;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.FlowNodeVo;
 import org.springblade.flow.core.utils.TaskUtil;
+import org.springblade.flow.core.vo.FlowNodeRequest;
+import org.springblade.flow.core.vo.FlowNodeResponse;
 import org.springblade.flow.engine.entity.FlowProcess;
 import org.springblade.flow.engine.service.FlowEngineService;
-import org.springblade.flow.business.vo.FlowNodeResponse;
-import org.springblade.flow.business.vo.FlowNodeResponseReceive;
 import org.springblade.flow.business.vo.TaskRequest;
 import org.springframework.web.bind.annotation.*;
 
@@ -150,7 +150,7 @@ public class WorkController {
 	@GetMapping("complete-before")
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "提交前的处理", notes = "传入流程信息")
-	public R<List<FlowNodeResponse>> completeTempResult(@ApiParam("任务信息") String taskId){
+	public R<List<FlowNodeRequest>> completeTempResult(@ApiParam("任务信息") String taskId){
 		return R.data(flowBusinessService.completeTempResult(taskId));
 	}
 
@@ -162,7 +162,7 @@ public class WorkController {
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "完成任务", notes = "传入流程信息")
-	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponseReceive> flowList) {
+	public R completeTask(@ApiParam("任务信息") @RequestBody List<FlowNodeResponse> flowList) {
 		return R.status(flowBusinessService.completeTask(flowList));
 	}
 
@@ -188,7 +188,7 @@ public class WorkController {
 	@GetMapping("backSearch-task")
 	@ApiOperationSupport(order = 9)
 	@ApiOperation(value = "退回节点查询", notes = "传入流程信息")
-	public R<List<FlowNodeResponse>> searchBackNodes(@ApiParam("任务id") String taskId) {
+	public R<List<FlowNodeRequest>> searchBackNodes(@ApiParam("任务id") String taskId) {
 		return R.data(flowBusinessService.backNodes(taskId));
 	}
 

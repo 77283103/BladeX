@@ -66,8 +66,8 @@ public class DeptController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入dept")
 	@PreAuth(RoleConstant.HAS_ROLE_ADMIN)
-	public R<DeptVO> detail(Dept dept) {
-		Dept detail = deptService.getOne(Condition.getQueryWrapper(dept));
+	public R<DeptVO> detail(String id) {
+		Dept detail = deptService.getById(id);
 		return R.data(DeptWrapper.build().entityVO(detail));
 	}
 

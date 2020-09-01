@@ -23,9 +23,12 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.desk.entity.ProcessLeave;
 import org.springblade.desk.service.ILeaveService;
+import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springblade.system.user.cache.UserCache;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
+
+import java.util.List;
 
 /**
  * 控制器
@@ -62,6 +65,17 @@ public class LeaveController extends BladeController implements CacheNames {
 	@PostMapping("start-process")
 	public R startProcess(@RequestBody ProcessLeave leave) {
 		return R.status(leaveService.startProcess(leave));
+	}
+
+	/**
+	 * 发起流程
+	 *
+	 * @param leave 业务对象
+	 * @return 节点信息List
+	 */
+	@PostMapping("start-process-before")
+	public R<List<FlowNodeRequest>> startProcessBefore(@RequestBody ProcessLeave leave) {
+		return R.data(leaveService.startProcessBefore(leave, "1"));
 	}
 
 }

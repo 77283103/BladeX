@@ -164,7 +164,7 @@ public class SysClient implements ISysClient {
 
 	@Override
 	@GetMapping(DEPT_NEW_ID)
-	public Long getDeptNewId(Long id) {
-		return deptService.getDeptNewId(id);
+	public R<Long> getDeptNewId(Long id) {
+		return R.data(deptService.getDeptNewId(id));
 	}
 }

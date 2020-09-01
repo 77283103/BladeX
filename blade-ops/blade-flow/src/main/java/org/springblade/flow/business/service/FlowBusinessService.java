@@ -21,10 +21,10 @@ import org.flowable.bpmn.model.FlowNode;
 import org.springblade.flow.business.common.CommentTypeEnum;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.FlowNodeVo;
-import org.springblade.flow.business.vo.FlowNodeResponse;
-import org.springblade.flow.business.vo.FlowNodeResponseReceive;
-import org.springblade.flow.business.vo.FlowUserResponse;
 import org.springblade.flow.business.vo.TaskRequest;
+import org.springblade.flow.core.vo.FlowNodeRequest;
+import org.springblade.flow.core.vo.FlowNodeResponse;
+import org.springblade.flow.core.vo.FlowUserRequest;
 
 import java.util.List;
 
@@ -85,7 +85,7 @@ public interface FlowBusinessService {
 	 * @param flowNodeResponseList 接收前台返回的数据
 	 * @return boolean
 	 */
-	boolean completeTask(List<FlowNodeResponseReceive> flowNodeResponseList);
+	boolean completeTask(List<FlowNodeResponse> flowNodeResponseList);
 
 	/**
 	 * 查询可以退回的节点
@@ -93,7 +93,7 @@ public interface FlowBusinessService {
 	 * @return 节点List
 	 *
 	 */
-	List<FlowNodeResponse> backNodes(String taskId);
+	List<FlowNodeRequest> backNodes(String taskId);
 
 	/**
 	 * 退回操作
@@ -140,7 +140,7 @@ public interface FlowBusinessService {
 	 * @param taskId ru_task的id
 	 * @return 节点List
 	 */
-	List<FlowNodeResponse> completeTempResult(String taskId);
+	List<FlowNodeRequest> completeTempResult(String taskId);
 
 	/**
 	 * 发起人终止流程
@@ -177,10 +177,10 @@ public interface FlowBusinessService {
 	 * 根据流程自定义属性查询候选人列表
 	 *
 	 * @param targetNode 节点对象
-	 * @param taskId 待办id
+	 * @param taskId 待办id，可选参数
 	 * @return 候选人列表
 	 */
-	List<FlowUserResponse> getCandidateUsers(FlowNode targetNode, String taskId);
+	List<FlowUserRequest> getCandidateUsers(FlowNode targetNode, String... taskId);
 
 	/**
 	 * 获取审批页面按钮权限
