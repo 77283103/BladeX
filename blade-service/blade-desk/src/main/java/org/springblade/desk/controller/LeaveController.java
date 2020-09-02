@@ -21,6 +21,7 @@ import org.springblade.common.cache.CacheNames;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.desk.dto.StartProcessDTO;
 import org.springblade.desk.entity.ProcessLeave;
 import org.springblade.desk.service.ILeaveService;
 import org.springblade.flow.core.vo.FlowNodeRequest;
@@ -58,17 +59,17 @@ public class LeaveController extends BladeController implements CacheNames {
 	}
 
 	/**
-	 * 新增或修改
+	 * 发起流程，确认提交
 	 *
-	 * @param leave 请假信息
+	 * @param startProcessDTO 流程发起时传输对象
 	 */
 	@PostMapping("start-process")
-	public R startProcess(@RequestBody ProcessLeave leave) {
-		return R.status(leaveService.startProcess(leave));
+	public R startProcess(@RequestBody StartProcessDTO startProcessDTO) {
+		return R.status(leaveService.startProcess(startProcessDTO.getProcessLeave(),startProcessDTO.getFlowNodeRequestList()));
 	}
 
 	/**
-	 * 发起流程
+	 * 发起流程，选择节点和人员
 	 *
 	 * @param leave 业务对象
 	 * @return 节点信息List

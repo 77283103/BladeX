@@ -55,23 +55,22 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	@GlobalTransactional
-	public boolean startProcess(ProcessLeave leave) {
+	public boolean startProcess(ProcessLeave leave, List<FlowNodeRequest> flowNodeRequestList) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.LEAVE_KEY);
 		/* 调用flow获取流程定义信息 */
 		if (Func.isEmpty(leave.getId())) {
 			/*保存leave*/
 			leave.setApplyTime(DateUtil.now());
 			save(leave);
+			/* 设置流程全局参数 */
+			Map<String, Object> variables = flowNodeRequestList.get(0).getVariables();
 			/* 启动流程 */
-			Kv variables = Kv.create()
-				.set(ProcessConstant.TASK_VARIABLE_CREATE_USER, SecureUtil.getUserName())
-				.set("days", DateUtil.between(leave.getStartTime(), leave.getEndTime()).toDays());
-			R<BladeFlow> result = flowClient.startProcessInstanceById(leave.getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(leave.getId())), variables);
+			R<BladeFlow> result = flowClient.startProcessInstanceById(flowNodeRequestList.get(0).getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(leave.getId())), variables);
 			if (result.isSuccess()) {
 				log.debug("流程已启动,流程ID:" + result.getData().getProcessInstanceId());
 				/* 返回流程id写入leave */
-				leave.setProcessInstanceId(result.getData().getProcessInstanceId());
-				updateById(leave);
+				/*leave.setProcessInstanceId(result.getData().getProcessInstanceId());*/
+				/*updateById(leave);*/
 			} else {
 				throw new ServiceException("开启流程失败");
 			}
@@ -83,11 +82,12 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 
 	@Override
 	public List<FlowNodeRequest> startProcessBefore(ProcessLeave leave, String businessType) {
+		/* 模块间调用时，对象传输后会自动转成数组，此处将对象转成map，用于在flow模块获取属性值 */
 		Map<String, Object> map = BeanUtil.toMap(leave);
 		R<List<FlowNodeRequest>> listR = flowClient.startProcessBefore(map, businessType);
 		if (listR.isSuccess()) {
 			return listR.getData();
 		}
-		throw new ServiceException("发起流程时获取到下一审批人失败");
+		throw new ServiceException("发起流程时获取下一审批人失败");
 	}
 }

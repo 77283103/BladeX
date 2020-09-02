@@ -17,10 +17,8 @@
 package org.springblade.flow.core.feign;
 
 import org.springblade.core.launch.constant.AppConstant;
-import org.springblade.core.mp.base.BaseEntity;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.core.entity.BladeFlow;
-import org.springblade.flow.core.entity.ProcessEntity;
 import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -104,7 +102,7 @@ public interface IFlowClient {
 	R<Map<String, Object>> taskVariables(@RequestParam("taskId") String taskId);
 
 	/**
-	 * 通过业务类型获取流程定义信息
+	 * 发起流程时获取下一节点及其办理人
 	 *
 	 * @param map 对象转换的map
 	 * @param businessType 业务类型

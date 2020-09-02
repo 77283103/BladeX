@@ -24,8 +24,6 @@ package org.springblade.common.constant.flow;
  */
 public interface FlowEngineConstant {
 
-	String FLOW_PARAMS = "param";
-
 	String GET_USER_TYPE = "get_user_type";
 
 	String BTN_PERMISSION = "btnList";

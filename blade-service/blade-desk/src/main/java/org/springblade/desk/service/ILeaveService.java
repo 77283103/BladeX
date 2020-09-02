@@ -35,12 +35,12 @@ public interface ILeaveService extends BaseService<ProcessLeave> {
 	 * @param leave 请假实体
 	 * @return boolean
 	 */
-	boolean startProcess(ProcessLeave leave);
+	boolean startProcess(ProcessLeave leave, List<FlowNodeRequest> flowNodeRequestList);
 
 	/**
 	 * 发起流程之前根据业务类型返回下一审批节点和审批人
 	 *
-	 * @param leave 业务对象
+	 * @param leave        业务对象
 	 * @param businessType 业务类型
 	 * @return 可以提交的节点（包含审批人）
 	 */

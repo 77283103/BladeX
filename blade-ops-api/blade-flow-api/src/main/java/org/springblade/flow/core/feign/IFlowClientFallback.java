@@ -16,7 +16,6 @@
  */
 package org.springblade.flow.core.feign;
 
-import org.springblade.core.mp.base.BaseEntity;
 import org.springblade.core.tool.api.R;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.vo.FlowNodeRequest;

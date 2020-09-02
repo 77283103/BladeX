@@ -19,6 +19,10 @@ import java.util.Map;
 public class FlowNodeRequest implements Serializable{
 	private static final long serialVersionUID = 1L;
 	/**
+	 * 流程定义id，启动流程时使用
+	 */
+	private String processDefinitionId;
+	/**
 	 * 流程参数
 	 */
 	private Map<String, Object> variables;

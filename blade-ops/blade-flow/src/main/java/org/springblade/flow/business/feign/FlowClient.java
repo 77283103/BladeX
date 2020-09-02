@@ -26,7 +26,6 @@ import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
-import org.springblade.common.constant.flow.FlowEngineConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
@@ -179,14 +178,16 @@ public class FlowClient implements IFlowClient {
 	@Override
 	@PostMapping(START_PROCESS_BEFORE)
 	public R<List<FlowNodeRequest>> startProcessBefore(Map<String,Object> maps,String businessType) {
+		/* 当前登录人的部门id */
 		String currentUserDeptId = AuthUtil.getDeptId();
+		/*根据业务类型获取满足条件的流程xml*/
 		List<ProcessEntity> processEntityList =	processService.getProcessByBusinessType(businessType);
 		List<FlowNodeRequest> flowNodeRequests = new ArrayList<>();
 		if (Func.isNotEmpty(processEntityList)) {
 			/*获取当前登录人部门的祖籍列表，拼接当前部门id*/
 			String deptAncestors = sysClient.getDept(Long.parseLong(currentUserDeptId)).getData().getAncestors()+","+currentUserDeptId;
-			/*将新的列表转成集合*/
 			List<String> deptIds = Arrays.asList(deptAncestors.split(","));
+			/*用于存储每个候选流程的使用范围id，用于和当前登录人部门去匹配*/
 			List<String> processDefineIds = new ArrayList<>();
 			/*取出每一个流程使用范围id*/
 			processEntityList.forEach(processEntity -> processDefineIds.add(processEntity.getDeptRange().toString()));
@@ -200,12 +201,13 @@ public class FlowClient implements IFlowClient {
 			/*过滤流程启动条件，暂未实现功能*/
 
 			if (Func.isNotEmpty(processEntityResult)) {
+				ProcessEntity processEntity = processEntityResult.get(0);
 				/*获取主流程*/
 				Process mainProcess = repositoryService.getBpmnModel(processEntityResult.get(0).getProcessDefinitionId()).getMainProcess();
 				/*定义全局变量*/
 				Kv variables = Kv.create();
 				/*获取流程全局变量参数，逗号分隔*/
-				String params = mainProcess.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_PARAMS);
+				String params = processEntity.getParams();
 				if(Func.isNotEmpty(params)) {
 					/*通过流程全局参数名获取value给全局变量赋值*/
 					Arrays.asList(params.split(",")).forEach(param -> variables.put(param, maps.get(param)));
@@ -221,7 +223,9 @@ public class FlowClient implements IFlowClient {
 					FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
 						.userResponseList(candidateUsers)
 						.id(secondNode.getId())
+						.processDefinitionId(processEntity.getProcessDefinitionId())
 						.name(secondNode.getName())
+						.variables(variables)
 						.enableChooseNode(false)
 						.end(false)
 						.build();
@@ -255,6 +259,8 @@ public class FlowClient implements IFlowClient {
 									List<FlowUserRequest> candidateUserList = flowBusinessService.getCandidateUsers(flowNodeExclusive);
 									FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
 										.end(false)
+										.processDefinitionId(processEntity.getProcessDefinitionId())
+										.variables(variables)
 										.id(flowNodeExclusive.getId())
 										.name(flowNodeExclusive.getName())
 										.userResponseList(candidateUserList)
@@ -278,7 +284,9 @@ public class FlowClient implements IFlowClient {
 							FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
 								.id(targetFlowNode.getId())
 								.name(targetFlowNode.getName())
+								.processDefinitionId(processEntity.getProcessDefinitionId())
 								.end(false)
+								.variables(variables)
 								.userResponseList(candidateUserList)
 								.build();
 							flowNodeRequests.add(flowNodeRequest);
@@ -293,15 +301,19 @@ public class FlowClient implements IFlowClient {
 								.end(false)
 								.enableChooseNode(true)
 								.id(targetNodeInclusive.getId())
+								.processDefinitionId(processEntity.getProcessDefinitionId())
 								.name(targetNodeInclusive.getName())
+								.variables(variables)
 								.userResponseList(candidateUserList)
 								.build();
 							flowNodeRequests.add(flowNodeRequest);
 						});
 					}
 				}
+				return R.data(flowNodeRequests);
+			}else{
+				throw new ServiceException("获取流程定义信息失败");
 			}
-			return R.data(flowNodeRequests);
 		} else {
 			throw new ServiceException("获取流程定义信息失败");
 		}

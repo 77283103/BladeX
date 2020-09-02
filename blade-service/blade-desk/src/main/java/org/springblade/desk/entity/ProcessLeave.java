@@ -36,14 +36,6 @@ public class ProcessLeave extends FlowEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 流程定义id
-	 */
-	private String processDefinitionId;
-	/**
-	 * 流程实例id
-	 */
-	private String processInstanceId;
-	/**
 	 * 请假开始时间
 	 */
 	private Date startTime;
