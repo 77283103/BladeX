@@ -655,20 +655,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			backSysMessage + taskRequest.getMessage());
 		String targetRealActivityId = managementService.executeCommand(
 			new BackUserTaskCmd(runtimeService, taskRequest.getTaskId(), taskRequest.getNodeId()));
-		/* 退回发起者处理,退回到发起者,默认设置任务执行人为发起者 */
-//		if (FlowEngineConstant.INITIATOR.equals(targetRealActivityId)) {
-//			String initiator = runtimeService.createProcessInstanceQuery()
-//				.processInstanceId(task.getProcessInstanceId()).singleResult().getStartUserId();
-//			List<Task> newTasks = taskService.createTaskQuery().processInstanceId(task.getProcessInstanceId()).list();
-//			for (Task newTask : newTasks) {
-//				/* 约定：发起者节点为 __initiator__ */
-//				if (FlowEngineConstant.INITIATOR.equals(newTask.getTaskDefinitionKey())) {
-//					if (Func.isEmpty(newTask.getAssignee())) {
-//						taskService.setAssignee(newTask.getId(), initiator);
-//					}
-//				}
-//			}
-//		}
 		return true;
 	}
 
@@ -797,6 +783,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	@Transactional(rollbackFor = Exception.class)
 	public boolean takeItBackTask(BladeFlow flow) {
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
+		String submitter="提交人";
 		/* 1.把当前的节点设置为空 */
 		if (taskEntity != null) {
 			/* 2.设置审批人 */
@@ -819,7 +806,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			}
 			FlowNode distActivity = activity;
 			if (distActivity != null) {
-				if ("提交人".equals(distActivity.getName())) {
+				if (submitter.equals(distActivity.getName())) {
 					ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(taskEntity.getProcessInstanceId()).singleResult();
 					runtimeService.setVariable(flow.getProcessInstanceId(), "initiator", processInstance.getStartUserId());
 				}
@@ -828,18 +815,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			this.deleteActivity(flow.getDistFlowElementId(), taskEntity.getProcessInstanceId());
 			List<String> executionIds = new ArrayList<>();
 			/* 6.判断节点是不是子流程内部的节点 */
-			/*if (flowableBpmnModelService.checkActivitySubprocessByActivityId(taskEntity.getProcessDefinitionId(),
-				backTaskVo.getDistFlowElementId())
-				&& flowableBpmnModelService.checkActivitySubprocessByActivityId(taskEntity.getProcessDefinitionId(),
-				taskEntity.getTaskDefinitionKey())) {*/
-			/* 6.1 子流程内部拿回 */
-				/*Execution executionTask = runtimeService.createExecutionQuery().executionId(taskEntity.getExecutionId()).singleResult();
-				String parentId = executionTask.getParentId();
-				List<Execution> executions = runtimeService.createExecutionQuery().parentId(parentId).list();
-				executions.forEach(execution -> executionIds.add(execution.getId()));
-				this.moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId());
-			} else {*/
-			/* 6.2 普通退回 */
 			List<Execution> executions = runtimeService.createExecutionQuery().parentId(taskEntity.getProcessInstanceId()).list();
 			executions.forEach(execution -> executionIds.add(execution.getId()));
 			runtimeService.createChangeActivityStateBuilder().moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId()).changeState();
@@ -862,8 +837,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 得到当前任务的key */
 		String currActId = taskEntity.getTaskDefinitionKey();
 		/* 获取运行节点表中usertask（已经审完的节点） */
-		String sql = "select t.* from act_ru_actinst t where t.ACT_TYPE_ = 'userTask' " +
-			" and t.PROC_INST_ID_=#{processInstanceId} and t.END_TIME_ is not null GROUP BY t.act_id_";
+		String sql = "select t.* from act_ru_actinst t where t.ACT_TYPE_ = 'userTask' and t.PROC_INST_ID_=#{processInstanceId} and t.END_TIME_ is not null GROUP BY t.act_id_";
 		List<ActivityInstance> activityInstances = runtimeService.createNativeActivityInstanceQuery().sql(sql)
 			.parameter("processInstanceId", flow.getProcessInstanceId())
 			.list();
@@ -892,8 +866,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			activityInstances.addAll(inclusiveGateways);
 			activityInstances.sort(Comparator.comparing(ActivityInstance::getEndTime));
 		}
-		if("parallelGateway".equals(activityInstances.get(activityInstances.size()-1).getActivityType())||"inclusiveGateway".equals(activityInstances.get(activityInstances.size()-1).getActivityType())){
-			if ((parallelGatewaies.size() % 2 != 0)||(inclusiveGateways.size() % 2 != 0)) {
+		int group = 0;
+		if(BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL.equals(activityInstances.get(activityInstances.size()-1).getActivityType())||BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE.equals(activityInstances.get(activityInstances.size()-1).getActivityType())){
+			if ((parallelGatewaies.size() % group != 0)||(inclusiveGateways.size() % group != 0)) {
 				activityInstances.remove(activityInstances.size()-1);
 			}
 		}
@@ -916,7 +891,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 					parallelGatewayUserTasks.put(currActivityInstance, datas);
 				}
 			}
-			if ("inclusiveGateway".equals(activityInstance.getActivityType())) {
+			if (BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE.equals(activityInstance.getActivityType())) {
 				count++;
 				type = "inclusiveGateway";
 				if (count % 2 != 0) {
@@ -929,10 +904,10 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				if (count % 2 == 0) {
 					userTasks.add(activityInstance);
 				} else {
-					if ("parallelGateway".equals(type) || parallelGatewayUserTasks.containsKey(currActivityInstance)) {
+					if (BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL.equals(type) || parallelGatewayUserTasks.containsKey(currActivityInstance)) {
 						parallelGatewayUserTasks.get(currActivityInstance).add(activityInstance);
 					}
-					if ("inclusiveGateway".equals(type) || inclusiveGatewayUserTasks.containsKey(currActivityInstance)) {
+					if (BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE.equals(type) || inclusiveGatewayUserTasks.containsKey(currActivityInstance)) {
 						inclusiveGatewayUserTasks.get(currActivityInstance).add(activityInstance);
 					}
 					if (activityInstances.size() == sun) {
