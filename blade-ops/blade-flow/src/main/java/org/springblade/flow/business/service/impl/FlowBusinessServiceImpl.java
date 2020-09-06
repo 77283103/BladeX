@@ -643,7 +643,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @return
 	 */
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public boolean backTask(TaskRequest taskRequest) {
 		String taskId = taskRequest.getTaskId();
 		/* 获取当前登录人 */
@@ -707,7 +706,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @return
 	 */
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public void assignTask(BladeFlow flow) {
 		/* 任务id */
 		String taskId = flow.getTaskId();
@@ -734,7 +732,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @return
 	 */
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public void delegateTask(BladeFlow flow) {
 		/* 任务id */
 		String taskId = flow.getTaskId();
@@ -758,7 +755,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @return
 	 */
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public boolean delegateBack(BladeFlow flow) {
 		/* 任务id */
 		String taskId = flow.getTaskId();
@@ -780,7 +776,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * 执行退回功能
 	 */
 	@Override
-	@Transactional(rollbackFor = Exception.class)
 	public boolean takeItBackTask(BladeFlow flow) {
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
 		String submitter="提交人";
