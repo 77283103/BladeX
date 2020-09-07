@@ -24,6 +24,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.desk.dto.StartProcessDTO;
 import org.springblade.desk.entity.ProcessLeave;
 import org.springblade.desk.service.ILeaveService;
+import org.springblade.flow.core.constant.ProcessConstant;
 import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springblade.system.user.cache.UserCache;
 import org.springframework.web.bind.annotation.*;
@@ -76,7 +77,7 @@ public class LeaveController extends BladeController implements CacheNames {
 	 */
 	@PostMapping("start-process-before")
 	public R<List<FlowNodeRequest>> startProcessBefore(@RequestBody ProcessLeave leave) {
-		return R.data(leaveService.startProcessBefore(leave, "1"));
+		return R.data(leaveService.startProcessBefore(leave, ProcessConstant.LEAVE_KEY));
 	}
 
 }

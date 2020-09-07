@@ -43,6 +43,7 @@ import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springblade.flow.core.vo.FlowUserRequest;
 import org.springblade.system.feign.ISysClient;
+import org.springframework.jdbc.datasource.init.ScriptException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -177,7 +178,7 @@ public class FlowClient implements IFlowClient {
 
 	@Override
 	@PostMapping(START_PROCESS_BEFORE)
-	public R<List<FlowNodeRequest>> startProcessBefore(Map<String,Object> maps,String businessType) {
+	public R<List<FlowNodeRequest>> startProcessBefore(Map<String,Object> maps,String businessType) throws ScriptException {
 		/* 当前登录人的部门id */
 		String currentUserDeptId = AuthUtil.getDeptId();
 		/*根据业务类型获取满足条件的流程xml*/
@@ -195,11 +196,25 @@ public class FlowClient implements IFlowClient {
 			List<String> deptIdResult = deptIds.stream().sorted(Comparator.reverseOrder()).filter(processDefineIds::contains).limit(1).collect(Collectors.toList());
 			/*过滤流程定义List，取出与最低小级部门匹配的流程定义信息，即 即将启动的流程*/
 			List<ProcessEntity> processEntityResult = processEntityList.stream().filter(processEntity -> Func.equals(deptIdResult.get(0), processEntity.getDeptRange().toString())).collect(Collectors.toList());
-
-			/*过滤流程启动条件，暂未实现功能*/
-
-			/*过滤流程启动条件，暂未实现功能*/
-
+			/*计算表达式*/
+			ScriptEngineManager manager = new ScriptEngineManager();
+			ScriptEngine engine = manager.getEngineByName("js");
+			/*过滤流程启动条件*/
+			processEntityResult = processEntityResult.stream().filter(processEntity -> {
+				String condition = processEntity.getStartCondition();
+				boolean flag = false;
+				for (Map.Entry<String, Object> map : maps.entrySet()) {
+					if(condition.contains(map.getKey())) {
+						condition = condition.replace(map.getKey(), "'"+map.getValue().toString()+"'");
+					}
+				}
+				try {
+					flag =(boolean) engine.eval(condition);
+				} catch (javax.script.ScriptException e) {
+					e.printStackTrace();
+				}
+				return flag;
+			}).collect(Collectors.toList());
 			if (Func.isNotEmpty(processEntityResult)) {
 				ProcessEntity processEntity = processEntityResult.get(0);
 				/*获取主流程*/
@@ -235,7 +250,6 @@ public class FlowClient implements IFlowClient {
 				if (secondNode instanceof Gateway) {
 					// 排他网关
 					if (secondNode instanceof ExclusiveGateway) {
-						ScriptEngineManager manager = new ScriptEngineManager();
 						/* 遍历所有连线，确定流程即将进入的连线 */
 						for (SequenceFlow outLine : secondNode.getOutgoingFlows()) {
 							/* 获取连线的条件 */
@@ -247,11 +261,10 @@ public class FlowClient implements IFlowClient {
 							/* 遍历全局变量，将全局变量中与条件表达式对应的key替换为全局变量的value */
 							/* 得到类似：value（全局变量） == value（连线表达式） 的字符串表达式 */
 							for (Map.Entry<String, Object> map : variables.entrySet()) {
-								conditionExpression = conditionExpression.replace(map.getKey(), map.getValue().toString());
+								conditionExpression = conditionExpression.replace(map.getKey(), "'"+map.getValue().toString()+"'");
 							}
 							/* 调用js对字符串表达式进行计算，可以计算数字和字符串：1==1返回true，'a'=='a'返回true */
 							try {
-								ScriptEngine engine = manager.getEngineByName("js");
 								boolean result = (boolean) engine.eval(conditionExpression);
 								if (result) {
 									FlowNode flowNodeExclusive = (FlowNode) outLine.getTargetFlowElement();
@@ -319,3 +332,5 @@ public class FlowClient implements IFlowClient {
 		}
 	}
 }
+
+

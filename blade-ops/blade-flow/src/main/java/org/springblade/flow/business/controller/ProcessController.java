@@ -24,6 +24,9 @@ import org.springblade.flow.business.wrapper.ProcessWrapper;
 import org.springblade.flow.core.entity.ProcessEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 
 /**
  * 流程定义信息表 控制器
@@ -70,8 +73,8 @@ public class ProcessController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入process")
 	@PreAuth("hasPermission('flow:process:add')")
 	public R save(@Valid @RequestBody ProcessRequestVO process) {
-        ProcessEntity entity = new ProcessEntity();
-        BeanUtil.copy(process,entity);
+		ProcessEntity entity = new ProcessEntity();
+		BeanUtil.copy(process, entity);
 		return R.status(processService.save(entity));
 	}
 
@@ -83,11 +86,11 @@ public class ProcessController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入process")
 	@PreAuth("hasPermission('flow:process:update')")
 	public R update(@Valid @RequestBody ProcessRequestVO process) {
-	    if (Func.isEmpty(process.getId())){
-            throw new ServiceException("id不能为空");
-        }
-	    ProcessEntity entity = new ProcessEntity();
-        BeanUtil.copy(process,entity);
+		if (Func.isEmpty(process.getId())) {
+			throw new ServiceException("id不能为空");
+		}
+		ProcessEntity entity = new ProcessEntity();
+		BeanUtil.copy(process, entity);
 		return R.status(processService.updateById(entity));
 	}
 
@@ -100,6 +103,22 @@ public class ProcessController extends BladeController {
 	@PreAuth("hasPermission('flow:process:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(processService.deleteLogic(Func.toLongList(ids)));
+	}
+
+	/**
+	 * 根据业务类型反射获取bean的字段及类型
+	 */
+	@GetMapping("/bean-field")
+	@ApiOperationSupport(order = 8)
+	@ApiOperation(value = "获取bean字段及类型", notes = "传入业务类型")
+	@PreAuth("hasPermission('flow:process:bean-field')")
+	public R<List<Map<String,String>>> getBeanFields(@RequestParam String businessType) {
+		try {
+			List<Map<String,String>> beanFields = processService.getBeanFields(businessType);
+			return R.data(beanFields);
+		} catch (ClassNotFoundException e) {
+			throw new ServiceException("未获取到类："+businessType);
+		}
 	}
 
 }

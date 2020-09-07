@@ -289,7 +289,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				/* 遍历全局变量，将全局变量中与条件表达式对应的key替换为全局变量的value */
 				/* 得到类似：value（全局变量） == value（连线表达式） 的字符串表达式 */
 				for (Map.Entry<String, Object> map : variables.entrySet()) {
-					conditionExpression = conditionExpression.replace(map.getKey(), map.getValue().toString());
+					conditionExpression = conditionExpression.replace(map.getKey(), "'"+map.getValue().toString()+"'");
 				}
 				/* 调用js对字符串表达式进行计算，可以计算数字和字符串：1==1返回true，'a'=='a'返回true */
 				try {

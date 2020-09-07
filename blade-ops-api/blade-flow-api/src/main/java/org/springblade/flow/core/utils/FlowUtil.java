@@ -34,9 +34,15 @@ public class FlowUtil {
 	 * 定义流程key对应的表名
 	 */
 	private final static Map<String, String> BUSINESS_TABLE = new HashMap<>();
+	/**
+	 * 定义流程Key对应的全类名
+	 */
+	private final static Map<String, String> BUSINESS_FULL_CLASS_NAME = new HashMap<>();
 
 	static {
 		BUSINESS_TABLE.put(ProcessConstant.LEAVE_KEY, "blade_process_leave");
+		BUSINESS_FULL_CLASS_NAME.put(ProcessConstant.LEAVE_KEY, "org.springblade.desk.entity.ProcessLeave");
+		BUSINESS_FULL_CLASS_NAME.put("contract", "org.springblade.contract.entity");
 	}
 
 	/**
@@ -50,6 +56,19 @@ public class FlowUtil {
 			throw new RuntimeException("流程启动失败,未找到相关业务表");
 		}
 		return businessTable;
+	}
+
+	/**
+	 * 通过流程key获取全类名
+	 *
+	 * @param key 流程key
+	 */
+	public static String getBusinessFullClassName(String key) {
+		String businessFullClassName = BUSINESS_FULL_CLASS_NAME.get(key);
+		if (Func.isEmpty(businessFullClassName)) {
+			throw new RuntimeException("流程启动失败,未找到相关业务全类名");
+		}
+		return businessFullClassName;
 	}
 
 	/**
