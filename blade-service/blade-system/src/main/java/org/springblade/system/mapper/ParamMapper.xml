@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.ParamMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="paramResultMap" type="org.springblade.system.entity.Param">
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="param_name" property="paramName"/>
+        <result column="param_key" property="paramKey"/>
+        <result column="param_value" property="paramValue"/>
+        <result column="remark" property="remark"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        param_name,
+        param_key,
+        param_value,
+        remark,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="paramResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM blade_param
+        WHERE is_deleted = 0
+        <if test="param.paramName != null and param.paramName != ''">
+            AND param_name like concat('%',#{param.paramName},'%')
+        </if>
+        <if test="param.paramKey != null and param.paramKey != ''">
+            AND param_key like concat('%',#{param.paramKey},'%')
+        </if>
+    </select>
+</mapper>

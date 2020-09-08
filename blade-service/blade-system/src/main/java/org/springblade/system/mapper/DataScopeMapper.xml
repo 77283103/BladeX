@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.DataScopeMapper">
+    <resultMap id="DataScopeResultMap" type="org.springblade.system.entity.DataScope">
+        <result column="id" property="id"/>
+        <result column="menu_id" property="menuId"/>
+        <result column="resource_code" property="resourceCode"/>
+        <result column="scope_name" property="scopeName"/>
+        <result column="scope_field" property="scopeField"/>
+        <result column="scope_class" property="scopeClass"/>
+        <result column="scope_column" property="scopeColumn"/>
+        <result column="scope_type" property="scopeType"/>
+        <result column="scope_value" property="scopeValue"/>
+        <result column="remark" property="remark"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        menu_id,
+        resource_code,
+        scope_name,
+        scope_field,
+        scope_class,
+        scope_column,
+        scope_type,
+        scope_value,
+        remark,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="DataScopeResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM blade_scope_data
+        WHERE is_deleted = 0
+        AND menu_id = #{dataScope.menuId}
+        <if test="dataScope.resourceCode != null and dataScope.resourceCode != ''">
+            AND resource_code like concat('%',#{dataScope.resourceCode},'%')
+        </if>
+        <if test="dataScope.scopeName != null and dataScope.scopeName != ''">
+            AND scope_name like concat('%',#{dataScope.scopeName},'%')
+        </if>
+    </select>
+</mapper>

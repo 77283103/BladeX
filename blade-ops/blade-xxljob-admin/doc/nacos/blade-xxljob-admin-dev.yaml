@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    druid:
+      validation-query: select 1
+
+#项目模块集中配置
+blade:
+  #工作流模块开发生产环境数据库地址
+  datasource:
+    job:
+      dev:
+        # MySql
+        url: jdbc:mysql://127.0.0.1:3306/xxl_job?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
+        username: root
+        password: root

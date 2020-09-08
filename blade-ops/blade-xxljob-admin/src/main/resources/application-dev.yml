@@ -1,0 +1,7 @@
+#数据源配置
+spring:
+  datasource:
+    url: ${blade.datasource.job.dev.url}
+    username: ${blade.datasource.job.dev.username}
+    password: ${blade.datasource.job.dev.password}
+

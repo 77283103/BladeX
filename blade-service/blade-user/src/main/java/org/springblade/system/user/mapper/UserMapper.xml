@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.user.mapper.UserMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="userResultMap" type="org.springblade.system.user.entity.User">
+        <result column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="code" property="code"/>
+        <result column="account" property="account"/>
+        <result column="password" property="password"/>
+        <result column="real_name" property="realName"/>
+        <result column="avatar" property="avatar"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="landline" property="landline"/>
+        <result column="birthday" property="birthday"/>
+        <result column="sex" property="sex"/>
+        <result column="is_enable" property="isEnable"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!--  关联身份信息  -->
+    <resultMap id="userDepartResultMap" type="org.springblade.system.user.dto.UserDTO">
+        <result column="id" property="id"/>
+        <result column="tenant_id" property="tenantId"/>
+        <result column="code" property="code"/>
+        <result column="account" property="account"/>
+        <result column="real_name" property="realName"/>
+        <result column="avatar" property="avatar"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="landline" property="landline"/>
+        <result column="birthday" property="birthday"/>
+        <result column="sex" property="sex"/>
+        <result column="is_enable" property="isEnable"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <collection property="userDepartList" ofType="org.springblade.system.dto.UserDepartDTO" select="selectDepart"
+                    column="id">
+            <result column="id" property="id"/>
+            <result column="user_id" property="userId"/>
+            <result column="role_id" property="roleId"/>
+            <result column="role_alias" property="roleAlias"/>
+            <result column="role_name" property="roleName"/>
+            <result column="dept_id" property="deptId"/>
+            <result column="dept_name" property="deptName"/>
+            <result column="post_id" property="postId"/>
+            <result column="post_name" property="postName"/>
+        </collection>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        select id,
+        create_user AS createUser,
+        create_time AS createTime,
+        update_user AS updateUser,
+        update_time AS updateTime,
+        status,
+        is_deleted AS isDeleted,
+        account, password, real_name, real_name, email, phone, birthday, sex, role_id, dept_id
+    </sql>
+
+    <select id="userPage" resultMap="userResultMap">
+        SELECT
+        a.*
+        FROM
+        blade_user a
+        where a.is_deleted = 0
+        <if test="user.account != null and user.account != ''">
+            AND account like concat('%',#{user.account},'%')
+        </if>
+
+        <if test="tenantId!=null and tenantId != ''">
+            and a.tenant_id = #{tenantId}
+        </if>
+        <if test="user.tenantId!=null and user.tenantId != ''">
+            and a.tenant_id = #{user.tenantId}
+        </if>
+        <if test="user.code!=null and user.code != ''">
+            and a.code like concat('%',#{user.code},'%')
+        </if>
+        <if test="user.realName!=null and user.realName != ''">
+            and a.real_name like concat('%',#{user.realName},'%')
+        </if>
+        <if test="deptIdList!=null and deptIdList.size>0">
+            and a.id in (
+            SELECT
+            user_id
+            FROM
+            blade_user_depart
+            WHERE
+            dept_id IN
+            <foreach collection="deptIdList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            )
+        </if>
+        ORDER BY id
+    </select>
+    <select id="selectDepart" resultType="org.springblade.system.dto.UserDepartDTO">
+        SELECT
+            b.id,
+            b.user_id,
+            b.dept_id,
+            b.role_id,
+            b.post_id,
+            r.role_alias,
+            r.role_name,
+            d.dept_name,
+            p.post_name
+        FROM
+            blade_user_depart b
+            LEFT JOIN blade_role r ON b.role_id = r.id
+            LEFT JOIN blade_dept d ON b.dept_id = d.id
+            LEFT JOIN blade_post p ON b.post_id = p.id
+        WHERE
+            b.user_id = #{userID}
+    </select>
+    <select id="getUser" resultMap="userDepartResultMap">
+        SELECT
+            a.*
+        FROM
+            blade_user a
+        WHERE
+            a.tenant_id = #{param1} and a.account = #{param2} and a.is_deleted = 0
+    </select>
+
+    <select id="exportUser" resultType="org.springblade.system.user.excel.UserExcel">
+        SELECT
+        a.id,
+        a.account,
+        a.real_name,
+        a.email,
+        a.phone,
+        a.landline,
+        a.birthday,
+        group_concat(b.role_id Separator ',') AS role_id,
+        group_concat(b.dept_id Separator ',') AS dept_id,
+        group_concat(b.post_id Separator ',') AS post_id,
+        group_concat(r.role_name Separator ',') AS role_name,
+        group_concat(d.dept_name Separator ',') AS dept_name,
+        group_concat(p.post_name Separator ',') AS post_name
+        FROM
+        blade_user a
+        LEFT JOIN blade_user_depart b ON a.id = b.user_id
+        LEFT JOIN blade_role r ON b.role_id = r.id
+        LEFT JOIN blade_dept d ON b.dept_id = d.id
+        LEFT JOIN blade_post p ON b.post_id = p.id
+        where a.is_deleted = 0
+        <if test="tenantId!=null and tenantId != ''">
+            and a.tenant_id = #{tenantId}
+        </if>
+        <if test="user.tenantId!=null and user.tenantId != ''">
+            and a.tenant_id = #{user.tenantId}
+        </if>
+        <if test="user.account!=null and user.account != ''">
+            and a.account like concat('%',#{user.account},'%')
+        </if>
+        <if test="user.realName!=null and user.realName != ''">
+            and a.real_name like concat('%',#{user.realName},'%')
+        </if>
+        <if test="deptIdList!=null and deptIdList.size>0">
+            and a.id in (
+            SELECT
+            user_id
+            FROM
+            blade_user_depart
+            WHERE
+            dept_id IN
+            <foreach collection="deptIdList" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+            )
+        </if>
+        GROUP BY a.id
+    </select>
+    <select id="selectUserDTOById" resultMap="userDepartResultMap">
+        SELECT
+            *
+        FROM
+            blade_user
+        WHERE is_deleted = 0
+        AND id = #{id}
+    </select>
+    <select id="findByDeptAndPost" resultType="org.springblade.system.user.entity.User">
+        SELECT
+	      u.*
+        FROM
+        blade_user u
+	    LEFT JOIN blade_user_depart d
+	    ON u.id = d.user_id
+        where u.is_deleted = 0
+        <if test="deptId!=null and deptId != ''">
+        and d.dept_id = #{deptId}
+        </if>
+        <if test="postId!=null and postId != ''">
+        and d.post_id = #{postId}
+        </if>
+    </select>
+    <!-- 关系定义：查询基准人所在部门的首席执行官（id=1123598817738675201） -->
+    <select id="findByBenchMinister" resultType="org.springblade.system.user.entity.User">
+        SELECT
+        u.*
+        FROM
+        blade_user u
+        LEFT JOIN blade_user_depart d
+        ON u.id = d.user_id
+        where u.is_deleted = 0
+        <if test="benchUserId!=null and benchUserId != ''">
+            and d.dept_id in (SELECT
+            d.dept_id
+            FROM
+            blade_user u
+            LEFT JOIN blade_user_depart d ON u.id = d.user_id
+            WHERE
+            d.user_id = #{benchUserId})
+        </if>
+        and d.post_id = '1123598817738675201'
+    </select>
+</mapper>

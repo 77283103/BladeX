@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.ApiScopeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="scope_apiResultMap" type="org.springblade.system.entity.ApiScope">
+        <result column="id" property="id"/>
+        <result column="menu_id" property="menuId"/>
+        <result column="resource_code" property="resourceCode"/>
+        <result column="scope_name" property="scopeName"/>
+        <result column="scope_path" property="scopePath"/>
+        <result column="scope_type" property="scopeType"/>
+        <result column="remark" property="remark"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        menu_id,
+        resource_code,
+        scope_name,
+        scope_path,
+        scope_type,
+        remark,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="scope_apiResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM blade_scope_api
+        WHERE is_deleted = 0
+        AND menu_id = #{apiScope.menuId}
+        <if test="apiScope.resourceCode != null and apiScope.resourceCode != ''">
+            AND resource_code like concat('%',#{apiScope.resourceCode},'%')
+        </if>
+        <if test="apiScope.scopeName != null and apiScope.scopeName != ''">
+            AND scope_name like concat('%',#{apiScope.scopeName},'%')
+        </if>
+    </select>
+</mapper>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.flow.business.mapper.BorrowFlowMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="borrowFlowResultMap" type="org.springblade.flow.core.entity.BorrowFlowEntity">
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="send_person_id" property="sendPersonId"/>
+        <result column="get_person_id" property="getPersonId"/>
+        <result column="process_definition_name" property="processDefinitionName"/>
+        <result column="process_definition_version" property="processDefinitionVersion"/>
+        <result column="category" property="category"/>
+        <result column="task_id" property="taskId"/>
+        <result column="process_instance_id" property="processInstanceId"/>
+        <result column="business_id" property="businessId"/>
+        <result column="read_category" property="readCategory"/>
+
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted,
+        send_person_id,
+        get_person_id,
+        process_definition_name,
+        process_definition_version,
+        category,
+        task_id,
+        process_instance_id,
+        business_id,
+        read_category
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="borrowFlowResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM blade_borrow_flow
+        WHERE is_deleted = 0 and get_person_id= #{borrowFlow.getPersonId}
+        <if test="borrowFlow.processDefinitionName != null and borrowFlow.processDefinitionName != ''">
+            AND process_definition_name like concat('%',#{borrowFlow.processDefinitionName},'%')
+        </if>
+        <if test="borrowFlow.sendPersonId != null and borrowFlow.sendPersonId != ''">
+            AND send_person_id =#{borrowFlow.sendPersonId}
+        </if>
+    </select>
+</mapper>

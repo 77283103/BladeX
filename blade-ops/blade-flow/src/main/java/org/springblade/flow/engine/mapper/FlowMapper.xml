@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.flow.engine.mapper.FlowMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="flowModelResultMap" type="org.springblade.flow.engine.entity.FlowModel">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="model_key" property="modelKey"/>
+        <result column="description" property="description"/>
+        <result column="model_comment" property="modelComment"/>
+        <result column="created" property="created"/>
+        <result column="created_by" property="createdBy"/>
+        <result column="last_updated" property="lastUpdated"/>
+        <result column="last_updated_by" property="lastUpdatedBy"/>
+        <result column="version" property="version"/>
+        <result column="model_editor_json" property="modelEditorJson"/>
+        <result column="thumbnail" property="thumbnail"/>
+        <result column="model_type" property="modelType"/>
+        <result column="tenant_id" property="tenantId"/>
+    </resultMap>
+
+    <select id="selectFlowPage" resultMap="flowModelResultMap">
+        SELECT
+            a.id,
+            a.name,
+            a.model_key,
+            a.description,
+            a.model_comment,
+            a.created,
+            a.created_by,
+            a.last_updated,
+            a.last_updated_by,
+            a.version,
+            a.model_editor_json,
+            a.thumbnail,
+            a.model_type,
+            a.tenant_id
+        FROM
+            ACT_DE_MODEL a
+        WHERE
+            1 = 1
+        ORDER BY
+            a.created DESC
+    </select>
+
+    <select id="findByParentModelId" parameterType="string" resultMap="flowModelResultMap">
+        select model.* from ACT_DE_MODEL_RELATION modelrelation
+                                inner join ACT_DE_MODEL model on modelrelation.model_id = model.id
+        where modelrelation.parent_model_id = #{_parameter}
+    </select>
+
+    <select id="getFlowCommentVosByProcessInstanceId" parameterType="java.lang.String"
+            resultType="org.springblade.flow.core.entity.BladeFlowHistory">
+      SELECT
+        t1.ID_,
+        t1.TYPE_ AS type,
+        t1.TIME_ AS createTime,
+        t1.USER_ID_ AS assignee,
+        t2.real_name AS assigneeName,
+        t1.TASK_ID_ AS taskId,
+        t1.PROC_INST_ID_ AS processInstanceId,
+        t1.MESSAGE_ AS comment
+    FROM
+        act_hi_comment t1
+    INNER JOIN blade_user t2 ON t1.USER_ID_ = t2.id
+    WHERE
+        t1.PROC_INST_ID_ = #{_value} and ACTION_='AddComment'
+    ORDER BY
+	t1.TIME_ ASC
+    </select>
+</mapper>

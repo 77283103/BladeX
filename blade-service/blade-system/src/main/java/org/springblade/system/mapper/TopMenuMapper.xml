@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.TopMenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="topMenuResultMap" type="org.springblade.system.entity.TopMenu">
+        <result column="id" property="id"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="code" property="code"/>
+        <result column="name" property="name"/>
+        <result column="source" property="source"/>
+        <result column="sort" property="sort"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        tenant_id,
+        english_name,
+        code,
+        name,
+        source,
+        sort,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="topMenuResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM blade_top_menu
+        WHERE is_deleted = 0
+        <if test="topmenu.code != null and topmenu.code != ''">
+            AND code like concat('%',#{topmenu.code},'%')
+        </if>
+        <if test="topmenu.name != null and topmenu.name != ''">
+            AND name like concat('%',#{topmenu.name},'%')
+        </if>
+    </select>
+</mapper>
