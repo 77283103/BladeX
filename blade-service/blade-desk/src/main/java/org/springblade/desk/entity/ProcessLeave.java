@@ -19,6 +19,8 @@ package org.springblade.desk.entity;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springblade.flow.core.entity.FlowEntity;
 
 import java.util.Date;
@@ -28,7 +30,8 @@ import java.util.Date;
  *
  * @author Chill
  */
-@Data
+@Getter
+@Setter
 @TableName("blade_process_leave")
 @EqualsAndHashCode(callSuper = true)
 public class ProcessLeave extends FlowEntity {

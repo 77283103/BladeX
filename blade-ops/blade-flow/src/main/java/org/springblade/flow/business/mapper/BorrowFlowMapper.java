@@ -9,6 +9,7 @@ import org.springblade.flow.core.entity.BorrowFlowEntity;
  * 传阅 Mapper 接口
  *
  * @author Liu Meng
+ * @date 2020-9-9
  */
 public interface BorrowFlowMapper extends BaseMapper<BorrowFlowEntity> {
 
