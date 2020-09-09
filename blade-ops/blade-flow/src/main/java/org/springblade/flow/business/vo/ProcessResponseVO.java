@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 
@@ -14,7 +16,8 @@ import io.swagger.annotations.ApiModel;
  * @author tianah
  * @date 2020-8-27
  */
-@Data
+@Setter
+@Getter
 @ApiModel(description = "流程定义信息表返回对象")
 @EqualsAndHashCode(callSuper = true)
 public class ProcessResponseVO extends BaseEntity {

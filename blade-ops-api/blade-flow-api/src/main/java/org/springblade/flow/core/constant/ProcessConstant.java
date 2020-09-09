@@ -17,45 +17,14 @@
 package org.springblade.flow.core.constant;
 
 /**
- * 流程常量.
+ * 流程常量，业务标识
  *
- * @author Chill
+ * @author tah
+ * @date 2020-9-9
  */
 public interface ProcessConstant {
-
 	/**
 	 * 请假流程标识
 	 */
 	String LEAVE_KEY = "Leave";
-
-	/**
-	 * 报销流程标识
-	 */
-	String Expense_KEY = "Expense";
-
-	/**
-	 * 同意标识
-	 */
-	String PASS_KEY = "pass";
-
-	/**
-	 * 同意代号
-	 */
-	String PASS_ALIAS = "ok";
-
-	/**
-	 * 同意默认批复
-	 */
-	String PASS_COMMENT = "同意";
-
-	/**
-	 * 驳回默认批复
-	 */
-	String NOT_PASS_COMMENT = "驳回";
-
-	/**
-	 * 创建人变量名
-	 */
-	String TASK_VARIABLE_CREATE_USER = "createUser";
-
 }

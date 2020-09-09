@@ -17,8 +17,9 @@
 package org.springblade.flow.core.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
 
 /**
@@ -26,7 +27,8 @@ import org.springblade.core.mp.base.BaseEntity;
  *
  * @author Chill
  */
-@Data
+@Setter
+@Getter
 @EqualsAndHashCode(callSuper = true)
 public class FlowEntity extends BaseEntity {
 
