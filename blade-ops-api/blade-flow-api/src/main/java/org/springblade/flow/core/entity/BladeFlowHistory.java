@@ -16,19 +16,19 @@
  */
 package org.springblade.flow.core.entity;
 
-import lombok.Data;
-import org.springblade.flow.core.constant.ProcessConstant;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
 
 /**
  * 工作流历史审批记录实体类
  *
  * @author Chill
  */
-@Data
+@Setter
+@Getter
 public class BladeFlowHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -104,7 +104,4 @@ public class BladeFlowHistory implements Serializable {
 	 * 操作名称
 	 */
 	private String type;
-
-
-
 }

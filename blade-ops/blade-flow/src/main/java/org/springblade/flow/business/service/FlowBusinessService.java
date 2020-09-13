@@ -32,6 +32,7 @@ import java.util.List;
  * 流程业务类
  *
  * @author Chill
+ * @date 2019-9-9
  */
 public interface FlowBusinessService {
 
@@ -177,14 +178,14 @@ public interface FlowBusinessService {
 	 * 根据流程自定义属性查询候选人列表
 	 *
 	 * @param targetNode 节点对象
-	 * @param taskId 待办id，可选参数
+	 * @param taskId 执行实例id，可选参数
 	 * @return 候选人列表
 	 */
 	List<FlowUserRequest> getCandidateUsers(FlowNode targetNode, String... taskId);
 
 	/**
 	 * 获取审批页面按钮权限
-	 * @param taskId 待办id
+	 * @param taskId 执行实例id
 	 * @return 按钮权限
 	 */
 	String btnPermission(String taskId);

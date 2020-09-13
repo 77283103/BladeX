@@ -1,13 +1,12 @@
 package org.springblade.flow.core.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Getter;
+import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import java.time.LocalDateTime;
 
 
 /**
@@ -15,7 +14,8 @@ import java.time.LocalDateTime;
  *
  * @author Liu Meng
  */
-@Data
+@Setter
+@Getter
 @TableName("blade_borrow_flow")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "BorrowFlow对象", description = "借阅")

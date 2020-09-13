@@ -31,6 +31,11 @@ import org.springblade.contract.service.IContractAccordingService;
  *
  * @author feng
  */
+/**
+ *  <类说明>   ：
+ * @author    : Mr.Feng
+ * @date      : 2020-9-7 13:17
+ */
 @RestController
 @AllArgsConstructor
 @RequestMapping("/according")

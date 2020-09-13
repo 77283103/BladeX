@@ -71,8 +71,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	private RepositoryService repositoryService;
 	private RuntimeService runtimeService;
 	protected ManagementService managementService;
-	private IUserClient userClient;
-	private ISysClient sysClient;
 	private IRunFlowableActinstDaoMapper runFlowableActinstDao;
 	private IHisFlowableActinstDaoMapper hisFlowableActinstDao;
 
@@ -80,7 +78,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * 提交操作
 	 *
 	 * @param flowNodeResponseList
-	 * @return
+	 * @return 提交结果(boolean)
 	 */
 	@Override
 	public boolean completeTask(List<FlowNodeResponse> flowNodeResponseList) {
@@ -93,7 +91,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 获取taskEntity对象 */
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
 		String processInstanceId = taskEntity.getProcessInstanceId();
-		String comment = Func.toStr(flow.getComment(), ProcessConstant.PASS_COMMENT);
+		String comment = Func.toStr(flow.getComment(), "");
 		Map<String, Object> variables = Kv.create();
 		/* 增加评论 */
 		if (StringUtil.isNoneBlank(processInstanceId, comment)) {
@@ -163,8 +161,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	/**
 	 * 点击通过按钮时，查询下一节点和人员信息
 	 *
-	 * @param taskId
-	 * @return
+	 * @param taskId 待办id
+	 * @return 可以提交的节点信息
 	 */
 	@Override
 	public List<FlowNodeRequest> completeTempResult(String taskId) {
@@ -209,7 +207,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * 封装【结束节点】的FlowNodeResponseList
 	 *
 	 * @param targetNode 节点对象
-	 * @return
+	 * @return 可以提交的节点信息
 	 */
 	private List<FlowNodeRequest> createFlowNodeResponseEnd(FlowNode targetNode) {
 		List<FlowNodeRequest> flowNodeRequestList = new ArrayList<>();
@@ -226,7 +224,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * 封装【UserTask节点】的FlowNodeResponseList
 	 *
 	 * @param targetNode 节点对象
-	 * @return
+	 * @param taskId 执行实例id
+	 * @return 可以提交的节点信息
 	 */
 	private List<FlowNodeRequest> createFlowNodeResponseUserTask(FlowNode targetNode, String taskId) {
 		/* 获取节点自定义属性 */
@@ -247,7 +246,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * 封装【GateWay节点】的FlowNodeResponseList
 	 *
 	 * @param targetNode 节点对象
-	 * @return
+	 * @param taskId 执行实例id
+	 * @return 可以提交的节点信息
 	 */
 	public List<FlowNodeRequest> createFlowNodeResponseGateWay(FlowNode targetNode, String taskId) {
 		List<FlowNodeRequest> flowNodeRequestList = new ArrayList<>();
@@ -336,13 +336,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		throw new FlowableException("流程暂不支持其他网关类型的处理");
 	}
 
-	/**
-	 * 根据流程自定义属性查询候选人列表
-	 *
-	 * @param targetNode
-	 * @param taskId
-	 * @return
-	 */
 	@Override
 	public List<FlowUserRequest> getCandidateUsers(FlowNode targetNode, String... taskId) {
 		/* 获取候选人名单获取方式 */
@@ -358,7 +351,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		String taskUser = TaskUtil.getTaskUser();
 		String taskGroup = TaskUtil.getCandidateGroup();
 		List<BladeFlow> flowList = new LinkedList<>();
-
 		/* 个人等待签收的任务 */
 		TaskQuery claimUserQuery = taskService.createTaskQuery().taskCandidateUser(taskUser)
 			.includeProcessVariables().active().orderByTaskCreateTime().desc();
@@ -368,19 +360,14 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 通用流程等待签收的任务 */
 		TaskQuery claimRoleWithoutTenantIdQuery = taskService.createTaskQuery().taskWithoutTenantId().taskCandidateGroupIn(Func.toStrList(taskGroup))
 			.includeProcessVariables().active().orderByTaskCreateTime().desc();
-
 		/* 构建列表数据 */
 		buildFlowTaskList(bladeFlow, flowList, claimUserQuery, FlowEngineConstant.STATUS_CLAIM);
 		buildFlowTaskList(bladeFlow, flowList, claimRoleWithTenantIdQuery, FlowEngineConstant.STATUS_CLAIM);
 		buildFlowTaskList(bladeFlow, flowList, claimRoleWithoutTenantIdQuery, FlowEngineConstant.STATUS_CLAIM);
-
 		/* 计算总数 */
 		long count = claimUserQuery.count() + claimRoleWithTenantIdQuery.count() + claimRoleWithoutTenantIdQuery.count();
-		/* 设置页数 */
 		page.setSize(count);
-		/* 设置总数 */
 		page.setTotal(count);
-		/* 设置数据 */
 		page.setRecords(flowList);
 		return page;
 	}
@@ -389,21 +376,15 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	public IPage<BladeFlow> selectTodoPage(IPage<BladeFlow> page, BladeFlow bladeFlow) {
 		String taskUser = TaskUtil.getTaskUser();
 		List<BladeFlow> flowList = new LinkedList<>();
-
 		/* 已签收的任务 */
 		TaskQuery todoQuery = taskService.createTaskQuery().taskAssignee(taskUser).active()
 			.includeProcessVariables().orderByTaskCreateTime().desc();
-
 		/* 构建列表数据 */
 		buildFlowTaskList(bladeFlow, flowList, todoQuery, FlowEngineConstant.STATUS_TODO);
-
 		/* 计算总数 */
 		long count = todoQuery.count();
-		/* 设置页数 */
 		page.setSize(count);
-		/* 设置总数 */
 		page.setTotal(count);
-		/* 设置数据 */
 		page.setRecords(flowList);
 		return page;
 	}
@@ -441,7 +422,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			flow.setHistoryActivityName(historicProcessInstance.getName());
 			flow.setProcessInstanceId(historicProcessInstance.getId());
 			flow.setHistoryProcessInstanceId(historicProcessInstance.getId());
-			/* ProcessDefinition */
+			/* 流程定义信息 */
 			ProcessDefinition processDefinition = FlowCache.getProcessDefinition(historicProcessInstance.getProcessDefinitionId());
 			flow.setProcessDefinitionId(processDefinition.getId());
 			flow.setProcessDefinitionName(processDefinition.getName());
@@ -470,7 +451,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 		/* 计算总数 */
 		long count = historyQuery.count();
-		/* 设置总数 */
 		page.setTotal(count);
 		page.setRecords(flowList);
 		return page;
@@ -533,7 +513,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		});
 		/* 计算总数 */
 		long count = doneQuery.count();
-		/* 设置总数 */
 		page.setTotal(count);
 		page.setRecords(flowList);
 		return page;
@@ -605,9 +584,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		return historyService.createHistoricProcessInstanceQuery().processInstanceId(processInstanceId).singleResult();
 	}
 
-	/**
-	 * 查询可以退回的节点
-	 */
 	@Override
 	public List<FlowNodeRequest> backNodes(String taskId) {
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(taskId).singleResult();
@@ -636,12 +612,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		return result;
 	}
 
-	/**
-	 * 退回操作
-	 *
-	 * @param taskRequest 退回信息
-	 * @return
-	 */
 	@Override
 	public boolean backTask(TaskRequest taskRequest) {
 		String taskId = taskRequest.getTaskId();
@@ -657,15 +627,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		return true;
 	}
 
-	/**
-	 * 增加审批意见
-	 *
-	 * @param taskId
-	 * @param processInstanceId
-	 * @param userId
-	 * @param type
-	 * @param message
-	 */
 	@Override
 	public void addComment(String taskId, String processInstanceId, String userId, CommentTypeEnum type,
 						   String message) {
@@ -678,7 +639,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	/**
 	 * 获取当前登录人id
 	 */
-	public String getLoginId() {
+	private String getLoginId() {
 		BladeUser user = AuthUtil.getUser();
 		String userId = String.valueOf(user.getUserId());
 		return userId;
@@ -693,18 +654,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	}
 
 
-	/**
-	 * 是否可以转办任务
-	 * <p>
-	 * 1.任务所有人可以转办
-	 * <p>
-	 * 2.任务执行人可以转办，但要求任务非委派状态
-	 * <p>
-	 * 3.被转办人不能是当前任务执行人
-	 *
-	 * @param flow
-	 * @return
-	 */
 	@Override
 	public void assignTask(BladeFlow flow) {
 		/* 任务id */
@@ -722,15 +671,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		taskService.setAssignee(taskId, assignee);
 	}
 
-	/**
-	 * 委派
-	 * 1.任务所有人可以委派
-	 * 2.任务执行人可以委派
-	 * 3.被委派人不能是任务所有人和当前任务执行人
-	 *
-	 * @param flow
-	 * @return
-	 */
 	@Override
 	public void delegateTask(BladeFlow flow) {
 		/* 任务id */
@@ -748,12 +688,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		taskService.delegateTask(task.getId(), assignee);
 	}
 
-	/**
-	 * 委派返回
-	 *
-	 * @param flow
-	 * @return
-	 */
 	@Override
 	public boolean delegateBack(BladeFlow flow) {
 		/* 任务id */
@@ -772,9 +706,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	}
 
 
-	/**
-	 * 执行退回功能
-	 */
 	@Override
 	public boolean takeItBackTask(BladeFlow flow) {
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
@@ -813,7 +744,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			List<Execution> executions = runtimeService.createExecutionQuery().parentId(taskEntity.getProcessInstanceId()).list();
 			executions.forEach(execution -> executionIds.add(execution.getId()));
 			runtimeService.createChangeActivityStateBuilder().moveExecutionsToSingleActivityId(executionIds, flow.getDistFlowElementId()).changeState();
-			/* } */
 			return true;
 		} else {
 			return false;
@@ -821,9 +751,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	}
 
 
-	/**
-	 * 查询可退回的节点信息
-	 */
 	@Override
 	public List<FlowNodeVo> takeItBackTaskLook(BladeFlow flow) {
 		List<FlowNodeVo> backNods = new ArrayList<>();
@@ -972,9 +899,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		return datas;
 	}
 
-	/**
-	 * 执行拿回
-	 */
 	@Override
 	public boolean takeBackTask(BladeFlow flow) {
 		/* 拿回的条件是下一节点不能审批，需要查询出发出的任务，下一节点是否审批了 */
@@ -1016,7 +940,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			System.out.println("拿回成功");
 			return true;
 		}
-
 	}
 
 	@Override
@@ -1034,7 +957,6 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 获取btnPermission标签值*/
 		return targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.BTN_PERMISSION);
 	}
-
 
 	/**
 	 * 删除跳转的历史节点信息

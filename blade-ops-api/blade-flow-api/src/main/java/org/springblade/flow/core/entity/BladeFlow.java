@@ -16,8 +16,8 @@
  */
 package org.springblade.flow.core.entity;
 
-import lombok.Data;
-import org.springblade.flow.core.constant.ProcessConstant;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -28,7 +28,8 @@ import java.util.Map;
  *
  * @author Chill
  */
-@Data
+@Setter
+@Getter
 public class BladeFlow implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -168,12 +169,5 @@ public class BladeFlow implements Serializable {
 	 * 流程参数
 	 */
 	private Map<String, Object> variables;
-
-	/**
-	 * 获取是否通过
-	 */
-	public boolean isPass() {
-		return ProcessConstant.PASS_ALIAS.equals(flag) || ProcessConstant.PASS_COMMENT.equals(comment);
-	}
 
 }
