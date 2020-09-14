@@ -48,7 +48,7 @@ public interface LauncherConstant {
 	String NACOS_PROD_ADDR = "172.30.0.48:8848";
 
 	/**
-	 * nacos test 地址
+	 * nacos test 地址t
 	 */
 	String NACOS_TEST_ADDR = "39.100.147.86:8848";
 
