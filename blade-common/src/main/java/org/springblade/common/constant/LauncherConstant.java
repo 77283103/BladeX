@@ -70,7 +70,7 @@ public interface LauncherConstant {
 	/**
 	 * seata dev 地址
 	 */
-	String SEATA_DEV_ADDR = "39.100.147.86:8091";
+	String SEATA_DEV_ADDR = "127.0.0.1:8091";
 
 	/**
 	 * seata prod 地址
@@ -80,7 +80,7 @@ public interface LauncherConstant {
 	/**
 	 * seata test 地址
 	 */
-	String SEATA_TEST_ADDR = "39.100.147.86:8091";
+	String SEATA_TEST_ADDR = "39.98.158.74:8091";
 
 	/**
 	 * zipkin dev 地址
