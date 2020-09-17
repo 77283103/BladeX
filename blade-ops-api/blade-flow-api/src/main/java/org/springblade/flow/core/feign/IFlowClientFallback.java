@@ -33,6 +33,11 @@ import java.util.Map;
 public class IFlowClientFallback implements IFlowClient {
 
 	@Override
+	public R<List<FlowNodeRequest>> startProcessBefore(Map<String,Object> map, String businessType) {
+		return R.fail("远程调用失败");
+	}
+
+	@Override
 	public R<BladeFlow> startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables) {
 		return R.fail("远程调用失败");
 	}
@@ -57,8 +62,4 @@ public class IFlowClientFallback implements IFlowClient {
 		return R.fail("远程调用失败");
 	}
 
-	@Override
-	public R<List<FlowNodeRequest>> startProcessBefore(Map<String,Object> map, String businessType) {
-		return R.fail("远程调用失败");
-	}
 }

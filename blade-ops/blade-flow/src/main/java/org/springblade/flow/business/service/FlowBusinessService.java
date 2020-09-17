@@ -25,8 +25,10 @@ import org.springblade.flow.business.vo.TaskRequest;
 import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springblade.flow.core.vo.FlowNodeResponse;
 import org.springblade.flow.core.vo.FlowUserRequest;
+import org.springframework.jdbc.datasource.init.ScriptException;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 流程业务类
@@ -189,4 +191,24 @@ public interface FlowBusinessService {
 	 * @return 按钮权限
 	 */
 	String btnPermission(String taskId);
+
+	/**
+	 * 启动流程
+	 *
+	 * @param processDefinitionId 部署id
+	 * @param businessKey 流程业务主键
+	 * @param variables 流程全局参数
+	 * @return bladeFLow
+	 */
+	BladeFlow startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables);
+
+	/**
+	 * 发起流程弹出确认框的操作
+	 *
+	 * @param maps 流程全局参数
+	 * @param businessType 业务类型
+	 * @return 候选节点List
+	 * @throws ScriptException js表达式判断异常
+	 */
+	List<FlowNodeRequest> startProcessBefore(Map<String,Object> maps,String businessType) throws ScriptException;
 }

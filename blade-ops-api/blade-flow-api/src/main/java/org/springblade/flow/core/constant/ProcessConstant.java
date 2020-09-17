@@ -27,4 +27,8 @@ public interface ProcessConstant {
 	 * 请假流程标识
 	 */
 	String LEAVE_KEY = "Leave";
+	/**
+	 * 依据起草流程标识
+	 */
+	String ACCORDING_KEY = "according";
 }

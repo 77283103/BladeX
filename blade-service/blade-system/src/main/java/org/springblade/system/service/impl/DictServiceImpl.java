@@ -21,6 +21,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.log.exception.ServiceException;
@@ -37,6 +40,7 @@ import org.springblade.system.vo.DictVO;
 import org.springblade.system.wrapper.DictWrapper;
 import org.springframework.stereotype.Service;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -50,8 +54,10 @@ import static org.springblade.core.cache.constant.CacheConstant.DICT_CACHE;
  *
  * @author Chill
  */
+@Slf4j
 @Service
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements IDictService {
+	private Logger logger = LoggerFactory.getLogger(DictServiceImpl.class);
 
 	@Override
 	public IPage<DictVO> selectDictPage(IPage<DictVO> page, DictVO dict) {
@@ -90,6 +96,12 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 		}
 		dict.setIsDeleted(BladeConstant.DB_NOT_DELETED);
 		CacheUtil.clear(DICT_CACHE);
+		try {
+			dict.setDictKey(URLDecoder.decode(dict.getDictKey(), "UTF-8"));
+		}catch (Exception e){
+			logger.error("字符转义出错");
+			throw new ServiceException("特殊字符转义出错!");
+		}
 		return saveOrUpdate(dict);
 	}
 

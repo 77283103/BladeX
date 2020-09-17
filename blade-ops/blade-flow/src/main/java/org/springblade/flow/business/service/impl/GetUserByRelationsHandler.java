@@ -40,7 +40,7 @@ public class GetUserByRelationsHandler implements HandlerGetUser {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		FactoryGetUser.register(FlowDesignUserType.POSTS, this);
+		FactoryGetUser.register(FlowDesignUserType.RELATIONS, this);
 	}
 
 	@Override
