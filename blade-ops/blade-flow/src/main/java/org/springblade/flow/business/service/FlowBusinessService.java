@@ -210,5 +210,5 @@ public interface FlowBusinessService {
 	 * @return 候选节点List
 	 * @throws ScriptException js表达式判断异常
 	 */
-	List<FlowNodeRequest> startProcessBefore(Map<String,Object> maps,String businessType) throws ScriptException;
+	List<FlowNodeRequest> startProcessBefore(Map<String,Object> maps,String businessType);
 }

@@ -102,7 +102,7 @@ public class FlowClient implements IFlowClient {
 
 	@Override
 	@PostMapping(START_PROCESS_BEFORE)
-	public R<List<FlowNodeRequest>> startProcessBefore(Map<String, Object> maps, String businessType) throws ScriptException {
+	public R<List<FlowNodeRequest>> startProcessBefore(Map<String, Object> maps, String businessType) {
 		return R.data(flowBusinessService.startProcessBefore(maps, businessType));
 	}
 }

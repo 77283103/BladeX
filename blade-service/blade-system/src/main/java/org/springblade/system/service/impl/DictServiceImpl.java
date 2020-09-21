@@ -29,6 +29,7 @@ import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.tool.api.ServiceCode;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.core.tool.utils.Func;
@@ -40,6 +41,7 @@ import org.springblade.system.vo.DictVO;
 import org.springblade.system.wrapper.DictWrapper;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,6 @@ import static org.springblade.core.cache.constant.CacheConstant.DICT_CACHE;
 @Slf4j
 @Service
 public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements IDictService {
-	private Logger logger = LoggerFactory.getLogger(DictServiceImpl.class);
 
 	@Override
 	public IPage<DictVO> selectDictPage(IPage<DictVO> page, DictVO dict) {
@@ -98,9 +99,9 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 		CacheUtil.clear(DICT_CACHE);
 		try {
 			dict.setDictKey(URLDecoder.decode(dict.getDictKey(), "UTF-8"));
-		}catch (Exception e){
-			logger.error("字符转义出错");
-			throw new ServiceException("特殊字符转义出错!");
+		}catch (UnsupportedEncodingException e){
+			log.error("【错误码{}】：系统字典保存或修改，字符转码发生错误", ServiceCode.CHARACTER_DECODE_FAIL.getCode());
+			throw new ServiceException(ServiceCode.CHARACTER_DECODE_FAIL);
 		}
 		return saveOrUpdate(dict);
 	}
