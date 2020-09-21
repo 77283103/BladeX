@@ -191,9 +191,8 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 					deploy(deployment, category);
 				}
 			} catch (IOException e) {
-				/*未完成exception*/
-				log.error("{}:流程部署上传xml失败","errorcode",e);
-				throw new ServiceException(ServiceCode.FLOW_UNKNOWN_MODEL);
+				log.error("【错误码{}】：流程部署上传xml失败",ServiceCode.FLOW_XML_UPLOAD_FAIL.getCode(),e);
+				throw new ServiceException(ServiceCode.FLOW_XML_UPLOAD_FAIL);
 			}
 		});
 		return true;

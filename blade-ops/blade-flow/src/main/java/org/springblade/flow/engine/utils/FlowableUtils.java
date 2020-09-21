@@ -1,11 +1,15 @@
 package org.springblade.flow.engine.utils;
 
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.impl.persistence.entity.ExecutionEntity;
 import org.springblade.common.constant.flow.FlowEngineConstant;
+import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.tool.api.ServiceCode;
+import org.springblade.core.tool.utils.Func;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -16,6 +20,7 @@ import java.util.stream.Stream;
  *
  * @author blade
  */
+@Slf4j
 public class FlowableUtils {
 
 	public static boolean isReachable(Process process, FlowNode sourceElement, FlowNode targetElement,
@@ -250,8 +255,9 @@ public class FlowableUtils {
 	 * @return 返回不同的层级，如果其中一个层级较深，则返回层级小的+1，从第0层开始，请注意判断是否会出现下标越界异常；返回 -1 表示在同一层
 	 */
 	public static Integer getDiffLevel(List<String> sourceList, List<String> targetList) {
-		if (sourceList == null || sourceList.isEmpty() || targetList == null || targetList.isEmpty()) {
-			throw new FlowableException("sourceList and targetList cannot be empty");
+		if (Func.isEmpty(sourceList) || Func.isEmpty(targetList)) {
+			log.error("【错误码{}】：sourceList 或 targetList为空",ServiceCode.FLOW_SOURCE_OR_TARGET_NOT_FOUND.getCode());
+			throw new ServiceException(ServiceCode.FLOW_SOURCE_OR_TARGET_NOT_FOUND);
 		}
 		if (sourceList.size() == 1 && targetList.size() == 1) {
 			/*  都在第0层且不相等 */
@@ -261,7 +267,6 @@ public class FlowableUtils {
 				return -1;
 			}
 		}
-
 		int minSize = sourceList.size() < targetList.size() ? sourceList.size() : targetList.size();
 		Integer targetLevel = null;
 		for (int i = 0; i < minSize; i++) {
