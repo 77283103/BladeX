@@ -127,9 +127,7 @@ public class FlowableUtils {
 			if (miExecution != null) {
 				executionEntitiesStream = executionEntitiesStream.filter(ExecutionEntity::isMultiInstanceRoot);
 			}
-			executionEntitiesStream.forEach(childExecution -> {
-				parentExecutionIds.add(childExecution.getParentId());
-			});
+			executionEntitiesStream.forEach(childExecution -> parentExecutionIds.add(childExecution.getParentId()));
 		} else {
 			ExecutionEntity execution = activityIdExecutions.iterator().next();
 			parentExecutionIds.add(execution.getParentId());

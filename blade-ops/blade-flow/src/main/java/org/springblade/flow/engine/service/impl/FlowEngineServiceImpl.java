@@ -149,9 +149,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 	@Override
 	public List<BladeFlowHistory> historyFlowList(String processInstanceId, String startActivityId, String endActivityId) {
 		List<BladeFlowHistory> flowListHistory = baseMapper.getFlowCommentVosByProcessInstanceId(processInstanceId);
-		flowListHistory.forEach(flow -> {
-			flow.setType(CommentTypeEnum.getEnumMsgByType(flow.getType()));
-		});
+		flowListHistory.forEach(flow -> flow.setType(CommentTypeEnum.getEnumMsgByType(flow.getType())));
 		return flowListHistory;
 	}
 

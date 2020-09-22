@@ -55,9 +55,7 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 		/* 查询所有数据，获取待删除的所有文件的id */
 		List<ContractAccordingEntity> entityList = baseMapper.selectBatchIds(Func.toLongList(ids));
 		List<Long> fileIds = Lists.newArrayList();
-		entityList.forEach(entity -> {
-			fileIds.addAll(Func.toLongList(entity.getAccordingFiles()));
-		});
+		entityList.forEach(entity -> fileIds.addAll(Func.toLongList(entity.getAccordingFiles())));
 		/* 删除文件 */
 		R result = fileClient.remove(fileIds);
 		/* 删除合同依据 */

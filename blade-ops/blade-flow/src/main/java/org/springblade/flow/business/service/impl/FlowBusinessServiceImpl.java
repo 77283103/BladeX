@@ -133,9 +133,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (targetFlowElement instanceof ExclusiveGateway || targetFlowElement instanceof ParallelGateway) {
 			/* 根据前台返回的节点List和用户List给全局变量赋值 */
 			/* 此处只要给参数循环赋值即可，无需关心执行单条或多条分支，flowable会自行判断，只要保证相应节点有任务处理人即可 */
-			flowNodeResponseList.forEach(flowNodeResponse -> {
-				variables.put(flowNodeResponse.getId(), TaskUtil.getTaskUser(flowNodeResponse.getUserResponseList().get(0).getId()));
-			});
+			flowNodeResponseList.forEach(flowNodeResponse -> variables.put(flowNodeResponse.getId(), TaskUtil.getTaskUser(flowNodeResponse.getUserResponseList().get(0).getId())));
 			/* 完成任务 */
 			taskService.complete(taskId, variables);
 			return true;
@@ -156,9 +154,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				}
 			});
 			/* 设置任务处理人 */
-			flowNodeResponseList.forEach(flowNodeResponse -> {
-				variables.put(flowNodeResponse.getId(), TaskUtil.getTaskUser(flowNodeResponse.getUserId()));
-			});
+			flowNodeResponseList.forEach(flowNodeResponse -> variables.put(flowNodeResponse.getId(), TaskUtil.getTaskUser(flowNodeResponse.getUserId())));
 			/* 完成任务 */
 			taskService.complete(taskId, variables);
 			return true;
