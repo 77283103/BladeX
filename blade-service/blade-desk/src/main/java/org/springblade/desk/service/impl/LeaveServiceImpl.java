@@ -21,9 +21,8 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.support.Kv;
+import org.springblade.core.tool.api.ServiceCode;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.Func;
@@ -72,7 +71,8 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 				/*leave.setProcessInstanceId(result.getData().getProcessInstanceId());*/
 				/*updateById(leave);*/
 			} else {
-				throw new ServiceException("开启流程失败");
+				log.error("【错误码{}】：开启流程失败，desk调用flow模块发生异常，请检查flow模块日志",ServiceCode.FEIGN_FAIL.getCode());
+				throw new ServiceException(ServiceCode.FEIGN_FAIL);
 			}
 		} else {
 			updateById(leave);
@@ -87,7 +87,9 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 		R<List<FlowNodeRequest>> listR = flowClient.startProcessBefore(map, businessType);
 		if (listR.isSuccess()) {
 			return listR.getData();
+		}else{
+			log.error("【错误码{}】:{}",ServiceCode.FEIGN_FAIL.getCode(),"blade-desk调用blade-flow失败，请查看flow模块异常信息");
+			throw new ServiceException(ServiceCode.FEIGN_FAIL);
 		}
-		throw new ServiceException("发起流程时获取下一审批人失败");
 	}
 }

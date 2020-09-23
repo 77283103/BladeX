@@ -75,20 +75,20 @@ public class UserClient implements IUserClient {
 
 	@Override
 	@GetMapping(USER_INFO_BY_DEPTID_AND_POSTID)
-	public List<User> userInfoByDeptAndPost(String deptId, String postId) {
-		return service.userInfoByDeptIdAndPostId(deptId,postId);
+	public R<List<User>> userInfoByDeptAndPost(String deptId, String postId) {
+		return R.data(service.userInfoByDeptIdAndPostId(deptId,postId));
 	}
 
 	@Override
 	@GetMapping(USER_INFO_BY_USERID_ARRAY)
-	public List<User> userInfoByUserIds(String userIds) {
-		return service.userInfoByUserIds(userIds);
+	public R<List<User>> userInfoByUserIds(String userIds) {
+		return R.data(service.userInfoByUserIds(userIds));
 	}
 
 	@Override
 	@GetMapping(USER_INFO_BY_BENCH_MINISTER)
-	public List<User> userInfoByBenchMinister(String benchUserId) {
-		return service.userInfoByBenchMinister(benchUserId);
+	public R<List<User>> userInfoByBenchMinister(String benchUserId) {
+		return R.data(service.userInfoByBenchMinister(benchUserId));
 	}
 
 

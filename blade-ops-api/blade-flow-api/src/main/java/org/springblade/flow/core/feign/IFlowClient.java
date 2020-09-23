@@ -49,6 +49,16 @@ public interface IFlowClient {
 	String START_PROCESS_BEFORE = API_PREFIX + "/start-process-before";
 
 	/**
+	 * 正式开启流程之前，获取下一节点及其办理人
+	 *
+	 * @param map 对象转换的map
+	 * @param businessType 业务类型
+	 * @return 流程定义信息List
+	 */
+	@PostMapping(START_PROCESS_BEFORE)
+	R<List<FlowNodeRequest>> startProcessBefore(@RequestBody Map<String, Object> map, @RequestParam("businessType") String businessType);
+
+	/**
 	 * 开启流程
 	 *
 	 * @param processDefinitionId 流程id
@@ -100,15 +110,4 @@ public interface IFlowClient {
 	 */
 	@GetMapping(TASK_VARIABLES)
 	R<Map<String, Object>> taskVariables(@RequestParam("taskId") String taskId);
-
-	/**
-	 * 发起流程时获取下一节点及其办理人
-	 *
-	 * @param map 对象转换的map
-	 * @param businessType 业务类型
-	 * @return 流程定义信息List
-	 */
-	@PostMapping(START_PROCESS_BEFORE)
-	R<List<FlowNodeRequest>> startProcessBefore(@RequestBody Map<String, Object> map, @RequestParam("businessType") String businessType);
-
 }

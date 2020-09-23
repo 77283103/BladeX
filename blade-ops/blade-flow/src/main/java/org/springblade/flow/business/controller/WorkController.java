@@ -156,8 +156,6 @@ public class WorkController {
 
 	/**
 	 * 完成任务
-	 *
-	 * @param flowList
 	 */
 	@PostMapping("complete-task")
 	@ApiOperationSupport(order = 7)
@@ -168,9 +166,6 @@ public class WorkController {
 
 	/**
 	 * 删除任务
-	 *
-	 * @param taskId 任务id
-	 * @param reason 删除原因
 	 */
 	@PostMapping("delete-task")
 	@ApiOperationSupport(order = 8)
@@ -182,8 +177,6 @@ public class WorkController {
 
 	/**
 	 * 查询可以退回的节点
-	 *
-	 * @param taskId 任务id
 	 */
 	@GetMapping("backSearch-task")
 	@ApiOperationSupport(order = 9)
@@ -194,14 +187,11 @@ public class WorkController {
 
 	/**
 	 * 退回操作
-	 *
-	 * @param taskRequest
-	 * @return
 	 */
 	@PutMapping(value = "/back-task")
 	@ApiOperationSupport(order = 10)
 	@ApiOperation(value = "退回操作", notes = "传入退回信息")
-	public R back(@RequestBody TaskRequest taskRequest) {
+	public R back(@ApiParam("可退回的节点对象") @RequestBody TaskRequest taskRequest) {
 		return R.status(flowBusinessService.backTask(taskRequest));
 	}
 
@@ -211,7 +201,7 @@ public class WorkController {
 	@PostMapping("assign-task")
 	@ApiOperationSupport(order = 11)
 	@ApiOperation(value = "转办操作", notes = "传入流程信息")
-	public R assign(@RequestBody BladeFlow flow) {
+	public R assign(@ApiParam("流程传输对象") @RequestBody BladeFlow flow) {
 		flowBusinessService.assignTask(flow);
 		return R.status(true);
 	}
@@ -222,7 +212,7 @@ public class WorkController {
 	@PostMapping(value = "delegate-task")
 	@ApiOperationSupport(order = 12)
 	@ApiOperation(value = "委派操作", notes = "传入流程信息")
-	public R delegate(@RequestBody BladeFlow flow) {
+	public R delegate(@ApiParam("流程传输对象") @RequestBody BladeFlow flow) {
 		flowBusinessService.delegateTask(flow);
 		return R.status(true);
 	}
@@ -233,7 +223,7 @@ public class WorkController {
 	@PostMapping(value = "delegate-bask")
 	@ApiOperationSupport(order = 14)
 	@ApiOperation(value = "委派操作", notes = "传入流程信息")
-	public R delegateBack(@RequestBody BladeFlow flow) {
+	public R delegateBack(@ApiParam("流程传输对象") @RequestBody BladeFlow flow) {
 		return R.status(flowBusinessService.delegateBack(flow));
 	}
 	/**
@@ -242,7 +232,7 @@ public class WorkController {
 	@PostMapping("cancel-task")
 	@ApiOperationSupport(order = 15)
 	@ApiOperation(value = "发起人终止流程", notes = "传入流程信息")
-	public R cancel(@RequestBody BladeFlow flow) {
+	public R cancel(@ApiParam("流程传输对象") @RequestBody BladeFlow flow) {
 		flowBusinessService.cancelTask(flow);
 		return R.status(true);
 	}
@@ -253,7 +243,7 @@ public class WorkController {
 	@PostMapping(value = "takeItBackLook-task")
 	@ApiOperationSupport(order = 16)
 	@ApiOperation(value = "查看退回节点操作", notes = "传入流程信息")
-	public R<List<FlowNodeVo>> takeItBackLook(@RequestBody BladeFlow flow) {
+	public R<List<FlowNodeVo>> takeItBackLook(@ApiParam("流程传输对象") @RequestBody BladeFlow flow) {
 		return R.data(flowBusinessService.takeItBackTaskLook(flow));
 	}
 
@@ -263,7 +253,7 @@ public class WorkController {
 	@PostMapping(value = "takeItBack-task")
 	@ApiOperationSupport(order = 17)
 	@ApiOperation(value = "退回操作", notes = "传入流程信息")
-	public R takeItBack(@RequestBody BladeFlow flow) {
+	public R takeItBack(@ApiParam("流程传输对象") @RequestBody BladeFlow flow) {
 		return R.status(flowBusinessService.takeItBackTask(flow));
 	}
 
@@ -273,7 +263,7 @@ public class WorkController {
 	@PostMapping(value = "takeBack-task")
 	@ApiOperationSupport(order = 18)
 	@ApiOperation(value = "退回操作", notes = "传入流程信息")
-	public R takeBack(@RequestBody BladeFlow flow) {
+	public R takeBack(@ApiParam("流程传输对象") @RequestBody BladeFlow flow) {
 
 		return R.status(flowBusinessService.takeBackTask(flow));
 	}

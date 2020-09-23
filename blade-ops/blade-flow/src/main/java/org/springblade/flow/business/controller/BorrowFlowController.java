@@ -29,22 +29,21 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
  * 传阅 控制器
  *
  * @author Liu Meng
+ * @date 2020-8-19
  */
 @RestController
 @AllArgsConstructor
 @RequestMapping("/borrow_flow")
 @Api(value = "传阅", tags = "传阅")
 public class BorrowFlowController extends BladeController {
-
 	private final BorrowFlowService borrowFlowService;
 	private TaskService taskService;
-
 
 	/**
 	 * 传阅查询列表
 	 */
 	@GetMapping(value = "borrow_flow_list")
-	@ApiOperationSupport(order = 14)
+	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "传入传阅信息", notes = "")
 	public R<IPage<BorrowFlowEntity>> doneList(@ApiParam("传阅信息") BorrowFlowEntity borrowFlowEntity, Query query) {
 		/* 获取当前登录人的ID */
@@ -54,12 +53,11 @@ public class BorrowFlowController extends BladeController {
 		return R.data(pages);
 	}
 
-
 	/**
 	 * 新增
 	 */
 	@PostMapping("/add")
-	@ApiOperationSupport(order = 4)
+	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "新增", notes = "传入borrow_flow")
 	public R save(@Valid @RequestBody BorrowFlowEntity borrowFlow) {
 		/* 获取当前登录人的ID */
@@ -75,21 +73,19 @@ public class BorrowFlowController extends BladeController {
 	 * 修改
 	 */
 	@PostMapping("/update")
-	@ApiOperationSupport(order = 5)
+	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "修改", notes = "传入borrow_flow")
 	public R update(@Valid @RequestBody BorrowFlowEntity borrowFlow) {
 		return R.status(borrowFlowService.updateById(borrowFlow));
-
 	}
 
 	/**
 	 * 删除
 	 */
 	@PostMapping("/remove")
-	@ApiOperationSupport(order = 7)
+	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(borrowFlowService.deleteLogic(Func.toLongList(ids)));
 	}
-
 }

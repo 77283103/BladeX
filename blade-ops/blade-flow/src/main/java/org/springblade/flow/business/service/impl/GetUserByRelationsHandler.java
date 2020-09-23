@@ -1,9 +1,9 @@
 package org.springblade.flow.business.service.impl;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.model.FlowNode;
 import org.flowable.bpmn.model.Process;
-import org.flowable.common.engine.api.FlowableException;
 import org.flowable.engine.HistoryService;
 import org.flowable.engine.RepositoryService;
 import org.flowable.engine.TaskService;
@@ -12,7 +12,10 @@ import org.springblade.common.constant.flow.FlowDesignUserType;
 import org.springblade.common.constant.flow.FlowEngineConstant;
 import org.springblade.common.constant.flow.FlowProcessBenchMark;
 import org.springblade.common.constant.flow.FlowRelationType;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.api.ServiceCode;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.flow.business.factory.FactoryGetUser;
 import org.springblade.flow.business.service.HandlerGetUser;
@@ -30,6 +33,7 @@ import java.util.List;
  * @author tianah
  * @date 2020-8-28
  */
+@Slf4j
 @Component
 @AllArgsConstructor
 public class GetUserByRelationsHandler implements HandlerGetUser {
@@ -39,8 +43,8 @@ public class GetUserByRelationsHandler implements HandlerGetUser {
 	private HistoryService historyService;
 
 	@Override
-	public void afterPropertiesSet() throws Exception {
-		FactoryGetUser.register(FlowDesignUserType.POSTS, this);
+	public void afterPropertiesSet() {
+		FactoryGetUser.register(FlowDesignUserType.RELATIONS, this);
 	}
 
 	@Override
@@ -49,16 +53,18 @@ public class GetUserByRelationsHandler implements HandlerGetUser {
 		/* 获取关系基准人和关系类型 */
 		String flowBenchMark = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_BENCHMARK);
 		String flowRelationType = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.FLOW_RELATION_TYPE);
-		if (null == flowBenchMark) {
-			throw new FlowableException("未获取到自定义基准人信息");
+		if (Func.isEmpty(flowBenchMark)) {
+			log.error("【错误码{}】：自定义基准人信息为空，taskId={}",ServiceCode.FLOW_CUSTOM_BENCHMARK_NOT_FOUND.getCode(),taskId);
+			throw new ServiceException(ServiceCode.FLOW_CUSTOM_BENCHMARK_NOT_FOUND);
 		}
-		if (null == flowRelationType) {
-			throw new FlowableException("未获取到自定义关系类型");
+		if (Func.isEmpty(flowRelationType)) {
+			log.error("【错误码{}】：自定义关系类型为空，taskId={}",ServiceCode.FLOW_CUSTOM_RELATION_NOT_FOUND.getCode(),taskId);
+			throw new ServiceException(ServiceCode.FLOW_CUSTOM_RELATION_NOT_FOUND);
 		}
 		/* 基准人 */
 		String benchUser = "";
 		/* 流程启动者为基准人 */
-		if (flowBenchMark.equals(FlowProcessBenchMark.PROCESS_CREATER)) {
+		if (Func.equals(flowBenchMark,FlowProcessBenchMark.PROCESS_CREATER)) {
 			/*如果taskid为空，表示流程发起，当前登录人即为流程启动者*/
 			if (Func.isEmpty(taskId)) {
 				benchUser = AuthUtil.getUserId().toString();
@@ -75,13 +81,20 @@ public class GetUserByRelationsHandler implements HandlerGetUser {
 					.getStartUserId();
 			}
 			/* 当前审批人为基准人 */
-		} else if (flowBenchMark.equals(FlowProcessBenchMark.PROCESS_CURRENT_USER)) {
+		} else if (Func.equals(flowBenchMark, FlowProcessBenchMark.PROCESS_CURRENT_USER)) {
 			benchUser = AuthUtil.getUserId().toString();
 		}
 		switch (flowRelationType) {
 			case FlowRelationType.BENCHMARK_MINISTER:
-				List<User> users = userClient.userInfoByBenchMinister(benchUser);
-				if (null != users) {
+				List<User> users;
+				R<List<User>> userListResult = userClient.userInfoByBenchMinister(benchUser);
+				if(userListResult.isSuccess()){
+					users = userListResult.getData();
+				}else{
+					log.error("【错误码{}】：关系定义获取审批人，flow模块调用user模块发生异常，请查看user模块日志", ServiceCode.FEIGN_FAIL.getCode());
+					throw new ServiceException(ServiceCode.FEIGN_FAIL);
+				}
+				if (Func.isNotEmpty(users)) {
 					users.forEach(user -> {
 						FlowUserRequest flowUserRequest = FlowUserRequest.builder()
 							.id(user.getId().toString())

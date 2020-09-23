@@ -37,6 +37,7 @@ public interface IProcessService extends BaseService<ProcessEntity> {
 	 * @param businessType 业务类型
 	 * @exception ClassNotFoundException 反射时找不到类
 	 * @return 字段List
+	 * @throws ClassNotFoundException 找不到类
 	 */
-	List<Map<String,String>> getBeanFields(String businessType) throws ClassNotFoundException;
+	List<Map<String,String>> getBeanFields(String businessType);
 }
