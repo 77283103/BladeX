@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractFormInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="formInfoResultMap" type="org.springblade.contract.entity.ContractFormInfoEntity">
+        <result column="id" property="id"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="text_file" property="textFile"/>
+        <result column="attached_files" property="attachedFiles"/>
+        <result column="currency_category" property="currencyCategory"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="change_category" property="changeCategory"/>
+        <result column="change_contract_id" property="changeContractId"/>
+        <result column="contract_status" property="contractStatus"/>
+        <result column="submit_status" property="submitStatus"/>
+        <result column="contract_soure" property="contractSoure"/>
+        <result column="file_export_category" property="fileExportCategory"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contract_big_category" property="contractBigCategory"/>
+        <result column="contract_small_category" property="contractSmallCategory"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        contract_name,
+        contract_number,
+        text_file,
+        attached_files,
+        currency_category,
+        contract_amount,
+        change_category,
+        change_contract_id,
+        contract_status,
+        submit_status,
+        contract_soure,
+        file_export_category,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contract_big_category,
+        contract_small_category
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="formInfoResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_form_info
+        WHERE is_deleted = 0
+    </select>
+</mapper>
