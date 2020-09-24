@@ -12,7 +12,6 @@ import org.springblade.contract.entity.AccordingEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class AccordingDTO extends AccordingEntity {
 

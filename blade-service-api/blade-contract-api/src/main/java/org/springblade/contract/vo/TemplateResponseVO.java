@@ -14,7 +14,6 @@ import io.swagger.annotations.ApiModel;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @ApiModel(description = "范本管理返回对象")
 @EqualsAndHashCode(callSuper = true)
 public class TemplateResponseVO extends TemplateEntity {

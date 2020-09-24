@@ -12,7 +12,6 @@ import org.springblade.contract.entity.TemplateEntity;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class TemplateDTO extends TemplateEntity {
 
