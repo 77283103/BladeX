@@ -1,12 +1,11 @@
 package org.springblade.contract.vo;
 
-import lombok.Data;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 合同评估表 请求模型VO
@@ -31,9 +30,6 @@ public class ContractAssessmentRequestVO extends BaseEntity {
 
     @ApiModelProperty(value="评估说明")
 	private String assessmentRemark;
-
-    @ApiModelProperty(value="经办人的所有信息")
-	private String allInformation;
 
     @ApiModelProperty(value="合同id")
 	private Long contractId;

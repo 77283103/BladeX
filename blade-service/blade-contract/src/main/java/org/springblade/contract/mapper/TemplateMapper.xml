@@ -50,11 +50,5 @@
             <include refid="baseColumnList"> </include>
         FROM contract_template
         WHERE is_deleted = 0
-        <if test="template.name != null and template.name != ''">
-            AND name = #{template.name}
-        </if>
-        <if test="template.template_category != null and template.template_category != ''">
-            AND template_category = #{template.template_category}
-        </if>
     </select>
 </mapper>

@@ -1,13 +1,11 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import java.time.LocalDateTime;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.springblade.core.mp.base.BaseEntity;
 
 
 /**
@@ -34,11 +32,6 @@ public class ContractAssessmentEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "评估说明")
 	private String assessmentRemark;
-	/**
-	 * 经办人的所有信息
-	 */
-	@ApiModelProperty(value = "经办人的所有信息")
-	private String allInformation;
 	/**
 	 * 合同id
 	 */

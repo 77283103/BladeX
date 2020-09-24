@@ -7,7 +7,6 @@
         <result column="id" property="id"/>
         <result column="attached_files" property="attachedFiles"/>
         <result column="assessment_remark" property="assessmentRemark"/>
-        <result column="all_information" property="allInformation"/>
         <result column="contract_id" property="contractId"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
@@ -22,7 +21,6 @@
         id,
         attached_files,
         assessment_remark,
-        all_information,
         contract_id,
         status,
         is_deleted,
