@@ -1,12 +1,9 @@
 package org.springblade.contract.vo;
 
 import lombok.*;
-import org.springblade.contract.entity.TemplateEntity;
 import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-
-import java.time.LocalDateTime;
 
 /**
  * 范本管理 请求模型VO
@@ -16,7 +13,7 @@ import java.time.LocalDateTime;
  * @NotEmpty 检查(集合)约束元素是否为NULL或者是EMPTY.
  *
  * @author XHB
- * @date : 2020-09-23 20:17:09
+ * @date : 2020-09-24 13:57:36
  */
 @Getter
 @Setter
@@ -24,7 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "范本管理请求对象")
-public class TemplateRequestVO extends TemplateEntity {
+public class TemplateRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,20 +40,17 @@ public class TemplateRequestVO extends TemplateEntity {
     @ApiModelProperty(value="范本说明")
 	private String templateDescription;
 
-    @ApiModelProperty(value="上传文件")
+    @ApiModelProperty(value="版本号")
+	private String recordVersion;
+
+    @ApiModelProperty(value="范本编号")
+	private String templateNumber;
+
+    @ApiModelProperty(value="范本附件")
 	private String attachedFiles;
 
-    @ApiModelProperty(value="管理部门")
-	private Long managementDept;
-
-    @ApiModelProperty(value="管理单位")
-	private Long managementUnit;
-
-    @ApiModelProperty(value="管理人员")
-	private Long manager;
-
-    @ApiModelProperty(value="上传时间")
-	private LocalDateTime uploadTime;
+    @ApiModelProperty(value="创建单位标识")
+	private Long createUnit;
 
     @ApiModelProperty(value="关联合同")
 	private String contractId;

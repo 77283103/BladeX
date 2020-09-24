@@ -1,11 +1,9 @@
 package org.springblade.contract.vo;
 
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
-import org.springblade.contract.entity.AccordingEntity;
-
-import java.time.LocalDateTime;
 
 /**
  * 合同依据管理 请求模型VO
@@ -15,7 +13,7 @@ import java.time.LocalDateTime;
  * @NotEmpty 检查(集合)约束元素是否为NULL或者是EMPTY.
  *
  * @author XHB
- * @date : 2020-09-23 18:40:18
+ * @date : 2020-09-24 14:20:30
  */
 @Getter
 @Setter
@@ -23,7 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "合同依据管理请求对象")
-public class AccordingRequestVO extends AccordingEntity {
+public class AccordingRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -33,25 +31,16 @@ public class AccordingRequestVO extends AccordingEntity {
     @ApiModelProperty(value="关联合同")
 	private String contractId;
 
-    @ApiModelProperty(value="添加依据附件")
+    @ApiModelProperty(value="依据附件")
 	private String accordingFiles;
 
     @ApiModelProperty(value="依据说明")
 	private String remark;
 
-    @ApiModelProperty(value="管理部门")
-	private Long managementDept;
+    @ApiModelProperty(value="版本号")
+	private String recordVersion;
 
-    @ApiModelProperty(value="管理单位")
-	private Long managementUnit;
-
-    @ApiModelProperty(value="管理人员")
-	private Long manager;
-
-    @ApiModelProperty(value="上传时间")
-	private LocalDateTime uploadTime;
-
-    @ApiModelProperty(value="是否可以复用（0代表不可以复用，1代表可以复用）")
-	private Integer isReused;
+    @ApiModelProperty(value="创建单位标识")
+	private Long createUnit;
 
 }

@@ -9,11 +9,12 @@ import io.swagger.annotations.ApiModel;
  * 范本管理 返回模型VO
  *
  * @author XHB
- * @date : 2020-09-23 20:17:20
+ * @date : 2020-09-24 13:57:40
  */
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 @ApiModel(description = "范本管理返回对象")
 @EqualsAndHashCode(callSuper = true)
 public class TemplateResponseVO extends TemplateEntity {
