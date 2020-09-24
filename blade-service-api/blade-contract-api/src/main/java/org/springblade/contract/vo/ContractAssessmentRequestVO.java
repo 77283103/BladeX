@@ -1,11 +1,12 @@
 package org.springblade.contract.vo;
 
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * 合同评估表 请求模型VO
@@ -15,7 +16,7 @@ import org.springblade.core.mp.base.BaseEntity;
  * @NotEmpty 检查(集合)约束元素是否为NULL或者是EMPTY.
  *
  * @author liyj
- * @date : 2020-09-23 23:28:31
+ * @date : 2020-09-24 10:41:34
  */
 @Getter
 @Setter

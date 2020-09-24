@@ -9,7 +9,7 @@ import org.springblade.contract.vo.ContractAssessmentResponseVO;
  * 合同评估表 包装类,返回视图层所需的字段
  *
  * @author liyj
- * @date : 2020-09-23 23:28:31
+ * @date : 2020-09-24 10:41:34
  */
 public class ContractAssessmentWrapper extends BaseEntityWrapper<ContractAssessmentEntity, ContractAssessmentResponseVO>  {
 

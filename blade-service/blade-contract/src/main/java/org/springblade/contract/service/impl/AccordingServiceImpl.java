@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
  * 合同依据管理 服务实现类
  *
  * @author XHB
- * @date : 2020-09-23 18:40:20
+ * @date : 2020-09-24 14:20:32
  */
 @Service
 public class AccordingServiceImpl extends BaseServiceImpl<AccordingMapper, AccordingEntity> implements IAccordingService {

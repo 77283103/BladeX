@@ -1,20 +1,24 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springblade.core.mp.base.BaseEntity;
+import java.util.Date;
+import java.time.LocalDateTime;
 
 
 /**
  * 合同评估表 实体类
  *
  * @author liyj
- * @date : 2020-09-23 23:28:30
+ * @date : 2020-09-24 10:41:33
  */
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("contract_assessment")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "ContractAssessment对象", description = "合同评估表")
