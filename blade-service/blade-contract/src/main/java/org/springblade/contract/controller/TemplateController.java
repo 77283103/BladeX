@@ -46,7 +46,7 @@ public class TemplateController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入template")
-	@PreAuth("hasPermission('template:template:detail')")
+	@PreAuth("hasPermission('contract:template:detail')")
 	public R<TemplateResponseVO> detail(@RequestParam Long id) {
 		TemplateEntity detail = templateService.getById(id);
 		return R.data(TemplateWrapper.build().entityVO(detail));
@@ -58,7 +58,7 @@ public class TemplateController extends BladeController {
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入template")
-	@PreAuth("hasPermission('template:template:list')")
+	@PreAuth("hasPermission('contract:template:list')")
 	public R<IPage<TemplateResponseVO>> list(TemplateEntity template, Query query) {
 		IPage<TemplateEntity> pages = templateService.pageList(Condition.getPage(query), template);
 		return R.data(TemplateWrapper.build().pageVO(pages));
@@ -70,7 +70,7 @@ public class TemplateController extends BladeController {
 	@PostMapping("/add")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入template")
-	@PreAuth("hasPermission('template:template:add')")
+	@PreAuth("hasPermission('contract:template:add')")
 	public R save(@Valid @RequestBody TemplateRequestVO template) {
         TemplateEntity entity = new TemplateEntity();
         BeanUtil.copy(template,entity);
@@ -83,7 +83,7 @@ public class TemplateController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入template")
-	@PreAuth("hasPermission('template:template:update')")
+	@PreAuth("hasPermission('contract:template:update')")
 	public R update(@Valid @RequestBody TemplateRequestVO template) {
 	    if (Func.isEmpty(template.getId())){
             throw new ServiceException("id不能为空");
@@ -99,7 +99,7 @@ public class TemplateController extends BladeController {
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
-	@PreAuth("hasPermission('template:template:remove')")
+	@PreAuth("hasPermission('contract:template:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(templateService.deleteLogic(Func.toLongList(ids)));
 	}

@@ -30,7 +30,7 @@ public class ArchiveEntity extends BaseEntity {
 	 * 关联合同
 	 */
 	@ApiModelProperty(value = "关联合同")
-	private Long contractId;
+	private String contractId;
 	/**
 	 * 归档说明
 	 */
