@@ -64,7 +64,7 @@
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
-            <artifactId>blade-desk</artifactId>
+            <artifactId>blade-desk-api</artifactId>
             <version>${bladex.project.version}</version>
         </dependency>
         <!-- 工作流 -->

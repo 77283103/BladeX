@@ -28,11 +28,11 @@ public class ContractAssessmentRequestVO extends BaseEntity {
 
     @ApiModelProperty(value="相关附件")
 	private String attachedFiles;
-	
+
     @ApiModelProperty(value="评估说明")
 	private String assessmentRemark;
-	
+
     @ApiModelProperty(value="合同id")
 	private Long contractId;
-	
+
 }
