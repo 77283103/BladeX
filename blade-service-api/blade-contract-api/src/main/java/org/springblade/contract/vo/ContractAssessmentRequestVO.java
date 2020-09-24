@@ -16,7 +16,7 @@ import io.swagger.annotations.ApiModelProperty;
  * @NotEmpty 检查(集合)约束元素是否为NULL或者是EMPTY.
  *
  * @author liyj
- * @date : 2020-09-23 23:28:31
+ * @date : 2020-09-24 10:41:34
  */
 @Getter
 @Setter
@@ -28,14 +28,11 @@ public class ContractAssessmentRequestVO extends BaseEntity {
 
     @ApiModelProperty(value="相关附件")
 	private String attachedFiles;
-
+	
     @ApiModelProperty(value="评估说明")
 	private String assessmentRemark;
-
-    @ApiModelProperty(value="经办人的所有信息")
-	private String allInformation;
-
+	
     @ApiModelProperty(value="合同id")
 	private Long contractId;
-
+	
 }
