@@ -8,7 +8,7 @@ import org.springblade.contract.entity.ContractAssessmentEntity;
  * 合同评估表 服务类
  *
  * @author liyj
- * @date : 2020-09-23 23:28:31
+ * @date : 2020-09-24 10:41:34
  */
 public interface IContractAssessmentService extends BaseService<ContractAssessmentEntity> {
 
