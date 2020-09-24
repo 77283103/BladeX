@@ -1,6 +1,7 @@
 package org.springblade.contract.vo;
 
 import lombok.*;
+import org.springblade.contract.entity.AccordingEntity;
 import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 
@@ -16,7 +17,7 @@ import io.swagger.annotations.ApiModel;
 @AllArgsConstructor
 @ApiModel(description = "合同依据管理返回对象")
 @EqualsAndHashCode(callSuper = true)
-public class AccordingResponseVO extends BaseEntity {
+public class AccordingResponseVO extends AccordingEntity {
 
 	private static final long serialVersionUID = 1L;
 
