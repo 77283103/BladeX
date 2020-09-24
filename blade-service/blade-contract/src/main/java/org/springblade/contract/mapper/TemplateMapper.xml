@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.TemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="templateResultMap" type="org.springblade.contract.entity.TemplateEntity">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="template_category" property="templateCategory"/>
+        <result column="contract_big_category" property="contractBigCategory"/>
+        <result column="contract_small_category" property="contractSmallCategory"/>
+        <result column="template_description" property="templateDescription"/>
+        <result column="record_version" property="recordVersion"/>
+        <result column="template_number" property="templateNumber"/>
+        <result column="attached_files" property="attachedFiles"/>
+        <result column="create_unit" property="createUnit"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        name,
+        template_category,
+        contract_big_category,
+        contract_small_category,
+        template_description,
+        record_version,
+        template_number,
+        attached_files,
+        create_unit,
+        contract_id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="templateResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_template
+        WHERE is_deleted = 0
+    </select>
+</mapper>
