@@ -1,6 +1,6 @@
 package org.springblade.contract.dto;
 
-import lombok.Data;
+import lombok.*;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractPerformanceEntity;
 

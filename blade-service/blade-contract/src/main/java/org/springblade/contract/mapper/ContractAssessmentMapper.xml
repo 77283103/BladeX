@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.springblade.contract.mapper.AssessmentMapper">
+<mapper namespace="org.springblade.contract.mapper.ContractAssessmentMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="assessmentResultMap" type="org.springblade.contract.entity.AssessmentEntity">
+    <resultMap id="assessmentResultMap" type="org.springblade.contract.entity.ContractAssessmentEntity">
         <result column="id" property="id"/>
         <result column="attached_files" property="attachedFiles"/>
         <result column="assessment_remark" property="assessmentRemark"/>
