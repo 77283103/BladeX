@@ -1,11 +1,11 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
-import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
+
 import java.time.LocalDateTime;
 
 
@@ -35,7 +35,7 @@ public class AccordingEntity extends BaseEntity {
 	 * 关联合同
 	 */
 	@ApiModelProperty(value = "关联合同")
-	private String ontractId;c
+	private String contractId;
 	/**
 	 * 添加依据附件
 	 */

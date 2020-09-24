@@ -1,11 +1,9 @@
 package org.springblade.contract.vo;
 
-import lombok.*;
-import org.springblade.contract.entity.AccordingEntity;
-import org.springblade.contract.entity.ArchiveEntity;
-import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.springblade.contract.entity.AccordingEntity;
 
 import java.time.LocalDateTime;
 
@@ -33,8 +31,8 @@ public class AccordingRequestVO extends AccordingEntity {
 	private String accordingName;
 
     @ApiModelProperty(value="关联合同")
-	private String ontractId;
-c
+	private String contractId;
+
     @ApiModelProperty(value="添加依据附件")
 	private String accordingFiles;
 
