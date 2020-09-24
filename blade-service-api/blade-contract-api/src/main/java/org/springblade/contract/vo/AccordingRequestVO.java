@@ -33,8 +33,8 @@ public class AccordingRequestVO extends AccordingEntity {
 	private String accordingName;
 
     @ApiModelProperty(value="关联合同")
-	private String relationContractId;
-
+	private String ontractId;
+c
     @ApiModelProperty(value="添加依据附件")
 	private String accordingFiles;
 

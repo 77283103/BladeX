@@ -35,7 +35,7 @@ public class AccordingEntity extends BaseEntity {
 	 * 关联合同
 	 */
 	@ApiModelProperty(value = "关联合同")
-	private String relationContractId;
+	private String ontractId;c
 	/**
 	 * 添加依据附件
 	 */

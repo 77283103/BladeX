@@ -6,7 +6,7 @@
     <resultMap id="accordingResultMap" type="org.springblade.contract.entity.AccordingEntity">
         <result column="id" property="id"/>
         <result column="according_name" property="accordingName"/>
-        <result column="relation_contract_id" property="relationContractId"/>
+        <result column="contract_id" property="contractId"/>
         <result column="according_files" property="accordingFiles"/>
         <result column="remark" property="remark"/>
         <result column="management_dept" property="managementDept"/>
@@ -25,7 +25,7 @@
     <sql id="baseColumnList">
         id,
         according_name,
-        relation_contract_id,
+        contract_id,
         according_files,
         remark,
         management_dept,
