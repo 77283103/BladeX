@@ -960,7 +960,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 获取当前节点 */
 		FlowNode targetNode = (FlowNode) process.getFlowElement(currActId, true);
 		/* 获取btnPermission标签值*/
-		return targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.BTN_PERMISSION);
+		String attributeValue = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.BTN_PERMISSION);
+		/* 把ASCII码转为符号 */
+		return attributeValue.replaceAll("&#34;", "'");
 	}
 
 	/**
