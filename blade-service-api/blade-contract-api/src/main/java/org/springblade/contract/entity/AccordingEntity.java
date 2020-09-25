@@ -1,19 +1,17 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
-
-import java.time.LocalDateTime;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 
 /**
  * 合同依据管理 实体类
  *
  * @author XHB
- * @date : 2020-09-23 18:40:17
+ * @date : 2020-09-24 14:20:29
  */
 @Getter
 @Setter
@@ -37,9 +35,9 @@ public class AccordingEntity extends BaseEntity {
 	@ApiModelProperty(value = "关联合同")
 	private String contractId;
 	/**
-	 * 添加依据附件
+	 * 依据附件
 	 */
-	@ApiModelProperty(value = "添加依据附件")
+	@ApiModelProperty(value = "依据附件")
 	private String accordingFiles;
 	/**
 	 * 依据说明
@@ -47,29 +45,14 @@ public class AccordingEntity extends BaseEntity {
 	@ApiModelProperty(value = "依据说明")
 	private String remark;
 	/**
-	 * 管理部门
+	 * 版本号
 	 */
-	@ApiModelProperty(value = "管理部门")
-	private Long managementDept;
+	@ApiModelProperty(value = "版本号")
+	private String recordVersion;
 	/**
-	 * 管理单位
+	 * 创建单位标识
 	 */
-	@ApiModelProperty(value = "管理单位")
-	private Long managementUnit;
-	/**
-	 * 管理人员
-	 */
-	@ApiModelProperty(value = "管理人员")
-	private Long manager;
-	/**
-	 * 上传时间
-	 */
-	@ApiModelProperty(value = "上传时间")
-	private LocalDateTime uploadTime;
-	/**
-	 * 是否可以复用（0代表不可以复用，1代表可以复用）
-	 */
-	@ApiModelProperty(value = "是否可以复用（0代表不可以复用，1代表可以复用）")
-	private Integer isReused;
+	@ApiModelProperty(value = "创建单位标识")
+	private Long createUnit;
 
 }

@@ -5,15 +5,13 @@ import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import java.time.LocalDateTime;
 
 
 /**
  * 范本管理 实体类
  *
  * @author XHB
- * @date : 2020-09-23 20:17:07
+ * @date : 2020-09-24 13:57:35
  */
 @Getter
 @Setter
@@ -52,34 +50,29 @@ public class TemplateEntity extends BaseEntity {
 	@ApiModelProperty(value = "范本说明")
 	private String templateDescription;
 	/**
-	 * 上传文件
+	 * 版本号
 	 */
-	@ApiModelProperty(value = "上传文件")
+	@ApiModelProperty(value = "版本号")
+	private String recordVersion;
+	/**
+	 * 范本编号
+	 */
+	@ApiModelProperty(value = "范本编号")
+	private String templateNumber;
+	/**
+	 * 范本附件
+	 */
+	@ApiModelProperty(value = "范本附件")
 	private String attachedFiles;
 	/**
-	 * 管理部门
+	 * 创建单位标识
 	 */
-	@ApiModelProperty(value = "管理部门")
-	private Long managementDept;
-	/**
-	 * 管理单位
-	 */
-	@ApiModelProperty(value = "管理单位")
-	private Long managementUnit;
-	/**
-	 * 管理人员
-	 */
-	@ApiModelProperty(value = "管理人员")
-	private Long manager;
-	/**
-	 * 上传时间
-	 */
-	@ApiModelProperty(value = "上传时间")
-	private LocalDateTime uploadTime;
+	@ApiModelProperty(value = "创建单位标识")
+	private Long createUnit;
 	/**
 	 * 关联合同
 	 */
 	@ApiModelProperty(value = "关联合同")
-	private String  contractId;
+	private String contractId;
 
 }

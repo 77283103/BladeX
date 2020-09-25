@@ -9,7 +9,7 @@ import org.springblade.contract.vo.AccordingResponseVO;
  * 合同依据管理 包装类,返回视图层所需的字段
  *
  * @author XHB
- * @date : 2020-09-23 18:40:21
+ * @date : 2020-09-24 14:20:33
  */
 public class AccordingWrapper extends BaseEntityWrapper<AccordingEntity, AccordingResponseVO>  {
 

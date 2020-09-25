@@ -8,7 +8,7 @@ import org.springblade.contract.entity.TemplateEntity;
  * 范本管理 Mapper 接口
  *
  * @author XHB
- * @date : 2020-09-23 20:17:10
+ * @date : 2020-09-24 13:57:36
  */
 public interface TemplateMapper extends BaseMapper<TemplateEntity> {
 

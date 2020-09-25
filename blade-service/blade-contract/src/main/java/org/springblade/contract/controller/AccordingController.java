@@ -30,7 +30,7 @@ import org.springblade.contract.service.IAccordingService;
  * 合同依据管理 控制器
  *
  * @author : XHB
- * @date : 2020-09-23 18:40:16
+ * @date : 2020-09-24 14:20:29
  */
 @RestController
 @AllArgsConstructor

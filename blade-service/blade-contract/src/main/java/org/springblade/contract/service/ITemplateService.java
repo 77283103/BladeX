@@ -8,7 +8,7 @@ import org.springblade.contract.entity.TemplateEntity;
  * 范本管理 服务类
  *
  * @author XHB
- * @date : 2020-09-23 20:17:13
+ * @date : 2020-09-24 13:57:37
  */
 public interface ITemplateService extends BaseService<TemplateEntity> {
 

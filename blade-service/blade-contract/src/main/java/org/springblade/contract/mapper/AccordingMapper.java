@@ -8,7 +8,7 @@ import org.springblade.contract.entity.AccordingEntity;
  * 合同依据管理 Mapper 接口
  *
  * @author XHB
- * @date : 2020-09-23 18:40:18
+ * @date : 2020-09-24 14:20:31
  */
 public interface AccordingMapper extends BaseMapper<AccordingEntity> {
 

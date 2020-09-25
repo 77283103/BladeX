@@ -7,7 +7,7 @@ import org.springblade.contract.entity.TemplateEntity;
  * 范本管理 模型DTO
  *
  * @author XHB
- * @date : 2020-09-23 20:17:08
+ * @date : 2020-09-24 13:57:35
  */
 @Getter
 @Setter

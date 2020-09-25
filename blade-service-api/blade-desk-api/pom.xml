@@ -12,6 +12,13 @@
     <artifactId>blade-desk-api</artifactId>
     <name>${project.artifactId}</name>
     <version>${bladex.project.version}</version>
+    <dependencies>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-flow-api</artifactId>
+            <version>${bladex.project.version}</version>
+        </dependency>
+    </dependencies>
     <packaging>jar</packaging>
 
 </project>
