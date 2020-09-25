@@ -56,5 +56,8 @@
             <include refid="baseColumnList"></include>
         FROM contract_form_info
         WHERE is_deleted = 0
+        <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
+            AND contract_status = concat(#{contractFormInfo.contractStatus})
+        </if>
     </select>
 </mapper>

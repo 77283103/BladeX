@@ -34,6 +34,12 @@
         update_time,
         status
     </sql>
+    <delete id="deleteByIds">
+        DELETE FROM blade_file WHERE id in
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
     <!-- 分页 -->
     <select id="pageList" resultMap="fileResultMap">
         SELECT
