@@ -66,5 +66,10 @@ public class ContractSigningEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "备注说明")
 	private String remark;
+	/**
+	 * 合同id
+	 */
+	@ApiModelProperty(value = "合同id")
+	private Long contractId;
 
 }
