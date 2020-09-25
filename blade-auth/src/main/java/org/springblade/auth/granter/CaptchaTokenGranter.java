@@ -44,16 +44,16 @@ public class CaptchaTokenGranter extends AbstractTokenGranter {
 
 	@Override
 	protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
-		HttpServletRequest request = WebUtil.getRequest();
-		// 增加验证码判断
-		String key = request.getHeader(TokenUtil.CAPTCHA_HEADER_KEY);
-		String code = request.getHeader(TokenUtil.CAPTCHA_HEADER_CODE);
-		// 获取验证码
-		String redisCode = bladeRedis.get(CacheNames.CAPTCHA_KEY + key);
-		// 判断验证码
-		if (code == null || !StringUtil.equalsIgnoreCase(redisCode, code)) {
-			throw new UserDeniedAuthorizationException(TokenUtil.CAPTCHA_NOT_CORRECT);
-		}
+//		HttpServletRequest request = WebUtil.getRequest();
+//		// 增加验证码判断
+//		String key = request.getHeader(TokenUtil.CAPTCHA_HEADER_KEY);
+//		String code = request.getHeader(TokenUtil.CAPTCHA_HEADER_CODE);
+//		// 获取验证码
+//		String redisCode = bladeRedis.get(CacheNames.CAPTCHA_KEY + key);
+//		// 判断验证码
+//		if (code == null || !StringUtil.equalsIgnoreCase(redisCode, code)) {
+//			throw new UserDeniedAuthorizationException(TokenUtil.CAPTCHA_NOT_CORRECT);
+//		}
 
 		Map<String, String> parameters = new LinkedHashMap<String, String>(tokenRequest.getRequestParameters());
 		String username = parameters.get("username");
