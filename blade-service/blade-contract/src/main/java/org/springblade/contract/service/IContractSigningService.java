@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.entity.SealInfoEntity;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractSigningEntity;
 
@@ -19,4 +20,13 @@ public interface IContractSigningService extends BaseService<ContractSigningEnti
 	 * @return
 	 */
 	IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningEntity signing);
+
+	/**
+	 * 插入数据
+	 * @param contractStatus
+	 * @param entity
+	 * @return
+	 */
+	boolean save(String contractStatus, ContractSigningEntity entity);
+
 }

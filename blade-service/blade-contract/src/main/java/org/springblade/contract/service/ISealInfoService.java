@@ -19,4 +19,11 @@ public interface ISealInfoService extends BaseService<SealInfoEntity> {
 	 * @return
 	 */
 	IPage<SealInfoEntity> pageList(IPage<SealInfoEntity> page, SealInfoEntity sealInfo);
+
+	/**
+	 * 插入数据
+	 * @param entity
+	 * @return
+	 */
+	boolean save(String contractStatus,SealInfoEntity entity);
 }

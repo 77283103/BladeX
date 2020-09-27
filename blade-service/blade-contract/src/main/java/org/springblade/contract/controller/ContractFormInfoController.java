@@ -92,6 +92,21 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
+	 * 导出后修改合同状态
+	 */
+	@PostMapping("/updateExport")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "修改", notes = "传入id")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateExport')")
+	public R updateExport(@RequestParam Long id) {
+		String contractStatus = "40";
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
+	}
+
+	/**
 	 * 删除
 	 */
 	@PostMapping("/remove")
