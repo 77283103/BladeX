@@ -13,6 +13,8 @@ import org.springblade.core.tool.utils.BeanUtil;
  */
 public class ContractFormInfoWrapper extends BaseEntityWrapper<ContractFormInfoEntity, ContractFormInfoResponseVO> {
 
+
+
 	public static ContractFormInfoWrapper build() {
 		return new ContractFormInfoWrapper();
  	}

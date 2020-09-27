@@ -20,6 +20,7 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
+        <result column="contract_id" property="contractId"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -38,7 +39,8 @@
         create_time,
         update_user,
         update_time,
-        create_dept
+        create_dept,
+        contract_id
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="signingResultMap">

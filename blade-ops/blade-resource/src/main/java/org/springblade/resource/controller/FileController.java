@@ -58,7 +58,7 @@ public class FileController extends BladeController {
 	 */
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "逻辑删除", notes = "传入ids")
+	@ApiOperation(value = "删除文件", notes = "传入ids")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(fileService.del(Func.toLongList(ids)));
 	}
