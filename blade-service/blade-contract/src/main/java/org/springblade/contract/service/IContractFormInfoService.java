@@ -26,4 +26,5 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	boolean updateExportStatus(String contractStatus,Long id);
+
 }

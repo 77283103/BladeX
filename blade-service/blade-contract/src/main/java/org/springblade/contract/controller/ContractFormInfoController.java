@@ -63,10 +63,34 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
+	 * 已评估合同信息分页查询
+	 */
+	@GetMapping("/assessmentList")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:assessmentList')")
+	public R<IPage<ContractFormInfoResponseVO>> assessmentPageList(ContractFormInfoEntity contractFormInfo, Query query) {
+		IPage<ContractFormInfoEntity> pages = contractFormInfoService.assessmentPageList(Condition.getPage(query), contractFormInfo);
+		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
+	}
+
+	/**
+	 * 未评估合同信息分页查询
+	 */
+	@GetMapping("/notAssessmentList")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:notAssessmentList')")
+	public R<IPage<ContractFormInfoResponseVO>> notAssessmentPageList(ContractFormInfoEntity contractFormInfo, Query query) {
+		IPage<ContractFormInfoEntity> pages = contractFormInfoService.assessmentPageList(Condition.getPage(query), contractFormInfo);
+		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
+	}
+
+	/**
 	 * 新增
 	 */
 	@PostMapping("/add")
-	@ApiOperationSupport(order = 4)
+	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
 	public R save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -80,7 +104,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 修改
 	 */
 	@PostMapping("/update")
-	@ApiOperationSupport(order = 5)
+	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "修改", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:update')")
 	public R update(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -96,7 +120,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 导出后修改合同状态
 	 */
 	@PostMapping("/updateExport")
-	@ApiOperationSupport(order = 5)
+	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateExport')")
 	public R updateExport(@RequestParam Long id) {
@@ -111,7 +135,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 删除
 	 */
 	@PostMapping("/remove")
-	@ApiOperationSupport(order = 7)
+	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {

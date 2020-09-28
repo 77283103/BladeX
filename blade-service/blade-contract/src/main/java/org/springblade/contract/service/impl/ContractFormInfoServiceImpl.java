@@ -30,4 +30,5 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	public boolean updateExportStatus(String contractStatus,Long id) {
 		return contractFormInfoMapper.updateExportStatus(contractStatus,id);
 	}
+
 }
