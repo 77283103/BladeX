@@ -19,4 +19,11 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+
+	/**
+	 * 导出后修改合同状态
+	 * @param contractStatus,id
+	 * @return
+	 */
+	boolean updateExportStatus(String contractStatus,Long id);
 }

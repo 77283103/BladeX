@@ -20,4 +20,11 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
+	/**
+	 * 用印后修改合同状态
+	 * @param contractStatus,id
+	 * @return
+	 */
+	boolean updateExportStatus(String contractStatus,Long id);
+
 }

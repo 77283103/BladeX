@@ -60,4 +60,7 @@
             AND contract_status = concat(#{contractFormInfo.contractStatus})
         </if>
     </select>
+    <update id="updateExportStatus">
+        UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
+    </update>
 </mapper>
