@@ -19,6 +19,7 @@ package org.springblade.system.controller;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
+import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.mp.support.Condition;
@@ -147,9 +148,8 @@ public class MenuController extends BladeController {
 	@ApiOperation(value = "新增或修改", notes = "传入menu")
 	public R submit(@Valid @RequestBody Menu menu) {
 		if (menuService.submit(menu)) {
-			// 租户id无用但是必须加
-			String tenantId="000000";
-			menu.setTenantId(tenantId);
+			// 租户id无用但是必须加，否则菜单看不到
+			menu.setTenantId(CommonConstant.DEFAULT_TENANT_ID);
 			CacheUtil.clear(MENU_CACHE);
 			// 返回懒加载树更新节点所需字段
 			Kv kv = Kv.create().set("id", String.valueOf(menu.getId()));
