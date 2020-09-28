@@ -9,6 +9,9 @@ import org.springblade.contract.mapper.ContractAssessmentMapper;
 import org.springblade.contract.service.IContractAssessmentService;
 import org.springframework.stereotype.Service;
 
+import javax.validation.constraints.NotEmpty;
+import java.util.List;
+
 /**
  * 合同评估表 服务实现类
  *

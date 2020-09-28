@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
 import org.springblade.contract.service.IContractAccordingService;
+import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractAccordingResponseVO;
@@ -39,6 +40,7 @@ import org.springblade.contract.wrapper.ContractAccordingWrapper;
 public class ContractAccordingController extends BladeController {
 
 	private IContractAccordingService accordingService;
+	private IContractFormInfoService contractFormInfoService;
 
 	/**
 	 * 详情

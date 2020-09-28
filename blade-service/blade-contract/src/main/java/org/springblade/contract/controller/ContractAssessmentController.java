@@ -10,6 +10,7 @@ import javax.validation.Valid;
 import org.springblade.contract.entity.ContractAssessmentEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.service.IContractAssessmentService;
+import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.ContractAssessmentRequestVO;
 import org.springblade.contract.vo.ContractAssessmentResponseVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -42,6 +43,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public class ContractAssessmentController extends BladeController {
 
 	private IContractAssessmentService assessmentService;
+	private IContractFormInfoService contractFormInfoService;
 
 	/**
 	 * 详情

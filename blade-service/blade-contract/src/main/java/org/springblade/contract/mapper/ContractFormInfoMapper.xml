@@ -69,4 +69,9 @@
     <update id="updateExportStatus">
         UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
     </update>
+
+    <!--  合同评估后修改合同状态  -->
+    <update id="updateAssessmentStatus">
+        UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
+    </update>
 </mapper>

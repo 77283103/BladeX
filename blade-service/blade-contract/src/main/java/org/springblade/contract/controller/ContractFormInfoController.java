@@ -62,29 +62,6 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
 	}
 
-	/**
-	 * 已评估合同信息分页查询
-	 */
-	@GetMapping("/assessmentList")
-	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
-	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:assessmentList')")
-	public R<IPage<ContractFormInfoResponseVO>> assessmentPageList(ContractFormInfoEntity contractFormInfo, Query query) {
-		IPage<ContractFormInfoEntity> pages = contractFormInfoService.assessmentPageList(Condition.getPage(query), contractFormInfo);
-		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
-	}
-
-	/**
-	 * 未评估合同信息分页查询
-	 */
-	@GetMapping("/notAssessmentList")
-	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
-	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:notAssessmentList')")
-	public R<IPage<ContractFormInfoResponseVO>> notAssessmentPageList(ContractFormInfoEntity contractFormInfo, Query query) {
-		IPage<ContractFormInfoEntity> pages = contractFormInfoService.assessmentPageList(Condition.getPage(query), contractFormInfo);
-		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
-	}
 
 	/**
 	 * 新增
@@ -130,6 +107,23 @@ public class ContractFormInfoController extends BladeController {
 		}
 		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
 	}
+
+
+	/**
+	 * 同评估后修改合同状态
+	 */
+	@PostMapping("/updateAssessmentStatus")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "修改", notes = "传入id")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAssessmentStatus')")
+	public R updateContractStatus(@RequestParam Long id) {
+		String contractStatus = "100";
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		return R.status(contractFormInfoService.updateAssessmentStatus(contractStatus,id));
+	}
+
 
 	/**
 	 * 删除
