@@ -50,26 +50,21 @@
         contract_big_category,
         contract_small_category
     </sql>
+
     <!-- 分页 -->
     <select id="pageList" resultMap="formInfoResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+        <include refid="baseColumnList"></include>
         FROM contract_form_info
         WHERE is_deleted = 0
-        <if test="contractFormInfo.contractName != null and contractFormInfo.contractName != ''">
-            AND contract_name = concat(#{contractFormInfo.contractName})
-        </if>
-        <if test="contractFormInfo.contractBigCategory != null and contractFormInfo.contractBigCategory != ''">
-            AND contract_big_category = concat(#{contractFormInfo.contractBigCategory})
-        </if>
-        <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
-        AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
+        <if test="formInfo.contractStatus != null and formInfo.contractStatus != ''">
+            AND relieve_category = concat(#{formInfo.contractStatus})
         </if>
     </select>
+
     <update id="updateExportStatus">
         UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
     </update>
-
     <!--  合同评估后修改合同状态  -->
     <update id="updateAssessmentStatus">
         UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
