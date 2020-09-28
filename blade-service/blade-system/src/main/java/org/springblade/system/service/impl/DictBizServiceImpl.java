@@ -55,8 +55,8 @@ import static org.springblade.core.cache.constant.CacheConstant.DICT_CACHE;
 public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> implements IDictBizService {
 
 	@Override
-	public List<DictBizVO> tree() {
-		return ForestNodeMerger.merge(baseMapper.tree());
+	public List<DictBizVO> tree(String code) {
+		return ForestNodeMerger.merge(baseMapper.tree(code));
 	}
 
 	@Override

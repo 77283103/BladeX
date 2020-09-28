@@ -69,7 +69,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
-	public R save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
         ContractFormInfoEntity entity = new ContractFormInfoEntity();
         BeanUtil.copy(contractFormInfo,entity);
 		contractFormInfoService.save(entity);

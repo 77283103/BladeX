@@ -19,12 +19,9 @@ package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
-import org.springblade.system.entity.Dict;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.vo.DictBizVO;
-import org.springblade.system.vo.DictVO;
 
 import java.util.List;
 import java.util.Map;
@@ -58,7 +55,7 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 *
 	 * @return
 	 */
-	List<DictBizVO> tree();
+	List<DictBizVO> tree(String code);
 
 	/**
 	 * 获取树形节点
