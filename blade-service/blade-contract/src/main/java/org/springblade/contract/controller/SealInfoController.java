@@ -70,9 +70,10 @@ public class SealInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入sealInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:add')")
 	public R save(@Valid @RequestBody SealInfoRequestVO sealInfo) {
+		String contractStatus = "50";
         SealInfoEntity entity = new SealInfoEntity();
         BeanUtil.copy(sealInfo,entity);
-		return R.status(sealInfoService.save(entity));
+		return R.status(sealInfoService.save(contractStatus,entity));
 	}
 
 	/**

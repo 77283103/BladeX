@@ -51,5 +51,8 @@ public class ContractSigningRequestVO extends BaseEntity {
 	
     @ApiModelProperty(value="备注说明")
 	private String remark;
+
+	@ApiModelProperty(value="关联合同id")
+	private Long contractId;
 	
 }

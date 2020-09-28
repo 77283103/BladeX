@@ -7,6 +7,8 @@ import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
+
 /**
  *  服务实现类
  *
@@ -16,8 +18,16 @@ import org.springframework.stereotype.Service;
 @Service
 public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInfoMapper, ContractFormInfoEntity> implements IContractFormInfoService {
 
+	@Resource
+	private ContractFormInfoMapper contractFormInfoMapper;
+
 	@Override
 	public IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
 		return baseMapper.pageList(page, contractFormInfo);
+	}
+
+	@Override
+	public boolean updateExportStatus(String contractStatus,Long id) {
+		return contractFormInfoMapper.updateExportStatus(contractStatus,id);
 	}
 }
