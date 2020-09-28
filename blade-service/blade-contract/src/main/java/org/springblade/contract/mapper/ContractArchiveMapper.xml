@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractArchiveMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="archiveResultMap" type="org.springblade.contract.entity.ContractArchiveEntity">
+        <result column="id" property="id"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="archive_instructions" property="archiveInstructions"/>
+        <result column="manage_message" property="manageMessage"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        contract_id,
+        archive_instructions,
+        manage_message,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="archiveResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_archive
+        WHERE is_deleted = 0
+        <if test="counterpart.name != null and counterpart.name != ''">
+            AND name = #{counterpart.name}
+        </if>
+        <if test="counterpart.counterpartCategory != null and counterpart.counterpartCategory != ''">
+            AND counterpart_category = #{counterpart.counterpartCategory}
+        </if>
+        <if test="counterpart.legalRepresentative != null and counterpart.legalRepresentative != ''">
+            AND legal_representative = #{counterpart.legalRepresentative}
+        </if>
+    </select>
+</mapper>

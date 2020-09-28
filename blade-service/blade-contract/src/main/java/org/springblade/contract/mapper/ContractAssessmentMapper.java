@@ -2,7 +2,9 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractAssessmentEntity;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 
 /**
  * 合同评估表 Mapper 接口
@@ -13,7 +15,8 @@ import org.springblade.contract.entity.ContractAssessmentEntity;
 public interface ContractAssessmentMapper extends BaseMapper<ContractAssessmentEntity> {
 
 	/**
-	 * 分页查询
+	 * 评估信息分页查询
+	 *
 	 * @param page
 	 * @param assessment
 	 * @return

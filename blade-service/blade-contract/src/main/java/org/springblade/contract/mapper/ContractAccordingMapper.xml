@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractAccordingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="accordingResultMap" type="org.springblade.contract.entity.ContractAccordingEntity">
+        <result column="id" property="id"/>
+        <result column="according_name" property="accordingName"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="according_files" property="accordingFiles"/>
+        <result column="remark" property="remark"/>
+        <result column="record_version" property="recordVersion"/>
+        <result column="create_unit" property="createUnit"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        according_name,
+        contract_id,
+        according_files,
+        remark,
+        record_version,
+        create_unit,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="accordingResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_according
+        WHERE is_deleted = 0
+        <if test="according.accordingName != null and according.accordingName != ''">
+            AND according_name = #{according.accordingName}
+        </if>
+    </select>
+</mapper>
