@@ -20,10 +20,8 @@ package org.springblade.system.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springblade.core.mp.support.Query;
-import org.springblade.system.entity.Dict;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.vo.DictBizVO;
-import org.springblade.system.vo.DictVO;
 
 import java.util.List;
 import java.util.Map;
@@ -40,7 +38,7 @@ public interface IDictBizService extends IService<DictBiz> {
 	 *
 	 * @return
 	 */
-	List<DictBizVO> tree();
+	List<DictBizVO> tree(String code);
 
 	/**
 	 * 树形结构

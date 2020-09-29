@@ -62,14 +62,15 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
 	}
 
+
 	/**
 	 * 新增
 	 */
 	@PostMapping("/add")
-	@ApiOperationSupport(order = 4)
+	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
-	public R save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
         ContractFormInfoEntity entity = new ContractFormInfoEntity();
         BeanUtil.copy(contractFormInfo,entity);
 		contractFormInfoService.save(entity);
@@ -80,7 +81,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 修改
 	 */
 	@PostMapping("/update")
-	@ApiOperationSupport(order = 5)
+	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "修改", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:update')")
 	public R update(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -96,7 +97,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 导出后修改合同状态
 	 */
 	@PostMapping("/updateExport")
-	@ApiOperationSupport(order = 5)
+	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateExport')")
 	public R updateExport(@RequestParam Long id) {
@@ -107,11 +108,28 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
 	}
 
+
+	/**
+	 * 同评估后修改合同状态
+	 */
+	@PostMapping("/updateAssessmentStatus")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "修改", notes = "传入id")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAssessmentStatus')")
+	public R updateContractStatus(@RequestParam Long id) {
+		String contractStatus = "100";
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		return R.status(contractFormInfoService.updateAssessmentStatus(contractStatus,id));
+	}
+
+
 	/**
 	 * 删除
 	 */
 	@PostMapping("/remove")
-	@ApiOperationSupport(order = 7)
+	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
