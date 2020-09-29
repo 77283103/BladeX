@@ -328,7 +328,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (targetNode instanceof InclusiveGateway) {
 			targetNode.getOutgoingFlows().forEach(sequenceFlow -> {
 				FlowNode targetNodeInclusive = (FlowNode) sequenceFlow.getTargetFlowElement();
-				List<FlowUserRequest> candidateUserList = getCandidateUsers(targetNode, taskId);
+				List<FlowUserRequest> candidateUserList = getCandidateUsers(targetNodeInclusive, taskId);
 				FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
 					.end(false)
 					.taskId(taskId)
