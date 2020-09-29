@@ -72,9 +72,10 @@ public class ArchiveController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入archive")
 	@PreAuth("hasPermission('contract:archive:add')")
 	public R save(@Valid @RequestBody ArchiveRequestVO archive) {
+		String contractStatus = "110";
         ArchiveEntity entity = new ArchiveEntity();
         BeanUtil.copy(archive,entity);
-		return R.status(archiveService.save(entity));
+		return R.status(archiveService.save(contractStatus,entity));
 	}
 
 	/**

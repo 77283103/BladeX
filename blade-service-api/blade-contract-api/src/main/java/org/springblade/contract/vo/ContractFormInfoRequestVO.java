@@ -69,4 +69,16 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
     @ApiModelProperty(value="合同二级分类")
 	private String contractSmallCategory;
 
+	@ApiModelProperty(value="开始时间")
+	private String startTime;
+
+	@ApiModelProperty(value="结束时间")
+	private String endTime;
+
+	@ApiModelProperty(value="最低合同金额")
+	private String minContractAmount;
+
+	@ApiModelProperty(value="最高合同金额")
+	private String maxContractAmount;
+
 }

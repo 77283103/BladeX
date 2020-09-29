@@ -22,8 +22,6 @@ import javax.annotation.Resource;
 public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningMapper, ContractSigningEntity> implements IContractSigningService {
 
 	@Resource
-	private ContractSigningMapper contractSigningMapper;
-	@Resource
 	private IContractFormInfoService contractFormInfoService;
 
 

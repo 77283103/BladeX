@@ -63,6 +63,18 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
+	 * 用印分页
+	 */
+	@GetMapping("/listSealInfo")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "分页", notes = "传入ContractFormInfoRequestVO")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:listSealInfo')")
+	public R<IPage<ContractFormInfoResponseVO>> listSealInfo(ContractFormInfoRequestVO contractFormInfoRequestVO, Query query) {
+		IPage<ContractFormInfoEntity> pages = contractFormInfoService.pageListSealInfo(Condition.getPage(query), contractFormInfoRequestVO);
+		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
+	}
+
+	/**
 	 * 新增
 	 */
 	@PostMapping("/add")
@@ -95,7 +107,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 导出后修改合同状态
 	 */
 	@PostMapping("/updateExport")
-	@ApiOperationSupport(order = 5)
+	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateExport')")
 	public R updateExport(@RequestParam Long id) {

@@ -19,4 +19,12 @@ public interface IArchiveService extends BaseService<ArchiveEntity> {
 	 * @return
 	 */
 	IPage<ArchiveEntity> pageList(IPage<ArchiveEntity> page, ArchiveEntity archive);
+
+	/**
+	 *
+	 * @param contractStatus
+	 * @param entity
+	 * @return
+	 */
+	boolean save(String contractStatus, ArchiveEntity entity);
 }
