@@ -36,4 +36,13 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	IPage<ContractFormInfoEntity> pageListSealInfo(IPage<ContractFormInfoRequestVO> page, ContractFormInfoRequestVO contractFormInfoRequestVO);
 
+
+
+	/**
+	 * 合同评估后修改合同状态
+	 * @param contractStatus 合同状态
+	 * @param id 合同id
+	 * @return
+	 */
+	boolean updateAssessmentStatus(String  contractStatus,Long id);
 }

@@ -78,13 +78,14 @@ public class ContractFormInfoController extends BladeController {
 	 * 新增
 	 */
 	@PostMapping("/add")
-	@ApiOperationSupport(order = 4)
+	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
-	public R save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
         ContractFormInfoEntity entity = new ContractFormInfoEntity();
         BeanUtil.copy(contractFormInfo,entity);
-		return R.status(contractFormInfoService.save(entity));
+		contractFormInfoService.save(entity);
+		return R.data(entity);
 	}
 
 	/**
@@ -117,6 +118,23 @@ public class ContractFormInfoController extends BladeController {
 		}
 		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
 	}
+
+
+	/**
+	 * 同评估后修改合同状态
+	 */
+	@PostMapping("/updateAssessmentStatus")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "修改", notes = "传入id")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAssessmentStatus')")
+	public R updateContractStatus(@RequestParam Long id) {
+		String contractStatus = "100";
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		return R.status(contractFormInfoService.updateAssessmentStatus(contractStatus,id));
+	}
+
 
 	/**
 	 * 删除

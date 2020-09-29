@@ -36,4 +36,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	public IPage<ContractFormInfoEntity> pageListSealInfo(IPage<ContractFormInfoRequestVO> page, ContractFormInfoRequestVO contractFormInfoRequestVO) {
 		return baseMapper.pageListSealInfo(page, contractFormInfoRequestVO);
 	}
+
+	/**
+	 * 合同评估后修改合同状态
+	 * @param contractStatus 合同状态
+	 * @param id 合同id
+	 * @return
+	 */
+	@Override
+	public boolean updateAssessmentStatus(String contractStatus, Long id) {
+		return contractFormInfoMapper.updateAssessmentStatus(contractStatus,id);
+	}
+
+
 }
