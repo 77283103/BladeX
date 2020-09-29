@@ -2,7 +2,7 @@ package org.springblade.contract.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springblade.contract.entity.ChangeEntity;
+import org.springblade.contract.entity.ContractChangeEntity;
 
 /**
  * 合同变更 模型DTO
@@ -12,7 +12,7 @@ import org.springblade.contract.entity.ChangeEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ChangeDTO extends ChangeEntity {
+public class ContractChangeDTO extends ContractChangeEntity {
 
 	private static final long serialVersionUID = 1L;
 

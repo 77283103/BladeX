@@ -19,7 +19,7 @@ import io.swagger.annotations.ApiModelProperty;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "合同变更请求对象")
-public class ChangeRequestVO extends BaseEntity {
+public class ContractChangeRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
