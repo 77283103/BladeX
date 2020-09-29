@@ -7,9 +7,12 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
+import org.springblade.contract.entity.ContractArchiveEntity;
+import org.springblade.contract.service.IContractArchiveService;
+import org.springblade.contract.vo.ContractArchiveRequestVO;
+import org.springblade.contract.vo.ContractArchiveResponseVO;
+import org.springblade.contract.wrapper.ContractArchiveWrapper;
 import org.springblade.core.log.exception.ServiceException;
-import org.springblade.contract.vo.ArchiveRequestVO;
-import org.springblade.contract.vo.ArchiveResponseVO;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
 
@@ -21,11 +24,6 @@ import org.springblade.core.tool.utils.Func;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.contract.entity.ArchiveEntity;
-import org.springblade.contract.wrapper.ArchiveWrapper;
-import org.springblade.contract.service.IArchiveService;
-
-
 /**
  * 合同归档管理 控制器
  *
@@ -36,9 +34,9 @@ import org.springblade.contract.service.IArchiveService;
 @AllArgsConstructor
 @RequestMapping("/archive")
 @Api(value = "合同归档管理", tags = "合同归档管理")
-public class ArchiveController extends BladeController {
+public class ContractArchiveController extends BladeController {
 
-	private IArchiveService archiveService;
+	private IContractArchiveService archiveService;
 
 	/**
 	 * 详情
@@ -47,9 +45,9 @@ public class ArchiveController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入archive")
 	@PreAuth("hasPermission('contract:archive:detail')")
-	public R<ArchiveResponseVO> detail(@RequestParam Long id) {
-		ArchiveEntity detail = archiveService.getById(id);
-		return R.data(ArchiveWrapper.build().entityVO(detail));
+	public R<ContractArchiveResponseVO> detail(@RequestParam Long id) {
+		ContractArchiveEntity detail = archiveService.getById(id);
+		return R.data(ContractArchiveWrapper.build().entityVO(detail));
 	}
 
 	/**
@@ -59,9 +57,9 @@ public class ArchiveController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入archive")
 	@PreAuth("hasPermission('contract:archive:list')")
-	public R<IPage<ArchiveResponseVO>> list(ArchiveEntity archive, Query query) {
-		IPage<ArchiveEntity> pages = archiveService.pageList(Condition.getPage(query), archive);
-		return R.data(ArchiveWrapper.build().pageVO(pages));
+	public R<IPage<ContractArchiveResponseVO>> list(ContractArchiveEntity archive, Query query) {
+		IPage<ContractArchiveEntity> pages = archiveService.pageList(Condition.getPage(query), archive);
+		return R.data(ContractArchiveWrapper.build().pageVO(pages));
 	}
 
 	/**
@@ -71,9 +69,9 @@ public class ArchiveController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入archive")
 	@PreAuth("hasPermission('contract:archive:add')")
-	public R save(@Valid @RequestBody ArchiveRequestVO archive) {
+	public R save(@Valid @RequestBody ContractArchiveRequestVO archive) {
 		String contractStatus = "110";
-        ArchiveEntity entity = new ArchiveEntity();
+		ContractArchiveEntity entity = new ContractArchiveEntity();
         BeanUtil.copy(archive,entity);
 		return R.status(archiveService.save(contractStatus,entity));
 	}
@@ -85,11 +83,11 @@ public class ArchiveController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入archive")
 	@PreAuth("hasPermission('contract:archive:update')")
-	public R update(@Valid @RequestBody ArchiveRequestVO archive) {
+	public R update(@Valid @RequestBody ContractArchiveRequestVO archive) {
 	    if (Func.isEmpty(archive.getId())){
             throw new ServiceException("id不能为空");
         }
-	    ArchiveEntity entity = new ArchiveEntity();
+		ContractArchiveEntity entity = new ContractArchiveEntity();
         BeanUtil.copy(archive,entity);
 		return R.status(archiveService.updateById(entity));
 	}
