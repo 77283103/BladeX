@@ -1,7 +1,6 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.SealInfoEntity;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractSigningEntity;
 

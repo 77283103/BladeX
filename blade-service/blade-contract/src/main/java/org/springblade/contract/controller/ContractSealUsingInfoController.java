@@ -6,11 +6,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.contract.entity.SealInfoEntity;
-import org.springblade.contract.service.ISealInfoService;
-import org.springblade.contract.vo.SealInfoRequestVO;
-import org.springblade.contract.vo.SealInfoResponseVO;
-import org.springblade.contract.wrapper.SealInfoWrapper;
+import org.springblade.contract.entity.ContractSealUsingInfoEntity;
+import org.springblade.contract.service.IContractSealUsingInfoService;
+import org.springblade.contract.vo.ContractSealUsingInfoRequestVO;
+import org.springblade.contract.vo.ContractSealUsingInfoResponseVO;
+import org.springblade.contract.wrapper.ContractSealUsingInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
@@ -34,9 +34,9 @@ import javax.validation.Valid;
 @AllArgsConstructor
 @RequestMapping("/sealInfo")
 @Api(value = "用印名称", tags = "用印名称")
-public class SealInfoController extends BladeController {
+public class ContractSealUsingInfoController extends BladeController {
 
-	private ISealInfoService sealInfoService;
+	private IContractSealUsingInfoService sealInfoService;
 
 	/**
 	 * 详情
@@ -45,9 +45,9 @@ public class SealInfoController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入sealInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:detail')")
-	public R<SealInfoResponseVO> detail(@RequestParam Long id) {
-		SealInfoEntity detail = sealInfoService.getById(id);
-		return R.data(SealInfoWrapper.build().entityVO(detail));
+	public R<ContractSealUsingInfoResponseVO> detail(@RequestParam Long id) {
+		ContractSealUsingInfoEntity detail = sealInfoService.getById(id);
+		return R.data(ContractSealUsingInfoWrapper.build().entityVO(detail));
 	}
 
 	/**
@@ -57,9 +57,9 @@ public class SealInfoController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入sealInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:list')")
-	public R<IPage<SealInfoResponseVO>> list(SealInfoEntity sealInfo, Query query) {
-		IPage<SealInfoEntity> pages = sealInfoService.pageList(Condition.getPage(query), sealInfo);
-		return R.data(SealInfoWrapper.build().pageVO(pages));
+	public R<IPage<ContractSealUsingInfoResponseVO>> list(ContractSealUsingInfoEntity sealInfo, Query query) {
+		IPage<ContractSealUsingInfoEntity> pages = sealInfoService.pageList(Condition.getPage(query), sealInfo);
+		return R.data(ContractSealUsingInfoWrapper.build().pageVO(pages));
 	}
 
 	/**
@@ -69,9 +69,9 @@ public class SealInfoController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入sealInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:add')")
-	public R save(@Valid @RequestBody SealInfoRequestVO sealInfo) {
+	public R save(@Valid @RequestBody ContractSealUsingInfoRequestVO sealInfo) {
 		String contractStatus = "50";
-        SealInfoEntity entity = new SealInfoEntity();
+        ContractSealUsingInfoEntity entity = new ContractSealUsingInfoEntity();
         BeanUtil.copy(sealInfo,entity);
 		return R.status(sealInfoService.save(contractStatus,entity));
 	}
@@ -83,11 +83,11 @@ public class SealInfoController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入sealInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:update')")
-	public R update(@Valid @RequestBody SealInfoRequestVO sealInfo) {
+	public R update(@Valid @RequestBody ContractSealUsingInfoRequestVO sealInfo) {
 	    if (Func.isEmpty(sealInfo.getId())){
             throw new ServiceException("id不能为空");
         }
-	    SealInfoEntity entity = new SealInfoEntity();
+	    ContractSealUsingInfoEntity entity = new ContractSealUsingInfoEntity();
         BeanUtil.copy(sealInfo,entity);
 		return R.status(sealInfoService.updateById(entity));
 	}

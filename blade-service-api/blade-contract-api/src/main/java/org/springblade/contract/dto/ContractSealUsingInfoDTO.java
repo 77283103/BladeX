@@ -2,7 +2,7 @@ package org.springblade.contract.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springblade.contract.entity.SealInfoEntity;
+import org.springblade.contract.entity.ContractSealUsingInfoEntity;
 
 /**
  * 用印名称 模型DTO
@@ -12,7 +12,7 @@ import org.springblade.contract.entity.SealInfoEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class SealInfoDTO extends SealInfoEntity {
+public class ContractSealUsingInfoDTO extends ContractSealUsingInfoEntity {
 
 	private static final long serialVersionUID = 1L;
 

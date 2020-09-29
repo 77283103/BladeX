@@ -2,7 +2,7 @@ package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.contract.entity.SealInfoEntity;
+import org.springblade.contract.entity.ContractSealUsingInfoEntity;
 
 /**
  * 用印名称 服务类
@@ -10,7 +10,7 @@ import org.springblade.contract.entity.SealInfoEntity;
  * @author szw
  * @date : 2020-09-24 01:27:14
  */
-public interface ISealInfoService extends BaseService<SealInfoEntity> {
+public interface IContractSealUsingInfoService extends BaseService<ContractSealUsingInfoEntity> {
 
 	/**
 	 * 分页查询
@@ -18,12 +18,12 @@ public interface ISealInfoService extends BaseService<SealInfoEntity> {
 	 * @param sealInfo
 	 * @return
 	 */
-	IPage<SealInfoEntity> pageList(IPage<SealInfoEntity> page, SealInfoEntity sealInfo);
+	IPage<ContractSealUsingInfoEntity> pageList(IPage<ContractSealUsingInfoEntity> page, ContractSealUsingInfoEntity sealInfo);
 
 	/**
 	 * 插入数据
 	 * @param entity
 	 * @return
 	 */
-	boolean save(String contractStatus,SealInfoEntity entity);
+	boolean save(String contractStatus, ContractSealUsingInfoEntity entity);
 }

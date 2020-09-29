@@ -2,7 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.RelieveEntity;
+import org.springblade.contract.entity.ContractRelieveEntity;
 
 /**
  *  Mapper 接口
@@ -10,7 +10,7 @@ import org.springblade.contract.entity.RelieveEntity;
  * @author szw
  * @date : 2020-09-23 20:10:29
  */
-public interface RelieveMapper extends BaseMapper<RelieveEntity> {
+public interface ContractRelieveMapper extends BaseMapper<ContractRelieveEntity> {
 
 	/**
 	 * 分页查询
@@ -18,6 +18,6 @@ public interface RelieveMapper extends BaseMapper<RelieveEntity> {
 	 * @param relieve
 	 * @return
 	 */
-	IPage<RelieveEntity> pageList(IPage<RelieveEntity> page, RelieveEntity relieve);
+	IPage<ContractRelieveEntity> pageList(IPage<ContractRelieveEntity> page, ContractRelieveEntity relieve);
 
 }

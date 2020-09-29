@@ -2,7 +2,7 @@ package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.contract.entity.RelieveEntity;
+import org.springblade.contract.entity.ContractRelieveEntity;
 
 /**
  *  服务类
@@ -10,7 +10,7 @@ import org.springblade.contract.entity.RelieveEntity;
  * @author szw
  * @date : 2020-09-23 20:10:29
  */
-public interface IRelieveService extends BaseService<RelieveEntity> {
+public interface IContractRelieveService extends BaseService<ContractRelieveEntity> {
 
 	/**
 	 * 分页查询
@@ -18,5 +18,5 @@ public interface IRelieveService extends BaseService<RelieveEntity> {
 	 * @param relieve
 	 * @return
 	 */
-	IPage<RelieveEntity> pageList(IPage<RelieveEntity> page, RelieveEntity relieve);
+	IPage<ContractRelieveEntity> pageList(IPage<ContractRelieveEntity> page, ContractRelieveEntity relieve);
 }
