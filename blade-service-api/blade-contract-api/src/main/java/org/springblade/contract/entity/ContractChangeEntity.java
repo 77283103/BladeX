@@ -20,7 +20,7 @@ import org.springblade.core.mp.base.BaseEntity;
 @TableName("contract_change")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Change对象", description = "合同变更")
-public class ChangeEntity extends BaseEntity {
+public class ContractChangeEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 

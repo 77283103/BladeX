@@ -6,11 +6,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.contract.entity.ChangeEntity;
-import org.springblade.contract.service.IChangeService;
-import org.springblade.contract.vo.ChangeRequestVO;
-import org.springblade.contract.vo.ChangeResponseVO;
-import org.springblade.contract.wrapper.ChangeWrapper;
+import org.springblade.contract.entity.ContractChangeEntity;
+import org.springblade.contract.service.IContractChangeService;
+import org.springblade.contract.vo.ContractChangeRequestVO;
+import org.springblade.contract.vo.ContractChangeResponseVO;
+import org.springblade.contract.wrapper.ContractChangeWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
@@ -34,9 +34,9 @@ import javax.validation.Valid;
 @AllArgsConstructor
 @RequestMapping("/change")
 @Api(value = "合同变更", tags = "合同变更")
-public class ChangeController extends BladeController {
+public class ContractChangeController extends BladeController {
 
-	private IChangeService changeService;
+	private IContractChangeService changeService;
 
 	/**
 	 * 详情
@@ -45,9 +45,9 @@ public class ChangeController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入change")
 	@PreAuth("hasPermission('contractChange:change:detail')")
-	public R<ChangeResponseVO> detail(@RequestParam Long id) {
-		ChangeEntity detail = changeService.getById(id);
-		return R.data(ChangeWrapper.build().entityVO(detail));
+	public R<ContractChangeResponseVO> detail(@RequestParam Long id) {
+		ContractChangeEntity detail = changeService.getById(id);
+		return R.data(ContractChangeWrapper.build().entityVO(detail));
 	}
 
 	/**
@@ -57,9 +57,9 @@ public class ChangeController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入change")
 	@PreAuth("hasPermission('contractChange:change:list')")
-	public R<IPage<ChangeResponseVO>> list(ChangeEntity change, Query query) {
-		IPage<ChangeEntity> pages = changeService.pageList(Condition.getPage(query), change);
-		return R.data(ChangeWrapper.build().pageVO(pages));
+	public R<IPage<ContractChangeResponseVO>> list(ContractChangeEntity change, Query query) {
+		IPage<ContractChangeEntity> pages = changeService.pageList(Condition.getPage(query), change);
+		return R.data(ContractChangeWrapper.build().pageVO(pages));
 	}
 
 	/**
@@ -69,8 +69,8 @@ public class ChangeController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入change")
 	@PreAuth("hasPermission('contractChange:change:add')")
-	public R save(@Valid @RequestBody ChangeRequestVO change) {
-        ChangeEntity entity = new ChangeEntity();
+	public R save(@Valid @RequestBody ContractChangeRequestVO change) {
+        ContractChangeEntity entity = new ContractChangeEntity();
         BeanUtil.copy(change,entity);
 		return R.status(changeService.save(entity));
 	}
@@ -82,11 +82,11 @@ public class ChangeController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入change")
 	@PreAuth("hasPermission('contractChange:change:update')")
-	public R update(@Valid @RequestBody ChangeRequestVO change) {
+	public R update(@Valid @RequestBody ContractChangeRequestVO change) {
 	    if (Func.isEmpty(change.getId())){
             throw new ServiceException("id不能为空");
         }
-	    ChangeEntity entity = new ChangeEntity();
+	    ContractChangeEntity entity = new ContractChangeEntity();
         BeanUtil.copy(change,entity);
 		return R.status(changeService.updateById(entity));
 	}

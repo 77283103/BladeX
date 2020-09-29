@@ -1,7 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.ChangeEntity;
+import org.springblade.contract.entity.ContractChangeEntity;
 import org.springblade.core.mp.base.BaseService;
 
 /**
@@ -10,7 +10,7 @@ import org.springblade.core.mp.base.BaseService;
  * @author szw
  * @date : 2020-09-23 19:24:50
  */
-public interface IChangeService extends BaseService<ChangeEntity> {
+public interface IContractChangeService extends BaseService<ContractChangeEntity> {
 
 	/**
 	 * 分页查询
@@ -18,5 +18,5 @@ public interface IChangeService extends BaseService<ChangeEntity> {
 	 * @param change
 	 * @return
 	 */
-	IPage<ChangeEntity> pageList(IPage<ChangeEntity> page, ChangeEntity change);
+	IPage<ContractChangeEntity> pageList(IPage<ContractChangeEntity> page, ContractChangeEntity change);
 }
