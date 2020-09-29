@@ -50,18 +50,41 @@
         contract_big_category,
         contract_small_category
     </sql>
-
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnListJoin">
+        a.id,
+        a.contract_name,
+        a.contract_number,
+        a.text_file,
+        a.attached_files,
+        a.currency_category,
+        a.contract_amount,
+        a.change_category,
+        a.change_contract_id,
+        a.contract_status,
+        a.submit_status,
+        a.contract_soure,
+        a.file_export_category,
+        a.is_deleted,
+        a.create_user,
+        a.create_time,
+        a.update_user,
+        a.update_time,
+        a.create_dept,
+        a.contract_big_category,
+        a.contract_small_category
+    </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="formInfoResultMap">
         SELECT
-        <include refid="baseColumnList"></include>
+            <include refid="baseColumnList"></include>
         FROM contract_form_info
         WHERE is_deleted = 0
-        <if test="formInfo.contractStatus != null and formInfo.contractStatus != ''">
-            AND relieve_category = concat(#{formInfo.contractStatus})
+        <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
+            AND contract_status = concat(#{contractFormInfo.contractStatus})
         </if>
     </select>
-
+    <!--修改合同状态-->
     <update id="updateExportStatus">
         UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
     </update>
@@ -69,4 +92,29 @@
     <update id="updateAssessmentStatus">
         UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
     </update>
+    <!--用印分页-->
+    <select id="pageListSealInfo" resultMap="formInfoResultMap">
+        SELECT
+        <include refid="baseColumnListJoin"></include>
+        FROM contract_form_info a
+        LEFT JOIN
+        contract_seal_using_info b
+        ON
+        a.id = b.ref_contract_id
+        <if test="contractFormInfoRequestVO.startTime!=null and contractFormInfoRequestVO.endTime!=null">
+            WHERE
+            <if test="contractFormInfoRequestVO.startTime!=null">
+                b.sign_time &gt; concat(#{contractFormInfoRequestVO.startTime})
+            </if>
+            <if test="contractFormInfoRequestVO.endTime!=null">
+                AND b.sign_time &lt; concat(#{contractFormInfoRequestVO.endTime})
+            </if>
+            <if test="contractFormInfoRequestVO.minContractAmount!=null">
+                AND a.contract_amount &gt; concat(#{contractFormInfoRequestVO.minContractAmount})
+            </if>
+            <if test="contractFormInfoRequestVO.maxContractAmount!=null">
+                AND a.contract_amount &lt; concat(#{contractFormInfoRequestVO.maxContractAmount})
+            </if>
+        </if>
+    </select>
 </mapper>

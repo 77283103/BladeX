@@ -2,6 +2,7 @@ package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.core.mp.base.BaseService;
 
 /**
@@ -26,6 +27,14 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	boolean updateExportStatus(String contractStatus,Long id);
+
+	/**
+	 * 用印分页查询
+	 * @param page
+	 * @param contractFormInfoRequestVO
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> pageListSealInfo(IPage<ContractFormInfoRequestVO> page, ContractFormInfoRequestVO contractFormInfoRequestVO);
 
 
 	/**

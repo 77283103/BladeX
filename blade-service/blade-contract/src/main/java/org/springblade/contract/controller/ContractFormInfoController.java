@@ -62,6 +62,17 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
 	}
 
+	/**
+	 * 用印分页
+	 */
+	@GetMapping("/listSealInfo")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "分页", notes = "传入ContractFormInfoRequestVO")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:listSealInfo')")
+	public R<IPage<ContractFormInfoResponseVO>> listSealInfo(ContractFormInfoRequestVO contractFormInfoRequestVO, Query query) {
+		IPage<ContractFormInfoEntity> pages = contractFormInfoService.pageListSealInfo(Condition.getPage(query), contractFormInfoRequestVO);
+		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
+	}
 
 	/**
 	 * 新增
@@ -81,7 +92,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 修改
 	 */
 	@PostMapping("/update")
-	@ApiOperationSupport(order = 6)
+	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:update')")
 	public R update(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -97,7 +108,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 导出后修改合同状态
 	 */
 	@PostMapping("/updateExport")
-	@ApiOperationSupport(order = 7)
+	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateExport')")
 	public R updateExport(@RequestParam Long id) {
@@ -129,7 +140,7 @@ public class ContractFormInfoController extends BladeController {
 	 * 删除
 	 */
 	@PostMapping("/remove")
-	@ApiOperationSupport(order = 8)
+	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {

@@ -22,7 +22,7 @@ import java.math.BigDecimal;
 @TableName("contract_relieve")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "Relieve对象", description = "")
-public class RelieveEntity extends BaseEntity {
+public class ContractRelieveEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 

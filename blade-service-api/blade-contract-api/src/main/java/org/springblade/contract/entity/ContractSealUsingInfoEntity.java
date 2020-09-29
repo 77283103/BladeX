@@ -22,7 +22,7 @@ import java.time.LocalDateTime;
 @TableName("contract_seal_using_info")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "SealInfo对象", description = "用印名称")
-public class SealInfoEntity extends BaseEntity {
+public class ContractSealUsingInfoEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 

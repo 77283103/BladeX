@@ -1,8 +1,8 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractArchiveEntity;
+import org.springblade.core.mp.base.BaseService;
 
 /**
  * 合同归档管理 服务类
@@ -19,4 +19,12 @@ public interface IContractArchiveService extends BaseService<ContractArchiveEnti
 	 * @return
 	 */
 	IPage<ContractArchiveEntity> pageList(IPage<ContractArchiveEntity> page, ContractArchiveEntity archive);
+
+	/**
+	 *
+	 * @param contractStatus
+	 * @param entity
+	 * @return
+	 */
+	boolean save(String contractStatus, ContractArchiveEntity entity);
 }

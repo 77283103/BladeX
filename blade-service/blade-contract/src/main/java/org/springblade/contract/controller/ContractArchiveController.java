@@ -7,9 +7,12 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
-import org.springblade.core.log.exception.ServiceException;
+import org.springblade.contract.entity.ContractArchiveEntity;
+import org.springblade.contract.service.IContractArchiveService;
 import org.springblade.contract.vo.ContractArchiveRequestVO;
 import org.springblade.contract.vo.ContractArchiveResponseVO;
+import org.springblade.contract.wrapper.ContractArchiveWrapper;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
 
@@ -20,11 +23,6 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-
-import org.springblade.contract.entity.ContractArchiveEntity;
-import org.springblade.contract.wrapper.ContractArchiveWrapper;
-import org.springblade.contract.service.IContractArchiveService;
-
 
 /**
  * 合同归档管理 控制器
@@ -72,9 +70,10 @@ public class ContractArchiveController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入archive")
 	@PreAuth("hasPermission('contract:archive:add')")
 	public R save(@Valid @RequestBody ContractArchiveRequestVO archive) {
-        ContractArchiveEntity entity = new ContractArchiveEntity();
+		String contractStatus = "110";
+		ContractArchiveEntity entity = new ContractArchiveEntity();
         BeanUtil.copy(archive,entity);
-		return R.status(archiveService.save(entity));
+		return R.status(archiveService.save(contractStatus,entity));
 	}
 
 	/**
@@ -88,7 +87,7 @@ public class ContractArchiveController extends BladeController {
 	    if (Func.isEmpty(archive.getId())){
             throw new ServiceException("id不能为空");
         }
-	    ContractArchiveEntity entity = new ContractArchiveEntity();
+		ContractArchiveEntity entity = new ContractArchiveEntity();
         BeanUtil.copy(archive,entity);
 		return R.status(archiveService.updateById(entity));
 	}

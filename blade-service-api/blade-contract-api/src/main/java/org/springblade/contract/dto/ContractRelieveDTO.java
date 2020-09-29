@@ -2,7 +2,7 @@ package org.springblade.contract.dto;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springblade.contract.entity.RelieveEntity;
+import org.springblade.contract.entity.ContractRelieveEntity;
 
 /**
  *  模型DTO
@@ -12,7 +12,7 @@ import org.springblade.contract.entity.RelieveEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class RelieveDTO extends RelieveEntity {
+public class ContractRelieveDTO extends ContractRelieveEntity {
 
 	private static final long serialVersionUID = 1L;
 

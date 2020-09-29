@@ -26,7 +26,7 @@ public class ContractArchiveRequestVO extends ContractArchiveEntity {
 	private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value="关联合同")
-	private String contractId;
+	private Long contractId;
 
     @ApiModelProperty(value="归档说明")
 	private String archiveInstructions;

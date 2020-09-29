@@ -2,7 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.SealInfoEntity;
+import org.springblade.contract.entity.ContractSealUsingInfoEntity;
 
 /**
  * 用印名称 Mapper 接口
@@ -10,7 +10,7 @@ import org.springblade.contract.entity.SealInfoEntity;
  * @author szw
  * @date : 2020-09-24 01:27:14
  */
-public interface SealInfoMapper extends BaseMapper<SealInfoEntity> {
+public interface ContractSealUsingInfoMapper extends BaseMapper<ContractSealUsingInfoEntity> {
 
 	/**
 	 * 分页查询
@@ -18,6 +18,6 @@ public interface SealInfoMapper extends BaseMapper<SealInfoEntity> {
 	 * @param sealInfo
 	 * @return
 	 */
-	IPage<SealInfoEntity> pageList(IPage<SealInfoEntity> page, SealInfoEntity sealInfo);
+	IPage<ContractSealUsingInfoEntity> pageList(IPage<ContractSealUsingInfoEntity> page, ContractSealUsingInfoEntity sealInfo);
 
 }
