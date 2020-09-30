@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 
+import java.util.List;
+
 /**
  *  Mapper 接口
  *
@@ -45,4 +47,13 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	boolean updateAssessmentStatus(String  contractStatus,Long id);
+
+	/**
+	 * 保存合同相对方关联表
+	 * @param counterpartIds 相对方id
+	 * @param id 合同id
+	 * @return
+	 */
+	void saveCounterpart(Long  id, List<Long> counterpartIds);
+
 }

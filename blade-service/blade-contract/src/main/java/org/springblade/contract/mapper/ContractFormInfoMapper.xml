@@ -117,4 +117,19 @@
             </if>
         </if>
     </select>
+    <!--保存关联相对方-->
+    <insert id="saveCounterpart" >
+        insert into contract_counterpart_setting
+        (
+        contract_id,
+        counterpart_id
+        )
+        values
+        <foreach collection="counterpartIds" item="item" index="index" open="" close="" separator=",">
+            (
+            #{id},
+            #{item}
+            )
+        </foreach>
+    </insert>
 </mapper>

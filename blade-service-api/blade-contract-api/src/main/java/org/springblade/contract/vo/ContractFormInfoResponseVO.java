@@ -1,10 +1,8 @@
 package org.springblade.contract.vo;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.springblade.contract.entity.ContractAssessmentEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 
 /**
@@ -18,4 +16,6 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 @EqualsAndHashCode(callSuper = true)
 public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	private static final long serialVersionUID = 1L;
+
+
 }

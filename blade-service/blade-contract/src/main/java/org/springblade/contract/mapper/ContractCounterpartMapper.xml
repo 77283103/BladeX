@@ -67,4 +67,13 @@
             AND establish_date = #{counterpart.establishDate}
         </if>
     </select>
+    <!--根据合同id查询相对方集合-->
+    <select id="selectByIds" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_counterpart
+        WHERE is_deleted = 0
+        AND
+        id IN (SELECT c.counterpart_id FROM  contract_counterpart_setting c WHERE c.contract_id = #{id})
+    </select>
 </mapper>

@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 
+import java.util.List;
+
 /**
  * 相对方管理 Mapper 接口
  *
@@ -20,4 +22,10 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	 */
 	IPage<ContractCounterpartEntity> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartEntity counterpart);
 
+	/**
+	 * 根据合同id查询相对方集合
+	 * @param id 合同id
+	 * @return
+	 */
+	List<ContractCounterpartEntity> selectByIds(Long id);
 }

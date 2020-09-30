@@ -8,6 +8,7 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  *  请求模型VO
@@ -80,5 +81,8 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 
 	@ApiModelProperty(value="最高合同金额")
 	private String maxContractAmount;
+
+	@ApiModelProperty(value="最高合同金额")
+	private List<Long> counterpart;
 
 }

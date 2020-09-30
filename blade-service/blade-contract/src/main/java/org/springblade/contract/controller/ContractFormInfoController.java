@@ -85,6 +85,8 @@ public class ContractFormInfoController extends BladeController {
         ContractFormInfoEntity entity = new ContractFormInfoEntity();
         BeanUtil.copy(contractFormInfo,entity);
 		contractFormInfoService.save(entity);
+		contractFormInfo.setId(entity.getId());
+		contractFormInfoService.saveCounterpart(contractFormInfo);
 		return R.data(entity);
 	}
 

@@ -1,5 +1,6 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 /**
@@ -97,4 +99,10 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同二级分类")
 	private String contractSmallCategory;
 
+	/**
+	 * 关联相对方信息
+	 */
+	@ApiModelProperty(value="最高合同金额")
+	@TableField(exist = false)
+	private List<ContractCounterpartEntity> counterpartList;
 }
