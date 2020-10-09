@@ -84,6 +84,8 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		}
 		if (Func.isNotEmpty(user.getPassword())) {
 			user.setPassword(DigestUtil.encrypt(user.getPassword()));
+		} else {
+			user.setPassword(DigestUtil.encrypt("123456"));
 		}
 		Integer userCount = baseMapper.selectCount(Wrappers.<User>query().lambda().eq(User::getTenantId, tenantId).eq(User::getAccount, user.getAccount()));
 		if (userCount > 0 && Func.isEmpty(user.getId())) {
