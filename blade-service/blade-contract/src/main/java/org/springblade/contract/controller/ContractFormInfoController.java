@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.service.IContractPerformanceService;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
@@ -38,6 +39,7 @@ public class ContractFormInfoController extends BladeController {
 
 	private IContractFormInfoService contractFormInfoService;
 
+	private IContractPerformanceService performanceService;
 	/**
 	 * 详情
 	 */
@@ -86,7 +88,15 @@ public class ContractFormInfoController extends BladeController {
         BeanUtil.copy(contractFormInfo,entity);
 		contractFormInfoService.save(entity);
 		contractFormInfo.setId(entity.getId());
+		/*保存相对方信息*/
 		contractFormInfoService.saveCounterpart(contractFormInfo);
+		/*保存依据信息*/
+		contractFormInfoService.saveAccording(contractFormInfo);
+		/*保存履约信息*/
+		contractFormInfo.getPerformanceList().forEach(performance->{
+			performance.setContractId(contractFormInfo.getId());
+			performanceService.save(performance);
+		});
 		return R.data(entity);
 	}
 

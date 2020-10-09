@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractPerformanceEntity;
 
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
@@ -82,7 +83,12 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="最高合同金额")
 	private String maxContractAmount;
 
-	@ApiModelProperty(value="最高合同金额")
+	@ApiModelProperty(value="相对方ids")
 	private List<Long> counterpart;
 
+	@ApiModelProperty(value="依据ids")
+	private List<Long> according;
+
+	@ApiModelProperty(value="依据ids")
+	private List<ContractPerformanceEntity> performanceList;
 }

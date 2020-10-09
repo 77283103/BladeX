@@ -39,4 +39,12 @@
         FROM contract_performance
         WHERE is_deleted = 0
     </select>
+
+    <select id="selectByContractId" resultMap="performanceResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_performance
+        WHERE is_deleted = 0
+        AND contract_id = #{id}
+    </select>
 </mapper>

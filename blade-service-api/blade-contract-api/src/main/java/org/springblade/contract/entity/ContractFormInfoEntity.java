@@ -105,4 +105,18 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value="最高合同金额")
 	@TableField(exist = false)
 	private List<ContractCounterpartEntity> counterpartList;
+
+	/**
+	 * 关联依据信息
+	 */
+	@ApiModelProperty(value="最高合同金额")
+	@TableField(exist = false)
+	private List<ContractAccordingEntity> accordingList;
+
+	/**
+	 * 关联依据信息
+	 */
+	@ApiModelProperty(value="最高合同金额")
+	@TableField(exist = false)
+	private List<ContractPerformanceEntity> performanceList;
 }

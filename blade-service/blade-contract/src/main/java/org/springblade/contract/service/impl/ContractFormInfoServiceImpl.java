@@ -1,10 +1,14 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractPerformanceEntity;
+import org.springblade.contract.mapper.ContractAccordingMapper;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
+import org.springblade.contract.mapper.ContractPerformanceMapper;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -28,6 +32,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Resource
 	private ContractCounterpartMapper contractCounterpartMapper;
 
+	@Resource
+	private ContractAccordingMapper contractAccordingMapper;
+
+	@Resource
+	private ContractPerformanceMapper contractPerformanceMapper;
 
 	@Override
 	public IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
@@ -61,10 +70,21 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	@Override
+	public void saveAccording(ContractFormInfoRequestVO vo) {
+		contractFormInfoMapper.saveAccording(vo.getId(),vo.getAccording());
+	}
+
+
+	@Override
 	public ContractFormInfoEntity getById(Long id) {
 		ContractFormInfoEntity contractFormInfo=baseMapper.selectById(id);
-		List<ContractCounterpartEntity> contractCounterpart = contractCounterpartMapper.selectByIds(id);
-		contractFormInfo.setCounterpartList(contractCounterpart);
+		List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
+		contractFormInfo.setCounterpartList(contractCounterpartList);
+		List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(id);
+		contractFormInfo.setAccordingList(contractAccordingList);
+		List<ContractPerformanceEntity> contractPerformanceList = contractPerformanceMapper.selectByContractId(id);
+		contractFormInfo.setPerformanceList(contractPerformanceList);
+
 		return contractFormInfo;
 	}
 

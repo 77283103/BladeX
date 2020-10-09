@@ -46,11 +46,19 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	boolean updateAssessmentStatus(String  contractStatus,Long id);
 
 	/**
-	 * 合同保存方法
+	 * 相对方保存方法
 	 * @param vo 合同信息
 	 * @return
 	 */
 	void saveCounterpart(ContractFormInfoRequestVO vo);
+
+	/**
+	 * 依据保存方法
+	 * @param vo 合同信息
+	 * @return
+	 */
+	void saveAccording(ContractFormInfoRequestVO vo);
+
 
 	/**
 	 * 合同保存方法

@@ -132,4 +132,19 @@
             )
         </foreach>
     </insert>
+    <!--保存关联依据-->
+    <insert id="saveAccording" >
+        insert into contract_according_setting
+        (
+        contract_id,
+        contract_according_id
+        )
+        values
+        <foreach collection="accordingIds" item="item" index="index" open="" close="" separator=",">
+            (
+            #{id},
+            #{item}
+            )
+        </foreach>
+    </insert>
 </mapper>

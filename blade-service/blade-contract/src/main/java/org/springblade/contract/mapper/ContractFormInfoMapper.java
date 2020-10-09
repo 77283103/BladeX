@@ -3,6 +3,7 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 
 import java.util.List;
@@ -52,8 +53,21 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * 保存合同相对方关联表
 	 * @param counterpartIds 相对方id
 	 * @param id 合同id
-	 * @return
 	 */
 	void saveCounterpart(Long  id, List<Long> counterpartIds);
+
+	/**
+	 * 保存合同相对方关联表
+	 * @param accordingIds 相对方id
+	 * @param id 合同id
+	 */
+	void saveAccording(Long  id, List<Long> accordingIds);
+
+
+	/**
+	 * 保存合同相对方关联表
+	 * @param performance 履约对象
+	 */
+	void savePerformance(ContractPerformanceEntity performance);
 
 }
