@@ -114,7 +114,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private List<ContractAccordingEntity> accordingList;
 
 	/**
-	 * 关联依据信息
+	 * 关联履约信息
 	 */
 	@ApiModelProperty(value="最高合同金额")
 	@TableField(exist = false)
