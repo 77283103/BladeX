@@ -111,6 +111,7 @@
 
     <select id="dictionaryByCodes" resultType="org.springblade.system.entity.DictBiz">
         select
+            id,
             code,
             dict_key,
             dict_value,
