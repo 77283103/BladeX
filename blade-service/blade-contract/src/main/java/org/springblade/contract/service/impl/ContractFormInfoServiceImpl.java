@@ -1,14 +1,9 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.ContractAccordingEntity;
-import org.springblade.contract.entity.ContractCounterpartEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractPerformanceEntity;
-import org.springblade.contract.mapper.ContractAccordingMapper;
-import org.springblade.contract.mapper.ContractCounterpartMapper;
-import org.springblade.contract.mapper.ContractFormInfoMapper;
-import org.springblade.contract.mapper.ContractPerformanceMapper;
+import org.springblade.contract.entity.*;
+import org.springblade.contract.mapper.*;
+import org.springblade.contract.service.IContractAssessmentService;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -37,6 +32,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	@Resource
 	private ContractPerformanceMapper contractPerformanceMapper;
+
+	@Resource
+	private ContractAssessmentMapper contractAssessmentMapper;
 
 	@Override
 	public IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
@@ -74,6 +72,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contractFormInfoMapper.saveAccording(vo.getId(),vo.getAccording());
 	}
 
+	/**
+	 * 保存合同评估对那个数据id
+	 * @param vo 提取合同id和评估id
+	 */
+	@Override
+	public void saveAssessment(ContractFormInfoRequestVO vo) {
+		contractFormInfoMapper.saveAssessment(vo.getId(),vo.getAssessment());
+	}
+
 
 	@Override
 	public ContractFormInfoEntity getById(Long id) {
@@ -84,7 +91,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contractFormInfo.setAccordingList(contractAccordingList);
 		List<ContractPerformanceEntity> contractPerformanceList = contractPerformanceMapper.selectByContractId(id);
 		contractFormInfo.setPerformanceList(contractPerformanceList);
-
+		ContractAssessmentEntity contractAssessmentEntity= contractAssessmentMapper.selectById(id);
+		contractFormInfo.setAssessmentEntity(contractAssessmentEntity);
 		return contractFormInfo;
 	}
 

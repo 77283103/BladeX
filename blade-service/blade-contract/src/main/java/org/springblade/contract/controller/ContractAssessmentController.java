@@ -79,7 +79,11 @@ public class ContractAssessmentController extends BladeController {
 	public R save(@Valid @RequestBody ContractAssessmentRequestVO assessment) {
         ContractAssessmentEntity entity = new ContractAssessmentEntity();
         BeanUtil.copy(assessment,entity);
-		return R.status(assessmentService.save(entity));
+		assessmentService.save(entity);
+		assessment.setId(entity.getId());
+		/* 保存合同信息*/
+		assessmentService.saveAssessment(assessment);
+		return R.data(entity);
 	}
 
 	/**
@@ -108,5 +112,4 @@ public class ContractAssessmentController extends BladeController {
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(assessmentService.deleteLogic(Func.toLongList(ids)));
 	}
-
 }
