@@ -26,6 +26,7 @@
         <result column="contract_big_category" property="contractBigCategory"/>
         <result column="contract_small_category" property="contractSmallCategory"/>
     </resultMap>
+
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
@@ -88,10 +89,6 @@
     <update id="updateExportStatus">
         UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
     </update>
-    <!--  合同评估后修改合同状态  -->
-    <update id="updateAssessmentStatus">
-        UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
-    </update>
     <!--用印分页-->
     <select id="pageListSealInfo" resultMap="formInfoResultMap">
         SELECT
@@ -146,5 +143,19 @@
             #{item}
             )
         </foreach>
+    </insert>
+
+    <!--保存关联评估-->
+    <insert id="saveAssessment" >
+        insert into contract_assessment_setting
+        (
+        contract_id,
+        contract_assessment_id
+        )
+        values
+            (
+            #{contractId},
+            #{assessmentId}
+            )
     </insert>
 </mapper>

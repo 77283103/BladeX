@@ -40,6 +40,7 @@ public class ContractFormInfoController extends BladeController {
 	private IContractFormInfoService contractFormInfoService;
 
 	private IContractPerformanceService performanceService;
+	private static final String ASSESSMENTS_CONTRACT_STATUS="100";
 	/**
 	 * 详情
 	 */
@@ -140,11 +141,11 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAssessmentStatus')")
 	public R updateContractStatus(@RequestParam Long id) {
-		String contractStatus = "100";
+		String contractStatus = ASSESSMENTS_CONTRACT_STATUS;
 		if (Func.isEmpty(id)){
 			throw new ServiceException("id不能为空");
 		}
-		return R.status(contractFormInfoService.updateAssessmentStatus(contractStatus,id));
+		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
 	}
 
 
