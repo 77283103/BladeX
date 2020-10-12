@@ -2,8 +2,8 @@ package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.vo.ContractAssessmentRequestVO;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.mp.base.BaseService;
 
 /**
@@ -73,6 +73,6 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @param id 合同id
 	 * @return
 	 */
-	ContractFormInfoEntity getById(Long id);
+	ContractFormInfoResponseVO getById(Long id);
 
 }
