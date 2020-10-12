@@ -131,5 +131,5 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 合同文件导出次数统计
 	 */
 	@ApiModelProperty(value = "合同文件导出次数统计")
-	private String fileExportCount;
+	private Integer fileExportCount;
 }
