@@ -94,16 +94,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		ContractFormInfoResponseVO contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityVO(contractFormInfo);
 		//查询相对方保存
 		List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
-		contractFormInfo.setCounterpartList(contractCounterpartList);
+		contractFormInfoResponseVO.setCounterpartList(contractCounterpartList);
 		//查询依据保存
 		List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(id);
-		contractFormInfo.setAccordingList(contractAccordingList);
+		contractFormInfoResponseVO.setAccordingList(contractAccordingList);
 		//查询履约计划保存
 		List<ContractPerformanceEntity> contractPerformanceList = contractPerformanceMapper.selectByContractId(id);
-		contractFormInfo.setPerformanceList(contractPerformanceList);
+		contractFormInfoResponseVO.setPerformanceList(contractPerformanceList);
 		//查询
 		ContractAssessmentEntity contractAssessmentEntity= contractAssessmentMapper.selectById(id);
-		contractFormInfo.setAssessmentEntity(contractAssessmentEntity);
+		contractFormInfoResponseVO.setAssessmentEntity(contractAssessmentEntity);
 		//查询合同文本
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getTextFile())){
 			R<List<FileVO>> result = fileClient.getByIds(contractFormInfoResponseVO.getTextFile());
