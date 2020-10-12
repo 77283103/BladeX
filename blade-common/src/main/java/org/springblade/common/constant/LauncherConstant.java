@@ -55,7 +55,7 @@ public interface LauncherConstant {
 	/**
 	 * sentinel dev 地址
 	 */
-	String SENTINEL_DEV_ADDR = "192.168.152.140:8858";
+	String SENTINEL_DEV_ADDR = "127.0.0.1:8858";
 
 	/**
 	 * sentinel prod 地址
@@ -70,7 +70,7 @@ public interface LauncherConstant {
 	/**
 	 * seata dev 地址
 	 */
-	String SEATA_DEV_ADDR = "192.168.152.140:8091";
+	String SEATA_DEV_ADDR = "127.0.0.1:8091";
 
 	/**
 	 * seata prod 地址

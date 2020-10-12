@@ -17,6 +17,7 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 
 	/**
 	 * 分页查询
+	 *
 	 * @param page
 	 * @param according
 	 * @return
@@ -24,6 +25,7 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 	IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingEntity according);
 
 	/**
+	 * 根据合同id查询查询相关依据信息
 	 *
 	 * @param id
 	 * @return

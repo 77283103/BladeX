@@ -126,4 +126,10 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value="评估信息")
 	@TableField(exist = false)
 	private ContractAssessmentEntity assessmentEntity;
+
+	/**
+	 * 合同文件导出次数统计
+	 */
+	@ApiModelProperty(value = "合同文件导出次数统计")
+	private String fileExportCount;
 }
