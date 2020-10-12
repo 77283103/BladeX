@@ -87,6 +87,12 @@
         <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
             AND contract_status = concat(#{contractFormInfo.contractStatus})
         </if>
+        <if test="contractFormInfo.contractBigCategory != null and contractFormInfo.contractBigCategory != ''">
+            AND contract_big_category = concat(#{contractFormInfo.contractBigCategory})
+        </if>
+        <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
+            AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
+        </if>
     </select>
     <!--修改合同状态-->
     <update id="updateExportStatus">

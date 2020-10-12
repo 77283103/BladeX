@@ -49,8 +49,8 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "详情", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:detail')")
 	public R<ContractFormInfoResponseVO> detail(@RequestParam Long id) {
-		ContractFormInfoEntity detail = contractFormInfoService.getById(id);
-		return R.data(ContractFormInfoWrapper.build().entityVO(detail));
+		ContractFormInfoResponseVO detail = contractFormInfoService.getById(id);
+		return R.data(detail);
 	}
 
 	/**
@@ -90,14 +90,20 @@ public class ContractFormInfoController extends BladeController {
 		contractFormInfoService.save(entity);
 		contractFormInfo.setId(entity.getId());
 		/*保存相对方信息*/
-		contractFormInfoService.saveCounterpart(contractFormInfo);
+		if(contractFormInfo.getCounterpart().size()>0){
+			contractFormInfoService.saveCounterpart(contractFormInfo);
+		}
 		/*保存依据信息*/
-		contractFormInfoService.saveAccording(contractFormInfo);
+		if(contractFormInfo.getAccording().size()>0){
+			contractFormInfoService.saveAccording(contractFormInfo);
+		}
 		/*保存履约信息*/
-		contractFormInfo.getPerformanceList().forEach(performance->{
-			performance.setContractId(contractFormInfo.getId());
-			performanceService.save(performance);
-		});
+		if(contractFormInfo.getPerformanceList().size()>0){
+			contractFormInfo.getPerformanceList().forEach(performance->{
+				performance.setContractId(contractFormInfo.getId());
+				performanceService.save(performance);
+			});
+		}
 		return R.data(entity);
 	}
 

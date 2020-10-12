@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.resource.vo.FileVO;
+
+import java.util.List;
 
 /**
  *  返回模型VO
@@ -17,5 +20,14 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 合同文本列表
+	 */
+	private List<FileVO> testFileVOList;
+
+	/**
+	 * 合同附件列表
+	 */
+	private List<FileVO> attachedFileVOList;
 
 }
