@@ -20,7 +20,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @param contractFormInfo
 	 * @return
 	 */
-	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+	IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
 	/**
 	 * 导出后修改合同状态

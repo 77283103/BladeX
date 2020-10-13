@@ -1,6 +1,7 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.IContractFormInfoService;
@@ -12,9 +13,12 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.system.feign.ISysClient;
+import org.springblade.system.user.entity.User;
+import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,27 +28,38 @@ import java.util.List;
  * @date : 2020-09-23 18:04:38
  */
 @Service
+@AllArgsConstructor
 public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInfoMapper, ContractFormInfoEntity> implements IContractFormInfoService {
-	@Resource
 	private IFileClient fileClient;
-	@Resource
+
+	private ISysClient sysClient;
+
+	private IUserClient userClient;
+
 	private ContractFormInfoMapper contractFormInfoMapper;
 
-	@Resource
 	private ContractCounterpartMapper contractCounterpartMapper;
 
-	@Resource
 	private ContractAccordingMapper contractAccordingMapper;
 
-	@Resource
 	private ContractPerformanceMapper contractPerformanceMapper;
 
-	@Resource
 	private ContractAssessmentMapper contractAssessmentMapper;
 
 	@Override
-	public IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
-		return baseMapper.pageList(page, contractFormInfo);
+	public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
+		page = baseMapper.pageList(page, contractFormInfo);
+		IPage<ContractFormInfoResponseVO> pages=ContractFormInfoWrapper.build().pageVO(page);
+		List<ContractFormInfoResponseVO> records = pages.getRecords();
+		List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
+		/*为每个对象，设置创建者名字和组织名字*/
+		for(ContractFormInfoResponseVO v : records){
+			v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
+			v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
+			recordList.add(v);
+		}
+		pages.setRecords(recordList);
+		return pages;
 	}
 
 	@Override
@@ -117,6 +132,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			if (result.isSuccess()){
 				contractFormInfoResponseVO.setAttachedFileVOList(result.getData());
 			}
+		}
+		/* 查询创建者 */
+		if (Func.isNoneBlank(contractFormInfoResponseVO.getCreateUser().toString())){
+			/*User user = UserCache.getUser(entity.getCreateUser());*/
+			User user = userClient.userInfoById(contractFormInfoResponseVO.getCreateUser()).getData();
+			contractFormInfoResponseVO.setUserRealName(user.getRealName());
+		}
+		/* 查询创建者组织 */
+		if (Func.isNoneBlank(contractFormInfoResponseVO.getCreateDept().toString())){
+			String dept = sysClient.getDeptName(contractFormInfoResponseVO.getCreateDept()).getData();
+			contractFormInfoResponseVO.setUserDepartName(dept);
 		}
 		return contractFormInfoResponseVO;
 	}

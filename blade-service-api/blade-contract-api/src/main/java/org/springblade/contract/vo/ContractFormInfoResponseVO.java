@@ -30,4 +30,13 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 */
 	private List<FileVO> attachedFileVOList;
 
+	/**
+	 * 创建者真实姓名
+	 */
+	private String userRealName;
+
+	/**
+	 * 创建者所在组织
+	 */
+	private String userDepartName;
 }
