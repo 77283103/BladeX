@@ -5,6 +5,9 @@ import lombok.*;
 import org.springblade.contract.entity.ContractAssessmentEntity;
 import io.swagger.annotations.ApiModel;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.resource.vo.FileVO;
+
+import java.util.List;
 
 /**
  * 合同评估表 返回模型VO
@@ -20,5 +23,8 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 public class ContractAssessmentResponseVO extends ContractAssessmentEntity {
 
 	private static final long serialVersionUID = 1L;
-
+	/**
+	 * 评估附件列表
+	 */
+	private List<FileVO> assessmentFileVOList;
 }

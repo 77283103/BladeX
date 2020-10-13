@@ -41,6 +41,8 @@ public class ContractFormInfoController extends BladeController {
 
 	private IContractPerformanceService performanceService;
 	private static final String ASSESSMENTS_CONTRACT_STATUS="100";
+	private static final String CONTRACT_EXPORT_STATUS="40";
+	private static final String FILE_EXPORT_CATEGORY="1";
 	/**
 	 * 详情
 	 */
@@ -124,14 +126,19 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
-	 * 导出后修改合同状态
+	 * 导出后修改合同状态 并统计下载次数 修改下载状态
 	 */
 	@PostMapping("/updateExport")
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateExport')")
 	public R updateExport(@RequestParam Long id) {
-		String contractStatus = "40";
+		String contractStatus = CONTRACT_EXPORT_STATUS;
+		String fileExportCategory= FILE_EXPORT_CATEGORY;
+		ContractFormInfoEntity infoEntity=contractFormInfoService.getById(id);
+		Integer fileExportCount=infoEntity.getFileExportCount();
+		fileExportCount+=1;
+		contractFormInfoService.textExportCount(id,fileExportCount,fileExportCategory);
 		if (Func.isEmpty(id)){
 			throw new ServiceException("id不能为空");
 		}

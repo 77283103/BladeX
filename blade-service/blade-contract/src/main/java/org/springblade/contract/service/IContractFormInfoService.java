@@ -75,4 +75,12 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	ContractFormInfoResponseVO getById(Long id);
 
+	/**
+	 *统计合同导出次数
+	 * @param id 合同id
+	 * @param fileExportCount 下载次数
+	 * @param fileExportCategory 下载状态
+	 */
+	boolean textExportCount(Long id,Integer fileExportCount,String  fileExportCategory);
+
 }

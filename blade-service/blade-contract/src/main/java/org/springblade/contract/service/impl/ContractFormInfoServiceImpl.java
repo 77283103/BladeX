@@ -94,7 +94,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
-	 * 保存合同评估对那个数据id
+	 * 保存合同评估对应数据id
 	 * @param vo 提取合同id和评估id
 	 */
 	@Override
@@ -145,6 +145,18 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			contractFormInfoResponseVO.setUserDepartName(dept);
 		}
 		return contractFormInfoResponseVO;
+	}
+
+	/**
+	 * 统计合同下载次数
+	 * @param id 合同id
+	 * @param fileExportCount 下载次数
+	 * @param fileExportCategory
+	 * @return 返回统计状态
+	 */
+	@Override
+	public boolean textExportCount(Long id, Integer fileExportCount, String  fileExportCategory) {
+		return contractFormInfoMapper.textExportCount(id, fileExportCount,fileExportCategory);
 	}
 
 }

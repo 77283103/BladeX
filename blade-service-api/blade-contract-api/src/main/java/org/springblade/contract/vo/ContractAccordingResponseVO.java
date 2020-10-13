@@ -3,6 +3,9 @@ package org.springblade.contract.vo;
 import lombok.*;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import io.swagger.annotations.ApiModel;
+import org.springblade.resource.vo.FileVO;
+
+import java.util.List;
 
 /**
  * 合同依据管理 返回模型VO
@@ -18,5 +21,10 @@ import io.swagger.annotations.ApiModel;
 public class ContractAccordingResponseVO extends ContractAccordingEntity {
 
 	private static final long serialVersionUID = 1L;
+
+	/**
+	 * 依据附件列表
+	 */
+	private List<FileVO> accordingFileVOList;
 
 }

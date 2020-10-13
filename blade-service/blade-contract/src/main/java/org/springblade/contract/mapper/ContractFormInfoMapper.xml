@@ -167,4 +167,9 @@
             #{assessmentId}
             )
     </insert>
+
+    <!--统计合同下载次数-->
+    <update id="textExportCount">
+        UPDATE contract_form_info SET file_export_count = ${fileExportCount},file_export_category=${fileExportCategory} WHERE id = ${id}
+    </update>
 </mapper>
