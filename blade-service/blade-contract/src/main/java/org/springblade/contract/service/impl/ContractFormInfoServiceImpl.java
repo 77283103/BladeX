@@ -46,6 +46,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	private ContractAssessmentMapper contractAssessmentMapper;
 
+	private ContractArchiveMapper contractArchiveMapper;
+
+	private ContractSealUsingInfoMapper sealUsingInfoMapper;
+
 	@Override
 	public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
 		page = baseMapper.pageList(page, contractFormInfo);
@@ -94,6 +98,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
+	 * 保存合同用印对应数据id
+	 * @param vo
+	 */
+	@Override
+	public void saveSeal(ContractFormInfoRequestVO vo) {
+		contractFormInfoMapper.saveSeal(vo.getId(),vo.getSeal());
+	}
+
+	/**
 	 * 保存合同评估对应数据id
 	 * @param vo 提取合同id和评估id
 	 */
@@ -102,7 +115,22 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contractFormInfoMapper.saveAssessment(vo.getId(),vo.getAssessment());
 	}
 
+	/**
+	 *
+	 * 保存合同归档对应数据id
+	 * @param vo 获取对应的合同id和归档id属性
+	 */
+	@Override
+	public void saveArchive(ContractFormInfoRequestVO vo) {
+		contractFormInfoMapper.saveArchive(vo.getId(),vo.getArchive());
+	}
 
+
+	/**
+	 * 根据合同id查询关联数据返回到合同vo
+	 * @param id 合同id
+	 * @return
+	 */
 	@Override
 	public ContractFormInfoResponseVO getById(Long id) {
 		ContractFormInfoEntity contractFormInfo=baseMapper.selectById(id);
@@ -116,9 +144,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//查询履约计划保存
 		List<ContractPerformanceEntity> contractPerformanceList = contractPerformanceMapper.selectByContractId(id);
 		contractFormInfoResponseVO.setPerformanceList(contractPerformanceList);
-		//查询
+		//查询合同评估并保存到合同vo
 		ContractAssessmentEntity contractAssessmentEntity= contractAssessmentMapper.selectById(id);
 		contractFormInfoResponseVO.setAssessmentEntity(contractAssessmentEntity);
+		//查询合同归档并保存到合同vo
+		ContractArchiveEntity contractArchiveEntity=contractArchiveMapper.selectById(id);
+		contractFormInfoResponseVO.setArchiveEntity(contractArchiveEntity);
+		//查询合同用印信息保存到合同vo
+		ContractSealUsingInfoEntity sealUsingInfoEntity=sealUsingInfoMapper.selectById(id);
+		contractFormInfoResponseVO.setSealInfoEntity(sealUsingInfoEntity);
 		//查询合同文本
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getTextFile())){
 			R<List<FileVO>> result = fileClient.getByIds(contractFormInfoResponseVO.getTextFile());

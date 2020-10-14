@@ -20,4 +20,11 @@ public interface ContractSealUsingInfoMapper extends BaseMapper<ContractSealUsin
 	 */
 	IPage<ContractSealUsingInfoEntity> pageList(IPage<ContractSealUsingInfoEntity> page, ContractSealUsingInfoEntity sealInfo);
 
+
+	/**
+	 * 根据合同id查询归档信息
+	 * @param id
+	 * @return
+	 */
+	ContractSealUsingInfoEntity selectById(Long id);
 }

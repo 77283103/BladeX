@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.springblade.contract.entity.ContractSealUsingInfoEntity;
 import org.springblade.core.mp.base.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -21,7 +22,7 @@ import java.time.LocalDateTime;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "用印名称请求对象")
-public class ContractSealUsingInfoRequestVO extends BaseEntity {
+public class ContractSealUsingInfoRequestVO extends ContractSealUsingInfoEntity {
 
 	private static final long serialVersionUID = 1L;
 

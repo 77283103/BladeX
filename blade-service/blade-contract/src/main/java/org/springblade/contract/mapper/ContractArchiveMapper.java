@@ -3,6 +3,7 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractArchiveEntity;
+import org.springblade.contract.entity.ContractAssessmentEntity;
 
 /**
  * 合同归档管理 Mapper 接口
@@ -20,4 +21,11 @@ public interface ContractArchiveMapper extends BaseMapper<ContractArchiveEntity>
 	 */
 	IPage<ContractArchiveEntity> pageList(IPage<ContractArchiveEntity> page, ContractArchiveEntity archive);
 
+
+	/**
+	 * 根据合同id查询关联评估信息
+	 * @param id
+	 * @return
+	 */
+	ContractArchiveEntity selectById(Long id);
 }

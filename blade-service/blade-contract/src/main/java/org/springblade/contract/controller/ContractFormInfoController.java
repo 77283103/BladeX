@@ -38,11 +38,15 @@ import javax.validation.Valid;
 public class ContractFormInfoController extends BladeController {
 
 	private IContractFormInfoService contractFormInfoService;
-
 	private IContractPerformanceService performanceService;
-	private static final String ASSESSMENTS_CONTRACT_STATUS="100";
-	private static final String CONTRACT_EXPORT_STATUS="40";
 	private static final String FILE_EXPORT_CATEGORY="1";
+	private static final String CONTRACT_AUDIT_QUALITY="30";
+	private static final String CONTRACT_EXPORT_STATUS="40";
+	private static final String CONTRACT_SEAL_USING_INFO_STATUS="50";
+	private static final String CONTRACT_SIGNING_STATUS="60";
+	private static final String CONTRACT_ARCHIVE_STATUS="110";
+	private static final String CONTRACT_ASSESSMENT_STATUS="100";
+
 	/**
 	 * 详情
 	 */
@@ -126,7 +130,8 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
-	 * 导出后修改合同状态 并统计下载次数 修改下载状态
+	 * 导出后修改合同状态为待用印 并统计下载次数 修改下载状态
+	 * 30>40
 	 */
 	@PostMapping("/updateExport")
 	@ApiOperationSupport(order = 6)
@@ -161,6 +166,85 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
 	}
 
+	/**
+	 * 审核后修改状态为待导出
+	 * 20>30
+	 */
+	@PostMapping("/updateAuditStatus")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "修改", notes = "传入id")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAuditStatus')")
+	public R auditStatus(@RequestParam Long id) {
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		String contractStatus=CONTRACT_AUDIT_QUALITY;
+		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
+	}
+
+	/**
+	 * 用印后修改状态为待签定
+	 * 40>50
+	 */
+	@PostMapping("/updateSealStatus")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "修改", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateSealStatus')")
+	public R sealStatus(@RequestParam Long id) {
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		String contractStatus=CONTRACT_SEAL_USING_INFO_STATUS;
+		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
+	}
+
+	/**
+	 * 	签订后修改状态待归档
+	 * 	50>60
+	 */
+	@PostMapping("/updateSigningStatus")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "修改", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateSigningStatus')")
+	public R signingStatus(@RequestParam Long id) {
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		String contractStatus=CONTRACT_SIGNING_STATUS;
+		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
+	}
+
+	/**
+	 * 归档后修改状态待评估
+	 * 60>110
+	 */
+	@PostMapping("/updateArchiveStatus")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "修改", notes = "传入id")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateArchiveStatus')")
+	public R archiveStatus(@RequestParam Long id) {
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		String contractStatus=CONTRACT_ARCHIVE_STATUS;
+		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
+	}
+
+	/**
+	 * 评估后修改状态为待分析
+	 * 100
+	 */
+	@PostMapping("/updateAssessmentStatus")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "修改", notes = "传入id")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAssessmentStatus')")
+	public R assessmentStatus(@RequestParam Long id) {
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		String contractStatus=CONTRACT_ASSESSMENT_STATUS;
+		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
+	}
 
 	/**
 	 * 删除

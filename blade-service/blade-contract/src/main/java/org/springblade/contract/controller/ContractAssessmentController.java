@@ -44,6 +44,7 @@ public class ContractAssessmentController extends BladeController {
 
 	private IContractAssessmentService assessmentService;
 	private IContractFormInfoService contractFormInfoService;
+	private static final String ASSESSMENTS_CONTRACT_STATUS="100";
 
 	/**
 	 * 详情
@@ -70,7 +71,7 @@ public class ContractAssessmentController extends BladeController {
 	}
 
 	/**
-	 * 新增
+	 * 新增 同时新增合同评估关联id数据
 	 */
 	@PostMapping("/add")
 	@ApiOperationSupport(order = 4)
@@ -79,9 +80,10 @@ public class ContractAssessmentController extends BladeController {
 	public R save(@Valid @RequestBody ContractAssessmentRequestVO assessment) {
         ContractAssessmentEntity entity = new ContractAssessmentEntity();
         BeanUtil.copy(assessment,entity);
-		assessmentService.save(entity);
+        String contractStatus=ASSESSMENTS_CONTRACT_STATUS;
+		assessmentService.save(contractStatus,entity);
 		assessment.setId(entity.getId());
-		/* 保存合同信息*/
+		/* 保存合同id评估id信息*/
 		assessmentService.saveAssessment(assessment);
 		return R.data(entity);
 	}

@@ -30,4 +30,11 @@ public interface IContractAssessmentService extends BaseService<ContractAssessme
 	 */
 	void saveAssessment(ContractAssessmentRequestVO vo);
 
+	/**
+	 * 保存评估信息与修改合同状态
+	 * @param contractStatus
+	 * @param entity
+	 */
+	boolean save(String contractStatus,ContractAssessmentEntity entity);
+
 }

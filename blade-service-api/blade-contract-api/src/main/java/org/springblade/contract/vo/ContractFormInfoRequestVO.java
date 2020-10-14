@@ -89,11 +89,20 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="相对方ids")
 	private List<Long> counterpart;
 
+	@ApiModelProperty(value = "用印id")
+	private Long seal;
+
+	@ApiModelProperty(value = "签订id")
+	private Long signing;
+
 	@ApiModelProperty(value="依据ids")
 	private List<Long> according;
 
 	@ApiModelProperty(value="评估id")
 	private Long assessment;
+
+	@ApiModelProperty(value="归档id")
+	private Long archive;
 
 	@ApiModelProperty(value="依据ids")
 	private List<ContractPerformanceEntity> performanceList;

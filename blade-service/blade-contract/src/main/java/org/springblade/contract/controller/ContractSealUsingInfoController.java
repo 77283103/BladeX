@@ -6,7 +6,9 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractSealUsingInfoEntity;
+import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.service.IContractSealUsingInfoService;
 import org.springblade.contract.vo.ContractSealUsingInfoRequestVO;
 import org.springblade.contract.vo.ContractSealUsingInfoResponseVO;
@@ -37,7 +39,7 @@ import javax.validation.Valid;
 public class ContractSealUsingInfoController extends BladeController {
 
 	private IContractSealUsingInfoService sealInfoService;
-
+	private IContractFormInfoService contractFormInfoService;
 	/**
 	 * 详情
 	 */
@@ -70,10 +72,12 @@ public class ContractSealUsingInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入sealInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:add')")
 	public R save(@Valid @RequestBody ContractSealUsingInfoRequestVO sealInfo) {
-		String contractStatus = "50";
         ContractSealUsingInfoEntity entity = new ContractSealUsingInfoEntity();
         BeanUtil.copy(sealInfo,entity);
-		return R.status(sealInfoService.save(contractStatus,entity));
+		sealInfoService.save(entity);
+		sealInfo.setId(entity.getId());
+		sealInfoService.saveSeal(sealInfo);
+		return R.data(entity);
 	}
 
 	/**

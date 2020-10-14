@@ -60,13 +60,24 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	void saveAccording(ContractFormInfoRequestVO vo);
 
+	/**
+	 * 保存合同用印关联id数据方法
+	 * @param vo
+	 */
+	void saveSeal(ContractFormInfoRequestVO vo);
 
 	/**
-	 * 合同评估保存方法v
+	 * 合同评估保存方法
 	 * @param vo
 	 */
 	void saveAssessment(ContractFormInfoRequestVO vo);
 
+
+	/**
+	 * 合同归档保存方法
+	 * @param vo 获取对应的合同id和归档id属性
+	 */
+	void saveArchive(ContractFormInfoRequestVO vo);
 
 	/**
 	 * 合同保存方法

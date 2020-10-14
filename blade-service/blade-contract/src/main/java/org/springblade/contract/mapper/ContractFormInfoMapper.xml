@@ -154,6 +154,19 @@
         </foreach>
     </insert>
 
+    <!--保存关联用印-->
+    <insert id="saveSeal" >
+        insert into contract_seal_using_setting
+        (
+        contract_id,
+        contract_seal_using_id
+        )
+        values
+        (
+        #{refContractId},
+        #{sealId}
+        )
+    </insert>
     <!--保存关联评估-->
     <insert id="saveAssessment" >
         insert into contract_assessment_setting
@@ -166,6 +179,20 @@
             #{contractId},
             #{assessmentId}
             )
+    </insert>
+
+    <!--保存关联归档-->
+    <insert id="saveArchive" >
+        insert into contract_archive_setting
+        (
+        contract_id,
+        contract_archive_id
+        )
+        values
+        (
+        #{contractId},
+        #{archiveId}
+        )
     </insert>
 
     <!--统计合同下载次数-->

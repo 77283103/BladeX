@@ -9,6 +9,7 @@ import javax.validation.Valid;
 
 import org.springblade.contract.entity.ContractArchiveEntity;
 import org.springblade.contract.service.IContractArchiveService;
+import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.ContractArchiveRequestVO;
 import org.springblade.contract.vo.ContractArchiveResponseVO;
 import org.springblade.contract.wrapper.ContractArchiveWrapper;
@@ -37,6 +38,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 public class ContractArchiveController extends BladeController {
 
 	private IContractArchiveService archiveService;
+	private IContractFormInfoService formInfoService;
+	private static final String ARCHIVE_CONTRACT_STATUS="110";
 
 	/**
 	 * 详情
@@ -63,17 +66,20 @@ public class ContractArchiveController extends BladeController {
 	}
 
 	/**
-	 * 新增
+	 * 新增 保存关联id信息
 	 */
 	@PostMapping("/add")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入archive")
 	@PreAuth("hasPermission('contract:archive:add')")
 	public R save(@Valid @RequestBody ContractArchiveRequestVO archive) {
-		String contractStatus = "110";
+		String contractStatus =ARCHIVE_CONTRACT_STATUS;
 		ContractArchiveEntity entity = new ContractArchiveEntity();
         BeanUtil.copy(archive,entity);
-		return R.status(archiveService.save(contractStatus,entity));
+		archiveService.save(entity);
+        archive.setId(entity.getId());
+        archiveService.saveArchive(archive);
+		return R.data(entity);
 	}
 
 	/**

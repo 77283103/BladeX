@@ -120,6 +120,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private List<ContractPerformanceEntity> performanceList;
 
+
 	/**
 	 * 关联合同评估信息
 	 */
@@ -128,8 +129,29 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private ContractAssessmentEntity assessmentEntity;
 
 	/**
+	 * 关联合同归档信息
+	 */
+	@ApiModelProperty(value="归档信息")
+	@TableField(exist = false)
+	private ContractArchiveEntity archiveEntity;
+
+	/**
 	 * 合同文件导出次数统计
 	 */
 	@ApiModelProperty(value = "合同文件导出次数统计")
 	private Integer fileExportCount;
+
+	/**
+	 * 关联合同用印信息
+	 */
+	@ApiModelProperty(value = "用印信息")
+	@TableField(exist = false)
+	private ContractSealUsingInfoEntity sealInfoEntity;
+
+	/**
+	 * 关联合同签订信息
+	 */
+	@ApiModelProperty(value = "签订信息")
+	@TableField(exist = false)
+	private ContractSigningEntity signingEntity;
 }

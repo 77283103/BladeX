@@ -65,11 +65,24 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	void saveAccording(Long  id, List<Long> accordingIds);
 
 	/**
+	 * 保存合同用印关联表
+	 * @param refContractId
+	 * @param sealId
+	 */
+	void saveSeal(Long refContractId,Long sealId);
+	/**
 	 * 保存合同评估关联表
 	 * @param assessmentId 评估id
 	 * @param contractId 合同id
 	 */
 	void saveAssessment(Long  contractId, Long assessmentId);
+
+	/**
+	 * 保存合同归档关联表
+	 * @param contractId 合同id
+	 * @param archiveId 归档id
+	 */
+	void saveArchive(Long contractId,Long archiveId);
 
 	/**
 	 * 保存合同相对方关联表

@@ -40,4 +40,14 @@
             AND relieve_category like concat('%',#{relieve.relieveCategory},'%')
         </if>
     </select>
+
+    <!--根据合同id查询归档信息-->
+    <select id="selectById" resultMap="sealInfoResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_seal_using_info
+        WHERE is_deleted = 0
+        AND
+        id =(SELECT c.contract_seal_using_id FROM  contract_seal_using_setting c WHERE c.contract_id = #{id})
+    </select>
 </mapper>
