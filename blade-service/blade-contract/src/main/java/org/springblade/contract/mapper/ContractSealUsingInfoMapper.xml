@@ -30,11 +30,14 @@
         update_time,
         create_dept
     </sql>
-    <!-- 分页 -->
+    <!-- 用印分页 -->
     <select id="pageList" resultMap="sealInfoResultMap">
         SELECT
             <include refid="baseColumnList"></include>
         FROM contract_seal_using_info
         WHERE is_deleted = 0
+        <if test="relieve.relieveCategory != null and relieve.relieveCategory != ''">
+            AND relieve_category like concat('%',#{relieve.relieveCategory},'%')
+        </if>
     </select>
 </mapper>

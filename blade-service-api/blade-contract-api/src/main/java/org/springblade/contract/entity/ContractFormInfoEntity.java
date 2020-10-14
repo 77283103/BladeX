@@ -114,9 +114,22 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private List<ContractAccordingEntity> accordingList;
 
 	/**
-	 * 关联依据信息
+	 * 关联履约信息
 	 */
 	@ApiModelProperty(value="最高合同金额")
 	@TableField(exist = false)
 	private List<ContractPerformanceEntity> performanceList;
+
+	/**
+	 * 关联合同评估信息
+	 */
+	@ApiModelProperty(value="评估信息")
+	@TableField(exist = false)
+	private ContractAssessmentEntity assessmentEntity;
+
+	/**
+	 * 合同文件导出次数统计
+	 */
+	@ApiModelProperty(value = "合同文件导出次数统计")
+	private Integer fileExportCount;
 }

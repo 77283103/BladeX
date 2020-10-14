@@ -54,5 +54,4 @@ public class ContractTemplateRequestVO extends BaseEntity {
 
     @ApiModelProperty(value="关联合同")
 	private String contractId;
-
 }

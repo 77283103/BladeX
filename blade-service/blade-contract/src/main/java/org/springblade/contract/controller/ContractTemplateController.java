@@ -1,5 +1,6 @@
 package org.springblade.contract.controller;
 
+import io.micrometer.core.instrument.binder.db.DatabaseTableMetrics;
 import io.swagger.annotations.Api;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +25,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.wrapper.ContractTemplateWrapper;
 import org.springblade.contract.service.IContractTemplateService;
+
+import java.util.Date;
 
 
 /**
@@ -74,7 +77,8 @@ public class ContractTemplateController extends BladeController {
 	public R save(@Valid @RequestBody ContractTemplateRequestVO template) {
         ContractTemplateEntity entity = new ContractTemplateEntity();
         BeanUtil.copy(template,entity);
-		return R.status(templateService.save(entity));
+		templateService.save(entity);
+		return R.data(entity);
 	}
 
 	/**
@@ -102,6 +106,30 @@ public class ContractTemplateController extends BladeController {
 	@PreAuth("hasPermission('contract:template:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(templateService.deleteLogic(Func.toLongList(ids)));
+	}
+
+	/**
+	 * 废弃范本
+	 */
+	@PostMapping("/scrap")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "修改状态", notes = "传入id")
+	@PreAuth("hasPermission('contract:template:scrap')")
+	public R scrap(@ApiParam(value = "主键集合", required = true) @RequestParam String id) {
+		Integer status = 0;
+		return R.status(templateService.changeStatus(Func.toLongList(id),status));
+	}
+
+	/**
+	 * 恢复范本
+	 */
+	@PostMapping("/restore")
+	@ApiOperationSupport(order = 8)
+	@ApiOperation(value = "修改状态", notes = "传入id")
+	@PreAuth("hasPermission('contract:template:restore')")
+	public R restore(@ApiParam(value = "主键集合", required = true) @RequestParam String id) {
+		Integer status = 1;
+		return R.status(templateService.changeStatus(Func.toLongList(id),status));
 	}
 
 }

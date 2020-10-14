@@ -19,4 +19,5 @@ public interface IContractAccordingService extends BaseService<ContractAccording
 	 * @return
 	 */
 	IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingEntity according);
+
 }

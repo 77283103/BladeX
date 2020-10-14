@@ -46,7 +46,7 @@
             AND according_name = #{according.accordingName}
         </if>
     </select>
-    <!--根据合同id查询相对方集合-->
+    <!--根据合同id查询相依据集合-->
     <select id="selectByIds" resultMap="accordingResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
@@ -55,4 +55,5 @@
         AND
         id IN (SELECT c.contract_according_id FROM  contract_according_setting c WHERE c.contract_id = #{id})
     </select>
+
 </mapper>

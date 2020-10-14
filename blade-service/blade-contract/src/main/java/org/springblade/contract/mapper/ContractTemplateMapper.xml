@@ -59,5 +59,24 @@
         <if test="template.templateNumber != null and template.templateNumber != ''">
             AND template_number = #{template.templateNumber}
         </if>
+        <if test="template.contractSmallCategory != null and template.contractSmallCategory != ''">
+            AND contract_small_category = #{template.contractSmallCategory}
+        </if>
+        <if test="template.contractBigCategory != null and template.contractBigCategory != ''">
+            AND contract_big_category = #{template.contractBigCategory}
+        </if>
     </select>
+
+    <!--批量修改范本状态-->
+    <update id="updateEachTemplateStatus">
+        <foreach collection="ids" item="item" index="index" open="" close="" separator=";">
+        UPDATE contract_template  SET
+            status = ${item.status}
+            WHERE id = ${item.id}
+        </foreach>
+    </update>
+    <!--修改范本状态-->
+    <update id="updateTemplateStatus">
+        UPDATE contract_form_info SET status = ${status} WHERE id = ${id}
+    </update>
 </mapper>

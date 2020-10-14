@@ -65,6 +65,9 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
     @ApiModelProperty(value="合同文件导出状态，是否导出")
 	private String fileExportCategory;
 
+	@ApiModelProperty(value="合同文件导出次数统计")
+    private Integer fileExportCount;
+
     @ApiModelProperty(value="合同一级分类")
 	private String contractBigCategory;
 
@@ -89,6 +92,11 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="依据ids")
 	private List<Long> according;
 
+	@ApiModelProperty(value="评估id")
+	private Long assessment;
+
 	@ApiModelProperty(value="依据ids")
 	private List<ContractPerformanceEntity> performanceList;
+
+
 }

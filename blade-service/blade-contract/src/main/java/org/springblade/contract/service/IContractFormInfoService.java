@@ -3,6 +3,7 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.mp.base.BaseService;
 
 /**
@@ -19,7 +20,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @param contractFormInfo
 	 * @return
 	 */
-	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+	IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
 	/**
 	 * 导出后修改合同状态
@@ -61,10 +62,25 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 
 	/**
+	 * 合同评估保存方法v
+	 * @param vo
+	 */
+	void saveAssessment(ContractFormInfoRequestVO vo);
+
+
+	/**
 	 * 合同保存方法
 	 * @param id 合同id
 	 * @return
 	 */
-	ContractFormInfoEntity getById(Long id);
+	ContractFormInfoResponseVO getById(Long id);
+
+	/**
+	 *统计合同导出次数
+	 * @param id 合同id
+	 * @param fileExportCount 下载次数
+	 * @param fileExportCategory 下载状态
+	 */
+	boolean textExportCount(Long id,Integer fileExportCount,String  fileExportCategory);
 
 }
