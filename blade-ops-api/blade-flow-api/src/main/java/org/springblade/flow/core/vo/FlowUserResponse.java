@@ -24,4 +24,8 @@ public class FlowUserResponse implements Serializable{
 	 * 用户姓名
 	 */
 	private String name;
+	/**
+	 * 是否xml设置的人员，用于区分用户在前台选择的人员
+	 */
+	private boolean xmlUser;
 }
