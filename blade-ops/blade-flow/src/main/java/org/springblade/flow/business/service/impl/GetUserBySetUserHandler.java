@@ -58,6 +58,7 @@ public class GetUserBySetUserHandler implements HandlerGetUser {
 				FlowUserRequest flowUserRequest = FlowUserRequest.builder()
 					.id(user.getId().toString())
 					.name(user.getRealName())
+					.xmlUser(true)
 					.build();
 				flowUserRequestList.add(flowUserRequest);
 			});
