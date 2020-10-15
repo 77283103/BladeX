@@ -1,6 +1,8 @@
 package org.springblade.resource.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.Getter;
+import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

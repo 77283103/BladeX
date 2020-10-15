@@ -150,36 +150,6 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
 	}
 
-	/**
-	 * 根据合同id修改合同状态
-	 */
-	@PostMapping("/updateContractStatus")
-	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入id")
-	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateContractStatus')")
-	public R updateStatus(@RequestParam Long id){
-		ContractFormInfoEntity entity=contractFormInfoService.getById(id);
-		String exportStatus=CONTRACT_EXPORT_STATUS;
-		String usingStatus=CONTRACT_SEAL_USING_INFO_STATUS;
-		String signingStatus=CONTRACT_SIGNING_STATUS;
-		String archiveStatus=CONTRACT_ARCHIVE_STATUS;
-		String assessmentStatus=CONTRACT_ASSESSMENT_STATUS;
-		if (Func.isEmpty(id)) {
-			throw new ServiceException("id不能为空");
-		}
-		if (CONTRACT_AUDIT_QUALITY == entity.getContractStatus()) {
-			contractFormInfoService.updateExportStatus(exportStatus,id);
-		}else if ( CONTRACT_EXPORT_STATUS== entity.getContractStatus()) {
-			contractFormInfoService.updateExportStatus(usingStatus, id);
-		} else if (CONTRACT_SEAL_USING_INFO_STATUS==entity.getContractStatus()) {
-			contractFormInfoService.updateExportStatus(signingStatus, id);
-		} else if (CONTRACT_SIGNING_STATUS==entity.getContractStatus()) {
-			contractFormInfoService.updateExportStatus(archiveStatus, id);
-		} else if (CONTRACT_ARCHIVE_STATUS==entity.getContractStatus()) {
-			contractFormInfoService.updateExportStatus(assessmentStatus, id);
-		}
-		return R.status(true);
-	}
 
 	/**
 	 * 审核后修改状态为待导出
