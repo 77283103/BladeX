@@ -61,13 +61,12 @@ public interface IFlowClient {
 	/**
 	 * 开启流程
 	 *
-	 * @param processDefinitionId 流程id
-	 * @param businessKey         业务key
-	 * @param variables           参数
+	 * @param flowNodeRequest	前台回传的节点对象
+	 * @param businessKey       业务key
 	 * @return BladeFlow
 	 */
 	@PostMapping(START_PROCESS_INSTANCE_BY_ID)
-	R<BladeFlow> startProcessInstanceById(@RequestParam("processDefinitionId") String processDefinitionId, @RequestParam("businessKey") String businessKey, @RequestBody Map<String, Object> variables);
+	R<BladeFlow> startProcessInstanceById(@RequestBody FlowNodeRequest flowNodeRequest, @RequestParam("businessKey") String businessKey);
 
 	/**
 	 * 开启流程

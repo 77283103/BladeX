@@ -30,10 +30,6 @@
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
-            <artifactId>blade-starter-transaction</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
             <artifactId>blade-dict-api</artifactId>
             <version>${bladex.project.version}</version>
         </dependency>

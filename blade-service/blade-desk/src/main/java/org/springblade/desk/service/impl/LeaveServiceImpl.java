@@ -16,7 +16,6 @@
  */
 package org.springblade.desk.service.impl;
 
-import io.seata.spring.annotation.GlobalTransactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.log.exception.ServiceException;
@@ -53,7 +52,6 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	@GlobalTransactional
 	public boolean startProcess(ProcessLeave leave, List<FlowNodeRequest> flowNodeRequestList) {
 		String businessTable = FlowUtil.getBusinessTable(ProcessConstant.LEAVE_KEY);
 		/* 调用flow获取流程定义信息 */
@@ -61,10 +59,8 @@ public class LeaveServiceImpl extends BaseServiceImpl<LeaveMapper, ProcessLeave>
 			/*保存leave*/
 			leave.setApplyTime(DateUtil.now());
 			save(leave);
-			/* 设置流程全局参数 */
-			Map<String, Object> variables = flowNodeRequestList.get(0).getVariables();
 			/* 启动流程 */
-			R<BladeFlow> result = flowClient.startProcessInstanceById(flowNodeRequestList.get(0).getProcessDefinitionId(), FlowUtil.getBusinessKey(businessTable, String.valueOf(leave.getId())), variables);
+			R<BladeFlow> result = flowClient.startProcessInstanceById(flowNodeRequestList.get(0), FlowUtil.getBusinessKey(businessTable, String.valueOf(leave.getId())));
 			if (result.isSuccess()) {
 				log.debug("流程已启动,流程ID:" + result.getData().getProcessInstanceId());
 				/* 返回流程id写入leave */

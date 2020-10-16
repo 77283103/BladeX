@@ -999,7 +999,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public BladeFlow startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables) {
+	public BladeFlow startProcessInstanceById(FlowNodeRequest flowNodeRequest, String businessKey) {
+		String processDefinitionId = flowNodeRequest.getProcessDefinitionId();
+		Map<String, Object> variables = flowNodeRequest.getVariables();
 		/* 设置流程启动用户 */
 		identityService.setAuthenticatedUserId(TaskUtil.getTaskUser());
 		/* 获取主流程开始节点 */
@@ -1028,26 +1030,24 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				FlowNode secondNode = (FlowNode) firstNode.getOutgoingFlows().get(0).getTargetFlowElement();
 				/*此时secondNode是用户节点*/
 				if (secondNode instanceof UserTask) {
-					List<FlowUserRequest> candidateUsers = this.getCandidateUsers(secondNode, task.getId());
-					if (CollectionUtil.isEmpty(candidateUsers)) {
+					if (CollectionUtil.isEmpty(flowNodeRequest.getUserResponseList())) {
 						log.error("【错误码{}】：流程启动最终确认时未获取到下一办理人信息，请检查前台传参是否正确", ServiceCode.FLOW_NEXT_USER_NOT_FOUND.getCode());
 						throw new ServiceException(ServiceCode.FLOW_NEXT_USER_NOT_FOUND);
 					}
 					/* 通过全局变量设置办理人 */
-					variables.put(secondNode.getId(), TaskUtil.getTaskUser(candidateUsers.get(0).getId()));
+					variables.put(secondNode.getId(), TaskUtil.getTaskUser(flowNodeRequest.getUserResponseList().get(0).getId()));
 				}
 				/*此时secondNode是网关节点*/
 				if (secondNode instanceof Gateway) {
 					secondNode.getOutgoingFlows().forEach(sequenceFlow -> {
 						/*网关连接的每一个用户节点，此处不判断流程将要提交给哪些节点，将所有节点候选人都设置到全局变量*/
 						FlowNode secondUserNode = (FlowNode) sequenceFlow.getTargetFlowElement();
-						List<FlowUserRequest> candidateUsers = this.getCandidateUsers(secondUserNode, task.getId());
-						if (CollectionUtil.isEmpty(candidateUsers)) {
+						if (CollectionUtil.isEmpty(flowNodeRequest.getUserResponseList())) {
 							log.error("【错误码{}】：流程启动最终确认时未获取到下一办理人信息，请检查前台传参是否正确", ServiceCode.FLOW_NEXT_USER_NOT_FOUND.getCode());
 							throw new ServiceException(ServiceCode.FLOW_NEXT_USER_NOT_FOUND);
 						}
 						/* 通过全局变量设置办理人 */
-						variables.put(secondUserNode.getId(), TaskUtil.getTaskUser(candidateUsers.get(0).getId()));
+						variables.put(secondUserNode.getId(), TaskUtil.getTaskUser(flowNodeRequest.getUserResponseList().get(0).getId()));
 					});
 				}
 				taskService.complete(task.getId(), variables);
