@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CounterpartMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="counterpartResultMap" type="org.springblade.contract.entity.CounterpartEntity">
+        <result column="id" property="id"/>
+        <result column="counterpart_name" property="counterpartName"/>
+        <result column="id_number" property="idNumber"/>
+        <result column="license_number" property="licenseNumber"/>
+        <result column="unified_social_credit_code" property="unifiedSocialCreditCode"/>
+        <result column="nature_category" property="natureCategory"/>
+        <result column="counterpart_category" property="counterpartCategory"/>
+        <result column="registered_address" property="registeredAddress"/>
+        <result column="contact_person_phone" property="contactPersonPhone"/>
+        <result column="contact_person_name" property="contactPersonName"/>
+        <result column="contact_address" property="contactAddress"/>
+        <result column="passport_id" property="passportId"/>
+        <result column="cooperation_date" property="cooperationDate"/>
+        <result column="first_cooperation_date" property="firstCooperationDate"/>
+        <result column="electronic_seal_serial_id" property="electronicSealSerialId"/>
+        <result column="tax_rate" property="taxRate"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="Information_syn_date" property="informationSynDate"/>
+        <result column="establish_date" property="establishDate"/>
+        <result column="company_address" property="companyAddress"/>
+        <result column="registered_capital" property="registeredCapital"/>
+        <result column="legal_representative" property="legalRepresentative"/>
+        <result column="contact_person_mail" property="contactPersonMail"/>
+        <result column="deposit_bank" property="depositBank"/>
+        <result column="bank_account" property="bankAccount"/>
+        <result column="files" property="files"/>
+        <result column="currency" property="currency"/>
+        <result column="version_number" property="versionNumber"/>
+        <result column="is_new" property="isNew"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        counterpart_name,
+        id_number,
+        license_number,
+        unified_social_credit_code,
+        nature_category,
+        counterpart_category,
+        registered_address,
+        contact_person_phone,
+        contact_person_name,
+        contact_address,
+        passport_id,
+        cooperation_date,
+        first_cooperation_date,
+        electronic_seal_serial_id,
+        tax_rate,
+        payment_method,
+        Information_syn_date,
+        establish_date,
+        company_address,
+        registered_capital,
+        legal_representative,
+        contact_person_mail,
+        deposit_bank,
+        bank_account,
+        files,
+        currency,
+        version_number,
+        is_new,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="counterpartResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_counterpart
+        WHERE is_deleted = 0
+    </select>
+</mapper>

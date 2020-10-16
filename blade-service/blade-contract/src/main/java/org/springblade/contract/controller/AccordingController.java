@@ -8,8 +8,9 @@ import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
 import org.springblade.core.log.exception.ServiceException;
-import org.springblade.contract.vo.ContractAccordingRequestVO;
-import org.springblade.contract.vo.ContractAccordingResponseVO;
+import org.springblade.contract.vo.AccordingRequestVO;
+import org.springblade.contract.vo.AccordingResponseVO;
+import org.springblade.core.tool.constant.RoleConstant;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
 
@@ -21,28 +22,24 @@ import org.springblade.core.tool.utils.Func;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.contract.entity.ContractAccordingEntity;
-import org.springblade.contract.wrapper.ContractAccordingWrapper;
-import org.springblade.contract.service.IContractAccordingService;
+import org.springblade.contract.entity.AccordingEntity;
+import org.springblade.contract.wrapper.AccordingWrapper;
+import org.springblade.contract.service.IAccordingService;
 
 
 /**
- *  控制器
+ * 合同依据表 控制器
  *
- * @author feng
- */
-/**
- *  <类说明>   ：
- * @author    : Mr.Feng
- * @date      : 2020-9-7 13:17
+ * @author : XHB
+ * @date : 2020-09-19 17:54:42
  */
 @RestController
 @AllArgsConstructor
 @RequestMapping("/according")
-@Api(value = "合同依据", tags = "合同依据")
-public class ContractAccordingController extends BladeController {
+@Api(value = "合同依据表", tags = "合同依据表")
+public class AccordingController extends BladeController {
 
-	private IContractAccordingService accordingService;
+	private IAccordingService accordingService;
 
 	/**
 	 * 详情
@@ -51,9 +48,9 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入according")
 	@PreAuth("hasPermission('contract:according:detail')")
-	public R<ContractAccordingResponseVO> detail(@RequestParam Long id) {
-		ContractAccordingEntity detail = accordingService.selectById(id);
-		return R.data(ContractAccordingWrapper.build().entityVO(detail));
+	public R<AccordingResponseVO> detail(@RequestParam Long id) {
+		AccordingEntity detail = accordingService.getById(id);
+		return R.data(AccordingWrapper.build().entityVO(detail));
 	}
 
 	/**
@@ -63,9 +60,9 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入according")
 	@PreAuth("hasPermission('contract:according:list')")
-	public R<IPage<ContractAccordingResponseVO>> list(ContractAccordingEntity according, Query query) {
-		IPage<ContractAccordingEntity> pages = accordingService.pageList(Condition.getPage(query), according);
-		return R.data(ContractAccordingWrapper.build().pageVO(pages));
+	public R<IPage<AccordingResponseVO>> list(AccordingEntity according, Query query) {
+		IPage<AccordingEntity> pages = accordingService.pageList(Condition.getPage(query), according);
+		return R.data(AccordingWrapper.build().pageVO(pages));
 	}
 
 	/**
@@ -75,8 +72,8 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入according")
 	@PreAuth("hasPermission('contract:according:add')")
-	public R save(@Valid @RequestBody ContractAccordingRequestVO according) {
-        ContractAccordingEntity entity = new ContractAccordingEntity();
+	public R save(@Valid @RequestBody AccordingRequestVO according) {
+        AccordingEntity entity = new AccordingEntity();
         BeanUtil.copy(according,entity);
 		return R.status(accordingService.save(entity));
 	}
@@ -88,11 +85,11 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入according")
 	@PreAuth("hasPermission('contract:according:update')")
-	public R update(@Valid @RequestBody ContractAccordingRequestVO according) {
+	public R update(@Valid @RequestBody AccordingRequestVO according) {
 	    if (Func.isEmpty(according.getId())){
             throw new ServiceException("id不能为空");
         }
-	    ContractAccordingEntity entity = new ContractAccordingEntity();
+	    AccordingEntity entity = new AccordingEntity();
         BeanUtil.copy(according,entity);
 		return R.status(accordingService.updateById(entity));
 	}
@@ -105,7 +102,7 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
 	@PreAuth("hasPermission('contract:according:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-		return R.status(accordingService.del(ids));
+		return R.status(accordingService.deleteLogic(Func.toLongList(ids)));
 	}
 
 }
