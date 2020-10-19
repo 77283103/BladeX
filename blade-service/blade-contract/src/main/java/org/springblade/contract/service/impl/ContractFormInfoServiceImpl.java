@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.IContractFormInfoService;
-import org.springblade.contract.service.IContractSigningService;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractSigningResponseVO;
@@ -54,7 +53,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private ContractSealUsingInfoMapper sealUsingInfoMapper;
 
 	private ContractSigningMapper signingMapper;
-	private IContractSigningService signingService;
 
 	@Override
 	public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {

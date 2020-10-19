@@ -1,13 +1,11 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.ContractAccordingEntity;
+import lombok.AllArgsConstructor;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractFormInfoService;
-import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.contract.vo.ContractSigningRequestVO;
 import org.springblade.contract.vo.ContractSigningResponseVO;
-import org.springblade.contract.wrapper.ContractAccordingWrapper;
 import org.springblade.contract.wrapper.ContractSigningWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.ContractSigningEntity;
@@ -17,11 +15,8 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
-import org.springblade.system.feign.ISysClient;
-import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -31,18 +26,15 @@ import java.util.List;
  * @date : 2020-09-23 19:27:05
  */
 @Service
+@AllArgsConstructor
 public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningMapper, ContractSigningEntity> implements IContractSigningService {
 
-	@Resource
 	private IContractFormInfoService contractFormInfoService;
-	@Resource
 	private ContractFormInfoMapper contractFormInfoMapper;
 
 	private IFileClient fileClient;
 
-	private ISysClient sysClient;
 
-	private IUserClient userClient;
 
 	@Override
 	public IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningEntity signing) {
