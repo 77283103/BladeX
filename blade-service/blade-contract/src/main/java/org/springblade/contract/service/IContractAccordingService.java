@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractAccordingEntity;
 
@@ -20,4 +21,10 @@ public interface IContractAccordingService extends BaseService<ContractAccording
 	 */
 	IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingEntity according);
 
+	/**
+	 * 重写依据vo
+	 * @param id
+	 * @return
+	 */
+	ContractAccordingResponseVO getById(Long id);
 }

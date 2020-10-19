@@ -15,6 +15,7 @@
         <result column="attached_files" property="attachedFiles"/>
         <result column="create_unit" property="createUnit"/>
         <result column="contract_id" property="contractId"/>
+        <result column="template_status" property="templateStatus"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -36,6 +37,7 @@
         attached_files,
         create_unit,
         contract_id,
+        template_status,
         status,
         is_deleted,
         create_user,
@@ -71,12 +73,12 @@
     <update id="updateEachTemplateStatus">
         <foreach collection="ids" item="item" index="index" open="" close="" separator=";">
         UPDATE contract_template  SET
-            status = ${item.status}
+            template_status = ${item.templateStatus}
             WHERE id = ${item.id}
         </foreach>
     </update>
     <!--修改范本状态-->
     <update id="updateTemplateStatus">
-        UPDATE contract_form_info SET status = ${status} WHERE id = ${id}
+        UPDATE contract_form_info SET template_status = ${templateStatus} WHERE id = ${id}
     </update>
 </mapper>

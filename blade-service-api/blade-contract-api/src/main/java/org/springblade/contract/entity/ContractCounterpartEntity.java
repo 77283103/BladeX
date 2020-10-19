@@ -88,4 +88,10 @@ public class ContractCounterpartEntity extends BaseEntity {
 	@ApiModelProperty(value = "相关合同")
 	private String  contractId;
 
+	/**
+	 * 相关附件
+	 */
+	@ApiModelProperty(value = "相关附件")
+	private String attachedFiles;
+
 }

@@ -20,4 +20,10 @@ public interface ContractSigningMapper extends BaseMapper<ContractSigningEntity>
 	 */
 	IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningEntity signing);
 
+	/**
+	 * 根据合同id查询签订信息
+	 * @param id
+	 * @return
+	 */
+	ContractSigningEntity selectById(Long id);
 }

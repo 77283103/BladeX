@@ -173,7 +173,7 @@ public class ContractFormInfoController extends BladeController {
 	 */
 	@PostMapping("/updateSealStatus")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入contractFormInfo")
+	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateSealStatus')")
 	public R sealStatus(@RequestParam Long id) {
 		if (Func.isEmpty(id)){
@@ -189,7 +189,7 @@ public class ContractFormInfoController extends BladeController {
 	 */
 	@PostMapping("/updateSigningStatus")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入contractFormInfo")
+	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateSigningStatus')")
 	public R signingStatus(@RequestParam Long id) {
 		if (Func.isEmpty(id)){

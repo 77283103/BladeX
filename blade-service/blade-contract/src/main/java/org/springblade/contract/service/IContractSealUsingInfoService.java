@@ -31,7 +31,7 @@ public interface IContractSealUsingInfoService extends BaseService<ContractSealU
 
 	/**
 	 * 保存归档信息方法
-	 * @param vo
+	 * @param vo 从vo里面获取归档id
 	 */
 	void saveSeal(ContractSealUsingInfoRequestVO vo);
 }

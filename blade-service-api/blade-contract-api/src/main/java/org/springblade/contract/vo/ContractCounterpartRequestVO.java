@@ -64,4 +64,6 @@ public class ContractCounterpartRequestVO extends ContractCounterpartEntity {
     @ApiModelProperty(value="相关合同")
 	private String  contractId;
 
+	@ApiModelProperty(value = "相关附件")
+	private String attachedFiles;
 }

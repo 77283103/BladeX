@@ -74,5 +74,9 @@ public class ContractTemplateEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "关联合同")
 	private String contractId;
-
+	/**
+	 * 范本状态
+	 */
+	@ApiModelProperty(value = "范本状态")
+	private String templateStatus;
 }

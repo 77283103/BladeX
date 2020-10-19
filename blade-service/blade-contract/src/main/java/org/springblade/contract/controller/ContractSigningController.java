@@ -72,10 +72,13 @@ public class ContractSigningController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入signing")
 	@PreAuth("hasPermission('contract:signing:add')")
 	public R save(@Valid @RequestBody ContractSigningRequestVO signing) {
-		String contractStatus = "60";
         ContractSigningEntity entity = new ContractSigningEntity();
         BeanUtil.copy(signing,entity);
-		return R.status(signingService.save(contractStatus,entity));
+		signingService.save(entity);
+		//从实体中获取签订，合同id将值赋给vo的id
+		signing.setId(entity.getId());
+		signingService.saveSigning(signing);
+		return R.data(entity);
 	}
 
 	/**

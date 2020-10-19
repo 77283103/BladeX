@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.service.IContractSigningService;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.vo.ContractSigningResponseVO;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
+import org.springblade.contract.wrapper.ContractSigningWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -50,6 +53,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	private ContractSealUsingInfoMapper sealUsingInfoMapper;
 
+	private ContractSigningMapper signingMapper;
+	private IContractSigningService signingService;
+
 	@Override
 	public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
 		page = baseMapper.pageList(page, contractFormInfo);
@@ -66,6 +72,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return pages;
 	}
 
+	/**
+	 * 修改合同状态
+	 * @param contractStatus,id
+	 * @param id
+	 * @return
+	 */
 	@Override
 	public boolean updateExportStatus(String contractStatus,Long id) {
 		return contractFormInfoMapper.updateExportStatus(contractStatus,id);
@@ -76,16 +88,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return baseMapper.pageListSealInfo(page, contractFormInfoRequestVO);
 	}
 
-	/**
-	 * 合同评估后修改合同状态
-	 * @param contractStatus 合同状态
-	 * @param id 合同id
-	 * @return
-	 */
-	@Override
-	public boolean updateAssessmentStatus(String contractStatus, Long id) {
-		return contractFormInfoMapper.updateAssessmentStatus(contractStatus,id);
-	}
 
 	@Override
 	public void saveCounterpart(ContractFormInfoRequestVO vo) {
@@ -98,7 +100,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
-	 * 保存合同用印对应数据id
+	 * 保存合同关联用印
 	 * @param vo
 	 */
 	@Override
@@ -107,7 +109,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
-	 * 保存合同评估对应数据id
+	 * 保存合同关联评估
 	 * @param vo 提取合同id和评估id
 	 */
 	@Override
@@ -117,14 +119,22 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	/**
 	 *
-	 * 保存合同归档对应数据id
-	 * @param vo 获取对应的合同id和归档id属性
+	 * 保存合同关联归档
+	 * @param vo 获取对应的合同id和归档id
 	 */
 	@Override
 	public void saveArchive(ContractFormInfoRequestVO vo) {
 		contractFormInfoMapper.saveArchive(vo.getId(),vo.getArchive());
 	}
 
+	/**
+	 *保存合同关联签订
+	 * @param vo
+	 */
+	@Override
+	public void saveSigning(ContractFormInfoRequestVO vo) {
+		contractFormInfoMapper.saveSigning(vo.getId(),vo.getSigning());
+	}
 
 	/**
 	 * 根据合同id查询关联数据返回到合同vo
@@ -153,6 +163,26 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//查询合同用印信息保存到合同vo
 		ContractSealUsingInfoEntity sealUsingInfoEntity=sealUsingInfoMapper.selectById(id);
 		contractFormInfoResponseVO.setSealInfoEntity(sealUsingInfoEntity);
+		//查询合同签订信息保存到合同vo
+		ContractSigningEntity signingEntity=signingMapper.selectById(id);
+		contractFormInfoResponseVO.setSigningEntity(signingEntity);
+		ContractSigningResponseVO signingResponseVO= ContractSigningWrapper.build().entityVO(signingEntity);
+		//查询依据附件
+		//@Func.isNoneBlank判断是否全为非空字符串
+		//文本扫描件
+		if (Func.isNoneBlank(signingResponseVO.getTextFiles())){
+			R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getTextFiles());
+			if (result.isSuccess()){
+				contractFormInfoResponseVO.setSigningTextFileVOList(result.getData());
+			}
+		}
+		//附件扫描件
+		if (Func.isNoneBlank(signingResponseVO.getAttachedFiles())){
+			R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getAttachedFiles());
+			if (result.isSuccess()){
+				contractFormInfoResponseVO.setSigningAttachedFileVOList(result.getData());
+			}
+		}
 		//查询合同文本
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getTextFile())){
 			R<List<FileVO>> result = fileClient.getByIds(contractFormInfoResponseVO.getTextFile());

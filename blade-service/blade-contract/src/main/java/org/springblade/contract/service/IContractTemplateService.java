@@ -21,9 +21,9 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateEntity template);
 
 	/**
-	 * 废弃范本后修改范本状态
-	 * @param status,ids
+	 * 修改范本状态
+	 * @param templateStatus,ids
 	 * @return
 	 */
-	boolean updateTemplateStatus(String status,String id);
+	boolean updateTemplateStatus(String templateStatus,Long id);
 }

@@ -48,7 +48,7 @@ public class ContractSealUsingInfoServiceImpl extends BaseServiceImpl<ContractSe
 
 	/**
 	 * 保存用印合同信息关联id数据方法
-	 * @param vo
+	 * @param vo 从vo里面获取归档id 关联合同id
 	 */
 	@Override
 	public void saveSeal(ContractSealUsingInfoRequestVO vo) {

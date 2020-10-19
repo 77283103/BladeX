@@ -42,6 +42,9 @@ import java.util.Date;
 public class ContractTemplateController extends BladeController {
 
 	private IContractTemplateService templateService;
+	private static final String TEMPLATE_STATUS="10";
+	private static final String TEMPLATE_SCRAP_STATUS="20";
+	private static final String TEMPLATE_REVISION_STATUS="30";
 
 	/**
 	 * 详情
@@ -77,8 +80,7 @@ public class ContractTemplateController extends BladeController {
 	public R save(@Valid @RequestBody ContractTemplateRequestVO template) {
         ContractTemplateEntity entity = new ContractTemplateEntity();
         BeanUtil.copy(template,entity);
-		templateService.save(entity);
-		return R.data(entity);
+		return R.status(templateService.save(entity));
 	}
 
 	/**
@@ -109,27 +111,46 @@ public class ContractTemplateController extends BladeController {
 	}
 
 	/**
-	 * 废弃范本
+	 * 废弃
 	 */
 	@PostMapping("/scrap")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "修改状态", notes = "传入id")
 	@PreAuth("hasPermission('contract:template:scrap')")
-	public R scrap(@ApiParam(value = "主键集合", required = true) @RequestParam String id) {
-		Integer status = 0;
-		return R.status(templateService.changeStatus(Func.toLongList(id),status));
+	public R scrap(@RequestParam Long id) {
+		String  templateStatus = TEMPLATE_SCRAP_STATUS;
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		return R.status(templateService.updateTemplateStatus(templateStatus,id));
 	}
 
 	/**
-	 * 恢复范本
+	 * 恢复
 	 */
 	@PostMapping("/restore")
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "修改状态", notes = "传入id")
 	@PreAuth("hasPermission('contract:template:restore')")
-	public R restore(@ApiParam(value = "主键集合", required = true) @RequestParam String id) {
-		Integer status = 1;
-		return R.status(templateService.changeStatus(Func.toLongList(id),status));
+	public R restore(@RequestParam Long id) {
+		String  templateStatus = TEMPLATE_STATUS;
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		return R.status(templateService.updateTemplateStatus(templateStatus,id));
 	}
 
+	/**
+	 * 修订
+	 */
+	@PostMapping("/Revision")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "新增", notes = "传入template")
+	@PreAuth("hasPermission('contract:template:Revision')")
+	public R Revision(@Valid @RequestBody ContractTemplateRequestVO template) {
+		ContractTemplateEntity entity = new ContractTemplateEntity();
+		BeanUtil.copy(template,entity);
+		templateService.save(entity);
+		return R.data(entity);
+	}
 }
