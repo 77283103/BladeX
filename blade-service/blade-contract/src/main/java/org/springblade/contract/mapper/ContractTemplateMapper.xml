@@ -67,6 +67,9 @@
         <if test="template.contractBigCategory != null and template.contractBigCategory != ''">
             AND contract_big_category = #{template.contractBigCategory}
         </if>
+        <if test="template.templateStatus != null and template.templateStatus != ''">
+            AND template_status = #{template.templateStatus}
+        </if>
     </select>
 
     <!--批量修改范本状态-->
@@ -79,6 +82,6 @@
     </update>
     <!--修改范本状态-->
     <update id="updateTemplateStatus">
-        UPDATE contract_form_info SET template_status = ${templateStatus} WHERE id = ${id}
+        UPDATE contract_template SET template_status = ${templateStatus} WHERE id = ${id}
     </update>
 </mapper>

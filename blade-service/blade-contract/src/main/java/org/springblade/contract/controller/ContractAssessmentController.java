@@ -80,8 +80,7 @@ public class ContractAssessmentController extends BladeController {
 	public R save(@Valid @RequestBody ContractAssessmentRequestVO assessment) {
         ContractAssessmentEntity entity = new ContractAssessmentEntity();
         BeanUtil.copy(assessment,entity);
-        String contractStatus=ASSESSMENTS_CONTRACT_STATUS;
-		assessmentService.save(contractStatus,entity);
+        assessmentService.save(entity);
 		assessment.setId(entity.getId());
 		/* 保存合同id评估id信息*/
 		assessmentService.saveAssessment(assessment);

@@ -166,7 +166,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		ContractSigningEntity signingEntity=signingMapper.selectById(id);
 		contractFormInfoResponseVO.setSigningEntity(signingEntity);
 //		ContractSigningResponseVO signingResponseVO= ContractSigningWrapper.build().entityVO(signingEntity);
-		//查询依据附件
+		//评估相关附件
+		if (Func.isNoneBlank(contractAssessmentEntity.getAttachedFiles())){
+			R<List<FileVO>> result = fileClient.getByIds(contractAssessmentEntity.getAttachedFiles());
+			if (result.isSuccess()){
+				contractFormInfoResponseVO.setAssessmentAttachedVOList(result.getData());
+			}
+		}
 		//@Func.isNoneBlank判断是否全为非空字符串
 		//文本扫描件
 		if (Func.isNoneBlank(signingEntity.getTextFiles())){

@@ -6,6 +6,7 @@ import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.resource.vo.FileVO;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -48,5 +49,9 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 签订附件扫描件列表
 	 */
 	private List<FileVO> signingAttachedFileVOList;
+	/**
+	 * 评估相关附件
+	 */
+	private List<FileVO> assessmentAttachedVOList;
 
 }
