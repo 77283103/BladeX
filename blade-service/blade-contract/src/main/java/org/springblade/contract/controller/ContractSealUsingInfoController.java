@@ -75,7 +75,9 @@ public class ContractSealUsingInfoController extends BladeController {
         ContractSealUsingInfoEntity entity = new ContractSealUsingInfoEntity();
         BeanUtil.copy(sealInfo,entity);
 		sealInfoService.save(entity);
+		//从保存到实体对象里面的归档id赋值给vo里面的id
 		sealInfo.setId(entity.getId());
+		//获取实体的数据id保存到关联表里
 		sealInfoService.saveSeal(sealInfo);
 		return R.data(entity);
 	}

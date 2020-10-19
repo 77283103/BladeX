@@ -1,6 +1,9 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.vo.ContractAccordingResponseVO;
+import org.springblade.contract.vo.ContractSigningRequestVO;
+import org.springblade.contract.vo.ContractSigningResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractSigningEntity;
 
@@ -28,4 +31,16 @@ public interface IContractSigningService extends BaseService<ContractSigningEnti
 	 */
 	boolean save(String contractStatus, ContractSigningEntity entity);
 
+	/**
+	 * 保存签订关联
+	 * @param vo 从vo中获取对应id值
+	 */
+	void saveSigning(ContractSigningRequestVO vo);
+
+	/**
+	 * 重写签订vo
+	 * @param id
+	 * @return
+	 */
+	ContractSigningResponseVO getById(Long id);
 }

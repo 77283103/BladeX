@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.vo.ContractCounterpartResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 
@@ -19,4 +20,11 @@ public interface IContractCounterpartService extends BaseService<ContractCounter
 	 * @return
 	 */
 	IPage<ContractCounterpartEntity> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartEntity counterpart);
+
+	/**
+	 * 重写向对方vo 返回附件列表到视图
+	 * @param id
+	 * @return
+	 */
+	ContractCounterpartResponseVO getById(Long id);
 }

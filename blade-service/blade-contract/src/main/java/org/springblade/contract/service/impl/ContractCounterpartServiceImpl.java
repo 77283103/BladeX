@@ -1,11 +1,24 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.entity.ContractAccordingEntity;
+import org.springblade.contract.vo.ContractAccordingResponseVO;
+import org.springblade.contract.vo.ContractCounterpartResponseVO;
+import org.springblade.contract.wrapper.ContractAccordingWrapper;
+import org.springblade.contract.wrapper.ContractCounterpartWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.service.IContractCounterpartService;
+import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.feign.IFileClient;
+import org.springblade.resource.vo.FileVO;
+import org.springblade.system.feign.ISysClient;
+import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 相对方管理 服务实现类
@@ -16,8 +29,33 @@ import org.springframework.stereotype.Service;
 @Service
 public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCounterpartMapper, ContractCounterpartEntity> implements IContractCounterpartService {
 
+	private IFileClient fileClient;
+
+	private ISysClient sysClient;
+
+	private IUserClient userClient;
 	@Override
 	public IPage<ContractCounterpartEntity> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartEntity counterpart) {
 		return baseMapper.pageList(page, counterpart);
+	}
+
+	/**
+	 * 重写向对方vo方法返回附件 包装返回视图层
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public ContractCounterpartResponseVO getById(Long id) {
+		ContractCounterpartEntity counterpartEntity=baseMapper.selectById(id);
+		ContractCounterpartResponseVO counterpartResponseVO= ContractCounterpartWrapper.build().entityVO(counterpartEntity);
+		//查询依据附件
+		//@Func.isNoneBlank判断是否全为非空字符串
+		if (Func.isNoneBlank(counterpartResponseVO.getAttachedFiles())){
+			R<List<FileVO>> result = fileClient.getByIds(counterpartResponseVO.getAttachedFiles());
+			if (result.isSuccess()){
+				counterpartResponseVO.setCounterpartFilesVOList(result.getData());
+			}
+		}
+		return counterpartResponseVO;
 	}
 }

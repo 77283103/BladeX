@@ -33,18 +33,18 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	/**
 	 * 批量废弃后修改范本状态
 	 *
-	 * @param status
+	 * @param templateStatus
 	 * @param ids
 	 * @return
 	 */
-	boolean updateEachTemplateStatus(String status, String ids);
+	boolean updateEachTemplateStatus(String templateStatus, String ids);
 
 	/**
 	 * 废弃范本后修改范本状态
-	 * @param status
+	 * @param templateStatus
 	 * @param id
 	 * @return
 	 */
-	boolean updateTemplateStatus(String status, String id);
+	boolean updateTemplateStatus(String templateStatus, Long id);
 
 }

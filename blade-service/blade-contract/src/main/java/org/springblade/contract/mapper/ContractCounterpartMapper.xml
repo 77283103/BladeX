@@ -16,6 +16,7 @@
         <result column="first_cooperation_date" property="firstCooperationDate"/>
         <result column="contract_record" property="contractRecord"/>
         <result column="list_record" property="listRecord"/>
+        <result column="attached_files" property="attachedFiles"/>
         <result column="contract_id" property="contractId"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
@@ -39,6 +40,7 @@
         first_cooperation_date,
         contract_record,
         list_record,
+        attached_files,
         contract_id,
         status,
         is_deleted,

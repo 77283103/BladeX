@@ -49,4 +49,14 @@
         FROM contract_signing
         WHERE is_deleted = 0
     </select>
+
+    <!--根据合同id查询签订信息-->
+    <select id="selectById" resultMap="signingResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_signing
+        WHERE is_deleted = 0
+        AND
+        id =(SELECT c.contract_signing_id FROM  contract_signing_setting c WHERE c.contract_id = #{id})
+    </select>
 </mapper>

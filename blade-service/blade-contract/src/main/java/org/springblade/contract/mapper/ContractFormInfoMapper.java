@@ -26,7 +26,7 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
 	/**
-	 * 用印后修改合同状态
+	 * 修改合同状态
 	 * @param contractStatus,id
 	 * @return
 	 */
@@ -41,14 +41,6 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	IPage<ContractFormInfoEntity> pageListSealInfo(IPage<ContractFormInfoRequestVO> page, ContractFormInfoRequestVO contractFormInfoRequestVO);
 
 
-
-	/**
-	 * 合同评估后修改合同状态
-	 * @param contractStatus 合同状态
-	 * @param id 合同id
-	 * @return
-	 */
-	boolean updateAssessmentStatus(String  contractStatus,Long id);
 
 	/**
 	 * 保存合同相对方关联表
@@ -85,10 +77,17 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	void saveArchive(Long contractId,Long archiveId);
 
 	/**
+	 * 保存合同归档关联表
+	 * @param contractId 合同id
+	 * @param signingId 签订id
+	 */
+	void saveSigning(Long contractId,Long signingId);
+	/**
 	 * 保存合同相对方关联表
 	 * @param performance 履约对象
+	 * void savePerformance(ContractPerformanceEntity performance);
 	 */
-	void savePerformance(ContractPerformanceEntity performance);
+
 
 	/**
 	 *统计合同导出次数 修改下载状态

@@ -23,14 +23,14 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	}
 
 	/**
-	 * 废弃范本后修改范本状态
-	 * @param status,id
+	 * 修改范本状态
+	 * @param templateStatus,id
 	 * @param id
 	 * @return
 	 */
 	@Override
-	public boolean updateTemplateStatus(String status, String  id) {
-		return templateMapper.updateTemplateStatus(status, id);
+	public boolean updateTemplateStatus(String templateStatus, Long  id) {
+		return templateMapper.updateTemplateStatus(templateStatus, id);
 	}
 
 	/**

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.vo.ContractSigningRequestVO;
 import org.springblade.core.mp.base.BaseService;
 
 /**
@@ -23,7 +24,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
 	/**
-	 * 导出后修改合同状态
+	 * 修改合同状态
 	 * @param contractStatus,id
 	 * @return
 	 */
@@ -37,14 +38,6 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	IPage<ContractFormInfoEntity> pageListSealInfo(IPage<ContractFormInfoRequestVO> page, ContractFormInfoRequestVO contractFormInfoRequestVO);
 
-
-	/**
-	 * 合同评估后修改合同状态
-	 * @param contractStatus 合同状态
-	 * @param id 合同id
-	 * @return
-	 */
-	boolean updateAssessmentStatus(String  contractStatus,Long id);
 
 	/**
 	 * 相对方保存方法
@@ -78,6 +71,12 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @param vo 获取对应的合同id和归档id属性
 	 */
 	void saveArchive(ContractFormInfoRequestVO vo);
+
+	/**
+	 * 合同签订保存方法
+	 * @param vo 从合同vo里面获取对应id数据
+	 */
+	void saveSigning(ContractFormInfoRequestVO vo);
 
 	/**
 	 * 合同保存方法

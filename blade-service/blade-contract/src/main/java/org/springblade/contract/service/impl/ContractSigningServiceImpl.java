@@ -1,14 +1,28 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.entity.ContractAccordingEntity;
+import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.vo.ContractAccordingResponseVO;
+import org.springblade.contract.vo.ContractSigningRequestVO;
+import org.springblade.contract.vo.ContractSigningResponseVO;
+import org.springblade.contract.wrapper.ContractAccordingWrapper;
+import org.springblade.contract.wrapper.ContractSigningWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.ContractSigningEntity;
 import org.springblade.contract.mapper.ContractSigningMapper;
 import org.springblade.contract.service.IContractSigningService;
+import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.feign.IFileClient;
+import org.springblade.resource.vo.FileVO;
+import org.springblade.system.feign.ISysClient;
+import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * 合同签订表 服务实现类
@@ -21,6 +35,14 @@ public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningM
 
 	@Resource
 	private IContractFormInfoService contractFormInfoService;
+	@Resource
+	private ContractFormInfoMapper contractFormInfoMapper;
+
+	private IFileClient fileClient;
+
+	private ISysClient sysClient;
+
+	private IUserClient userClient;
 
 	@Override
 	public IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningEntity signing) {
@@ -34,6 +56,43 @@ public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningM
 			return true;
 		}
 		return false;
+	}
+
+	/**
+	 * 保存签订关联
+	 * @param vo
+	 */
+	@Override
+	public void saveSigning(ContractSigningRequestVO vo) {
+     contractFormInfoMapper.saveSigning(vo.getContractId(),vo.getId());
+	}
+
+	/**
+	 * 查询文件信息
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public ContractSigningResponseVO getById(Long id) {
+		ContractSigningEntity signingEntity=baseMapper.selectById(id);
+		ContractSigningResponseVO signingResponseVO= ContractSigningWrapper.build().entityVO(signingEntity);
+		//查询依据附件
+		//@Func.isNoneBlank判断是否全为非空字符串
+		//文本扫描件
+		if (Func.isNoneBlank(signingResponseVO.getTextFiles())){
+			R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getTextFiles());
+			if (result.isSuccess()){
+				signingResponseVO.setSigningTextFileVOList(result.getData());
+			}
+		}
+		//附件扫描件
+		if (Func.isNoneBlank(signingResponseVO.getAttachedFiles())){
+			R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getAttachedFiles());
+			if (result.isSuccess()){
+				signingResponseVO.setSigningAttachedFileVOList(result.getData());
+			}
+		}
+		return signingResponseVO;
 	}
 
 }

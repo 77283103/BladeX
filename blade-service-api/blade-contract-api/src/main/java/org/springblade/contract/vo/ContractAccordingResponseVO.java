@@ -25,6 +25,6 @@ public class ContractAccordingResponseVO extends ContractAccordingEntity {
 	/**
 	 * 依据附件列表
 	 */
-	private List<FileVO> accordingFileVOList;
+	private List<FileVO> accordingFilesVOList;
 
 }
