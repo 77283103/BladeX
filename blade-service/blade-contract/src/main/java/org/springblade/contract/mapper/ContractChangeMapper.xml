@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractChangeMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="changeResultMap" type="org.springblade.contract.entity.ContractChangeEntity">
+        <result column="id" property="id"/>
+        <result column="change_agreement_name" property="changeAgreementName"/>
+        <result column="change_reason" property="changeReason"/>
+        <result column="change_content" property="changeContent"/>
+        <result column="change_party" property="changeParty"/>
+        <result column="change_explain" property="changeExplain"/>
+        <result column="supple_agreement" property="suppleAgreement"/>
+        <result column="ref_contract_id" property="refContractId"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        change_agreement_name,
+        change_reason,
+        change_content,
+        change_party,
+        change_explain,
+        supple_agreement,
+        ref_contract_id,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="changeResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_change
+        WHERE is_deleted = 0
+    </select>
+</mapper>

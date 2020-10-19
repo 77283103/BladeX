@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractSigningMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="signingResultMap" type="org.springblade.contract.entity.ContractSigningEntity">
+        <result column="id" property="id"/>
+        <result column="sign_date" property="signDate"/>
+        <result column="sign_for_us" property="signForUs"/>
+        <result column="sign_for_other" property="signForOther"/>
+        <result column="contract_start_time" property="contractStartTime"/>
+        <result column="contract_end_time" property="contractEndTime"/>
+        <result column="text_files" property="textFiles"/>
+        <result column="attached_files" property="attachedFiles"/>
+        <result column="remark" property="remark"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contract_id" property="contractId"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        sign_date,
+        sign_for_us,
+        sign_for_other,
+        contract_start_time,
+        contract_end_time,
+        text_files,
+        attached_files,
+        remark,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contract_id
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="signingResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_signing
+        WHERE is_deleted = 0
+    </select>
+</mapper>

@@ -16,6 +16,7 @@
         <result column="business_type" property="businessType"/>
         <result column="dept_range" property="deptRange"/>
         <result column="params" property="params"/>
+        <result column="start_condition" property="startCondition"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -30,7 +31,8 @@
         is_deleted,
         business_type,
         dept_range,
-        params
+        params,
+        start_condition
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="processResultMap">

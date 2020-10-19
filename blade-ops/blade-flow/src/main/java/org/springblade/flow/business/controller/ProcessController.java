@@ -8,7 +8,9 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.tool.api.ServiceCode;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
 
@@ -34,6 +36,7 @@ import java.util.Map;
  * @author tianah
  * @date 2020-9-9
  */
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/process")
@@ -88,7 +91,8 @@ public class ProcessController extends BladeController {
 	@PreAuth("hasPermission('flow:process:update')")
 	public R update(@Valid @RequestBody ProcessRequestVO process) {
 		if (Func.isEmpty(process.getId())) {
-			throw new ServiceException("id不能为空");
+			log.error("【错误码{}】：流程定义ID为空",ServiceCode.FLOW_ID_NOT_FOUND.getCode());
+			throw new ServiceException(ServiceCode.FLOW_ID_NOT_FOUND);
 		}
 		ProcessEntity entity = new ProcessEntity();
 		BeanUtil.copy(process, entity);
@@ -114,12 +118,7 @@ public class ProcessController extends BladeController {
 	@ApiOperation(value = "获取bean字段及类型", notes = "传入业务类型")
 	@PreAuth("hasPermission('flow:process:bean-field')")
 	public R<List<Map<String,String>>> getBeanFields(@RequestParam String businessType) {
-		try {
-			List<Map<String,String>> beanFields = processService.getBeanFields(businessType);
-			return R.data(beanFields);
-		} catch (ClassNotFoundException e) {
-			throw new ServiceException("未获取到类："+businessType);
-		}
+		List<Map<String,String>> beanFields = processService.getBeanFields(businessType);
+		return R.data(beanFields);
 	}
-
 }

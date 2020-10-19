@@ -43,4 +43,7 @@ public class ProcessRequestVO extends BaseEntity {
     @ApiModelProperty(value="流程参数")
 	private String params;
 
+	@ApiModelProperty(value = "流程启动条件")
+	private String startCondition;
+
 }

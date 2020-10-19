@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractFormInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="formInfoResultMap" type="org.springblade.contract.entity.ContractFormInfoEntity">
+        <result column="id" property="id"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="text_file" property="textFile"/>
+        <result column="attached_files" property="attachedFiles"/>
+        <result column="currency_category" property="currencyCategory"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="change_category" property="changeCategory"/>
+        <result column="change_contract_id" property="changeContractId"/>
+        <result column="contract_status" property="contractStatus"/>
+        <result column="submit_status" property="submitStatus"/>
+        <result column="contract_soure" property="contractSoure"/>
+        <result column="file_export_category" property="fileExportCategory"/>
+        <result column="file_export_count" property="fileExportCount"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contract_big_category" property="contractBigCategory"/>
+        <result column="contract_small_category" property="contractSmallCategory"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        contract_name,
+        contract_number,
+        text_file,
+        attached_files,
+        currency_category,
+        contract_amount,
+        change_category,
+        change_contract_id,
+        contract_status,
+        submit_status,
+        contract_soure,
+        file_export_category,
+        file_export_count,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contract_big_category,
+        contract_small_category
+    </sql>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnListJoin">
+        a.id,
+        a.contract_name,
+        a.contract_number,
+        a.text_file,
+        a.attached_files,
+        a.currency_category,
+        a.contract_amount,
+        a.change_category,
+        a.change_contract_id,
+        a.contract_status,
+        a.submit_status,
+        a.contract_soure,
+        a.file_export_category,
+        a.file_export_count,
+        a.is_deleted,
+        a.create_user,
+        a.create_time,
+        a.update_user,
+        a.update_time,
+        a.create_dept,
+        a.contract_big_category,
+        a.contract_small_category
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="formInfoResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_form_info
+        WHERE is_deleted = 0
+        <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
+            AND contract_status = concat(#{contractFormInfo.contractStatus})
+        </if>
+        <if test="contractFormInfo.contractBigCategory != null and contractFormInfo.contractBigCategory != ''">
+            AND contract_big_category = concat(#{contractFormInfo.contractBigCategory})
+        </if>
+        <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
+            AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
+        </if>
+    </select>
+    <!--修改合同状态-->
+    <update id="updateExportStatus">
+        UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
+    </update>
+    <!--用印分页-->
+    <select id="pageListSealInfo" resultMap="formInfoResultMap">
+        SELECT
+        <include refid="baseColumnListJoin"></include>
+        FROM contract_form_info a
+        LEFT JOIN
+        contract_seal_using_info b
+        ON
+        a.id = b.ref_contract_id
+        <if test="contractFormInfoRequestVO.startTime!=null and contractFormInfoRequestVO.endTime!=null">
+            WHERE
+            <if test="contractFormInfoRequestVO.startTime!=null">
+                b.sign_time &gt; concat(#{contractFormInfoRequestVO.startTime})
+            </if>
+            <if test="contractFormInfoRequestVO.endTime!=null">
+                AND b.sign_time &lt; concat(#{contractFormInfoRequestVO.endTime})
+            </if>
+            <if test="contractFormInfoRequestVO.minContractAmount!=null">
+                AND a.contract_amount &gt; concat(#{contractFormInfoRequestVO.minContractAmount})
+            </if>
+            <if test="contractFormInfoRequestVO.maxContractAmount!=null">
+                AND a.contract_amount &lt; concat(#{contractFormInfoRequestVO.maxContractAmount})
+            </if>
+        </if>
+    </select>
+    <!--保存关联相对方-->
+    <insert id="saveCounterpart" >
+        insert into contract_counterpart_setting
+        (
+        contract_id,
+        counterpart_id
+        )
+        values
+        <foreach collection="counterpartIds" item="item" index="index" open="" close="" separator=",">
+            (
+            #{id},
+            #{item}
+            )
+        </foreach>
+    </insert>
+    <!--保存关联依据-->
+    <insert id="saveAccording" >
+        insert into contract_according_setting
+        (
+        contract_id,
+        contract_according_id
+        )
+        values
+        <foreach collection="accordingIds" item="item" index="index" open="" close="" separator=",">
+            (
+            #{id},
+            #{item}
+            )
+        </foreach>
+    </insert>
+
+    <!--保存关联用印-->
+    <insert id="saveSeal" >
+        insert into contract_seal_using_setting
+        (
+        contract_id,
+        contract_seal_using_id
+        )
+        values
+        (
+        #{refContractId},
+        #{sealId}
+        )
+    </insert>
+    <!--保存关联评估-->
+    <insert id="saveAssessment" >
+        insert into contract_assessment_setting
+        (
+        contract_id,
+        contract_assessment_id
+        )
+        values
+            (
+            #{contractId},
+            #{assessmentId}
+            )
+    </insert>
+
+    <!--保存关联归档-->
+    <insert id="saveArchive" >
+        insert into contract_archive_setting
+        (
+        contract_id,
+        contract_archive_id
+        )
+        values
+        (
+        #{contractId},
+        #{archiveId}
+        )
+    </insert>
+
+    <!--统计合同下载次数-->
+    <update id="textExportCount">
+        UPDATE contract_form_info SET file_export_count = ${fileExportCount},file_export_category=${fileExportCategory} WHERE id = ${id}
+    </update>
+</mapper>

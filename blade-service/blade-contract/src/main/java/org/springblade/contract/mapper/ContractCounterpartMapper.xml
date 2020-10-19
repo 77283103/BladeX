@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractCounterpartMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="counterpartResultMap" type="org.springblade.contract.entity.ContractCounterpartEntity">
+        <result column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="counterpart_category" property="counterpartCategory"/>
+        <result column="registered_address" property="registeredAddress"/>
+        <result column="legal_representative" property="legalRepresentative"/>
+        <result column="registered_capital" property="registeredCapital"/>
+        <result column="currency_category" property="currencyCategory"/>
+        <result column="establish_date" property="establishDate"/>
+        <result column="unified_social_credit_code" property="unifiedSocialCreditCode"/>
+        <result column="first_cooperation_date" property="firstCooperationDate"/>
+        <result column="contract_record" property="contractRecord"/>
+        <result column="list_record" property="listRecord"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        name,
+        counterpart_category,
+        registered_address,
+        legal_representative,
+        registered_capital,
+        currency_category,
+        establish_date,
+        unified_social_credit_code,
+        first_cooperation_date,
+        contract_record,
+        list_record,
+        contract_id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="counterpartResultMap">
+        SELECT
+            <include refid="baseColumnList"> </include>
+        FROM contract_counterpart
+        WHERE is_deleted = 0
+        <if test="counterpart.name != null and counterpart.name != ''">
+            AND name = #{counterpart.name}
+        </if>
+        <if test="counterpart.counterpartCategory != null and counterpart.counterpartCategory != ''">
+            AND counterpart_category = #{counterpart.counterpartCategory}
+        </if>
+        <if test="counterpart.legalRepresentative != null and counterpart.legalRepresentative != ''">
+            AND legal_representative = #{counterpart.legalRepresentative}
+        </if>
+        <if test="counterpart.establishDate != null and counterpart.establishDate != ''">
+            AND establish_date = #{counterpart.establishDate}
+        </if>
+    </select>
+    <!--根据合同id查询相对方集合-->
+    <select id="selectByIds" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_counterpart
+        WHERE is_deleted = 0
+        AND
+        id IN (SELECT c.counterpart_id FROM  contract_counterpart_setting c WHERE c.contract_id = #{id})
+    </select>
+</mapper>

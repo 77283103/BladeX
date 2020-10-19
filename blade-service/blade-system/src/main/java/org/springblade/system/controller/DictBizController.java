@@ -131,8 +131,8 @@ public class DictBizController extends BladeController {
 	@GetMapping("/tree")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "树形结构", notes = "树形结构")
-	public R<List<DictBizVO>> tree() {
-		List<DictBizVO> tree = dictService.tree();
+	public R<List<DictBizVO>> tree(String code) {
+		List<DictBizVO> tree = dictService.tree(code);
 		return R.data(tree);
 	}
 

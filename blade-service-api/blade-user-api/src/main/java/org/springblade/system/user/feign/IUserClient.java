@@ -106,18 +106,18 @@ public interface IUserClient {
 	 * @return
 	 */
 	@GetMapping(USER_INFO_BY_DEPTID_AND_POSTID)
-	List<User> userInfoByDeptAndPost(@RequestParam("deptId") String deptId, @RequestParam("postId") String postId);
+	R<List<User>> userInfoByDeptAndPost(@RequestParam("deptId") String deptId, @RequestParam("postId") String postId);
 
 	/**
 	 * 根据userIds返回userList
 	 */
 	@GetMapping(USER_INFO_BY_USERID_ARRAY)
-	List<User> userInfoByUserIds(@RequestParam("userIds") String userIds);
+	R<List<User>> userInfoByUserIds(@RequestParam("userIds") String userIds);
 
 	/**
 	 * 获取基准人的部门部长
 	 */
 	@GetMapping(USER_INFO_BY_BENCH_MINISTER)
-	List<User> userInfoByBenchMinister(@RequestParam("benchUserId") String benchUserId);
+	R<List<User>> userInfoByBenchMinister(@RequestParam("benchUserId") String benchUserId);
 
 }

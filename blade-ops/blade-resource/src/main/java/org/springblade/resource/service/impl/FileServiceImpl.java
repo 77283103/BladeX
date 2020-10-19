@@ -86,11 +86,9 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileEntity> imp
 		// 所有要删除的对象
 		List<FileEntity> fileEntities = baseMapper.selectBatchIds(ids);
 		/* 删除文件服务器中的文件 */
-		fileEntities.forEach(fileEntity -> {
-			ossBuilder.template().removeFile(fileEntity.getName());
-		});
+		fileEntities.forEach(fileEntity -> ossBuilder.template().removeFile(fileEntity.getGenerateName()));
 		/* 删除表中数据*/
-		baseMapper.deleteBatchIds(ids);
+		baseMapper.deleteByIds(ids);
 		return true;
 	}
 

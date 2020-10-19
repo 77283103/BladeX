@@ -71,7 +71,13 @@
     </select>
 
     <select id="tree" resultMap="treeNodeResultMap">
-        select id, parent_id, dict_value as title, id as "value", id as "key" from blade_dict_biz where is_deleted = 0
+        select id, parent_id, dict_value as title, id as "value", id as "key"
+        from blade_dict_biz
+        where is_deleted = 0
+        <if test="_parameter!=null and _parameter!=''">
+            and code = #{_parameter}
+        </if>
+        ORDER BY sort
     </select>
 
     <select id="parentTree" resultMap="treeNodeResultMap">
@@ -105,6 +111,7 @@
 
     <select id="dictionaryByCodes" resultType="org.springblade.system.entity.DictBiz">
         select
+            id,
             code,
             dict_key,
             dict_value,

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractAssessmentMapper">
+    <!-- 评估通用查询映射结果 -->
+    <resultMap id="assessmentResultMap" type="org.springblade.contract.entity.ContractAssessmentEntity">
+        <result column="id" property="id"/>
+        <result column="attached_files" property="attachedFiles"/>
+        <result column="assessment_remark" property="assessmentRemark"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+
+    <!-- 评估通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        attached_files,
+        assessment_remark,
+        contract_id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 合同信息通用查询结果列 -->
+    <sql id="baseColumnListA">
+        id,
+        contract_name,
+        contract_number,
+        text_file,
+        attached_files,
+        currency_category,
+        contract_amount,
+        change_category,
+        change_contract_id,
+        contract_status,
+        submit_status,
+        contract_soure,
+        file_export_category,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contract_big_category,
+        contract_small_category
+    </sql>
+    <!-- 评估信息分页 -->
+    <select id="pageList" resultMap="assessmentResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_assessment
+        WHERE is_deleted = 0
+    </select>
+
+     <!--根据合同id查询评估信息-->
+    <select id="selectById" resultMap="assessmentResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_assessment
+        WHERE is_deleted = 0
+        AND
+        id =(SELECT c.contract_assessment_id FROM  contract_assessment_setting c WHERE c.contract_id = #{id})
+    </select>
+</mapper>

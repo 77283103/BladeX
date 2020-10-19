@@ -131,7 +131,7 @@
         <if test="dict.dictValue != null and dict.dictValue != ''">
             AND dict_value like concat('%',#{dict.dictValue},'%')
         </if>
-
+        ORDER BY blade_dict.sort
     </select>
 
 </mapper>

@@ -39,6 +39,7 @@ import org.flowable.engine.runtime.ProcessInstanceQuery;
 import org.springblade.common.constant.flow.FlowEngineConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.api.ServiceCode;
 import org.springblade.core.tool.utils.FileUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringUtil;
@@ -148,9 +149,7 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 	@Override
 	public List<BladeFlowHistory> historyFlowList(String processInstanceId, String startActivityId, String endActivityId) {
 		List<BladeFlowHistory> flowListHistory = baseMapper.getFlowCommentVosByProcessInstanceId(processInstanceId);
-		flowListHistory.forEach(flow -> {
-			flow.setType(CommentTypeEnum.getEnumMsgByType(flow.getType()));
-		});
+		flowListHistory.forEach(flow -> flow.setType(CommentTypeEnum.getEnumMsgByType(flow.getType())));
 		return flowListHistory;
 	}
 
@@ -190,7 +189,8 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 					deploy(deployment, category);
 				}
 			} catch (IOException e) {
-				e.printStackTrace();
+				log.error("【错误码{}】：流程部署上传xml失败",ServiceCode.FLOW_XML_UPLOAD_FAIL.getCode(),e);
+				throw new ServiceException(ServiceCode.FLOW_XML_UPLOAD_FAIL);
 			}
 		});
 		return true;
@@ -200,7 +200,8 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 	public boolean deployModel(String modelId, String category, List<String> tenantIdList) {
 		FlowModel model = this.getById(modelId);
 		if (model == null) {
-			throw new ServiceException("No model found with the given id: " + modelId);
+			log.error("{}:无法获取流程模型，modelId = {}",ServiceCode.FLOW_MODEL_NOT_FOUND.getCode(),modelId);
+			throw new ServiceException(ServiceCode.FLOW_MODEL_NOT_FOUND);
 		}
 		byte[] bytes = getBpmnXML(model);
 		String processName = model.getName();
@@ -240,7 +241,8 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 			logArgs.add(processDefinition.getId());
 		}
 		if (list.size() == 0) {
-			throw new ServiceException("部署失败,未找到流程");
+			log.error("{}:部署失败，ProcessDefinitionList为空",ServiceCode.FLOW_XML_NOT_FOUND.getCode());
+			throw new ServiceException(ServiceCode.FLOW_XML_NOT_FOUND);
 		} else {
 			log.info(logBuilder.toString(), logArgs.toArray());
 			return true;
@@ -281,8 +283,8 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 			}
 			bpmnModel = getBpmnModel(model, formMap, decisionTableMap);
 		} catch (Exception e) {
-			log.error("Could not generate BPMN 2.0 model for {}", model.getId(), e);
-			throw new ServiceException("Could not generate BPMN 2.0 model");
+			log.error("{}:无法生成BPMN2.0模型，modelId = {}",ServiceCode.FLOW_UNKNOWN_MODEL.getCode(), model.getId(), e);
+			throw new ServiceException(ServiceCode.FLOW_UNKNOWN_MODEL);
 		}
 		return bpmnModel;
 	}
@@ -300,8 +302,8 @@ public class FlowEngineServiceImpl extends ServiceImpl<FlowMapper, FlowModel> im
 			}
 			return bpmnJsonConverter.convertToBpmnModel(editorJsonNode, formKeyMap, decisionTableKeyMap);
 		} catch (Exception e) {
-			log.error("Could not generate BPMN 2.0 model for {}", model.getId(), e);
-			throw new ServiceException("Could not generate BPMN 2.0 model");
+			log.error("{}:无法生成BPMN2.0模型，modelId = {}",ServiceCode.FLOW_UNKNOWN_MODEL.getCode(), model.getId(), e);
+			throw new ServiceException(ServiceCode.FLOW_UNKNOWN_MODEL);
 		}
 	}
 

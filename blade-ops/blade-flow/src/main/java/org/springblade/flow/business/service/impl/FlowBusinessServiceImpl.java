@@ -2,10 +2,10 @@ package org.springblade.flow.business.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.constants.BpmnXMLConstants;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
-import org.flowable.common.engine.api.FlowableException;
 import org.flowable.common.engine.impl.identity.Authentication;
 import org.flowable.editor.language.json.converter.util.CollectionUtils;
 import org.flowable.engine.*;
@@ -21,10 +21,13 @@ import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
 import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
+import org.springblade.common.constant.flow.FlowDesignUserType;
 import org.springblade.common.constant.flow.FlowEngineConstant;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.api.ServiceCode;
 import org.springblade.core.tool.support.Kv;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
@@ -36,9 +39,10 @@ import org.springblade.flow.business.common.cmd.BackUserTaskCmd;
 import org.springblade.flow.business.mapper.IHisFlowableActinstDaoMapper;
 import org.springblade.flow.business.mapper.IRunFlowableActinstDaoMapper;
 import org.springblade.flow.business.service.FlowBusinessService;
-import org.springblade.flow.core.constant.ProcessConstant;
+import org.springblade.flow.business.service.IProcessService;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.FlowNodeVo;
+import org.springblade.flow.core.entity.ProcessEntity;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.core.vo.FlowNodeRequest;
 import org.springblade.flow.core.vo.FlowNodeResponse;
@@ -46,13 +50,14 @@ import org.springblade.flow.core.vo.FlowUserRequest;
 import org.springblade.flow.engine.utils.FlowCache;
 import org.springblade.flow.engine.utils.FlowableUtils;
 import org.springblade.flow.business.vo.TaskRequest;
+import org.springblade.system.entity.Dept;
 import org.springblade.system.feign.ISysClient;
-import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -62,6 +67,7 @@ import java.util.stream.Collectors;
  * @author 田爱华、史智伟
  * @date 2020-8-26
  */
+@Slf4j
 @Service
 @AllArgsConstructor
 public class FlowBusinessServiceImpl extends BaseProcessService implements FlowBusinessService {
@@ -73,6 +79,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	protected ManagementService managementService;
 	private IRunFlowableActinstDaoMapper runFlowableActinstDao;
 	private IHisFlowableActinstDaoMapper hisFlowableActinstDao;
+	private ISysClient sysClient;
+	private IProcessService processService;
 
 	/**
 	 * 提交操作
@@ -82,9 +90,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 */
 	@Override
 	public boolean completeTask(List<FlowNodeResponse> flowNodeResponseList) {
-		if (CollectionUtil.isEmpty(flowNodeResponseList)) {
-			logger.error("流程提交时前台返回节点用户信息为空");
-			return false;
+		if (Func.isEmpty(flowNodeResponseList)) {
+			log.error("【错误码{}】：流程提交时前台返回节点和用户信息为空",ServiceCode.FLOW_FAIL.getCode());
+			throw new ServiceException(ServiceCode.FLOW_FAIL);
 		}
 		FlowNodeResponse flow = flowNodeResponseList.get(0);
 		String taskId = flow.getTaskId();
@@ -125,9 +133,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (targetFlowElement instanceof ExclusiveGateway || targetFlowElement instanceof ParallelGateway) {
 			/* 根据前台返回的节点List和用户List给全局变量赋值 */
 			/* 此处只要给参数循环赋值即可，无需关心执行单条或多条分支，flowable会自行判断，只要保证相应节点有任务处理人即可 */
-			flowNodeResponseList.forEach(flowNodeResponse -> {
-				variables.put(flowNodeResponse.getId(), TaskUtil.getTaskUser(flowNodeResponse.getUserResponseList().get(0).getId()));
-			});
+			flowNodeResponseList.forEach(flowNodeResponse -> variables.put(flowNodeResponse.getId(), TaskUtil.getTaskUser(flowNodeResponse.getUserResponseList().get(0).getId())));
 			/* 完成任务 */
 			taskService.complete(taskId, variables);
 			return true;
@@ -142,15 +148,13 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 					.filter(flowNodeResponse -> flowNodeResponse.getId().equals(nodeId))
 					.collect(Collectors.toList());
 				/* 如果结果不为空，表示需要提交给该节点，将该条连线的条件设置为true */
-				if (null != result) {
+				if (Func.isNotEmpty(result)) {
 					/* 根据前台返回节点信息确定需要给哪个连线设置true */
 					sequenceFlow.setConditionExpression(FlowEngineConstant.FLOW_TRUE);
 				}
 			});
 			/* 设置任务处理人 */
-			flowNodeResponseList.forEach(flowNodeResponse -> {
-				variables.put(flowNodeResponse.getId(), TaskUtil.getTaskUser(flowNodeResponse.getUserId()));
-			});
+			flowNodeResponseList.forEach(flowNodeResponse -> variables.put(flowNodeResponse.getId(), TaskUtil.getTaskUser(flowNodeResponse.getUserId())));
 			/* 完成任务 */
 			taskService.complete(taskId, variables);
 			return true;
@@ -196,10 +200,12 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				return createFlowNodeResponseGateWay(targetNode, taskId);
 			}
 			/* 都没有满足以上的话，可能是其他类型的节点，流程目前暂不支持 */
-			throw new FlowableException("无法识别下一节点，下一节点是EndEvent、UserTask、GateWay之外的其他节点");
+			log.error("【错误码{}】：无法识别下一节点，下一节点是EndEvent、UserTask、GateWay之外的其他节点", ServiceCode.FLOW_UNKNOWN_NODE.getCode());
+			throw new ServiceException(ServiceCode.FLOW_UNKNOWN_NODE);
 		} else {
 			/* 目前流程不允许多条出线的情况 */
-			throw new FlowableException("未找到流程出线或找到多条出线");
+			log.error("【错误码{}】：流程要求节点的出线数为1条，当前节点的出线数为{}条", ServiceCode.FLOW_UNKNOWN_OUTLINE.getCode(), outgoingFlows.size());
+			throw new ServiceException(ServiceCode.FLOW_UNKNOWN_OUTLINE);
 		}
 	}
 
@@ -224,7 +230,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * 封装【UserTask节点】的FlowNodeResponseList
 	 *
 	 * @param targetNode 节点对象
-	 * @param taskId 执行实例id
+	 * @param taskId     执行实例id
 	 * @return 可以提交的节点信息
 	 */
 	private List<FlowNodeRequest> createFlowNodeResponseUserTask(FlowNode targetNode, String taskId) {
@@ -246,7 +252,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * 封装【GateWay节点】的FlowNodeResponseList
 	 *
 	 * @param targetNode 节点对象
-	 * @param taskId 执行实例id
+	 * @param taskId     执行实例id
 	 * @return 可以提交的节点信息
 	 */
 	public List<FlowNodeRequest> createFlowNodeResponseGateWay(FlowNode targetNode, String taskId) {
@@ -274,8 +280,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (targetNode instanceof ExclusiveGateway) {
 			/*获取全局变量，全局变量是在启动流程时存入的变量，以Key Value的形式保存*/
 			Map<String, Object> variables = taskService.getVariables(taskId);
-			if (null == variables) {
-				throw new FlowableException("未获取到流程参数");
+			if (Func.isEmpty(variables)) {
+				log.error("【错误码{}】：排他网关未获取到流程参数，流程无法选择分支", ServiceCode.FLOW_VARIABLES_NOT_FOUND.getCode());
+				throw new ServiceException(ServiceCode.FLOW_VARIABLES_NOT_FOUND);
 			}
 			ScriptEngineManager manager = new ScriptEngineManager();
 			/* 遍历所有连线，确定流程即将进入的连线 */
@@ -289,7 +296,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				/* 遍历全局变量，将全局变量中与条件表达式对应的key替换为全局变量的value */
 				/* 得到类似：value（全局变量） == value（连线表达式） 的字符串表达式 */
 				for (Map.Entry<String, Object> map : variables.entrySet()) {
-					conditionExpression = conditionExpression.replace(map.getKey(), "'"+map.getValue().toString()+"'");
+					conditionExpression = conditionExpression.replace(map.getKey(), map.getValue().toString());
 				}
 				/* 调用js对字符串表达式进行计算，可以计算数字和字符串：1==1返回true，'a'=='a'返回true */
 				try {
@@ -310,8 +317,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 						/* 排他网关只能有一条线可以走，只要遇到满足条件的就结束循环 */
 						break;
 					}
-				} catch (Exception e) {
-					throw new FlowableException("排他网关连线条件判断时出现异常");
+				} catch (ScriptException e) {
+					log.error("【错误码{}】：JS表达式判断出现异常，表达式为【{}】", ServiceCode.FLOW_SCRIPT_ENGINE_EXCEPTION.getCode(), conditionExpression);
+					throw new ServiceException(ServiceCode.FLOW_SCRIPT_ENGINE_EXCEPTION);
 				}
 			}
 			return flowNodeRequestList;
@@ -320,7 +328,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		if (targetNode instanceof InclusiveGateway) {
 			targetNode.getOutgoingFlows().forEach(sequenceFlow -> {
 				FlowNode targetNodeInclusive = (FlowNode) sequenceFlow.getTargetFlowElement();
-				List<FlowUserRequest> candidateUserList = getCandidateUsers(targetNode, taskId);
+				List<FlowUserRequest> candidateUserList = getCandidateUsers(targetNodeInclusive, taskId);
 				FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
 					.end(false)
 					.taskId(taskId)
@@ -333,14 +341,15 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			});
 			return flowNodeRequestList;
 		}
-		throw new FlowableException("流程暂不支持其他网关类型的处理");
+		log.error("【错误码{}】：流程暂不支持其他网关类型(排他，包容，并行之外的类型)的处理", ServiceCode.FLOW_UNKNOWN_GATEWAY.getCode());
+		throw new ServiceException(ServiceCode.FLOW_UNKNOWN_GATEWAY);
 	}
 
 	@Override
 	public List<FlowUserRequest> getCandidateUsers(FlowNode targetNode, String... taskId) {
 		/* 获取候选人名单获取方式 */
 		String getUserType = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.GET_USER_TYPE);
-		if (Func.isEmpty(getUserType)) {
+		if (Func.isEmpty(getUserType) || Func.equals(getUserType, FlowDesignUserType.NONE)) {
 			return null;
 		}
 		return FactoryGetUser.getInvokeStrategy(getUserType).getUser(targetNode, (taskId.length == 0 ? "" : taskId[0]));
@@ -393,21 +402,18 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	public IPage<BladeFlow> selectSendPage(IPage<BladeFlow> page, BladeFlow bladeFlow) {
 		String taskUser = TaskUtil.getTaskUser();
 		List<BladeFlow> flowList = new LinkedList<>();
-
 		HistoricProcessInstanceQuery historyQuery = historyService.createHistoricProcessInstanceQuery().startedBy(taskUser).orderByProcessInstanceStartTime().desc();
-
-		if (bladeFlow.getCategory() != null) {
+		if (Func.isNotEmpty(bladeFlow.getCategory())) {
 			historyQuery.processDefinitionCategory(bladeFlow.getCategory());
 		}
-		if (bladeFlow.getBeginDate() != null) {
+		if (Func.isNotEmpty(bladeFlow.getBeginDate())) {
 			historyQuery.startedAfter(bladeFlow.getBeginDate());
 		}
-		if (bladeFlow.getEndDate() != null) {
+		if (Func.isNotEmpty(bladeFlow.getEndDate())) {
 			historyQuery.startedBefore(bladeFlow.getEndDate());
 		}
 		/* 查询列表 */
 		List<HistoricProcessInstance> historyList = historyQuery.listPage(Func.toInt((page.getCurrent() - 1) * page.getSize()), Func.toInt(page.getSize()));
-
 		historyList.forEach(historicProcessInstance -> {
 			BladeFlow flow = new BladeFlow();
 			/* historicProcessInstance */
@@ -440,7 +446,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				flow.setTaskDefinitionKey(historyTask.getTaskDefinitionKey());
 			}
 			/* Status */
-			if (historicProcessInstance.getEndActivityId() != null) {
+			if (Func.isNotEmpty(historicProcessInstance.getEndActivityId())) {
 				flow.setProcessIsFinished(FlowEngineConstant.STATUS_FINISHED);
 			} else {
 				flow.setProcessIsFinished(FlowEngineConstant.STATUS_UNFINISHED);
@@ -460,17 +466,15 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	public IPage<BladeFlow> selectDonePage(IPage<BladeFlow> page, BladeFlow bladeFlow) {
 		String taskUser = TaskUtil.getTaskUser();
 		List<BladeFlow> flowList = new LinkedList<>();
-
 		HistoricTaskInstanceQuery doneQuery = historyService.createHistoricTaskInstanceQuery().taskAssignee(taskUser).finished()
 			.includeProcessVariables().orderByHistoricTaskInstanceEndTime().desc();
-
-		if (bladeFlow.getCategory() != null) {
+		if (Func.isNotEmpty(bladeFlow.getCategory())) {
 			doneQuery.processCategoryIn(Func.toStrList(bladeFlow.getCategory()));
 		}
-		if (bladeFlow.getBeginDate() != null) {
+		if (Func.isNotEmpty(bladeFlow.getBeginDate())) {
 			doneQuery.taskCompletedAfter(bladeFlow.getBeginDate());
 		}
-		if (bladeFlow.getEndDate() != null) {
+		if (Func.isNotEmpty(bladeFlow.getEndDate())) {
 			doneQuery.taskCompletedBefore(bladeFlow.getEndDate());
 		}
 
@@ -502,7 +506,7 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 				String[] businessKey = Func.toStrArray(StringPool.COLON, historicProcessInstance.getBusinessKey());
 				flow.setBusinessTable(businessKey[0]);
 				flow.setBusinessId(businessKey[1]);
-				if (historicProcessInstance.getEndActivityId() != null) {
+				if (Func.isNotEmpty(historicProcessInstance.getEndActivityId())) {
 					flow.setProcessIsFinished(FlowEngineConstant.STATUS_FINISHED);
 				} else {
 					flow.setProcessIsFinished(FlowEngineConstant.STATUS_UNFINISHED);
@@ -534,13 +538,13 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	 * @param status    状态
 	 */
 	private void buildFlowTaskList(BladeFlow bladeFlow, List<BladeFlow> flowList, TaskQuery taskQuery, String status) {
-		if (bladeFlow.getCategory() != null) {
+		if (Func.isNotEmpty(bladeFlow.getCategory())) {
 			taskQuery.processCategoryIn(Func.toStrList(bladeFlow.getCategory()));
 		}
-		if (bladeFlow.getBeginDate() != null) {
+		if (Func.isNotEmpty(bladeFlow.getBeginDate())) {
 			taskQuery.taskCreatedAfter(bladeFlow.getBeginDate());
 		}
-		if (bladeFlow.getEndDate() != null) {
+		if (Func.isNotEmpty(bladeFlow.getEndDate())) {
 			taskQuery.taskCreatedBefore(bladeFlow.getEndDate());
 		}
 		taskQuery.list().forEach(task -> {
@@ -648,7 +652,8 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	@Override
 	public void cancelTask(BladeFlow flow) {
 		if (Func.isEmpty(flow.getProcessInstanceId())) {
-			throw new ServiceException("流程实例ID不能为空!");
+			log.error("【错误码{}】：流程实例id为空", ServiceCode.FLOW_INSTANCE_ID_NOT_FOUND.getCode());
+			throw new ServiceException(ServiceCode.FLOW_INSTANCE_ID_NOT_FOUND);
 		}
 		runtimeService.deleteProcessInstance(flow.getProcessInstanceId(), "终止原因");
 	}
@@ -709,9 +714,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 	@Override
 	public boolean takeItBackTask(BladeFlow flow) {
 		TaskEntity taskEntity = (TaskEntity) taskService.createTaskQuery().taskId(flow.getTaskId()).singleResult();
-		String submitter="提交人";
+		String submitter = "提交人";
 		/* 1.把当前的节点设置为空 */
-		if (taskEntity != null) {
+		if (Func.isNotEmpty(taskEntity)) {
 			/* 2.设置审批人 */
 			taskEntity.setAssignee(flow.getAssignee());
 			taskService.saveTask(taskEntity);
@@ -725,13 +730,13 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			for (Process process : processes) {
 				/* 需要退回节点的id */
 				FlowElement flowElement = process.getFlowElementMap().get(flow.getDistFlowElementId());
-				if (flowElement != null) {
+				if (Func.isNotEmpty(flowElement)) {
 					activity = (FlowNode) flowElement;
 					break;
 				}
 			}
 			FlowNode distActivity = activity;
-			if (distActivity != null) {
+			if (Func.isNotEmpty(distActivity)) {
 				if (submitter.equals(distActivity.getName())) {
 					ProcessInstance processInstance = runtimeService.createProcessInstanceQuery().processInstanceId(taskEntity.getProcessInstanceId()).singleResult();
 					runtimeService.setVariable(flow.getProcessInstanceId(), "initiator", processInstance.getStartUserId());
@@ -789,9 +794,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 			activityInstances.sort(Comparator.comparing(ActivityInstance::getEndTime));
 		}
 		int group = 0;
-		if(BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL.equals(activityInstances.get(activityInstances.size()-1).getActivityType())||BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE.equals(activityInstances.get(activityInstances.size()-1).getActivityType())){
-			if ((parallelGatewaies.size() % group != 0)||(inclusiveGateways.size() % group != 0)) {
-				activityInstances.remove(activityInstances.size()-1);
+		if (BpmnXMLConstants.ELEMENT_GATEWAY_PARALLEL.equals(activityInstances.get(activityInstances.size() - 1).getActivityType()) || BpmnXMLConstants.ELEMENT_GATEWAY_INCLUSIVE.equals(activityInstances.get(activityInstances.size() - 1).getActivityType())) {
+			if ((parallelGatewaies.size() % group != 0) || (inclusiveGateways.size() % group != 0)) {
+				activityInstances.remove(activityInstances.size() - 1);
 			}
 		}
 		/* 分组节点 */
@@ -955,7 +960,9 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 		/* 获取当前节点 */
 		FlowNode targetNode = (FlowNode) process.getFlowElement(currActId, true);
 		/* 获取btnPermission标签值*/
-		return targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.BTN_PERMISSION);
+		String attributeValue = targetNode.getAttributeValue(FlowEngineConstant.NAME_SPACE, FlowEngineConstant.BTN_PERMISSION);
+		/* 把ASCII码转为符号 */
+		return attributeValue.replaceAll("&#34;", "'");
 	}
 
 	/**
@@ -987,6 +994,245 @@ public class FlowBusinessServiceImpl extends BaseProcessService implements FlowB
 					hisFlowableActinstDao.deleteHisActinstsById(ac.getId());
 				}
 			}
+		}
+	}
+
+	@Override
+	@Transactional(rollbackFor = Exception.class)
+	public BladeFlow startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables) {
+		/* 设置流程启动用户 */
+		identityService.setAuthenticatedUserId(TaskUtil.getTaskUser());
+		/* 获取主流程开始节点 */
+		FlowNode startEvent = (FlowNode) repositoryService.getBpmnModel(processDefinitionId)
+			.getMainProcess().getFlowElements()
+			.stream()
+			.filter(flowElement -> flowElement instanceof StartEvent)
+			.limit(1)
+			.collect(Collectors.toList()).get(0);
+		/* 获取第一个用户节点id，即起草人节点，开始节点之后有且仅有一个用户节点 */
+		FlowNode firstNode = (FlowNode) startEvent.getOutgoingFlows().get(0).getTargetFlowElement();
+		/* 获取第一个用户节点id，自动提交流程 */
+		String firstId = firstNode.getId();
+		/* 开启流程，给第一个用户节点赋空值，否则流程无法提交，此处无法设置办理人，后续会设置 */
+		variables.put(firstId, "");
+		ProcessInstance processInstance = runtimeService.startProcessInstanceById(processDefinitionId, businessKey, variables);
+		String processInstanceId = processInstance.getProcessInstanceId();
+		List<Task> tasks = taskService.createTaskQuery().processInstanceId(processInstanceId).list();
+		tasks.forEach(task -> {
+			/* 第一个用户节点为起草人,自动完成任务 */
+			if (firstId.equals(task.getTaskDefinitionKey())) {
+				this.addComment(task.getId(), processInstanceId, AuthUtil.getUserId().toString(), CommentTypeEnum.TJ, null);
+				/*给第一个用户节点设置办理人为当前登录人，即流程发起者*/
+				taskService.setAssignee(task.getId(), AuthUtil.getUserId().toString());
+				/*查询第一个用户节点后边的节点（可能是用户节点或网关）*/
+				FlowNode secondNode = (FlowNode) firstNode.getOutgoingFlows().get(0).getTargetFlowElement();
+				/*此时secondNode是用户节点*/
+				if (secondNode instanceof UserTask) {
+					List<FlowUserRequest> candidateUsers = this.getCandidateUsers(secondNode, task.getId());
+					if (CollectionUtil.isEmpty(candidateUsers)) {
+						log.error("【错误码{}】：流程启动最终确认时未获取到下一办理人信息，请检查前台传参是否正确", ServiceCode.FLOW_NEXT_USER_NOT_FOUND.getCode());
+						throw new ServiceException(ServiceCode.FLOW_NEXT_USER_NOT_FOUND);
+					}
+					/* 通过全局变量设置办理人 */
+					variables.put(secondNode.getId(), TaskUtil.getTaskUser(candidateUsers.get(0).getId()));
+				}
+				/*此时secondNode是网关节点*/
+				if (secondNode instanceof Gateway) {
+					secondNode.getOutgoingFlows().forEach(sequenceFlow -> {
+						/*网关连接的每一个用户节点，此处不判断流程将要提交给哪些节点，将所有节点候选人都设置到全局变量*/
+						FlowNode secondUserNode = (FlowNode) sequenceFlow.getTargetFlowElement();
+						List<FlowUserRequest> candidateUsers = this.getCandidateUsers(secondUserNode, task.getId());
+						if (CollectionUtil.isEmpty(candidateUsers)) {
+							log.error("【错误码{}】：流程启动最终确认时未获取到下一办理人信息，请检查前台传参是否正确", ServiceCode.FLOW_NEXT_USER_NOT_FOUND.getCode());
+							throw new ServiceException(ServiceCode.FLOW_NEXT_USER_NOT_FOUND);
+						}
+						/* 通过全局变量设置办理人 */
+						variables.put(secondUserNode.getId(), TaskUtil.getTaskUser(candidateUsers.get(0).getId()));
+					});
+				}
+				taskService.complete(task.getId(), variables);
+			}
+		});
+		/* 组装流程通用类 */
+		BladeFlow flow = new BladeFlow();
+		flow.setProcessInstanceId(processInstance.getId());
+		return flow;
+	}
+
+	@Override
+	public List<FlowNodeRequest> startProcessBefore(Map<String, Object> maps, String businessType) {
+		/* 当前登录人的部门id */
+		String currentUserDeptId = AuthUtil.getDeptId();
+		/*根据业务类型获取满足条件的流程xml*/
+		List<ProcessEntity> processEntityList = processService.getProcessByBusinessType(businessType);
+		List<FlowNodeRequest> flowNodeRequests = new ArrayList<>();
+		if (Func.isNotEmpty(processEntityList)) {
+			/*获取当前登录人部门的祖籍列表*/
+			String deptAncestors = "";
+			R<Dept> dept = sysClient.getDept(Long.parseLong(currentUserDeptId));
+			if (dept.isSuccess()) {
+				/*拼接当前部门id*/
+				deptAncestors = StringUtil.format("{},{}",dept.getData().getAncestors(),currentUserDeptId);
+			} else {
+				log.error("【错误码{}】：blade-flow调用blade-system出错，请查看blade-system模块异常信息",ServiceCode.FEIGN_FAIL.getCode());
+				throw new ServiceException(ServiceCode.FEIGN_FAIL);
+			}
+			List<String> deptIds = Arrays.asList(deptAncestors.split(","));
+			/*用于存储每个候选流程的使用范围id，用于和当前登录人部门去匹配*/
+			List<String> processDefineIds = new ArrayList<>();
+			/*取出每一个流程使用范围id*/
+			processEntityList.forEach(processEntity -> processDefineIds.add(processEntity.getDeptRange().toString()));
+			/*先倒序祖籍列表，从最底级开始依次排查是否包含在流程定义的List中，取出第一个匹配的，即最小级的部门id*/
+			List<String> deptIdResult = deptIds.stream().sorted(Comparator.reverseOrder()).filter(processDefineIds::contains).limit(1).collect(Collectors.toList());
+			/*过滤流程定义List，取出与最低小级部门匹配的流程定义信息，即 即将启动的流程*/
+			List<ProcessEntity> processEntityResult = processEntityList.stream().filter(processEntity -> Func.equals(deptIdResult.get(0), processEntity.getDeptRange().toString())).collect(Collectors.toList());
+			/*计算表达式*/
+			ScriptEngineManager manager = new ScriptEngineManager();
+			ScriptEngine engine = manager.getEngineByName("js");
+			/*过滤流程启动条件*/
+			processEntityResult = processEntityResult.stream().filter(processEntity -> {
+				if (Func.isNotEmpty(processEntity.getStartCondition())) {
+					String condition = processEntity.getStartCondition();
+					boolean flag;
+					for (Map.Entry<String, Object> map : maps.entrySet()) {
+						if (condition.contains(map.getKey())) {
+							condition = condition.replace(map.getKey(), map.getValue().toString());
+						}
+					}
+					try {
+						flag = (boolean) engine.eval(condition);
+					} catch (ScriptException e) {
+						log.error("【错误码{}】：JS表达式判断出现异常，表达式为【{}】", ServiceCode.FLOW_SCRIPT_ENGINE_EXCEPTION.getCode(), condition, e);
+						throw new ServiceException(ServiceCode.FLOW_SCRIPT_ENGINE_EXCEPTION);
+					}
+					return flag;
+				} else {
+					/*如果启动条件为空说明不涉及启动条件，则保留该条数据*/
+					return true;
+				}
+			}).collect(Collectors.toList());
+			if (Func.isNotEmpty(processEntityResult)) {
+				ProcessEntity processEntity = processEntityResult.get(0);
+				/*获取主流程*/
+				Process mainProcess = repositoryService.getBpmnModel(processEntityResult.get(0).getProcessDefinitionId()).getMainProcess();
+				/*定义全局变量*/
+				Kv variables = Kv.create();
+				/*获取流程全局变量参数，逗号分隔*/
+				String params = processEntity.getParams();
+				if (Func.isNotEmpty(params)) {
+					/*通过流程全局参数名获取value给全局变量赋值*/
+					Arrays.asList(params.split(",")).forEach(param -> variables.put(param, maps.get(param)));
+				}
+				/* 获取主流程开始节点 */
+				FlowNode startEvent = (FlowNode) mainProcess.getFlowElements().stream().filter(flowElement -> flowElement instanceof StartEvent).limit(1).collect(Collectors.toList()).get(0);
+				/* 获取第一个用户节点id，即起草人节点，开始节点之后有且仅有一个用户节点 */
+				FlowNode firstNode = (FlowNode) startEvent.getOutgoingFlows().get(0).getTargetFlowElement();
+				/*获取承办人节点后边的节点（可能是用户节点或网关）*/
+				FlowNode secondNode = (FlowNode) firstNode.getOutgoingFlows().get(0).getTargetFlowElement();
+				if (secondNode instanceof UserTask) {
+					List<FlowUserRequest> candidateUsers = this.getCandidateUsers(secondNode);
+					FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
+						.userResponseList(candidateUsers)
+						.id(secondNode.getId())
+						.processDefinitionId(processEntity.getProcessDefinitionId())
+						.name(secondNode.getName())
+						.variables(variables)
+						.enableChooseNode(false)
+						.end(false)
+						.build();
+					flowNodeRequests.add(flowNodeRequest);
+				}
+				/*如果secondNode是网关节点*/
+				if (secondNode instanceof Gateway) {
+					// 排他网关
+					if (secondNode instanceof ExclusiveGateway) {
+						/* 遍历所有连线，确定流程即将进入的连线 */
+						for (SequenceFlow outLine : secondNode.getOutgoingFlows()) {
+							/* 获取连线的条件 */
+							String conditionExpression = outLine.getConditionExpression();
+							/* 去掉$、{、}， */
+							conditionExpression = conditionExpression.replace("$", "")
+								.replace("{", "")
+								.replace("}", "");
+							/* 遍历全局变量，将全局变量中与条件表达式对应的key替换为全局变量的value */
+							/* 得到类似：value（全局变量） == value（连线表达式） 的字符串表达式 */
+							for (Map.Entry<String, Object> map : variables.entrySet()) {
+								conditionExpression = conditionExpression.replace(map.getKey(), "'" + map.getValue().toString() + "'");
+							}
+							/* 调用js对字符串表达式进行计算，可以计算数字和字符串：1==1返回true，'a'=='a'返回true */
+							try {
+								boolean result = (boolean) engine.eval(conditionExpression);
+								if (result) {
+									FlowNode flowNodeExclusive = (FlowNode) outLine.getTargetFlowElement();
+									/* 获取节点自定义属性 */
+									List<FlowUserRequest> candidateUserList = this.getCandidateUsers(flowNodeExclusive);
+									FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
+										.end(false)
+										.processDefinitionId(processEntity.getProcessDefinitionId())
+										.variables(variables)
+										.id(flowNodeExclusive.getId())
+										.name(flowNodeExclusive.getName())
+										.userResponseList(candidateUserList)
+										.build();
+									flowNodeRequests.add(flowNodeRequest);
+									/* 排他网关只能有一条线可以走，只要遇到满足条件的就结束循环 */
+									break;
+								}
+							} catch (ScriptException e) {
+								log.error("【错误码{}】：JS表达式判断出现异常，表达式为【{}】", ServiceCode.FLOW_SCRIPT_ENGINE_EXCEPTION.getCode(), conditionExpression, e);
+								throw new ServiceException(ServiceCode.FLOW_SCRIPT_ENGINE_EXCEPTION);
+							}
+						}
+					}
+					/* 并行网关，所有分支必须执行，无法自由选择 */
+					if (secondNode instanceof ParallelGateway) {
+						/* 遍历并行网关的每一条出线获取每一个节点 */
+						secondNode.getOutgoingFlows().forEach(sequenceFlow -> {
+							FlowNode targetFlowNode = (FlowNode) sequenceFlow.getTargetFlowElement();
+							/* 获取节点自定义属性并返回人员List */
+							List<FlowUserRequest> candidateUserList = this.getCandidateUsers(targetFlowNode);
+							FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
+								.id(targetFlowNode.getId())
+								.name(targetFlowNode.getName())
+								.processDefinitionId(processEntity.getProcessDefinitionId())
+								.end(false)
+								.variables(variables)
+								.userResponseList(candidateUserList)
+								.build();
+							flowNodeRequests.add(flowNodeRequest);
+						});
+					}
+					/* 包容网关，可以选择一条或多条出线，此处在前台展示所有可选的节点和用户信息 */
+					if (secondNode instanceof InclusiveGateway) {
+						secondNode.getOutgoingFlows().forEach(sequenceFlow -> {
+							FlowNode targetNodeInclusive = (FlowNode) sequenceFlow.getTargetFlowElement();
+							List<FlowUserRequest> candidateUserList = this.getCandidateUsers(secondNode);
+							FlowNodeRequest flowNodeRequest = FlowNodeRequest.builder()
+								.end(false)
+								.enableChooseNode(true)
+								.id(targetNodeInclusive.getId())
+								.processDefinitionId(processEntity.getProcessDefinitionId())
+								.name(targetNodeInclusive.getName())
+								.variables(variables)
+								.userResponseList(candidateUserList)
+								.build();
+							flowNodeRequests.add(flowNodeRequest);
+						});
+					}
+				}
+				return flowNodeRequests;
+			} else {
+				log.error(
+					"【错误码{}】：获取流程定义信息失败，进行使用范围及启动条件过滤后，未获取到匹配的processList，当前登录人部门id={}",
+					ServiceCode.FLOW_PROCESS_NOT_FOUND.getCode(),
+					currentUserDeptId);
+				throw new ServiceException(ServiceCode.FLOW_PROCESS_NOT_FOUND);
+			}
+		} else {
+			log.error("【错误码{}】：获取流程定义信息失败，根据businessType未获取到processList，businessType={}",
+				ServiceCode.FLOW_PROCESS_NOT_FOUND.getCode(),
+				businessType);
+			throw new ServiceException(ServiceCode.FLOW_PROCESS_NOT_FOUND);
 		}
 	}
 }

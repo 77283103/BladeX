@@ -26,7 +26,9 @@ import org.flowable.engine.history.HistoricProcessInstance;
 import org.flowable.engine.repository.ProcessDefinition;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.image.ProcessDiagramGenerator;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.api.ServiceCode;
 import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.entity.BladeFlowHistory;
@@ -77,7 +79,6 @@ public class FlowProcessController {
 	}
 
 
-
 	/**
 	 * 流程图展示
 	 *
@@ -87,7 +88,7 @@ public class FlowProcessController {
 	 * @param response            响应
 	 */
 	@GetMapping("resource-view")
-	public void resourceView(@RequestParam String processDefinitionId, String processInstanceId, @RequestParam(defaultValue = IMAGE_NAME) String resourceType, HttpServletResponse response) throws Exception {
+	public void resourceView(@RequestParam String processDefinitionId, String processInstanceId, @RequestParam(defaultValue = IMAGE_NAME) String resourceType, HttpServletResponse response) {
 		if (StringUtil.isAllBlank(processDefinitionId, processInstanceId)) {
 			return;
 		}
@@ -102,11 +103,16 @@ public class FlowProcessController {
 		} else if (resourceType.equals(XML_NAME)) {
 			resourceName = processDefinition.getResourceName();
 		}
-		InputStream resourceAsStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), resourceName);
-		byte[] b = new byte[1024];
-		int len;
-		while ((len = resourceAsStream.read(b, 0, INT_1024)) != -1) {
-			response.getOutputStream().write(b, 0, len);
+		try {
+			InputStream resourceAsStream = repositoryService.getResourceAsStream(processDefinition.getDeploymentId(), resourceName);
+			byte[] b = new byte[1024];
+			int len;
+			while ((len = resourceAsStream.read(b, 0, INT_1024)) != -1) {
+				response.getOutputStream().write(b, 0, len);
+			}
+		} catch (IOException e) {
+			log.error("【错误码{}】：流程图展示发生错误", ServiceCode.IO_EXCEPTION.getCode(),e);
+			throw new ServiceException(ServiceCode.IO_EXCEPTION);
 		}
 	}
 
@@ -167,7 +173,8 @@ public class FlowProcessController {
 				out.write(buf, 0, length);
 			}
 		} catch (IOException e) {
-			log.error("操作异常", e);
+			log.error("【错误码{}】：根据绘制流程图发生异常",ServiceCode.IO_EXCEPTION.getCode(), e);
+			throw new ServiceException(ServiceCode.IO_EXCEPTION);
 		} finally {
 			IoUtil.closeSilently(out);
 			IoUtil.closeSilently(in);

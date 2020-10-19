@@ -1,11 +1,10 @@
 package org.springblade.flow.business.common.cmd;
 
 import com.google.common.collect.Sets;
+import lombok.extern.slf4j.Slf4j;
 import org.flowable.bpmn.model.FlowNode;
 import org.flowable.bpmn.model.Process;
 import org.flowable.bpmn.model.UserTask;
-import org.flowable.common.engine.api.FlowableException;
-import org.flowable.common.engine.api.FlowableObjectNotFoundException;
 import org.flowable.common.engine.impl.interceptor.Command;
 import org.flowable.common.engine.impl.interceptor.CommandContext;
 import org.flowable.engine.RuntimeService;
@@ -14,9 +13,10 @@ import org.flowable.engine.impl.persistence.entity.ExecutionEntity;
 import org.flowable.engine.impl.persistence.entity.ExecutionEntityManager;
 import org.flowable.engine.impl.util.CommandContextUtil;
 import org.flowable.engine.impl.util.ProcessDefinitionUtil;
-import org.flowable.task.api.Task;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
 import org.springblade.common.constant.flow.FlowEngineConstant;
+import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.tool.api.ServiceCode;
 import org.springblade.flow.engine.utils.FlowableUtils;
 
 import java.io.Serializable;
@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
  * @author 田爱华
  * @date 2020年8月26日
  */
+@Slf4j
 public class BackUserTaskCmd implements Command<String>, Serializable {
 
 	public static final long serialVersionUID = 1L;
@@ -50,11 +51,13 @@ public class BackUserTaskCmd implements Command<String>, Serializable {
 	@Override
 	public String execute(CommandContext commandContext) {
 		if (targetActivityId == null || targetActivityId.length() == 0) {
-			throw new FlowableException("TargetActivityId cannot be empty");
+			log.error("【错误码{}】:目标节点id为空",ServiceCode.FLOW_TAR_ACTIVITYID_NOT_FOUND.getCode());
+			throw new ServiceException(ServiceCode.FLOW_TAR_ACTIVITYID_NOT_FOUND);
 		}
 		TaskEntity task = CommandContextUtil.getTaskService().getTask(taskId);
 		if (task == null) {
-			throw new FlowableObjectNotFoundException("task " + taskId + " doesn't exist", Task.class);
+			log.error("【错误码{}】: 未获取到TaskEntity，taskId={}",ServiceCode.FLOW_TASKID_NOT_FOUND.getCode(),taskId);
+			throw new ServiceException(ServiceCode.FLOW_TASKID_NOT_FOUND);
 		}
 		String sourceActivityId = task.getTaskDefinitionKey();
 		String processInstanceId = task.getProcessInstanceId();
@@ -63,12 +66,14 @@ public class BackUserTaskCmd implements Command<String>, Serializable {
 		FlowNode sourceFlowElement = (FlowNode) process.getFlowElement(sourceActivityId, true);
 		/* 只支持从用户任务退回 */
 		if (!(sourceFlowElement instanceof UserTask)) {
-			throw new FlowableException("Task with id:" + taskId + " is not a UserTask");
+			log.error("【错误码{}】：该节点不是用户节点，无法执行退回操作，taskId={}",ServiceCode.FLOW_TASK_NOT_USERTASK.getCode(),taskId);
+			throw new ServiceException(ServiceCode.FLOW_TASK_NOT_USERTASK);
 		}
 		FlowNode targetFlowElement = (FlowNode) process.getFlowElement(targetActivityId, true);
 		/* 退回节点到当前节点不可达到，不允许退回 */
 		if (!FlowableUtils.isReachable(process, targetFlowElement, sourceFlowElement)) {
-			throw new FlowableException("Cannot back to [" + targetActivityId + "]");
+			log.error("【错误码{}】: 退回的目标节点不可到达，退回失败，targetActivityId={}",ServiceCode.FLOW_CANNOT_BACK.getCode(),targetActivityId);
+			throw new ServiceException(ServiceCode.FLOW_CANNOT_BACK);
 		}
 		/* ps:目标节点如果相对当前节点是在子流程内部，则无法直接退回，目前处理是只能退回到子流程开始节点 */
 		String[] sourceAndTargetRealActivityId = FlowableUtils.getSourceAndTargetRealActivityId(sourceFlowElement,

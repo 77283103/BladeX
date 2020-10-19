@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractRelieveMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="relieveResultMap" type="org.springblade.contract.entity.ContractRelieveEntity">
+        <result column="id" property="id"/>
+        <result column="relieve_category" property="relieveCategory"/>
+        <result column="breach_amount" property="breachAmount"/>
+        <result column="breach_category" property="breachCategory"/>
+        <result column="compensation_amount" property="compensationAmount"/>
+        <result column="compensation_category" property="compensationCategory"/>
+        <result column="relieve_remark" property="relieveRemark"/>
+        <result column="ref_contract_id" property="refContractId"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        relieve_category,
+        breach_amount,
+        breach_category,
+        compensation_amount,
+        compensation_category,
+        relieve_remark,
+        ref_contract_id,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="relieveResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_relieve
+        WHERE is_deleted = 0
+        <if test="relieve.relieveCategory != null and relieve.relieveCategory != ''">
+            AND relieve_category like concat('%',#{relieve.relieveCategory},'%')
+        </if>
+    </select>
+</mapper>

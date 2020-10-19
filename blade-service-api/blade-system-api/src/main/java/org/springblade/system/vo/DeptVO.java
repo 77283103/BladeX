@@ -64,11 +64,21 @@ public class DeptVO extends Dept implements INode {
 	private Boolean hasChildren;
 
 	@Override
+	public Long getParentId() {
+		return null;
+	}
+
+	@Override
 	public List<INode> getChildren() {
 		if (this.children == null) {
 			this.children = new ArrayList<>();
 		}
 		return this.children;
+	}
+
+	@Override
+	public Boolean getHasChildren() {
+		return null;
 	}
 
 	/**

@@ -7,6 +7,10 @@ package org.springblade.common.constant.flow;
  */
 public interface FlowDesignUserType {
 	/**
+	 * 无
+	 */
+	String NONE = "0";
+	/**
 	 *	固定用户
 	 */
 	String USERS = "1";

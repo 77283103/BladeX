@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractSealUsingInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="sealInfoResultMap" type="org.springblade.contract.entity.ContractSealUsingInfoEntity">
+        <result column="id" property="id"/>
+        <result column="sign_time" property="signTime"/>
+        <result column="sign_person" property="signPerson"/>
+        <result column="sign_remark" property="signRemark"/>
+        <result column="ref_contract_id" property="refContractId"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        sign_time,
+        sign_person,
+        sign_remark,
+        ref_contract_id,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 用印分页 -->
+    <select id="pageList" resultMap="sealInfoResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_seal_using_info
+        WHERE is_deleted = 0
+        <if test="relieve.relieveCategory != null and relieve.relieveCategory != ''">
+            AND relieve_category like concat('%',#{relieve.relieveCategory},'%')
+        </if>
+    </select>
+
+    <!--根据合同id查询归档信息-->
+    <select id="selectById" resultMap="sealInfoResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_seal_using_info
+        WHERE is_deleted = 0
+        AND
+        id =(SELECT c.contract_seal_using_id FROM  contract_seal_using_setting c WHERE c.contract_id = #{id})
+    </select>
+</mapper>

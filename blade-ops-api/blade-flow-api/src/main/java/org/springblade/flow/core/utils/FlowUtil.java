@@ -39,10 +39,14 @@ public class FlowUtil {
 	 */
 	private final static Map<String, String> BUSINESS_FULL_CLASS_NAME = new HashMap<>();
 
+	/**
+	 * 新增业务类型时，需要在此增加业务信息
+	 */
 	static {
 		BUSINESS_TABLE.put(ProcessConstant.LEAVE_KEY, "blade_process_leave");
 		BUSINESS_FULL_CLASS_NAME.put(ProcessConstant.LEAVE_KEY, "org.springblade.desk.entity.ProcessLeave");
-		BUSINESS_FULL_CLASS_NAME.put("contract", "org.springblade.contract.entity");
+		BUSINESS_TABLE.put(ProcessConstant.ACCORDING_KEY, "contract_according");
+		BUSINESS_FULL_CLASS_NAME.put(ProcessConstant.ACCORDING_KEY, "org.springblade.contract.entity.ContractAccordingEntity");
 	}
 
 	/**
