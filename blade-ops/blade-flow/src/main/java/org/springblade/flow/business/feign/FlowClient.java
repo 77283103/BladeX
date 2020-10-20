@@ -30,7 +30,6 @@ import org.springblade.flow.core.entity.BladeFlow;
 import org.springblade.flow.core.feign.IFlowClient;
 import org.springblade.flow.core.utils.TaskUtil;
 import org.springblade.flow.core.vo.FlowNodeRequest;
-import org.springframework.jdbc.datasource.init.ScriptException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -55,8 +54,8 @@ public class FlowClient implements IFlowClient {
 
 	@Override
 	@PostMapping(START_PROCESS_INSTANCE_BY_ID)
-	public R<BladeFlow> startProcessInstanceById(String processDefinitionId, String businessKey, @RequestBody Map<String, Object> variables) {
-		return R.data(flowBusinessService.startProcessInstanceById(processDefinitionId, businessKey, variables));
+	public R<BladeFlow> startProcessInstanceById(FlowNodeRequest flowNodeRequest, String businessKey) {
+		return R.data(flowBusinessService.startProcessInstanceById(flowNodeRequest, businessKey));
 	}
 
 	@Override

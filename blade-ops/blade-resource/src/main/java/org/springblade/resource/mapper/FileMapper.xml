@@ -34,6 +34,7 @@
         update_time,
         status
     </sql>
+    <!-- 批量删除 -->
     <delete id="deleteByIds">
         DELETE FROM blade_file WHERE id in
         <foreach collection="ids" item="item" open="(" separator="," close=")">

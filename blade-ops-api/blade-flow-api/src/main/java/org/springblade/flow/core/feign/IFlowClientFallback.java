@@ -38,7 +38,7 @@ public class IFlowClientFallback implements IFlowClient {
 	}
 
 	@Override
-	public R<BladeFlow> startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables) {
+	public R<BladeFlow> startProcessInstanceById(FlowNodeRequest flowNodeRequest, String businessKey) {
 		return R.fail("远程调用失败");
 	}
 

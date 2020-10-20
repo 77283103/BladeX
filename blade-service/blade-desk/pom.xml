@@ -48,10 +48,6 @@
             <groupId>org.springblade</groupId>
             <artifactId>blade-starter-oss-qiniu</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-starter-transaction</artifactId>
-        </dependency>
     </dependencies>
 
     <build>

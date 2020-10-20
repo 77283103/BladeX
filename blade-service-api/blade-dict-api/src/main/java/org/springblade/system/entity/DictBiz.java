@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springblade.core.mp.base.BaseEntity;
 
 import java.io.Serializable;
 
@@ -36,7 +37,7 @@ import java.io.Serializable;
 @Data
 @TableName("blade_dict_biz")
 @ApiModel(value = "DictBiz对象", description = "DictBiz对象")
-public class DictBiz implements Serializable {
+public class DictBiz extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 

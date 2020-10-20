@@ -21,6 +21,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.SecureUtil;
 import org.springblade.core.tool.constant.BladeConstant;
@@ -57,7 +58,7 @@ import static org.springblade.core.cache.constant.CacheConstant.MENU_CACHE;
  */
 @Service
 @AllArgsConstructor
-public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IMenuService {
+public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implements IMenuService {
 
 	private IRoleMenuService roleMenuService;
 	private IRoleScopeService roleScopeService;

@@ -27,6 +27,7 @@ import org.slf4j.LoggerFactory;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.api.ServiceCode;
@@ -58,7 +59,7 @@ import static org.springblade.core.cache.constant.CacheConstant.DICT_CACHE;
  */
 @Slf4j
 @Service
-public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements IDictService {
+public class DictServiceImpl extends BaseServiceImpl<DictMapper, Dict> implements IDictService {
 
 	@Override
 	public IPage<DictVO> selectDictPage(IPage<DictVO> page, DictVO dict) {
@@ -103,7 +104,7 @@ public class DictServiceImpl extends ServiceImpl<DictMapper, Dict> implements ID
 			log.error("【错误码{}】：系统字典保存或修改，字符转码发生错误", ServiceCode.CHARACTER_DECODE_FAIL.getCode());
 			throw new ServiceException(ServiceCode.CHARACTER_DECODE_FAIL);
 		}
-		return saveOrUpdate(dict);
+		return super.saveOrUpdate(dict);
 	}
 
 	@Override

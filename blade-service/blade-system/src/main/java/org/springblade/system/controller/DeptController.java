@@ -160,7 +160,7 @@ public class DeptController extends BladeController {
 	}
 
 	/**
-	 * 修改机构启用状态
+	 * 修改机构启用状态1
 	 * @param id
 	 * @param isEnable
 	 * @return

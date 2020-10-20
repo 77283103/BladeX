@@ -195,12 +195,11 @@ public interface FlowBusinessService {
 	/**
 	 * 启动流程
 	 *
-	 * @param processDefinitionId 部署id
 	 * @param businessKey 流程业务主键
-	 * @param variables 流程全局参数
+	 * @param flowNodeRequest 前台回传的节点对象
 	 * @return bladeFLow
 	 */
-	BladeFlow startProcessInstanceById(String processDefinitionId, String businessKey, Map<String, Object> variables);
+	BladeFlow startProcessInstanceById(FlowNodeRequest flowNodeRequest, String businessKey);
 
 	/**
 	 * 发起流程弹出确认框的操作

@@ -24,6 +24,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.tool.constant.BladeConstant;
@@ -52,7 +53,7 @@ import static org.springblade.core.cache.constant.CacheConstant.DICT_CACHE;
  * @author Chill
  */
 @Service
-public class DictBizServiceImpl extends ServiceImpl<DictBizMapper, DictBiz> implements IDictBizService {
+public class DictBizServiceImpl extends BaseServiceImpl<DictBizMapper, DictBiz> implements IDictBizService {
 
 	@Override
 	public List<DictBizVO> tree(String code) {

@@ -26,5 +26,5 @@ public interface FileMapper extends BaseMapper<FileEntity> {
 	 * 批量删除
 	 * @param ids
 	 */
-    void deleteByIds(@Param("ids") List<Long> ids);
+	void deleteByIds(@Param("ids") List<Long> ids);
 }
