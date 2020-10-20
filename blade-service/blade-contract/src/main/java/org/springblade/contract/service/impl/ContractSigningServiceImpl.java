@@ -30,9 +30,9 @@ import java.util.List;
 public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningMapper, ContractSigningEntity> implements IContractSigningService {
 
 	private IContractFormInfoService contractFormInfoService;
+
 	private ContractFormInfoMapper contractFormInfoMapper;
 
-	private IFileClient fileClient;
 
 
 
@@ -58,33 +58,4 @@ public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningM
 	public void saveSigning(ContractSigningRequestVO vo) {
      contractFormInfoMapper.saveSigning(vo.getContractId(),vo.getId());
 	}
-
-	/**
-	 * 查询文件信息
-	 * @param id
-	 * @return
-	 */
-	@Override
-	public ContractSigningResponseVO getById(Long id) {
-		ContractSigningEntity signingEntity=baseMapper.selectById(id);
-		ContractSigningResponseVO signingResponseVO= ContractSigningWrapper.build().entityVO(signingEntity);
-		//查询依据附件
-		//@Func.isNoneBlank判断是否全为非空字符串
-		//文本扫描件
-		if (Func.isNoneBlank(signingResponseVO.getTextFiles())){
-			R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getTextFiles());
-			if (result.isSuccess()){
-				signingResponseVO.setSigningTextFileVOList(result.getData());
-			}
-		}
-		//附件扫描件
-		if (Func.isNoneBlank(signingResponseVO.getAttachedFiles())){
-			R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getAttachedFiles());
-			if (result.isSuccess()){
-				signingResponseVO.setSigningAttachedFileVOList(result.getData());
-			}
-		}
-		return signingResponseVO;
-	}
-
 }

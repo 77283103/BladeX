@@ -5,9 +5,12 @@ import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.service.IContractSigningService;
+import org.springblade.contract.vo.ContractAssessmentResponseVO;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractSigningResponseVO;
+import org.springblade.contract.wrapper.ContractAssessmentWrapper;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.contract.wrapper.ContractSigningWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -165,22 +168,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		ContractSigningEntity signingEntity=signingMapper.selectById(id);
 		contractFormInfoResponseVO.setSigningEntity(signingEntity);
 		ContractSigningResponseVO signingResponseVO= ContractSigningWrapper.build().entityVO(signingEntity);
-		//查询依据附件
-		//@Func.isNoneBlank判断是否全为非空字符串
-		//文本扫描件
-		if (Func.isNoneBlank(signingResponseVO.getTextFiles())){
-			R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getTextFiles());
-			if (result.isSuccess()){
-				contractFormInfoResponseVO.setSigningTextFileVOList(result.getData());
-			}
-		}
-		//附件扫描件
-		if (Func.isNoneBlank(signingResponseVO.getAttachedFiles())){
-			R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getAttachedFiles());
-			if (result.isSuccess()){
-				contractFormInfoResponseVO.setSigningAttachedFileVOList(result.getData());
-			}
-		}
+		ContractAssessmentResponseVO assessmentResponseVO= ContractAssessmentWrapper.build().entityVO(contractAssessmentEntity);
 		//查询合同文本
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getTextFile())){
 			R<List<FileVO>> result = fileClient.getByIds(contractFormInfoResponseVO.getTextFile());
@@ -205,6 +193,33 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getCreateDept().toString())){
 			String dept = sysClient.getDeptName(contractFormInfoResponseVO.getCreateDept()).getData();
 			contractFormInfoResponseVO.setUserDepartName(dept);
+		}
+		//评估相关附件
+		if (!Func.isEmpty(assessmentResponseVO)){
+			if (Func.isNoneBlank(assessmentResponseVO.getAttachedFiles())) {
+				R<List<FileVO>> result = fileClient.getByIds(assessmentResponseVO.getAttachedFiles());
+				if (result.isSuccess()) {
+					contractFormInfoResponseVO.setAssessmentAttachedVOList(result.getData());
+				}
+			}
+		}
+		//签订文本扫描件
+		if (!Func.isEmpty(signingResponseVO)){
+			if (Func.isNoneBlank(signingResponseVO.getTextFiles())) {
+				R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getTextFiles());
+				if (result.isSuccess()) {
+					contractFormInfoResponseVO.setSigningTextFileVOList(result.getData());
+				}
+			}
+		}
+		//签订附件扫描件
+		if (!Func.isEmpty(signingResponseVO)){
+			if (Func.isNoneBlank(signingResponseVO.getAttachedFiles())) {
+				R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getAttachedFiles());
+				if (result.isSuccess()) {
+					contractFormInfoResponseVO.setSigningAttachedFileVOList(result.getData());
+				}
+			}
 		}
 		return contractFormInfoResponseVO;
 	}

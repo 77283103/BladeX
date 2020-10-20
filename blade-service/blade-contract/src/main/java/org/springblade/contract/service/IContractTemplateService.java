@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractTemplateEntity;
 
@@ -26,4 +27,11 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @return
 	 */
 	boolean updateTemplateStatus(String templateStatus,Long id);
+
+	/**
+	 * 重写查询，返回附件到VO
+	 * @param id
+	 * @return
+	 */
+	ContractTemplateResponseVO getById(Long id);
 }

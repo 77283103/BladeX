@@ -9,6 +9,7 @@ import org.springblade.contract.entity.ContractPerformanceEntity;
 
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,6 +33,54 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
     @ApiModelProperty(value="合同名称",required = true)
 	private String contractName;
 
+	@ApiModelProperty(value = "份数")
+	private String share;
+
+	@ApiModelProperty(value = "合同负责人")
+	private String personContract;
+
+	@ApiModelProperty(value = "合同期限")
+	private String contractPeriod;
+
+	@ApiModelProperty(value = "合同起始时间")
+	private Date startingTime;
+
+	@ApiModelProperty(value = "合同结束时间")
+	private Date endTime;
+
+	@ApiModelProperty(value ="收付款期限")
+	private String colPayTerm;
+
+	@ApiModelProperty(value = "天数")
+	private Integer days;
+
+	@ApiModelProperty(value = "是否有自我延展的功能")
+	private Integer extension;
+
+	@ApiModelProperty(value = "相对方联系人")
+	private String counterpartPerson;
+
+	@ApiModelProperty(value = "联系人电话")
+	private String telephonePerson;
+
+	@ApiModelProperty(value = "联系人地址")
+	private String addressPerson;
+
+	@ApiModelProperty(value = "联系人邮箱")
+	private String emailPerson;
+
+	@ApiModelProperty(value = "合同形式（字典）")
+	private String contractForm;
+
+	@ApiModelProperty(value = "用印全称")
+	private String sealName;
+
+	@ApiModelProperty(value = "用印类型（字典）")
+	private String sealType;
+
+	@ApiModelProperty(value = "用印份数")
+	private String sealNumber;
+
     @ApiModelProperty(value="合同编号")
 	private String contractNumber;
 
@@ -45,7 +94,7 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	private String currencyCategory;
 
     @ApiModelProperty(value="合同金额")
-	private BigDecimal contractAmount;
+	private Double contractAmount;
 
     @ApiModelProperty(value="变更状态")
 	private String changeCategory;
@@ -73,12 +122,6 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 
     @ApiModelProperty(value="合同二级分类")
 	private String contractSmallCategory;
-
-	@ApiModelProperty(value="开始时间")
-	private String startTime;
-
-	@ApiModelProperty(value="结束时间")
-	private String endTime;
 
 	@ApiModelProperty(value="最低合同金额")
 	private String minContractAmount;

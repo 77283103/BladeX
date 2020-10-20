@@ -2,12 +2,14 @@ package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 
@@ -33,6 +35,88 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "合同名称")
 	private String contractName;
+
+	/**
+	 * 份数
+	 */
+	@ApiModelProperty(value = "份数")
+	private String share;
+	/**
+	 * 合同负责人
+	 */
+	@ApiModelProperty(value = "合同负责人")
+	private String personContract;
+	/**
+	 * 合同期限
+	 */
+	@ApiModelProperty(value = "合同期限")
+	private String contractPeriod;
+	/**
+	 * 合同起始时间
+	 */
+	@ApiModelProperty(value = "合同起始时间")
+	private Date startingTime;
+	/**
+	 * 合同结束时间
+	 */
+	@ApiModelProperty(value = "合同结束时间")
+	private Date endTime;
+	/**
+	 * 收付款期限
+	 */
+	@ApiModelProperty(value ="收付款期限")
+	private String colPayTerm;
+	/**
+	 * 天数
+	 */
+	@ApiModelProperty(value = "天数")
+	private Integer days;
+	/**
+	 * 是否有自我延展的功能
+	 */
+	@ApiModelProperty(value = "是否有自我延展的功能")
+	private Integer extension;
+	/**
+	 * 相对方联系人
+	 */
+	@ApiModelProperty(value = "相对方联系人")
+	private String counterpartPerson;
+
+	/**
+	 * 联系人电话
+	 */
+	@ApiModelProperty(value = "联系人电话")
+	private String telephonePerson;
+	/**
+	 * 联系人地址
+	 */
+	@ApiModelProperty(value = "联系人地址")
+	private String addressPerson;
+	/**
+	 * 联系人邮箱
+	 */
+	@ApiModelProperty(value = "联系人邮箱")
+	private String emailPerson;
+	/**
+	 * 合同形式（字典）
+	 */
+	@ApiModelProperty(value = "合同形式（字典）")
+	private String contractForm;
+	/**
+	 * 用印全称
+	 */
+	@ApiModelProperty(value = "用印全称")
+	private String sealName;
+	/**
+	 * 用印类型（字典）
+	 */
+	@ApiModelProperty(value = "用印类型（字典）")
+	private String sealType;
+	/**
+	 * 用印份数
+	 */
+	@ApiModelProperty(value = "用印份数")
+	private String sealNumber;
 	/**
 	 * 合同编号
 	 */
@@ -57,7 +141,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 合同金额
 	 */
 	@ApiModelProperty(value = "合同金额")
-	private BigDecimal contractAmount;
+	private Double contractAmount;
 	/**
 	 * 变更状态
 	 */
@@ -102,21 +186,21 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 关联相对方信息
 	 */
-	@ApiModelProperty(value="最高合同金额")
+	@ApiModelProperty(value="关联相对方信息")
 	@TableField(exist = false)
 	private List<ContractCounterpartEntity> counterpartList;
 
 	/**
 	 * 关联依据信息
 	 */
-	@ApiModelProperty(value="最高合同金额")
+	@ApiModelProperty(value="关联依据信息")
 	@TableField(exist = false)
 	private List<ContractAccordingEntity> accordingList;
 
 	/**
 	 * 关联履约信息
 	 */
-	@ApiModelProperty(value="最高合同金额")
+	@ApiModelProperty(value="关联履约信息")
 	@TableField(exist = false)
 	private List<ContractPerformanceEntity> performanceList;
 

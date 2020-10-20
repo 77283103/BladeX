@@ -28,6 +28,10 @@
             <version>2.5.0.RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+        </dependency>
     </dependencies>
     <packaging>jar</packaging>
 

@@ -43,8 +43,8 @@ public class ContractTemplateController extends BladeController {
 
 	private IContractTemplateService templateService;
 	private static final String TEMPLATE_STATUS="10";
-	private static final String TEMPLATE_SCRAP_STATUS="20";
-	private static final String TEMPLATE_REVISION_STATUS="30";
+	private static final String TEMPLATE_SCRAP_STATUS="30";
+	private static final String TEMPLATE_REVISION_STATUS="20";
 
 	/**
 	 * 详情
