@@ -147,9 +147,9 @@ public class MenuController extends BladeController {
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "新增或修改", notes = "传入menu")
 	public R submit(@Valid @RequestBody Menu menu) {
+		/* 租户id无用但是必须加，否则菜单看不到 */
+		menu.setTenantId(CommonConstant.DEFAULT_TENANT_ID);
 		if (menuService.submit(menu)) {
-			// 租户id无用但是必须加，否则菜单看不到
-			menu.setTenantId(CommonConstant.DEFAULT_TENANT_ID);
 			CacheUtil.clear(MENU_CACHE);
 			// 返回懒加载树更新节点所需字段
 			Kv kv = Kv.create().set("id", String.valueOf(menu.getId()));
