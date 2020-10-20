@@ -1,11 +1,8 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
@@ -18,7 +15,10 @@ import java.time.LocalDateTime;
  * @author liyj
  * @date : 2020-09-23 19:27:05
  */
-@Data
+@Setter
+@Getter
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("contract_signing")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "ContractSigning对象", description = "合同签订表")

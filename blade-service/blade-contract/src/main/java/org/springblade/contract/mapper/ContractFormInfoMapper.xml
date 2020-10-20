@@ -25,6 +25,25 @@
         <result column="create_dept" property="createDept"/>
         <result column="contract_big_category" property="contractBigCategory"/>
         <result column="contract_small_category" property="contractSmallCategory"/>
+        <result column="share" property="share"/>
+        <result column="person_contract" property="personContract"/>
+        <result column="contract_period" property="contractPeriod"/>
+        <result column="starting_time" property="startingTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="col_pay_term" property="colPayTerm"/>
+        <result column="days" property="days"/>
+        <result column="extension" property="extension"/>
+        <result column="counterpart_person" property="counterpartPerson"/>
+        <result column="telephone_person" property="telephonePerson"/>
+        <result column="address_person" property="addressPerson"/>
+        <result column="email_person" property="emailPerson"/>
+        <result column="contract_form" property="contractForm"/>
+        <result column="seal_name" property="sealName"/>
+        <result column="seal_type" property="sealType"/>
+        <result column="seal_number" property="sealNumber"/>
+
+
+
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -51,7 +70,23 @@
                 update_time,
                 create_dept,
                 contract_big_category,
-                contract_small_category
+                contract_small_category,
+                share,
+                person_contract,
+                contract_period,
+                starting_time,
+                end_time,
+                col_pay_term,
+                days,
+                extension,
+                counterpart_person,
+                telephone_person,
+                address_person,
+                email_person,
+                contract_form,
+                seal_name,
+                seal_type,
+                seal_number
 
     </sql>
     <!-- 通用查询结果列 -->
@@ -78,7 +113,23 @@
                 a.update_time,
                 a.create_dept,
                 a.contract_big_category,
-                a.contract_small_category
+                a.contract_small_category,
+                a.share,
+                a.person_contract,
+                a.contract_period,
+                a.starting_time,
+                a.end_time,
+                a.col_pay_term,
+                a.days,
+                a.extension,
+                a.counterpart_person,
+                a.telephone_person,
+                a.address_person,
+                a.email_person,
+                a.contract_form,
+                a.seal_name,
+                a.seal_type,
+                a.seal_number
 
     </sql>
     <!-- 分页 -->
@@ -112,10 +163,10 @@
         contract_seal_using_info b
         ON
         a.id = b.ref_contract_id
-        <if test="contractFormInfoRequestVO.startTime != null and contractFormInfoRequestVO.endTime != null">
+        <if test="contractFormInfoRequestVO.startingTime != null and contractFormInfoRequestVO.endTime != null">
             WHERE
-            <if test="contractFormInfoRequestVO.startTime != null">
-                b.sign_time &gt; concat(#{contractFormInfoRequestVO.startTime})
+            <if test="contractFormInfoRequestVO.startingTime != null">
+                b.sign_time &gt; concat(#{contractFormInfoRequestVO.startingTime})
             </if>
             <if test="contractFormInfoRequestVO.endTime != null">
                 AND b.sign_time &lt; concat(#{contractFormInfoRequestVO.endTime})
