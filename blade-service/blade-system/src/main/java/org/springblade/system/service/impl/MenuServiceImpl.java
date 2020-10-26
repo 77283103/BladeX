@@ -35,14 +35,12 @@ import org.springblade.system.entity.RoleMenu;
 import org.springblade.system.entity.RoleScope;
 import org.springblade.system.entity.TopMenuSetting;
 import org.springblade.system.mapper.MenuMapper;
-import org.springblade.system.service.IMenuService;
-import org.springblade.system.service.IRoleMenuService;
-import org.springblade.system.service.IRoleScopeService;
-import org.springblade.system.service.ITopMenuSettingService;
+import org.springblade.system.service.*;
 import org.springblade.system.vo.MenuVO;
 import org.springblade.system.wrapper.MenuWrapper;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,6 +60,7 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
 
 	private IRoleMenuService roleMenuService;
 	private IRoleScopeService roleScopeService;
+	private IApiScopeService apiScopeService;
 	private ITopMenuSettingService topMenuSettingService;
 
 	@Override
@@ -174,11 +173,13 @@ public class MenuServiceImpl extends BaseServiceImpl<MenuMapper, Menu> implement
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public boolean removeMenu(String ids) {
 		Integer cnt = baseMapper.selectCount(Wrappers.<Menu>query().lambda().in(Menu::getParentId, Func.toLongList(ids)));
 		if (cnt > 0) {
 			throw new ServiceException("请先删除子节点!");
 		}
+		this.apiScopeService.delApiScopeByMenuId(Func.toLongList(ids));
 		return removeByIds(Func.toLongList(ids));
 	}
 

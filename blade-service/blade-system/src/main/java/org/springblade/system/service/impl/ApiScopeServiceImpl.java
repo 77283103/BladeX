@@ -23,6 +23,8 @@ import org.springblade.system.mapper.ApiScopeMapper;
 import org.springblade.system.service.IApiScopeService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 服务实现类
  *
@@ -35,5 +37,10 @@ public class ApiScopeServiceImpl extends BaseServiceImpl<ApiScopeMapper, ApiScop
 	@Override
 	public IPage<ApiScope> pageList(IPage<Object> page, ApiScope apiScope) {
 		return baseMapper.pageList(page, apiScope);
+	}
+
+	@Override
+	public void delApiScopeByMenuId(List<Long> menuIds) {
+		baseMapper.delApiScopeByMenuId(menuIds);
 	}
 }

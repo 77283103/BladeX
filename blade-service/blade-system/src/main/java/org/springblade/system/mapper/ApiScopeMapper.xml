@@ -36,6 +36,15 @@
         status,
         is_deleted
     </sql>
+    <delete id="delApiScopeByMenuId">
+        UPDATE blade_scope_api
+        SET is_deleted = 1
+        WHERE
+        menu_id IN
+        <foreach collection="menuIds" open="(" separator="," close=")" item="item">
+            #{item}
+        </foreach>
+    </delete>
     <!-- 分页 -->
     <select id="pageList" resultMap="scope_apiResultMap">
         SELECT

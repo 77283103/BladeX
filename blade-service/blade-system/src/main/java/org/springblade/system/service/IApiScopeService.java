@@ -21,6 +21,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.entity.ApiScope;
 
+import java.util.List;
+
 /**
  *  服务类
  *
@@ -37,4 +39,10 @@ public interface IApiScopeService extends BaseService<ApiScope> {
 	 */
 	IPage<ApiScope> pageList(IPage<Object> page, ApiScope apiScope);
 
+	/**
+	 * 根据菜单ID删除接口权限
+	 * 逻辑删除
+	 * @param menuIds
+	 */
+	void delApiScopeByMenuId(List<Long> menuIds);
 }
