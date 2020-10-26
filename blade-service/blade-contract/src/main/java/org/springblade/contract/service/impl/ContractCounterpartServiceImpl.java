@@ -1,6 +1,7 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.contract.vo.ContractCounterpartResponseVO;
@@ -27,13 +28,11 @@ import java.util.List;
  * @date : 2020-09-23 19:35:06
  */
 @Service
+@AllArgsConstructor
 public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCounterpartMapper, ContractCounterpartEntity> implements IContractCounterpartService {
 
 	private IFileClient fileClient;
 
-	private ISysClient sysClient;
-
-	private IUserClient userClient;
 	@Override
 	public IPage<ContractCounterpartEntity> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartEntity counterpart) {
 		return baseMapper.pageList(page, counterpart);
@@ -50,8 +49,8 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
 		ContractCounterpartResponseVO counterpartResponseVO= ContractCounterpartWrapper.build().entityVO(counterpartEntity);
 		//查询依据附件
 		//@Func.isNoneBlank判断是否全为非空字符串
-		if (Func.isNoneBlank(counterpartResponseVO.getAttachedFiles())){
-			R<List<FileVO>> result = fileClient.getByIds(counterpartResponseVO.getAttachedFiles());
+		if (Func.isNoneBlank(counterpartEntity.getAttachedFiles())){
+			R<List<FileVO>> result = fileClient.getByIds(counterpartEntity.getAttachedFiles());
 			if (result.isSuccess()){
 				counterpartResponseVO.setCounterpartFilesVOList(result.getData());
 			}

@@ -5,13 +5,15 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="accordingResultMap" type="org.springblade.contract.entity.ContractAccordingEntity">
         <result column="id" property="id"/>
+        <result column="file_id" property="fileId"/>
         <result column="according_name" property="accordingName"/>
-        <result column="contract_id" property="contractId"/>
-        <result column="according_files" property="accordingFiles"/>
-        <result column="remark" property="remark"/>
-        <result column="record_version" property="recordVersion"/>
-        <result column="create_unit" property="createUnit"/>
+        <result column="synch_date" property="synchDate"/>
+        <result column="theme_context" property="themeContext"/>
+        <result column="document_type" property="documentType"/>
+        <result column="use_status" property="useStatus"/>
+        <result column="according_address" property="accordingAddress"/>
         <result column="status" property="status"/>
+        <result column="is_reused" property="isReused"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
@@ -22,12 +24,14 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        file_id,
         according_name,
-        contract_id,
-        according_files,
-        remark,
-        record_version,
-        create_unit,
+        synch_date,
+        document_type,
+        theme_context,
+        use_status,
+        according_address,
+        is_reused,
         status,
         is_deleted,
         create_user,
@@ -44,6 +48,12 @@
         WHERE is_deleted = 0
         <if test="according.accordingName != null and according.accordingName != ''">
             AND according_name = #{according.accordingName}
+        </if>
+        <if test="according.synchDate != null and according.synchDate != ''">
+            AND synch_date = #{according.synchDate}
+        </if>
+        <if test="according.useStatus != null and according.useStatus != ''">
+            AND use_status = #{according.useStatus}
         </if>
     </select>
     <!--根据合同id查询相依据集合-->

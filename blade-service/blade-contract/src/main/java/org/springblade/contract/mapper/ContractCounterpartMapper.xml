@@ -6,18 +6,29 @@
     <resultMap id="counterpartResultMap" type="org.springblade.contract.entity.ContractCounterpartEntity">
         <result column="id" property="id"/>
         <result column="name" property="name"/>
+        <result column="id_number" property="idNumber"/>
+        <result column="unified_social_credit_code" property="unifiedSocialCreditCode"/>
+        <result column="nature_category" property="natureCategory"/>
         <result column="counterpart_category" property="counterpartCategory"/>
         <result column="registered_address" property="registeredAddress"/>
-        <result column="legal_representative" property="legalRepresentative"/>
-        <result column="registered_capital" property="registeredCapital"/>
-        <result column="currency_category" property="currencyCategory"/>
-        <result column="establish_date" property="establishDate"/>
-        <result column="unified_social_credit_code" property="unifiedSocialCreditCode"/>
+        <result column="contact_person_phone" property="contactPersonPhone"/>
+        <result column="contact_person_name" property="contactPersonName"/>
+        <result column="contact_address" property="contactAddress"/>
+        <result column="passport_id" property="passportId"/>
         <result column="first_cooperation_date" property="firstCooperationDate"/>
-        <result column="contract_record" property="contractRecord"/>
-        <result column="list_record" property="listRecord"/>
+        <result column="electronic_seal_serial_id" property="electronicSealSerialId"/>
+        <result column="tax_rate" property="taxRate"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="information_syn_date" property="informationSynDate"/>
+        <result column="establish_date" property="establishDate"/>
+        <result column="company_address" property="companyAddress"/>
+        <result column="registered_capital" property="registeredCapital"/>
+        <result column="legal_representative" property="legalRepresentative"/>
+        <result column="contact_person_mail" property="contactPersonMail"/>
+        <result column="deposit_bank" property="depositBank"/>
+        <result column="bank_account" property="bankAccount"/>
+        <result column="currency_category" property="currencyCategory"/>
         <result column="attached_files" property="attachedFiles"/>
-        <result column="contract_id" property="contractId"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -25,23 +36,35 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
+
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
         name,
+        id_number,
+        unified_social_credit_code,
+        nature_category,
         counterpart_category,
         registered_address,
-        legal_representative,
-        registered_capital,
-        currency_category,
-        establish_date,
-        unified_social_credit_code,
+        contact_person_phone,
+        contact_person_name,
+        contact_address,
+        passport_id,
         first_cooperation_date,
-        contract_record,
-        list_record,
+        electronic_seal_serial_id,
+        tax_rate,
+        payment_method,
+        information_syn_date,
+        establish_date,
+        company_address,
+        registered_capital,
+        legal_representative,
+        contact_person_mail,
+        deposit_bank,
+        bank_account,
         attached_files,
-        contract_id,
+        currency_category,
         status,
         is_deleted,
         create_user,
@@ -59,14 +82,14 @@
         <if test="counterpart.name != null and counterpart.name != ''">
             AND name = #{counterpart.name}
         </if>
-        <if test="counterpart.counterpartCategory != null and counterpart.counterpartCategory != ''">
-            AND counterpart_category = #{counterpart.counterpartCategory}
+        <if test="counterpart.natureCategory != null and counterpart.natureCategory != ''">
+            AND nature_category = #{counterpart.natureCategory}
         </if>
-        <if test="counterpart.legalRepresentative != null and counterpart.legalRepresentative != ''">
-            AND legal_representative = #{counterpart.legalRepresentative}
+        <if test="counterpart.firstCooperationDate != null and counterpart.firstCooperationDate != ''">
+            AND first_cooperation_date = #{counterpart.firstCooperationDate}
         </if>
-        <if test="counterpart.establishDate != null and counterpart.establishDate != ''">
-            AND establish_date = #{counterpart.establishDate}
+        <if test="counterpart.idNumber != null and counterpart.idNumber != ''">
+            AND id_number = #{counterpart.idNumber}
         </if>
     </select>
     <!--根据合同id查询相对方集合-->

@@ -6,16 +6,21 @@
     <resultMap id="templateResultMap" type="org.springblade.contract.entity.ContractTemplateEntity">
         <result column="id" property="id"/>
         <result column="name" property="name"/>
-        <result column="template_category" property="templateCategory"/>
+        <result column="template_number" property="templateNumber"/>
         <result column="contract_big_category" property="contractBigCategory"/>
         <result column="contract_small_category" property="contractSmallCategory"/>
+        <result column="template_category" property="templateCategory"/>
+        <result column="create_unit" property="createUnit"/>
+        <result column="use_range" property="useRange"/>
         <result column="template_description" property="templateDescription"/>
         <result column="record_version" property="recordVersion"/>
-        <result column="template_number" property="templateNumber"/>
         <result column="attached_files" property="attachedFiles"/>
-        <result column="create_unit" property="createUnit"/>
+        <result column="original_template_id" property="originalTemplateId"/>
         <result column="contract_id" property="contractId"/>
         <result column="template_status" property="templateStatus"/>
+        <result column="authentic_performance_count" property="authenticPerformanceCount"/>
+        <result column="completed_contract_count" property="completedContractCount"/>
+        <result column="usage_rate" property="usageRate"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -36,8 +41,13 @@
         template_number,
         attached_files,
         create_unit,
+        use_range,
+        original_template_id,
         contract_id,
         template_status,
+        authentic_performance_count,
+        completed_contract_count,
+        usage_rate,
         status,
         is_deleted,
         create_user,
@@ -69,6 +79,9 @@
         </if>
         <if test="template.templateStatus != null and template.templateStatus != ''">
             AND template_status = #{template.templateStatus}
+        </if>
+        <if test="template.createUnit != null and template.createUnit != ''">
+            AND create_unit = #{template.createUnit}
         </if>
     </select>
 
