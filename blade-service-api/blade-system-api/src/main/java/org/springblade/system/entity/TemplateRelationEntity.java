@@ -1,28 +1,29 @@
 package org.springblade.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
+import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
 import java.util.Date;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 
 /**
- * 表单模板 实体类
+ * 关联表单 实体类
  *
  * @author szw
- * @date : 2020-10-19 20:00:56
+ * @date : 2020-10-23 17:24:26
  */
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
-@TableName("template")
+@TableName("template_relation")
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "Template对象", description = "表单模板")
-public class TemplateEntity extends BaseEntity {
+@ApiModel(value = "TemplateRelation对象", description = "关联表单")
+public class TemplateRelationEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -44,6 +45,7 @@ public class TemplateEntity extends BaseEntity {
 	/**
 	 * 表单json
 	 */
-	@ApiModelProperty(value="表单json",required = true)
+	@ApiModelProperty(value = "表单json")
 	private String json;
+
 }

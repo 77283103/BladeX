@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.system.mapper.TemplateFieldRelationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="templateFieldRelationResultMap" type="org.springblade.system.entity.TemplateFieldRelationEntity">
+        <result column="id" property="id"/>
+        <result column="field_property_code" property="fieldPropertyCode"/>
+        <result column="field_value" property="fieldValue"/>
+        <result column="field_title" property="fieldTitle"/>
+        <result column="field_name" property="fieldName"/>
+        <result column="component_type" property="componentType"/>
+        <result column="dic_code" property="dicCode"/>
+        <result column="relation_code" property="relationCode"/>
+        <result column="field_type" property="fieldType"/>
+        <result column="required" property="required"/>
+        <result column="sort" property="sort"/>
+        <result column="code" property="code"/>
+        <result column="bean" property="bean"/>
+        <result column="bean_name" property="beanName"/>
+        <result column="disabled" property="disabled"/>
+        <result column="format" property="format"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        field_property_code,
+        field_value,
+        field_title,
+        field_name,
+        component_type,
+        dic_code,
+        relation_code,
+        field_type,
+        required,
+        sort,
+        code,
+        bean,
+        bean_name,
+        disabled,
+        format,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="templateFieldRelationResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM template_field_relation
+        WHERE is_deleted = 0
+    </select>
+</mapper>

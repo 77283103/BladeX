@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.system.entity.TemplateEntity;
 
+import java.util.HashMap;
+import java.util.List;
+
 /**
  * 表单模板 Mapper 接口
  *
@@ -20,4 +23,6 @@ public interface TemplateMapper extends BaseMapper<TemplateEntity> {
 	 */
 	IPage<TemplateEntity> pageList(IPage<TemplateEntity> page, TemplateEntity template);
 
+
+	List<TemplateEntity> selectByCode(String code);
 }

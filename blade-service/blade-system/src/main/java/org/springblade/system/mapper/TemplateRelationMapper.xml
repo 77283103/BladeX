@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.springblade.system.mapper.TemplateMapper">
+<mapper namespace="org.springblade.system.mapper.TemplateRelationMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="templateResultMap" type="org.springblade.system.entity.TemplateEntity">
+    <resultMap id="templateRelationResultMap" type="org.springblade.system.entity.TemplateRelationEntity">
         <result column="id" property="id"/>
         <result column="bean" property="bean"/>
         <result column="bean_name" property="beanName"/>
         <result column="form_code" property="formCode"/>
+        <result column="json" property="json"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
         <result column="create_time" property="createTime"/>
@@ -22,6 +23,7 @@
         bean,
         bean_name,
         form_code,
+        json,
         create_user,
         create_dept,
         create_time,
@@ -31,26 +33,13 @@
         is_deleted
     </sql>
     <!-- 分页 -->
-    <select id="pageList" resultMap="templateResultMap">
+    <select id="pageList" resultMap="templateRelationResultMap">
         SELECT
             <include refid="baseColumnList"></include>
-        FROM template
+        FROM template_relation
         WHERE is_deleted = 0
-        <if test="template.beanName != null and template.beanName != ''">
-            AND bean_name like concat('%',#{template.beanName},'%')
-        </if>
-        <if test="template.formCode != null and template.formCode != ''">
-            AND form_code like concat('%',#{template.formCode},'%')
+        <if test="templateRelation.formCode != null and templateRelation.formCode != ''">
+            AND form_code like concat('%',#{templateRelation.formCode},'%')
         </if>
     </select>
-
-    <!-- 分页 -->
-    <select id="selectByCode" resultMap="templateResultMap">
-        SELECT
-        <include refid="baseColumnList"></include>
-        FROM template
-        WHERE is_deleted = 0
-        AND form_code = concat(#{code})
-    </select>
-
 </mapper>
