@@ -6,6 +6,8 @@ import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 
 /**
  * 合同依据管理 实体类
@@ -25,34 +27,44 @@ public class ContractAccordingEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 项目依据
+	 * 依据名称
 	 */
-	@ApiModelProperty(value = "项目依据")
+	@ApiModelProperty(value = "依据名称")
 	private String accordingName;
 	/**
-	 * 关联合同
+	 * 文件编号
 	 */
-	@ApiModelProperty(value = "关联合同")
-	private String contractId;
+	@ApiModelProperty(value = "文件编号")
+	private String fileId;
 	/**
-	 * 依据附件
+	 * 同步时间
 	 */
-	@ApiModelProperty(value = "依据附件")
-	private String accordingFiles;
+	@ApiModelProperty(value = "同步时间")
+	private Date synchDate;
 	/**
-	 * 依据说明
+	 * 主题内容
 	 */
-	@ApiModelProperty(value = "依据说明")
-	private String remark;
+	@ApiModelProperty(value = "主题内容")
+	private String themeContext;
 	/**
-	 * 版本号
+	 * 使用状态
 	 */
-	@ApiModelProperty(value = "版本号")
-	private String recordVersion;
+	@ApiModelProperty(value = "使用状态")
+	private String useStatus;
 	/**
-	 * 创建单位标识
+	 * 单据类型
 	 */
-	@ApiModelProperty(value = "创建单位标识")
-	private Long createUnit;
+	@ApiModelProperty(value = "单据类型")
+	private String documentType;
+	/**
+	 * 依据地址
+	 */
+	@ApiModelProperty(value = "依据地址")
+	private String accordingAddress;
+	/**
+	 * 是否可以复用
+	 */
+	@ApiModelProperty(value = "是否可以复用")
+	private Integer isReused;
 
 }

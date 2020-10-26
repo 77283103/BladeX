@@ -25,36 +25,51 @@ public class ContractTemplateRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value="范本名称")
+	@ApiModelProperty(value = "范本名称")
 	private String name;
 
-    @ApiModelProperty(value="范本类型")
-	private String templateCategory;
-
-    @ApiModelProperty(value="所属合同大类")
-	private String contractBigCategory;
-
-    @ApiModelProperty(value="所属合同小类")
-	private String contractSmallCategory;
-
-    @ApiModelProperty(value="范本说明")
-	private String templateDescription;
-
-    @ApiModelProperty(value="版本号")
-	private String recordVersion;
-
-    @ApiModelProperty(value="范本编号")
+	@ApiModelProperty(value = "范本编号")
 	private String templateNumber;
 
-    @ApiModelProperty(value="范本附件")
-	private String attachedFiles;
+	@ApiModelProperty(value = "所属合同大类")
+	private String contractBigCategory;
 
-    @ApiModelProperty(value="创建单位标识")
+	@ApiModelProperty(value = "所属合同小类")
+	private String contractSmallCategory;
+
+	@ApiModelProperty(value = "范本类型")
+	private String templateCategory;
+
+	@ApiModelProperty(value = "创建单位标识")
 	private Long createUnit;
 
-    @ApiModelProperty(value="关联合同")
+	@ApiModelProperty(value = "使用范围")
+	private String useRange;
+
+	@ApiModelProperty(value = "范本说明")
+	private String templateDescription;
+
+	@ApiModelProperty(value = "版本号")
+	private String  recordVersion;
+
+	@ApiModelProperty(value = "范本附件")
+	private String attachedFiles;
+
+	@ApiModelProperty(value = "上级版本id")
+	private String originalTemplateId;
+
+	@ApiModelProperty(value = "关联合同")
 	private String contractId;
 
 	@ApiModelProperty(value = "范本状态")
 	private String templateStatus;
+
+	@ApiModelProperty(value = "正在履行合同数量")
+	private String authenticPerformanceCount;
+
+	@ApiModelProperty(value = "已完成合同数量")
+	private String completedContractCount;
+
+	@ApiModelProperty(value = "使用率")
+	private String usageRate;
 }

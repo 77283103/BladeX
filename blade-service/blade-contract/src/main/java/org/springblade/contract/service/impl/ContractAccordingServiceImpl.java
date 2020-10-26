@@ -39,23 +39,4 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 		return baseMapper.pageList(page, according);
 	}
 
-	/**
-	 * 重写依据vo方法返回附件 包装返回视图层
-	 * @param id
-	 * @return
-	 */
-	@Override
-	public ContractAccordingResponseVO getById(Long id) {
-		ContractAccordingEntity accordingEntity=baseMapper.selectById(id);
-		ContractAccordingResponseVO accordingResponseVO= ContractAccordingWrapper.build().entityVO(accordingEntity);
-		//查询依据附件
-		//@Func.isNoneBlank判断是否全为非空字符串
-		if (Func.isNoneBlank(accordingResponseVO.getAccordingFiles())){
-			R<List<FileVO>> result = fileClient.getByIds(accordingResponseVO.getAccordingFiles());
-			if (result.isSuccess()){
-				accordingResponseVO.setAccordingFilesVOList(result.getData());
-			}
-		}
-		return accordingResponseVO;
-	}
 }

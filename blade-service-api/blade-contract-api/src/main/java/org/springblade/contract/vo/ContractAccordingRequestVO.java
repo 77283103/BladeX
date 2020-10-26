@@ -5,6 +5,8 @@ import org.springblade.contract.entity.ContractAccordingEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.Date;
+
 /**
  * 合同依据管理 请求模型VO
  *
@@ -25,22 +27,29 @@ public class ContractAccordingRequestVO extends ContractAccordingEntity {
 
 	private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value="项目依据")
+
+	@ApiModelProperty(value = "依据名称")
 	private String accordingName;
 
-    @ApiModelProperty(value="关联合同")
-	private String contractId;
+	@ApiModelProperty(value = "文件编号")
+	private String fileId;
 
-    @ApiModelProperty(value="依据附件")
-	private String accordingFiles;
+	@ApiModelProperty(value = "同步时间")
+	private Date synchDate;
 
-    @ApiModelProperty(value="依据说明")
-	private String remark;
+	@ApiModelProperty(value = "主题内容")
+	private String themeContext;
 
-    @ApiModelProperty(value="版本号")
-	private String recordVersion;
+	@ApiModelProperty(value = "使用状态")
+	private String useStatus;
 
-    @ApiModelProperty(value="创建单位标识")
-	private Long createUnit;
+	@ApiModelProperty(value = "单据类型")
+	private String documentType;
+
+	@ApiModelProperty(value = "依据地址")
+	private String accordingAddress;
+
+	@ApiModelProperty(value = "是否可以复用")
+	private Integer isReused;
 
 }

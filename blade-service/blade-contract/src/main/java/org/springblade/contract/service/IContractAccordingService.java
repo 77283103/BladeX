@@ -21,10 +21,4 @@ public interface IContractAccordingService extends BaseService<ContractAccording
 	 */
 	IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingEntity according);
 
-	/**
-	 * 重写依据vo
-	 * @param id
-	 * @return
-	 */
-	ContractAccordingResponseVO getById(Long id);
 }

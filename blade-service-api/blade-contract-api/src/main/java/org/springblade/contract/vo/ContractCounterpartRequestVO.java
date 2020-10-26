@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * 相对方管理 请求模型VO
@@ -28,42 +29,76 @@ public class ContractCounterpartRequestVO extends ContractCounterpartEntity {
 
 	private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty(value="相对方名称")
+
+	@ApiModelProperty(value = "相对方名称")
 	private String name;
 
-    @ApiModelProperty(value="相对方性质")
-	private String counterpartCategory;
+	@ApiModelProperty(value = "身份证号码")
+	private String idNumber;
 
-    @ApiModelProperty(value="注册地址")
-	private String registeredAddress;
-
-    @ApiModelProperty(value="法定代表人")
-	private String legalRepresentative;
-
-    @ApiModelProperty(value="注册资金")
-	private BigDecimal registeredCapital;
-
-    @ApiModelProperty(value="币种")
-	private String currencyCategory;
-
-    @ApiModelProperty(value="成立日期")
-	private LocalDate establishDate;
-
-    @ApiModelProperty(value="统一社会信用代码")
+	@ApiModelProperty(value = "统一社会信用代码")
 	private String unifiedSocialCreditCode;
 
-    @ApiModelProperty(value="首次合作日期")
-	private LocalDate firstCooperationDate;
+	@ApiModelProperty(value = "相对方类型")
+	private String counterpartCategory;
 
-    @ApiModelProperty(value="合同记录")
-	private String contractRecord;
+	@ApiModelProperty(value = "相对方性质")
+	private String natureCategory;
 
-    @ApiModelProperty(value="上榜记录")
-	private String listRecord;
+	@ApiModelProperty(value = "注册地址")
+	private String registeredAddress;
 
-    @ApiModelProperty(value="相关合同")
-	private String  contractId;
+	@ApiModelProperty(value = "联系人电话")
+	private String contactPersonPhone;
+
+	@ApiModelProperty(value = "联系人地址")
+	private String contactAddress;
+
+	@ApiModelProperty(value = "联系人姓名")
+	private String contactPersonName;
+
+	@ApiModelProperty(value = "护照号码")
+	private String passportId;
+
+	@ApiModelProperty(value = "首次合作日期")
+	private Date firstCooperationDate;
+
+	@ApiModelProperty(value = "电子印章序列号")
+	private String electronicSealSerialId;
+
+	@ApiModelProperty(value = "税率")
+	private BigDecimal taxRate;
+
+	@ApiModelProperty(value = "付款方式")
+	private String paymentMethod;
+
+	@ApiModelProperty(value = "信息同步时间")
+	private Date informationSynDate;
+
+	@ApiModelProperty(value = "成立日期")
+	private Date establishDate;
+
+	@ApiModelProperty(value = "公司地址")
+	private String companyAddress;
+
+	@ApiModelProperty(value = "注册资金")
+	private BigDecimal registeredCapital;
+
+	@ApiModelProperty(value = "法定代表人")
+	private String legalRepresentative;
+
+	@ApiModelProperty(value = "联系人邮箱")
+	private String contactPersonMail;
+
+	@ApiModelProperty(value = "开户银行")
+	private String depositBank;
+
+	@ApiModelProperty(value = "银行账号")
+	private String bankAccount;
 
 	@ApiModelProperty(value = "相关附件")
 	private String attachedFiles;
+
+	@ApiModelProperty(value = "币种")
+	private String currencyCategory;
 }

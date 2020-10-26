@@ -30,10 +30,10 @@ public class ContractTemplateEntity extends BaseEntity {
 	@ApiModelProperty(value = "范本名称")
 	private String name;
 	/**
-	 * 范本类型
+	 * 范本编号
 	 */
-	@ApiModelProperty(value = "范本类型")
-	private String templateCategory;
+	@ApiModelProperty(value = "范本编号")
+	private String templateNumber;
 	/**
 	 * 所属合同大类
 	 */
@@ -45,6 +45,21 @@ public class ContractTemplateEntity extends BaseEntity {
 	@ApiModelProperty(value = "所属合同小类")
 	private String contractSmallCategory;
 	/**
+	 * 范本类型
+	 */
+	@ApiModelProperty(value = "范本类型")
+	private String templateCategory;
+	/**
+	 * 创建单位标识
+	 */
+	@ApiModelProperty(value = "创建单位标识")
+	private Long createUnit;
+	/**
+	 * 使用范围
+	 */
+	@ApiModelProperty(value = "使用范围")
+	private String useRange;
+	/**
 	 * 范本说明
 	 */
 	@ApiModelProperty(value = "范本说明")
@@ -54,21 +69,17 @@ public class ContractTemplateEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "版本号")
 	private String recordVersion;
-	/**
-	 * 范本编号
-	 */
-	@ApiModelProperty(value = "范本编号")
-	private String templateNumber;
+
 	/**
 	 * 范本附件
 	 */
 	@ApiModelProperty(value = "范本附件")
 	private String attachedFiles;
 	/**
-	 * 创建单位标识
+	 * 上级版本id
 	 */
-	@ApiModelProperty(value = "创建单位标识")
-	private Long createUnit;
+	@ApiModelProperty(value = "上级版本id")
+	private String originalTemplateId;
 	/**
 	 * 关联合同
 	 */
@@ -79,4 +90,19 @@ public class ContractTemplateEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "范本状态")
 	private String templateStatus;
+	/**
+	 * 正在履行合同数量
+	 */
+	@ApiModelProperty(value = "正在履行合同数量")
+	private String authenticPerformanceCount;
+	/**
+	 * 已完成合同数量
+	 */
+	@ApiModelProperty(value = "已完成合同数量")
+	private String completedContractCount;
+	/**
+	 * 使用率
+	 */
+	@ApiModelProperty(value = "使用率")
+	private String usageRate;
 }
