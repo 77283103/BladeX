@@ -86,9 +86,9 @@
         <!--<dependency>
             <groupId>org.springblade</groupId>
             <artifactId>blade-starter-trace</artifactId>
-        </dependency>-->
-        <!-- 解决Java11无法运行的问题 -->
-        <!--<dependency>
+        </dependency>
+         解决Java11无法运行的问题
+        <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
             <version>2.2.11</version>
@@ -108,6 +108,48 @@
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
         </dependency>-->
+        <dependency>
+            <groupId>com.bcprov</groupId>
+            <artifactId>com.bcprov</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/bcprov-jdk14-145.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.cas-client</groupId>
+            <artifactId>com.cas-client</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/cas-client-core-3.1.10.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.commons-codec</groupId>
+            <artifactId>com.commons-codec</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/commons-codec-1.4.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.commons-httpclient</groupId>
+            <artifactId>com.commons-httpclient</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/commons-httpclient-3.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.commons-logging</groupId>
+            <artifactId>com.commons-logging</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/commons-logging-1.0.4.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.EKP-SSO</groupId>
+            <artifactId>com.EKP-SSO</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/EKP-SSO-client-java.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
@@ -128,6 +170,19 @@
                 <artifactId>maven-antrun-plugin</artifactId>
             </plugin>
         </plugins>
+        <!--引入本地资源-->
+        <filters>
+            <filter>${project.basedir}/lib/WEB-INF/sso-config.properties</filter>
+        </filters>
+        <resources>
+            <resource>
+                <directory>lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+        </resources>
     </build>
 
 </project>

@@ -102,6 +102,8 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					jsonRelation.add(joRelation);
 				}
 				jo.put("dicData", jsonRelation);
+				JSONArray data = new JSONArray();
+				jo.put("tableData", data);
 			}else{
 				jo.put("dicData", "");
 			}

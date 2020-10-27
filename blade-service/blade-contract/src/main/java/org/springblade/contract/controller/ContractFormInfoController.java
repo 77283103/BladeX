@@ -1,5 +1,7 @@
 package org.springblade.contract.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
@@ -20,9 +22,12 @@ import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.entity.TemplateFieldEntity;
+import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 /**
@@ -84,7 +89,7 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
-	 * 新增
+	 * 独立起草新增
 	 */
 	@PostMapping("/add")
 	@ApiOperationSupport(order = 5)
@@ -112,6 +117,35 @@ public class ContractFormInfoController extends BladeController {
 		}
 		return R.data(entity);
 	}
+
+
+	/**
+	 * 范本起草新增
+	 */
+	@PostMapping("/templateSave")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateSave')")
+	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody TemplateRequestVO template) {
+		//把Json对象转成对象
+		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+		JSONObject j = new JSONObject();
+		for(TemplateFieldEntity templateField : templateFieldList){
+			if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
+				if("ContractAccording".equals(templateField.getRelationCode())){
+					/*保存依据信息*/
+					/*if(contractFormInfo.getAccording().size()>0){
+						contractFormInfoService.saveAccording(contractFormInfo);
+					}*/
+				}
+			}else{
+				j.put(templateField.getFieldName(), templateField.getFieldValue());
+			}
+		}
+		ContractFormInfoEntity contractFormInfoEntity=JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
+		return R.data(contractFormInfoEntity);
+	}
+
 
 	/**
 	 * 修改
