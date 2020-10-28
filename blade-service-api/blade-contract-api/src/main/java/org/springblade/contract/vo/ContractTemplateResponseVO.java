@@ -4,6 +4,7 @@ import lombok.*;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import io.swagger.annotations.ApiModel;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.system.entity.TemplateEntity;
 
 import java.util.List;
 
@@ -25,4 +26,8 @@ public class ContractTemplateResponseVO extends ContractTemplateEntity {
 	 *范本附件列表
 	 */
 	private List<FileVO> templateFileVOList;
+	/**
+	 * 范本历史版本
+	 */
+	private List<ContractTemplateEntity> templateEntityOldVOList;
 }

@@ -21,6 +21,7 @@
         <result column="authentic_performance_count" property="authenticPerformanceCount"/>
         <result column="completed_contract_count" property="completedContractCount"/>
         <result column="usage_rate" property="usageRate"/>
+        <result column="remarks" property="remarks"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -48,6 +49,7 @@
         authentic_performance_count,
         completed_contract_count,
         usage_rate,
+        remarks,
         status,
         is_deleted,
         create_user,
@@ -89,12 +91,20 @@
     <update id="updateEachTemplateStatus">
         <foreach collection="ids" item="item" index="index" open="" close="" separator=";">
         UPDATE contract_template  SET
-            template_status = ${item.templateStatus}
-            WHERE id = ${item.id}
+            template_status = #{item.templateStatus}
+            WHERE id = #{item.id}
         </foreach>
     </update>
     <!--修改范本状态-->
     <update id="updateTemplateStatus">
-        UPDATE contract_template SET template_status = ${templateStatus} WHERE id = ${id}
+        UPDATE contract_template SET template_status = #{templateStatus} WHERE id =#{id}
     </update>
+    <!--查询模板历史版本-->
+    <select id="versionInfo" resultMap="templateResultMap">
+        SELECT
+           <include refid="baseColumnList"></include>
+        FROM contract_template
+        WHERE is_deleted = 0
+        AND id = #{id}
+    </select>
 </mapper>

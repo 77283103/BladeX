@@ -45,6 +45,7 @@ public class ContractTemplateController extends BladeController {
 	private static final String TEMPLATE_STATUS="10";
 	private static final String TEMPLATE_SCRAP_STATUS="30";
 	private static final String TEMPLATE_REVISION_STATUS="20";
+	private static final String TEMPLATE_REVISION_STATUS_OLD="40";
 
 	/**
 	 * 详情
@@ -56,6 +57,18 @@ public class ContractTemplateController extends BladeController {
 	public R<ContractTemplateResponseVO> detail(@RequestParam Long id) {
 		ContractTemplateEntity detail = templateService.getById(id);
 		return R.data(ContractTemplateWrapper.build().entityVO(detail));
+	}
+
+	/**
+	 * 详情
+	 */
+	@GetMapping("/version")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "详情", notes = "传入id")
+	@PreAuth("hasPermission('contract:template:version')")
+	public R<ContractTemplateResponseVO> version(@RequestParam Long id) {
+		ContractTemplateEntity version = templateService.getByNewId(id);
+		return R.data(ContractTemplateWrapper.build().entityVO(version));
 	}
 
 	/**
@@ -80,6 +93,7 @@ public class ContractTemplateController extends BladeController {
 	public R save(@Valid @RequestBody ContractTemplateRequestVO template) {
         ContractTemplateEntity entity = new ContractTemplateEntity();
         BeanUtil.copy(template,entity);
+        entity.setOriginalTemplateId(entity.getId());
 		return R.status(templateService.save(entity));
 	}
 
@@ -148,9 +162,13 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入template")
 	@PreAuth("hasPermission('contract:template:Revision')")
 	public R Revision(@Valid @RequestBody ContractTemplateRequestVO template) {
+		String  templateStatus = TEMPLATE_REVISION_STATUS;
+		String  templateStatusOld = TEMPLATE_REVISION_STATUS_OLD;
 		ContractTemplateEntity entity = new ContractTemplateEntity();
 		BeanUtil.copy(template,entity);
+		entity.setTemplateStatus(templateStatus);
 		templateService.save(entity);
+		templateService.updateTemplateStatus(templateStatusOld,entity.getOriginalTemplateId());
 		return R.data(entity);
 	}
 }

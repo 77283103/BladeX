@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractTemplateEntity;
 
+import java.util.List;
+
 /**
  * 范本管理 Mapper 接口
  *
@@ -21,14 +23,6 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 */
 	IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateEntity template);
 
-	/**
-	 * 废弃分页查询
-	 *
-	 * @param page
-	 * @param template
-	 * @return
-	 */
-	IPage<ContractTemplateEntity> scrapList(IPage<ContractTemplateEntity> page, ContractTemplateEntity template);
 
 	/**
 	 * 批量废弃后修改范本状态
@@ -46,5 +40,7 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 * @return
 	 */
 	boolean updateTemplateStatus(String templateStatus, Long id);
+
+    List<ContractTemplateEntity> versionInfo(Long id);
 
 }
