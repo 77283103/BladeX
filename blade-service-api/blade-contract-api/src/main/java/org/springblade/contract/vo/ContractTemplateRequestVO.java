@@ -56,20 +56,23 @@ public class ContractTemplateRequestVO extends BaseEntity {
 	private String attachedFiles;
 
 	@ApiModelProperty(value = "上级版本id")
-	private String originalTemplateId;
+	private Long originalTemplateId;
 
 	@ApiModelProperty(value = "关联合同")
-	private String contractId;
+	private String  contractId;
 
 	@ApiModelProperty(value = "范本状态")
 	private String templateStatus;
 
 	@ApiModelProperty(value = "正在履行合同数量")
-	private String authenticPerformanceCount;
+	private Integer authenticPerformanceCount;
 
 	@ApiModelProperty(value = "已完成合同数量")
-	private String completedContractCount;
+	private Integer completedContractCount;
 
 	@ApiModelProperty(value = "使用率")
 	private String usageRate;
+
+	@ApiModelProperty(value = "备注")
+	private String remarks;
 }

@@ -79,12 +79,12 @@ public class ContractTemplateEntity extends BaseEntity {
 	 * 上级版本id
 	 */
 	@ApiModelProperty(value = "上级版本id")
-	private String originalTemplateId;
+	private Long originalTemplateId;
 	/**
 	 * 关联合同
 	 */
 	@ApiModelProperty(value = "关联合同")
-	private String contractId;
+	private String  contractId;
 	/**
 	 * 范本状态
 	 */
@@ -94,15 +94,20 @@ public class ContractTemplateEntity extends BaseEntity {
 	 * 正在履行合同数量
 	 */
 	@ApiModelProperty(value = "正在履行合同数量")
-	private String authenticPerformanceCount;
+	private Integer authenticPerformanceCount;
 	/**
 	 * 已完成合同数量
 	 */
 	@ApiModelProperty(value = "已完成合同数量")
-	private String completedContractCount;
+	private Integer completedContractCount;
 	/**
 	 * 使用率
 	 */
 	@ApiModelProperty(value = "使用率")
 	private String usageRate;
+	/**
+	 * 备注
+	 */
+	@ApiModelProperty(value = "备注")
+	private String remarks;
 }

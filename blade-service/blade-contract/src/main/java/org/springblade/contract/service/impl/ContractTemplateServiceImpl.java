@@ -3,6 +3,7 @@ package org.springblade.contract.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.mapper.ContractTemplateMapper;
+import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.contract.wrapper.ContractTemplateWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -14,6 +15,7 @@ import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -69,6 +71,27 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 		//返回vo
 		return templateResponseVO;
 	}
+	/**
+	 * 根据模板id查询历史版本列表
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public ContractTemplateResponseVO getByNewId(Long id) {
+		List<ContractTemplateEntity> templateEntityList=new ArrayList<>();
+		//根据最新版本id查询最新范本数据
+		ContractTemplateEntity templateEntity = baseMapper.selectById(id);
+		while (templateEntity.getOriginalTemplateId()!=null) {
+			templateEntity = baseMapper.selectById(templateEntity.getOriginalTemplateId());
+			templateEntityList.add(templateEntity);
+		}
+		//将实体数据存入vo
+		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityVO(templateEntity);
+		templateResponseVO.setTemplateEntityOldVOList(templateEntityList);
+
+		return templateResponseVO;
+	}
+
 
 	/**
 	 * 新增范本，规范生成范本编号
