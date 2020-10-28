@@ -21,6 +21,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.ApiScope;
 
+import java.util.List;
+
 /**
  *  Mapper 接口
  *
@@ -30,4 +32,11 @@ import org.springblade.system.entity.ApiScope;
 public interface ApiScopeMapper extends BaseMapper<ApiScope> {
 
 	IPage<ApiScope> pageList(IPage<Object> page, @Param("apiScope") ApiScope apiScope);
+
+	/**
+	 * 根据菜单ID删除接口权限
+	 * 逻辑删除
+	 * @param menuIds
+	 */
+	void delApiScopeByMenuId(@Param("menuIds") List<Long> menuIds);
 }
