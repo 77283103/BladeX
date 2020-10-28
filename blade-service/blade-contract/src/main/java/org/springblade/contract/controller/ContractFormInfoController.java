@@ -129,6 +129,8 @@ public class ContractFormInfoController extends BladeController {
 	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody TemplateRequestVO template) {
 		//把Json对象转成对象
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+
+
 		JSONObject j = new JSONObject();
 		for(TemplateFieldEntity templateField : templateFieldList){
 			if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){

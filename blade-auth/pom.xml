@@ -171,9 +171,9 @@
             </plugin>
         </plugins>
         <!--引入本地资源-->
-        <filters>
+        <!--<filters>
             <filter>${project.basedir}/lib/WEB-INF/sso-config.properties</filter>
-        </filters>
+        </filters>-->
         <resources>
             <resource>
                 <directory>lib</directory>
@@ -181,6 +181,14 @@
                 <includes>
                     <include>**/*.jar</include>
                 </includes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.properties</include>
+                    <include>**/*.yml</include>
+                </includes>
+                <filtering>false</filtering>
             </resource>
         </resources>
     </build>
