@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractBorrowApplicationMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractBorrowApplicationResultMap"
+               type="org.springblade.contract.entity.ContractBorrowApplicationEntity">
+        <result column="id" property="id"/>
+        <result column="application_id" property="applicationId"/>
+        <result column="applicant" property="applicant"/>
+        <result column="application_department" property="applicationDepartment"/>
+        <result column="data_type" property="dataType"/>
+        <result column="borrow_cycle_start" property="borrowCycleStart"/>
+        <result column="borrow_cycle_end" property="borrowCycleEnd"/>
+        <result column="borrow_mode" property="borrowMode"/>
+        <result column="data_name" property="dataName"/>
+        <result column="explanation" property="explanation"/>
+        <result column="borrow_schedule" property="borrowSchedule"/>
+        <result column="borrow_status" property="borrowStatus"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        application_id,
+        applicant,
+        application_department,
+        data_type,
+        borrow_cycle_start,
+        borrow_cycle_end,
+        borrow_mode,
+        data_name,
+        explanation,
+        borrow_schedule,
+        borrow_status,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractBorrowApplicationResultMap">
+        SELECT
+        <include refid="baseColumnList">
+        </include>
+        FROM contract_borrow_application
+        WHERE is_deleted = 0
+        <if test="contractBorrowApplication.applicant != null and contractBorrowApplication.applicant != ''">
+            AND applicant = #{contractBorrowApplication.applicant}
+        </if>
+        <if test="contractBorrowApplication.borrowStatus != null and contractBorrowApplication.borrowStatus != ''">
+            AND borrow_status = #{contractBorrowApplication.borrowStatus}
+        </if>
+        <if test="contractBorrowApplication.createDept != null and contractBorrowApplication.createDept != ''">
+            AND create_dept = #{contractBorrowApplication.createDept}
+        </if>
+        <if test="contractBorrowApplication.dataType != null and contractBorrowApplication.dataType != ''">
+            AND data_type = #{contractBorrowApplication.dataType}
+        </if>
+        <if test="contractBorrowApplication.borrowMode != null and contractBorrowApplication.borrowMode != ''">
+            AND borrow_mode = #{contractBorrowApplication.borrowMode}
+        </if>
+        <if test="contractBorrowApplication.borrowCycleStart != null">
+            AND borrow_cycle_start &gt; concat(#{contractBorrowApplication.borrowCycleStart})
+        </if>
+        <if test="contractBorrowApplication.borrowCycleEnd != null">
+            AND borrow_cycle_end &lt; concat(#{contractBorrowApplication.borrowCycleEnd})
+        </if>
+    </select>
+
+    <!--详情-->
+    <select id="selectById" resultMap="contractBorrowApplicationResultMap">
+        SELECT
+        <include refid="baseColumnList">
+        </include>
+        FROM contract_borrow_application
+        WHERE is_deleted = 0
+        AND
+        id=#{id}
+    </select>
+    <!--修改借阅申请信息状态-->
+    <update id="updateBorrowStatusById">
+        UPDATE contract_borrow_application SET borrow_status = #{borrowStatus} WHERE id = #{id}
+    </update>
+</mapper>
