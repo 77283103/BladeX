@@ -83,7 +83,5 @@ public class ContractBorrowHandleEntity extends BaseEntity {
 	 * 借阅申请信息
 	 * @TableField 不查询此对象属性
 	 */
-//	@ApiModelProperty(value = "借阅申请信息")
-//	@TableField(exist = false)
-//	private ContractBorrowApplicationEntity applicationEntity;
+
 }

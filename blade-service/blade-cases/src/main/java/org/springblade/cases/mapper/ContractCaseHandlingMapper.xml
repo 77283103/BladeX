@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.cases.mapper.ContractCaseHandlingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractCaseHandlingResultMap" type="org.springblade.cases.entity.ContractCaseHandlingEntity">
+        <result column="id" property="id"/>
+        <result column="handling_case_id" property="handlingCaseId"/>
+        <result column="filing_date" property="filingDate"/>
+        <result column="filing_judicial_organ" property="filingJudicialOrgan"/>
+        <result column="location" property="location"/>
+        <result column="remarks" property="remarks"/>
+        <result column="property_preservation_case_filing_date" property="propertyPreservationCaseFilingDate"/>
+        <result column="filing_judicial_organ_name" property="filingJudicialOrganName"/>
+        <result column="undertak_judge" property="undertakJudge"/>
+        <result column="property_preservation_case_number" property="propertyPreservationCaseNumber"/>
+        <result column="handle_case_contact_number" property="handleCaseContactNumber"/>
+        <result column="release_of_guarantee_date" property="releaseOfGuaranteeDate"/>
+        <result column="preservation_result" property="preservationResult"/>
+        <result column="court_date" property="courtDate"/>
+        <result column="court_filing_judicial_organ_name" property="courtFilingJudicialOrganName"/>
+        <result column="trial_summary" property="trialSummary"/>
+        <result column="reply" property="reply"/>
+        <result column="case_close_method" property="caseCloseMethod"/>
+        <result column="judgment_document_number" property="judgmentDocumentNumber"/>
+        <result column="nature_of_the_ruling" property="natureOfTheRuling"/>
+        <result column="referee_amount" property="refereeAmount"/>
+        <result column="referee_result" property="refereeResult"/>
+        <result column="progress_description" property="progressDescription"/>
+        <result column="time_of_progression" property="timeOfProgression"/>
+        <result column="acceptance_court" property="acceptanceCourt"/>
+        <result column="attached_files" property="attachedFiles"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        handling_case_id,
+        filing_date,
+        filing_judicial_organ,
+        location,
+        remarks,
+        property_preservation_case_filing_date,
+        filing_judicial_organ_name,
+        undertak_judge,
+        property_preservation_case_number,
+        handle_case_contact_number,
+        release_of_guarantee_date,
+        preservation_result,
+        court_date,
+        court_filing_judicial_organ_name,
+        trial_summary,
+        reply,
+        case_close_method,
+        judgment_document_number,
+        nature_of_the_ruling,
+        referee_amount,
+        referee_result,
+        progress_description,
+        time_of_progression,
+        acceptance_court,
+        attached_files,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractCaseHandlingResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_case_handling
+        WHERE is_deleted = 0
+    </select>
+</mapper>
