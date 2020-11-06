@@ -81,4 +81,14 @@
         FROM contract_case_handling
         WHERE is_deleted = 0
     </select>
+    <!--详情-->
+    <select id="selectById" resultMap="contractCaseHandlingResultMap">
+        SELECT
+        <include refid="baseColumnList">
+        </include>
+        FROM contract_case_handling
+        WHERE is_deleted = 0
+        AND
+        handling_case_id=#{id}
+    </select>
 </mapper>

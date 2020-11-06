@@ -41,4 +41,14 @@
         FROM contract_case_closed
         WHERE is_deleted = 0
     </select>
+    <!--详情-->
+    <select id="selectById" resultMap="contractCaseClosedResultMap">
+        SELECT
+        <include refid="baseColumnList">
+        </include>
+        FROM contract_case_closed
+        WHERE is_deleted = 0
+        AND
+        close_case_id=#{id}
+    </select>
 </mapper>

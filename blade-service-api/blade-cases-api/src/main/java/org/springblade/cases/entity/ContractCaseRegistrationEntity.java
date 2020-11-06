@@ -1,5 +1,6 @@
 package org.springblade.cases.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -107,16 +108,6 @@ public class ContractCaseRegistrationEntity extends BaseEntity {
 	@ApiModelProperty(value = "涉案单位")
 	private String caseRelatedUnit;
 	/**
-	 * 合同状态
-	 */
-	@ApiModelProperty(value = "合同状态")
-	private String contractStatus;
-	/**
-	 * 币种
-	 */
-	@ApiModelProperty(value = "币种")
-	private String currency;
-	/**
 	 * 承办部门
 	 */
 	@ApiModelProperty(value = "承办部门")
@@ -126,12 +117,6 @@ public class ContractCaseRegistrationEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "司法案号")
 	private String judicialCaseNumber;
-	/**
-	 * 立案时间
-	 */
-	@ApiModelProperty(value = "立案时间")
-	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
-	private Date filingDate;
 	/**
 	 * 案件背景
 	 */
@@ -152,5 +137,17 @@ public class ContractCaseRegistrationEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "关联合同")
 	private String associatedContract;
+	/**
+	 * 案件处理
+	 */
+	@ApiModelProperty(value = "案件处理")
+	@TableField(exist = false)
+	private ContractCaseHandlingEntity handlingEntity;
+	/**
+	 * 案件结案
+	 */
+	@ApiModelProperty(value = "案件结案")
+	@TableField(exist = false)
+	private ContractCaseClosedEntity closedEntity;
 
 }

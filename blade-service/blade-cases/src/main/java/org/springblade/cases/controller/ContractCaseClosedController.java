@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
+import org.springblade.cases.service.IContractCaseRegistrationService;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
@@ -39,6 +40,9 @@ import org.springblade.cases.vo.ContractCaseClosedResponseVO;
 public class ContractCaseClosedController extends BladeController {
 
 	private IContractCaseClosedService contractCaseClosedService;
+	private IContractCaseRegistrationService registrationService;
+	private static final String CONTRACT_CASE_CLOSED_SAVE="40";
+	private static final String CONTRACT_CASE_CLOSED_SUBMIT="50";
 
 	/**
 	 * 详情
@@ -72,6 +76,21 @@ public class ContractCaseClosedController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractCaseClosed")
 	@PreAuth("hasPermission('contractCaseClose:contractCaseClosed:add')")
 	public R save(@Valid @RequestBody ContractCaseClosedResponseVO contractCaseClosed) {
+		String caseStatus=CONTRACT_CASE_CLOSED_SAVE;
+		registrationService.updateCaseStatusById(Long.valueOf(contractCaseClosed.getCloseCaseId()),caseStatus);
+		return R.status(contractCaseClosedService.save(ContractCaseClosedWrapper.build().PVEntity(contractCaseClosed)));
+	}
+
+	/**
+	 * 提交
+	 */
+	@PostMapping("/submit")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "提交", notes = "传入contractCaseClosed")
+	@PreAuth("hasPermission('contractCaseClose:contractCaseClosed:submit')")
+	public R submit(@Valid @RequestBody ContractCaseClosedResponseVO contractCaseClosed) {
+		String caseStatus=CONTRACT_CASE_CLOSED_SUBMIT;
+		registrationService.updateCaseStatusById(Long.valueOf(contractCaseClosed.getCloseCaseId()),caseStatus);
 		return R.status(contractCaseClosedService.save(ContractCaseClosedWrapper.build().PVEntity(contractCaseClosed)));
 	}
 
@@ -86,6 +105,8 @@ public class ContractCaseClosedController extends BladeController {
 	    if (Func.isEmpty(contractCaseClosed.getId())){
             throw new ServiceException("id不能为空");
         }
+		String caseStatus=CONTRACT_CASE_CLOSED_SUBMIT;
+		registrationService.updateCaseStatusById(Long.valueOf(contractCaseClosed.getCloseCaseId()),caseStatus);
 		return R.status(contractCaseClosedService.updateById(ContractCaseClosedWrapper.build().PVEntity(contractCaseClosed)));
 	}
 

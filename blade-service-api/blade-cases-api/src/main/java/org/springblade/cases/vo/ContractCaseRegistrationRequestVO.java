@@ -78,21 +78,11 @@ public class ContractCaseRegistrationRequestVO extends BaseEntity {
     @ApiModelProperty(value="涉案单位")
 	private String caseRelatedUnit;
 
-    @ApiModelProperty(value="合同状态")
-	private String contractStatus;
-
-    @ApiModelProperty(value="币种")
-	private String currency;
-
     @ApiModelProperty(value="承办部门")
 	private String undertakDepartment;
 
     @ApiModelProperty(value="司法案号")
 	private String judicialCaseNumber;
-
-    @ApiModelProperty(value="立案时间")
-	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
-	private Date filingDate;
 
     @ApiModelProperty(value="案件背景")
 	private String caseBackground;

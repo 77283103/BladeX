@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
+import org.springblade.cases.service.IContractCaseRegistrationService;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
@@ -39,6 +40,9 @@ import org.springblade.cases.vo.ContractCaseHandlingResponseVO;
 public class ContractCaseHandlingController extends BladeController {
 
 	private IContractCaseHandlingService contractCaseHandlingService;
+	private IContractCaseRegistrationService registrationService;
+	private static final String CONTRACT_CASE_HANDLE_SAVE="30";
+	private static final String CONTRACT_CASE_HANDLE_SUBMIT="40";
 
 	/**
 	 * 详情
@@ -72,9 +76,24 @@ public class ContractCaseHandlingController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractCaseHandling")
 	@PreAuth("hasPermission('contractCaseHanding:contractCaseHandling:add')")
 	public R save(@Valid @RequestBody ContractCaseHandlingResponseVO contractCaseHandling) {
+		String caseStatus=CONTRACT_CASE_HANDLE_SAVE;
+		registrationService.updateCaseStatusById(Long.valueOf(contractCaseHandling.getHandlingCaseId()),caseStatus);
 		return R.status(contractCaseHandlingService.save(ContractCaseHandlingWrapper.build().PVEntity(contractCaseHandling)));
 	}
 
+
+	/**
+	 * 提交
+	 */
+	@PostMapping("/submit")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "提交", notes = "传入contractCaseHandling")
+	@PreAuth("hasPermission('contractCaseHanding:contractCaseHandling:submit')")
+	public R submit(@Valid @RequestBody ContractCaseHandlingResponseVO contractCaseHandling) {
+		String caseStatus=CONTRACT_CASE_HANDLE_SUBMIT;
+		registrationService.updateCaseStatusById(Long.valueOf(contractCaseHandling.getHandlingCaseId()),caseStatus);
+		return R.status(contractCaseHandlingService.save(ContractCaseHandlingWrapper.build().PVEntity(contractCaseHandling)));
+	}
 	/**
 	 * 修改
 	 */
@@ -86,6 +105,8 @@ public class ContractCaseHandlingController extends BladeController {
 	    if (Func.isEmpty(contractCaseHandling.getId())){
             throw new ServiceException("id不能为空");
         }
+		String caseStatus=CONTRACT_CASE_HANDLE_SUBMIT;
+		registrationService.updateCaseStatusById(Long.valueOf(contractCaseHandling.getHandlingCaseId()),caseStatus);
 		return R.status(contractCaseHandlingService.updateById(ContractCaseHandlingWrapper.build().PVEntity(contractCaseHandling)));
 	}
 

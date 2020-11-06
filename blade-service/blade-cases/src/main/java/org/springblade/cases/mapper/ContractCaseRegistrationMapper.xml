@@ -19,11 +19,8 @@
         <result column="court_time" property="courtTime"/>
         <result column="filing_time" property="filingTime"/>
         <result column="case_related_unit" property="caseRelatedUnit"/>
-        <result column="contract_status" property="contractStatus"/>
-        <result column="currency" property="currency"/>
         <result column="undertak_department" property="undertakDepartment"/>
         <result column="judicial_case_number" property="judicialCaseNumber"/>
-        <result column="filing_date" property="filingDate"/>
         <result column="case_background" property="caseBackground"/>
         <result column="attached_files" property="attachedFiles"/>
         <result column="case_status" property="caseStatus"/>
@@ -53,11 +50,8 @@
         court_time,
         filing_time,
         case_related_unit,
-        contract_status,
-        currency,
         undertak_department,
         judicial_case_number,
-        filing_date,
         case_background,
         attached_files,
         case_status,
@@ -76,5 +70,28 @@
             <include refid="baseColumnList"></include>
         FROM contract_case_registration
         WHERE is_deleted = 0
+        <if test="contractCaseRegistration.caseName != null and contractCaseRegistration.caseName != ''">
+            AND case_name = #{contractCaseRegistration.caseName}
+        </if>
+        <if test="contractCaseRegistration.caseId != null and contractCaseRegistration.caseId != ''">
+            AND case_id = #{contractCaseRegistration.caseId}
+        </if>
+        <if test="contractCaseRegistration.caseRelatedUnit != null and contractCaseRegistration.caseRelatedUnit != ''">
+            AND case_related_unit = #{contractCaseRegistration.caseRelatedUnit}
+        </if>
+        <if test="contractCaseRegistration.caseType != null and contractCaseRegistration.caseType != ''">
+            AND case_type = #{contractCaseRegistration.caseType}
+        </if>
+        <if test="contractCaseRegistration.caseTargetAmount != null and contractCaseRegistration.caseTargetAmount != ''">
+            AND case_target_amount =#{contractCaseRegistration.caseTargetAmount}
+        </if>
+        <if test="contractCaseRegistration.caseStatus != null and contractCaseRegistration.caseStatus != ''">
+            AND case_status = #{contractCaseRegistration.caseStatus}
+        </if>
     </select>
+
+    <!--修改借阅申请信息状态-->
+    <update id="updateCaseStatusById">
+        UPDATE contract_case_registration SET case_status = #{caseStatus} WHERE id = #{id}
+    </update>
 </mapper>

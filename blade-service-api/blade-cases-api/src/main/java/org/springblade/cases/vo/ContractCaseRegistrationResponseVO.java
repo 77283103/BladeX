@@ -4,8 +4,14 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
+import org.springblade.cases.entity.ContractCaseClosedEntity;
+import org.springblade.cases.entity.ContractCaseHandlingEntity;
 import org.springblade.cases.entity.ContractCaseRegistrationEntity;
 import io.swagger.annotations.ApiModel;
+import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -28,4 +34,16 @@ public class ContractCaseRegistrationResponseVO extends ContractCaseRegistration
 	private String createDeptName;
 
 	private String updateUserName;
+	/**
+	 *  合同信息
+	 */
+	private ContractFormInfoEntity infoEntity;
+	/**
+	 * 合同状态
+	 */
+	private String contractStatus;
+	/**
+	 * 合同币种
+	 */
+	private String  currencyCategory;
 }

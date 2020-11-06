@@ -21,4 +21,10 @@ public interface ContractCaseHandlingMapper extends BaseMapper<ContractCaseHandl
 	 */
 	IPage<ContractCaseHandlingEntity> pageList(IPage<ContractCaseHandlingEntity> page, ContractCaseHandlingRequestVO contractCaseHandling);
 
+	/**
+	 * 处理关联
+	 * @param id
+	 * @return
+	 */
+	ContractCaseHandlingEntity selectById(Long id);
 }

@@ -20,4 +20,10 @@ public interface ContractCaseClosedMapper extends BaseMapper<ContractCaseClosedE
 	 */
 	IPage<ContractCaseClosedEntity> pageList(IPage<ContractCaseClosedEntity> page, ContractCaseClosedRequestVO contractCaseClosed);
 
+	/**
+	 * 结案关联
+	 * @param id
+	 * @return
+	 */
+	ContractCaseClosedEntity selectById(Long id);
 }
