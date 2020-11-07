@@ -24,7 +24,7 @@ public class WebConfig {
         return registration;
     }*/
 
-    /*@Bean
+    @Bean
     public FilterRegistrationBean<Filter> EKPClientFilter() {
         FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
         //创建上面的自定义的WebFilter对象
@@ -37,7 +37,7 @@ public class WebConfig {
         //启动时候的优先级
         registration.setOrder(20);
         return registration;
-    }*/
+    }
 
     /*@Bean
     public EKPSSOClientAuthenticationFilter EKPSSOClientAuthenticationFilter() {

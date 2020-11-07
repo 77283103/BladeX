@@ -8,9 +8,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
+import org.springblade.contract.entity.ContractAccordingEntity;
+import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.service.IContractFormInfoService;
-import org.springblade.contract.service.IContractPerformanceService;
+import org.springblade.contract.service.*;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
@@ -27,6 +29,7 @@ import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -44,6 +47,9 @@ public class ContractFormInfoController extends BladeController {
 
 	private IContractFormInfoService contractFormInfoService;
 	private IContractPerformanceService performanceService;
+	private IContractAccordingService accordingService;
+	private IContractBondService contractBondService;
+	private IContractPerformanceColPayService contractPerformanceColPayService;
 	private static final String FILE_EXPORT_CATEGORY="1";
 	private static final String CONTRACT_AUDIT_QUALITY="30";
 	private static final String CONTRACT_EXPORT_STATUS="40";
@@ -61,6 +67,8 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:detail')")
 	public R<ContractFormInfoResponseVO> detail(@RequestParam Long id) {
 		ContractFormInfoResponseVO detail = contractFormInfoService.getById(id);
+		String[] sealNameList = detail.getSealName().split(",");
+		detail.setSealNameList(sealNameList);
 		return R.data(detail);
 	}
 
@@ -96,6 +104,8 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");;
+		contractFormInfo.setSealName(sealName);
         ContractFormInfoEntity entity = new ContractFormInfoEntity();
         BeanUtil.copy(contractFormInfo,entity);
 		contractFormInfoService.save(entity);
@@ -104,15 +114,32 @@ public class ContractFormInfoController extends BladeController {
 		if(contractFormInfo.getCounterpart().size()>0){
 			contractFormInfoService.saveCounterpart(contractFormInfo);
 		}
+		/*保存保证金信息*/
+		if(contractFormInfo.getContractBond().size()>0){
+			List<Long> list=new ArrayList<>();
+			for(ContractBondEntity contractBondEntity:contractFormInfo.getContractBond()){
+				contractBondService.save(contractBondEntity);
+				list.add(contractBondEntity.getId());
+			}
+		}
 		/*保存依据信息*/
 		if(contractFormInfo.getAccording().size()>0){
-			contractFormInfoService.saveAccording(contractFormInfo);
+			ContractAccordingEntity contractAccording=contractFormInfo.getAccording().get(0);
+			contractAccording.setContractId(contractFormInfo.getId());
+			accordingService.save(contractAccording);
 		}
 		/*保存履约信息*/
 		if(contractFormInfo.getPerformanceList().size()>0){
 			contractFormInfo.getPerformanceList().forEach(performance->{
 				performance.setContractId(contractFormInfo.getId());
 				performanceService.save(performance);
+			});
+		}
+		/*保存履约计划收付款*/
+		if(contractFormInfo.getPerformanceColPayList().size()>0){
+			contractFormInfo.getPerformanceColPayList().forEach(performanceColPay->{
+				performanceColPay.setContractId(contractFormInfo.getId());
+				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
 		return R.data(entity);

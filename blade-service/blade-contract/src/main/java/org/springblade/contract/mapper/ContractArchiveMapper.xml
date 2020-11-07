@@ -46,7 +46,7 @@
     </select>
 
     <!--根据合同id查询归档信息-->
-    <select id="selectById" resultMap="archiveResultMap">
+    <select id="selectByArchiveId" resultMap="archiveResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
         FROM contract_archive

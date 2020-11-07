@@ -47,8 +47,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	private ContractAccordingMapper contractAccordingMapper;
 
-	private ContractPerformanceMapper contractPerformanceMapper;
-
 	private ContractAssessmentMapper contractAssessmentMapper;
 
 	private ContractArchiveMapper contractArchiveMapper;
@@ -92,12 +90,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	@Override
 	public void saveCounterpart(ContractFormInfoRequestVO vo) {
+		contractFormInfoMapper.deleteCounterpart(vo.getId());
 		contractFormInfoMapper.saveCounterpart(vo.getId(),vo.getCounterpart());
 	}
 
 	@Override
 	public void saveAccording(ContractFormInfoRequestVO vo) {
-		contractFormInfoMapper.saveAccording(vo.getId(),vo.getAccording());
+		//contractFormInfoMapper.saveAccording(vo.getId(),vo.getAccording());
 	}
 
 	/**
@@ -153,19 +152,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(id);
 		contractFormInfoResponseVO.setAccordingList(contractAccordingList);
 		//查询履约计划保存
-		List<ContractPerformanceEntity> contractPerformanceList = contractPerformanceMapper.selectByContractId(id);
-		contractFormInfoResponseVO.setPerformanceList(contractPerformanceList);
+		/*List<ContractPerformanceEntity> contractPerformanceList = contractPerformanceMapper.selectByContractId(id);
+		contractFormInfoResponseVO.setPerformanceList(contractPerformanceList);*/
 		//查询合同评估并保存到合同vo
-		ContractAssessmentEntity contractAssessmentEntity= contractAssessmentMapper.selectById(id);
+		ContractAssessmentEntity contractAssessmentEntity= contractAssessmentMapper.selectByAssessmentId(id);
 		contractFormInfoResponseVO.setAssessmentEntity(contractAssessmentEntity);
 		//查询合同归档并保存到合同vo
-		ContractArchiveEntity contractArchiveEntity=contractArchiveMapper.selectById(id);
+		ContractArchiveEntity contractArchiveEntity=contractArchiveMapper.selectByArchiveId(id);
 		contractFormInfoResponseVO.setArchiveEntity(contractArchiveEntity);
 		//查询合同用印信息保存到合同vo
-		ContractSealUsingInfoEntity sealUsingInfoEntity=sealUsingInfoMapper.selectById(id);
+		ContractSealUsingInfoEntity sealUsingInfoEntity=sealUsingInfoMapper.selectBySealUsingInfoId(id);
 		contractFormInfoResponseVO.setSealInfoEntity(sealUsingInfoEntity);
 		//查询合同签订信息保存到合同vo
-		ContractSigningEntity signingEntity=signingMapper.selectById(id);
+		ContractSigningEntity signingEntity=signingMapper.selectBySigningId(id);
 		contractFormInfoResponseVO.setSigningEntity(signingEntity);
 		ContractSigningResponseVO signingResponseVO= ContractSigningWrapper.build().entityVO(signingEntity);
 		ContractAssessmentResponseVO assessmentResponseVO= ContractAssessmentWrapper.build().entityVO(contractAssessmentEntity);

@@ -66,5 +66,10 @@ public class ContractAccordingEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "是否可以复用")
 	private Integer isReused;
+	/**
+	 * 关联合同
+	 */
+	@ApiModelProperty(value = "关联合同")
+	private Long contractId;
 
 }

@@ -2,11 +2,14 @@ package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -54,11 +57,15 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 合同起始时间
 	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	@ApiModelProperty(value = "合同起始时间")
 	private Date startingTime;
 	/**
 	 * 合同结束时间
 	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	@ApiModelProperty(value = "合同结束时间")
 	private Date endTime;
 	/**
@@ -116,7 +123,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 用印份数
 	 */
 	@ApiModelProperty(value = "用印份数")
-	private String sealNumber;
+	private Integer sealNumber;
 	/**
 	 * 合同编号
 	 */
@@ -171,7 +178,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 合同文件导出状态，是否导出
 	 */
 	@ApiModelProperty(value = "合同文件导出状态，是否导出")
-	private String fileExportCategory;
+	private Integer fileExportCategory;
 	/**
 	 * 合同一级分类
 	 */

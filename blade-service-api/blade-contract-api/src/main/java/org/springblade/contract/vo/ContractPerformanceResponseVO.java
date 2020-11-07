@@ -1,24 +1,31 @@
 package org.springblade.contract.vo;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractPerformanceEntity;
 import io.swagger.annotations.ApiModel;
+import java.util.Date;
 
 /**
- * 合同履约计划 返回模型VO
+ * 接收/提供服务计划清单 返回模型VO
  *
- * @author liyj
- * @date : 2020-09-23 19:26:29
+ * @author szw
+ * @date : 2020-11-05 17:06:56
  */
 @Getter
 @Setter
-@ApiModel(description = "合同履约计划返回对象")
+@ToString
+@ApiModel(description = "接收/提供服务计划清单返回对象")
 @EqualsAndHashCode(callSuper = true)
 public class ContractPerformanceResponseVO extends ContractPerformanceEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	private String createUserName;
+
+	private String createDeptName;
+
+	private String updateUserName;
 }

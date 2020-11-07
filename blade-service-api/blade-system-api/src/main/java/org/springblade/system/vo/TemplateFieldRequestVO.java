@@ -68,4 +68,10 @@ public class TemplateFieldRequestVO extends TemplateFieldEntity {
 
 	@ApiModelProperty(value="字典数据")
 	private String dicData;
+
+	@ApiModelProperty(value = "提示")
+	private String tips;
+
+	@ApiModelProperty(value = "布局")
+	private Integer layout;
 }

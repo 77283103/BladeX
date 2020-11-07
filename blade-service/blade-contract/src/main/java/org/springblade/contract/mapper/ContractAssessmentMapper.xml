@@ -63,7 +63,7 @@
     </select>
 
      <!--根据合同id查询评估信息-->
-    <select id="selectById" resultMap="assessmentResultMap">
+    <select id="selectByAssessmentId" resultMap="assessmentResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
         FROM contract_assessment

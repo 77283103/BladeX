@@ -152,6 +152,12 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	}
 
 	@Override
+	public User getByUserName(String userName) {
+		User user = baseMapper.getByUserName(userName);
+		return user;
+	}
+
+	@Override
 	public UserInfo userInfo(String tenantId, String account) {
 		UserInfo userInfo = new UserInfo();
 		UserDTO user = baseMapper.getUser(tenantId, account);

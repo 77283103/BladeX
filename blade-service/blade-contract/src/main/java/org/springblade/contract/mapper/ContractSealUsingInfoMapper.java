@@ -26,5 +26,5 @@ public interface ContractSealUsingInfoMapper extends BaseMapper<ContractSealUsin
 	 * @param id
 	 * @return
 	 */
-	ContractSealUsingInfoEntity selectById(Long id);
+	ContractSealUsingInfoEntity selectBySealUsingInfoId(Long id);
 }

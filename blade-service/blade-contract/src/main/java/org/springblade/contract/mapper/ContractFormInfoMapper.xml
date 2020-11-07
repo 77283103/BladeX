@@ -194,6 +194,14 @@
             )
         </foreach>
     </insert>
+
+
+
+    <delete id="deleteCounterpart" parameterType="java.lang.Long">
+          DELETE FROM contract_counterpart_setting  WHERE contract_id=#{id}
+    </delete>
+
+
     <!--保存关联依据-->
     <insert id="saveAccording">
         insert into contract_according_setting

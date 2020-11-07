@@ -3,48 +3,66 @@
 <mapper namespace="org.springblade.contract.mapper.ContractPerformanceMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="performanceResultMap" type="org.springblade.contract.entity.ContractPerformanceEntity">
+    <resultMap id="contractPerformanceResultMap" type="org.springblade.contract.entity.ContractPerformanceEntity">
         <result column="id" property="id"/>
-        <result column="performance_start_date" property="performanceStartDate"/>
-        <result column="performance_end_date" property="performanceEndDate"/>
-        <result column="amount" property="amount"/>
+        <result column="name" property="name"/>
+        <result column="type" property="type"/>
+        <result column="currency_category" property="currencyCategory"/>
+        <result column="plan_pay_time" property="planPayTime"/>
+        <result column="plan_pay_amount" property="planPayAmount"/>
+        <result column="actual_pay_time" property="actualPayTime"/>
+        <result column="actual_pay_amount" property="actualPayAmount"/>
+        <result column="plan_return_time" property="planReturnTime"/>
+        <result column="plan_return_amount" property="planReturnAmount"/>
+        <result column="actual_return_time" property="actualReturnTime"/>
+        <result column="actual_return_amount" property="actualReturnAmount"/>
         <result column="contract_id" property="contractId"/>
-        <result column="status" property="status"/>
-        <result column="is_deleted" property="isDeleted"/>
+        <result column="factories" property="factories"/>
+        <result column="acceptance_conditions" property="acceptanceConditions"/>
         <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
         <result column="create_time" property="createTime"/>
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
-        <result column="create_dept" property="createDept"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
-        performance_start_date,
-        performance_end_date,
-        amount,
+        name,
+        type,
+        currency_category,
+        plan_pay_time,
+        plan_pay_amount,
+        actual_pay_time,
+        actual_pay_amount,
+        plan_return_time,
+        plan_return_amount,
+        actual_return_time,
+        actual_return_amount,
         contract_id,
-        status,
-        is_deleted,
+        factories,
+        acceptance_conditions,
         create_user,
+        create_dept,
         create_time,
         update_user,
         update_time,
-        create_dept
+        status,
+        is_deleted
     </sql>
     <!-- 分页 -->
-    <select id="pageList" resultMap="performanceResultMap">
+    <select id="pageList" resultMap="contractPerformanceResultMap">
         SELECT
             <include refid="baseColumnList"></include>
         FROM contract_performance
         WHERE is_deleted = 0
-    </select>
-
-    <select id="selectByContractId" resultMap="performanceResultMap">
-        SELECT
-        <include refid="baseColumnList"></include>
-        FROM contract_performance
-        WHERE is_deleted = 0
-        AND contract_id = #{id}
+        <if test="contractPerformance.name != null and contractPerformance.name != ''">
+            AND name like concat('%',#{contractPerformance.name},'%')
+        </if>
+        <if test="contractPerformance.type != null and contractPerformance.type != ''">
+            AND type = #{contractPerformance.type}
+        </if>
     </select>
 </mapper>

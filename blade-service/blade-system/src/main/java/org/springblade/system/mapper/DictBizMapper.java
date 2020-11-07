@@ -57,6 +57,14 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 */
 	List<DictBizVO> tree(String code);
 
+
+	/**
+	 * 获取树形节点map
+	 *
+	 * @return
+	 */
+	List<DictBiz> treeMap(@Param("codes") List<String> codes);
+
 	/**
 	 * 获取树形节点
 	 *

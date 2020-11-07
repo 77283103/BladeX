@@ -49,8 +49,16 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	void saveCounterpart(Long  id, List<Long> counterpartIds);
 
+
 	/**
-	 * 保存合同相对方关联表
+	 * 删除合同相对方关联表
+	 * @param id 合同id
+	 */
+	void deleteCounterpart(Long  id);
+
+
+	/**
+	 * 保存合同依据关联表
 	 * @param accordingIds 相对方id
 	 * @param id 合同id
 	 */

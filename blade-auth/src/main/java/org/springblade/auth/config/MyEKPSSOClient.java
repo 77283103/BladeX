@@ -28,6 +28,8 @@ public class MyEKPSSOClient extends EKPSSOClient {
 			Logger.error(errorMsg);
 			throw new IllegalArgumentException(errorMsg);
 		} else {
+			ThreadLocal instance = new ThreadLocal();
+			instance.get();
 			Properties prop = new Properties();
 			prop.setProperty("log.level","WARN");
 			prop.setProperty("filter.chain","CASURLFilter");
