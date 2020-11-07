@@ -22,6 +22,7 @@
         <module>blade-system</module>
         <module>blade-user</module>
         <module>blade-contract</module>
+        <module>blade-cases</module>
     </modules>
 
     <dependencies>

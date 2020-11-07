@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.cases.mapper.ContractCaseRegistrationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractCaseRegistrationResultMap" type="org.springblade.cases.entity.ContractCaseRegistrationEntity">
+        <result column="id" property="id"/>
+        <result column="case_type" property="caseType"/>
+        <result column="case_name" property="caseName"/>
+        <result column="case_id" property="caseId"/>
+        <result column="case_target_amount" property="caseTargetAmount"/>
+        <result column="case_reason" property="caseReason"/>
+        <result column="plaintiff" property="plaintiff"/>
+        <result column="defendant" property="defendant"/>
+        <result column="acceptance_court" property="acceptanceCourt"/>
+        <result column="undertak_judge" property="undertakJudge"/>
+        <result column="proxy_lawyer" property="proxyLawyer"/>
+        <result column="register_case_contact_number" property="registerCaseContactNumber"/>
+        <result column="court_time" property="courtTime"/>
+        <result column="filing_time" property="filingTime"/>
+        <result column="case_related_unit" property="caseRelatedUnit"/>
+        <result column="undertak_department" property="undertakDepartment"/>
+        <result column="judicial_case_number" property="judicialCaseNumber"/>
+        <result column="case_background" property="caseBackground"/>
+        <result column="attached_files" property="attachedFiles"/>
+        <result column="case_status" property="caseStatus"/>
+        <result column="associated_contract" property="associatedContract"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        case_type,
+        case_name,
+        case_id,
+        case_target_amount,
+        case_reason,
+        plaintiff,
+        defendant,
+        acceptance_court,
+        undertak_judge,
+        proxy_lawyer,
+        register_case_contact_number,
+        court_time,
+        filing_time,
+        case_related_unit,
+        undertak_department,
+        judicial_case_number,
+        case_background,
+        attached_files,
+        case_status,
+        associated_contract,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractCaseRegistrationResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_case_registration
+        WHERE is_deleted = 0
+        <if test="contractCaseRegistration.caseName != null and contractCaseRegistration.caseName != ''">
+            AND case_name = #{contractCaseRegistration.caseName}
+        </if>
+        <if test="contractCaseRegistration.caseId != null and contractCaseRegistration.caseId != ''">
+            AND case_id = #{contractCaseRegistration.caseId}
+        </if>
+        <if test="contractCaseRegistration.caseRelatedUnit != null and contractCaseRegistration.caseRelatedUnit != ''">
+            AND case_related_unit = #{contractCaseRegistration.caseRelatedUnit}
+        </if>
+        <if test="contractCaseRegistration.caseType != null and contractCaseRegistration.caseType != ''">
+            AND case_type = #{contractCaseRegistration.caseType}
+        </if>
+        <if test="contractCaseRegistration.caseTargetAmount != null and contractCaseRegistration.caseTargetAmount != ''">
+            AND case_target_amount =#{contractCaseRegistration.caseTargetAmount}
+        </if>
+        <if test="contractCaseRegistration.caseStatus != null and contractCaseRegistration.caseStatus != ''">
+            AND case_status = #{contractCaseRegistration.caseStatus}
+        </if>
+    </select>
+
+    <!--修改借阅申请信息状态-->
+    <update id="updateCaseStatusById">
+        UPDATE contract_case_registration SET case_status = #{caseStatus} WHERE id = #{id}
+    </update>
+</mapper>

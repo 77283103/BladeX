@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractBorrowReturnMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractBorrowReturnResultMap" type="org.springblade.contract.entity.ContractBorrowReturnEntity">
+        <result column="id" property="id"/>
+        <result column="return_id" property="returnId"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="returnee" property="returnee"/>
+        <result column="return_department" property="returnDepartment"/>
+        <result column="return_pages" property="returnPages"/>
+        <result column="return_location" property="returnLocation"/>
+        <result column="manager" property="manager"/>
+        <result column="manage_unit" property="manageUnit"/>
+        <result column="manage_date" property="manageDate"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        return_id,
+        contract_name,
+        contract_number,
+        returnee,
+        return_department,
+        return_pages,
+        return_location,
+        manager,
+        manage_unit,
+        manage_date,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractBorrowReturnResultMap">
+        SELECT
+        <include refid="baseColumnList">
+        </include>
+        FROM contract_borrow_return
+        WHERE is_deleted = 0
+    </select>
+
+    <!--详情-->
+    <select id="selectById" resultMap="contractBorrowReturnResultMap">
+        SELECT
+        <include refid="baseColumnList">
+        </include>
+        FROM contract_borrow_return
+        WHERE is_deleted = 0
+        AND
+        return_id=#{id}
+    </select>
+</mapper>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.cases.mapper.ContractCaseClosedMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractCaseClosedResultMap" type="org.springblade.cases.entity.ContractCaseClosedEntity">
+        <result column="id" property="id"/>
+        <result column="close_case_id" property="closeCaseId"/>
+        <result column="close_case_date" property="closeCaseDate"/>
+        <result column="is_archive" property="isArchive"/>
+        <result column="close_case_description" property="closeCaseDescription"/>
+        <result column="close_case_document" property="closeCaseDocument"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        close_case_id,
+        close_case_date,
+        is_archive,
+        close_case_description,
+        close_case_document,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractCaseClosedResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_case_closed
+        WHERE is_deleted = 0
+    </select>
+    <!--详情-->
+    <select id="selectById" resultMap="contractCaseClosedResultMap">
+        SELECT
+        <include refid="baseColumnList">
+        </include>
+        FROM contract_case_closed
+        WHERE is_deleted = 0
+        AND
+        close_case_id=#{id}
+    </select>
+</mapper>
