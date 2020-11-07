@@ -28,5 +28,5 @@ public interface ContractCaseRegistrationMapper extends BaseMapper<ContractCaseR
 	 * @param caseStatus
 	 * @return
 	 */
-	boolean updateCaseStatusById(@Param("id") Long id, @Param("case_status") String caseStatus);
+	boolean updateCaseStatusById(Long id,String caseStatus);
 }

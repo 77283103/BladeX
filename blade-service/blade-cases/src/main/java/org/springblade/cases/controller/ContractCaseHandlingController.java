@@ -41,8 +41,10 @@ public class ContractCaseHandlingController extends BladeController {
 
 	private IContractCaseHandlingService contractCaseHandlingService;
 	private IContractCaseRegistrationService registrationService;
-	private static final String CONTRACT_CASE_HANDLE_SAVE="30";
-	private static final String CONTRACT_CASE_HANDLE_SUBMIT="40";
+	private static final String CONTRACT_CASE_HANDLE_SAVE="40";
+	private static final String CONTRACT_CASE_HANDLE_SUBMIT="50";
+	private static final String CONTRACT_CASE_HANDLE_UPDATE="50";
+
 
 	/**
 	 * 详情
@@ -69,7 +71,7 @@ public class ContractCaseHandlingController extends BladeController {
 	}
 
 	/**
-	 * 新增
+	 * 暂存40
 	 */
 	@PostMapping("/add")
 	@ApiOperationSupport(order = 4)
@@ -83,7 +85,7 @@ public class ContractCaseHandlingController extends BladeController {
 
 
 	/**
-	 * 提交
+	 * 提交50
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 4)
@@ -95,7 +97,7 @@ public class ContractCaseHandlingController extends BladeController {
 		return R.status(contractCaseHandlingService.save(ContractCaseHandlingWrapper.build().PVEntity(contractCaseHandling)));
 	}
 	/**
-	 * 修改
+	 * 修改50
 	 */
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
@@ -105,7 +107,7 @@ public class ContractCaseHandlingController extends BladeController {
 	    if (Func.isEmpty(contractCaseHandling.getId())){
             throw new ServiceException("id不能为空");
         }
-		String caseStatus=CONTRACT_CASE_HANDLE_SUBMIT;
+		String caseStatus=CONTRACT_CASE_HANDLE_UPDATE;
 		registrationService.updateCaseStatusById(Long.valueOf(contractCaseHandling.getHandlingCaseId()),caseStatus);
 		return R.status(contractCaseHandlingService.updateById(ContractCaseHandlingWrapper.build().PVEntity(contractCaseHandling)));
 	}

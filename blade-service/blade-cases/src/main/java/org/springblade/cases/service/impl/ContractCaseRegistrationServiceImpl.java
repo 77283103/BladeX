@@ -23,12 +23,16 @@ import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
+import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.feign.IFileClient;
+import org.springblade.resource.vo.FileVO;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.user.cache.UserCache;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -45,8 +49,11 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 	private ContractCaseHandlingMapper handlingMapper;
 	private ContractCaseClosedMapper closedMapper;
 	private ContractCaseRegistrationMapper registrationMapper;
+	private IFileClient fileClient;
 	@Override
 	public IPage<ContractCaseRegistrationEntity> pageList(IPage<ContractCaseRegistrationEntity> page, ContractCaseRegistrationRequestVO contractCaseRegistration) {
+		String[] code = contractCaseRegistration.getCaseStatus().split(",");
+		contractCaseRegistration.setCode(Arrays.asList(code));
 		page=baseMapper.pageList(page, contractCaseRegistration);
 		IPage<ContractCaseRegistrationResponseVO> pages=ContractCaseRegistrationWrapper.build().entityPVPage(page);
 		List<ContractCaseRegistrationResponseVO> records = pages.getRecords();
@@ -75,6 +82,7 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 			ContractFormInfoEntity contractFormInfo=infoMapper.selectById(registrationEntity.getAssociatedContract());
 			ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityVO(contractFormInfo);
 			registrationResponseVO.setInfoEntity(formInfoResponseVO);
+
 		}
 		//将处理信息返回vo
 		if (Func.isEmpty(registrationResponseVO.getHandlingEntity())) {
@@ -87,6 +95,20 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 				handleResponseVO.setCreateUserName(UserCache.getUser(userId).getRealName());
 				handleResponseVO.setCreateDeptName(SysCache.getDeptName(deptId));
 				registrationResponseVO.setHandlingEntity(handleResponseVO);
+				//查询案件处理附件
+				if (Func.isNoneBlank(handleResponseVO.getAttachedFiles())){
+					R<List<FileVO>> result = fileClient.getByIds(handleResponseVO.getAttachedFiles());
+					if (result.isSuccess()){
+						registrationResponseVO.setHandleAttachedFileVOList(result.getData());
+					}
+				}
+				//查询案件处理附件
+				if (Func.isNoneBlank(handleResponseVO.getReply())){
+					R<List<FileVO>> result = fileClient.getByIds(handleResponseVO.getReply());
+					if (result.isSuccess()){
+						registrationResponseVO.setHandleReplyVOList(result.getData());
+					}
+				}
 			}
 		}
 		//将结案信息返回vo
@@ -100,6 +122,20 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 				closedResponseVO.setCreateUserName(UserCache.getUser(userId).getRealName());
 				closedResponseVO.setCreateDeptName(SysCache.getDeptName(deptId));
 				registrationResponseVO.setClosedEntity(closedEntity);
+				//查询案件处理附件
+				if (Func.isNoneBlank(closedResponseVO.getCloseCaseDocument())){
+					R<List<FileVO>> result = fileClient.getByIds(closedResponseVO.getCloseCaseDocument());
+					if (result.isSuccess()){
+						registrationResponseVO.setCloseCaseDocumentVOList(result.getData());
+					}
+				}
+			}
+		}
+		//查询合同文本
+		if (Func.isNoneBlank(registrationResponseVO.getAttachedFiles())){
+			R<List<FileVO>> result = fileClient.getByIds(registrationResponseVO.getAttachedFiles());
+			if (result.isSuccess()){
+				registrationResponseVO.setAttachedFileVOList(result.getData());
 			}
 		}
 		return registrationResponseVO;
