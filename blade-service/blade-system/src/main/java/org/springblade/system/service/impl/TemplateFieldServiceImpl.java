@@ -47,6 +47,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 
 	@Override
 	public String json(List<TemplateFieldEntity> list) {
+		//字段属性json对象
 		JSONArray json = new JSONArray();
 		List<DictBiz> tree=new ArrayList<DictBiz>();
 		for(TemplateFieldEntity templateField : list){
@@ -59,6 +60,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 			if("select".equals(templateField.getComponentType())||"cascader".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())){
 				tree = dictBizService.getList(templateField.getDicCode());
 				JSONArray array = new JSONArray();
+				//组装字典data
 				for (DictBiz dictBiz:tree){
 					JSONObject dic = new JSONObject();
 					dic.put("fieldValue", dictBiz.getDictKey());
@@ -66,6 +68,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					array.add(dic);
 				}
 				jo.put("dicData", array);
+				//组装可编辑列表data
 			}else if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
 				TemplateFieldRelationEntity templateFieldRelationEntity=new TemplateFieldRelationEntity();
 				QueryWrapper<TemplateFieldRelationEntity> queryWrapper = Condition.getQueryWrapper(templateFieldRelationEntity)
@@ -95,9 +98,9 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 						joRelation.put("dicData", "");
 					}
 					joRelation.put("fieldType", templateFieldRelation.getFieldType());
+					joRelation.put("relationCode", templateFieldRelation.getRelationCode());
 					joRelation.put("required", templateFieldRelation.getRequired());
 					joRelation.put("disabled", templateFieldRelation.getDisabled());
-					joRelation.put("relationCode", templateFieldRelation.getRelationCode());
 					joRelation.put("sort", templateFieldRelation.getSort());
 					jsonRelation.add(joRelation);
 				}
@@ -109,6 +112,34 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 			}
 			jo.put("fieldType", templateField.getFieldType());
 			jo.put("required", templateField.getRequired());
+			JSONArray requiredArray = new JSONArray();
+			//组装字段规则
+			if("true".equals(templateField.getRequired())){
+				if("input".equals(templateField.getComponentType())){
+					JSONObject required = new JSONObject();
+					required.put("required", true);
+					required.put("message", templateField.getTips());
+					required.put("trigger", "blur");
+					requiredArray.add(required);
+				}
+				if("datePicker".equals(templateField.getComponentType())){
+					JSONObject required = new JSONObject();
+					required.put("type", "date");
+					required.put("required", true);
+					required.put("message", templateField.getTips());
+					required.put("trigger", "change");
+					requiredArray.add(required);
+				}
+				if("select".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())){
+					JSONObject required = new JSONObject();
+					required.put("required", true);
+					required.put("message", templateField.getTips());
+					required.put("trigger", "change");
+					requiredArray.add(required);
+				}
+			}
+			jo.put("requiredData", requiredArray);
+			jo.put("layout", templateField.getLayout());
 			jo.put("disabled", templateField.getDisabled());
 			jo.put("relationCode", templateField.getRelationCode());
 			jo.put("sort", templateField.getSort());

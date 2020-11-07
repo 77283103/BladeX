@@ -41,6 +41,7 @@ import org.springblade.system.wrapper.DictBizWrapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -58,6 +59,17 @@ public class DictBizServiceImpl extends BaseServiceImpl<DictBizMapper, DictBiz> 
 	@Override
 	public List<DictBizVO> tree(String code) {
 		return ForestNodeMerger.merge(baseMapper.tree(code));
+	}
+
+	@Override
+	public Map<String,List<DictBizVO>> treeMap(List<String> codes) {
+		Map<String, List<DictBizVO>> collect=new HashMap<>();
+		List<DictBizVO> dictBizs=new ArrayList<>();
+		for (String code:codes){
+			dictBizs = baseMapper.tree(code);
+			collect.put(code,ForestNodeMerger.merge(dictBizs));
+		}
+		return collect;
 	}
 
 	@Override
@@ -162,7 +174,6 @@ public class DictBizServiceImpl extends BaseServiceImpl<DictBizMapper, DictBiz> 
 		return removeByIds(result);
 
 	}
-
 	@Override
 	public Map<String,List<DictBiz>> dictionaryByCodes(List<String> codes) {
 		List<DictBiz> dictBizs = baseMapper.dictionaryByCodes(codes);

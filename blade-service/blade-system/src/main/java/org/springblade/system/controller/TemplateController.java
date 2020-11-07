@@ -7,7 +7,11 @@ import io.swagger.annotations.Api;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import io.undertow.servlet.util.SavedRequest;
 import lombok.AllArgsConstructor;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springblade.contract.entity.ContractFormInfoEntity;
@@ -30,6 +34,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.system.entity.TemplateEntity;
 import org.springblade.system.wrapper.TemplateWrapper;
 import org.springblade.system.service.ITemplateService;
+
+import java.io.IOException;
 import java.util.List;
 
 
@@ -54,130 +60,19 @@ public class TemplateController extends BladeController {
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入template")
 	@PreAuth("hasPermission('template:template:detail')")
-	public R<TemplateResponseVO> detail(@RequestParam Long id) {
+	public R<TemplateResponseVO> detail(@RequestParam Long id,HttpServletResponse response) throws IOException {
+		response.setStatus(302);
+		//response.setHeader("Access-Control-Allow-Origin", "*");
+		//response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
+		// 预检请求的结果缓存60分钟
+		//response.setHeader("Access-Control-Max-Age", "3600");
+		// 响应头设置
+		//response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
+		response.setHeader("Location", "http://localhost:1888/#/wel/index");
+		response.setHeader("Vary","Accept, Accept-Encoding");
+		//response.setContentType("application/json;charset=utf-8");
+		//response.sendRedirect("http://localhost:1888/#/wel/index");
 		TemplateEntity detail = templateService.getById(id);
-		//JSON对象转成JSON数组再转成对象集合list
-		String json="[{\n" +
-			"\t\"componentType\": \"input\",\n" +
-			"\t\"fieldName\": \"contractName\",\n" +
-			"\t\"dicData\": \"\",\n" +
-			"\t\"relationCode\": \"\",\n" +
-			"\t\"disabled\": \"true\",\n" +
-			"\t\"sort\": 1,\n" +
-			"\t\"fieldTitle\": \"合同\",\n" +
-			"\t\"fieldValue\": \"测试\",\n" +
-			"\t\"fieldType\": \"String\",\n" +
-			"\t\"required\": \"true\"\n" +
-			"}, {\n" +
-			"\t\"componentType\": \"datePicker\",\n" +
-			"\t\"fieldName\": \"startingTime\",\n" +
-			"\t\"dicData\": \"\",\n" +
-			"\t\"relationCode\": \"\",\n" +
-			"\t\"disabled\": \"false\",\n" +
-			"\t\"sort\": 2,\n" +
-			"\t\"fieldTitle\": \"开始时间\",\n" +
-			"\t\"fieldValue\": \"\",\n" +
-			"\t\"fieldType\": \"Date\",\n" +
-			"\t\"required\": \"true\"\n" +
-			"}, {\n" +
-			"\t\"componentType\": \"datePicker\",\n" +
-			"\t\"fieldName\": \"endTime\",\n" +
-			"\t\"dicData\": \"\",\n" +
-			"\t\"relationCode\": \"\",\n" +
-			"\t\"disabled\": \"false\",\n" +
-			"\t\"sort\": 3,\n" +
-			"\t\"fieldTitle\": \"结束时间\",\n" +
-			"\t\"fieldValue\": \"\",\n" +
-			"\t\"fieldType\": \"Date\",\n" +
-			"\t\"required\": \"true\"\n" +
-			"}, {\n" +
-			"\t\"componentType\": \"input\",\n" +
-			"\t\"fieldName\": \"contractAmount\",\n" +
-			"\t\"dicData\": \"\",\n" +
-			"\t\"relationCode\": \"\",\n" +
-			"\t\"disabled\": \"false\",\n" +
-			"\t\"sort\": 4,\n" +
-			"\t\"fieldTitle\": \"合同金额\",\n" +
-			"\t\"fieldValue\": \"213\",\n" +
-			"\t\"fieldType\": \"Double\",\n" +
-			"\t\"required\": \"true\"\n" +
-			"}, {\n" +
-			"\t\"componentType\": \"select\",\n" +
-			"\t\"fieldName\": \"currencyCategory\",\n" +
-			"\t\"dicData\": {\n" +
-			"\t\t\"rmb\": \"人民币\",\n" +
-			"\t\t\"my\": \"美元\"\n" +
-			"\t},\n" +
-			"\t\"relationCode\": \"\",\n" +
-			"\t\"disabled\": \"false\",\n" +
-			"\t\"sort\": 5,\n" +
-			"\t\"fieldTitle\": \"币种\",\n" +
-			"\t\"fieldValue\": \"rmb\",\n" +
-			"\t\"fieldType\": \"String\",\n" +
-			"\t\"required\": \"true\"\n" +
-			"}, {\n" +
-			"\t\"componentType\": \"editList\",\n" +
-			"\t\"fieldName\": \"accordingList\",\n" +
-			"\t\"dicData\": [{\n" +
-			"\t\t\"componentType\": \"input\",\n" +
-			"\t\t\"fieldName\": \"accordingList\",\n" +
-			"\t\t\"dicData\": \"\",\n" +
-			"\t\t\"relationCode\": \"\",\n" +
-			"\t\t\"disabled\": \"false\",\n" +
-			"\t\t\"sort\": 1,\n" +
-			"\t\t\"fieldTitle\": \"依据名称\",\n" +
-			"\t\t\"fieldValue\": \"\",\n" +
-			"\t\t\"fieldType\": \"String\",\n" +
-			"\t\t\"required\": \"false\"\n" +
-			"\t}, {\n" +
-			"\t\t\"componentType\": \"select\",\n" +
-			"\t\t\"fieldName\": \"accordingList\",\n" +
-			"\t\t\"dicData\": {},\n" +
-			"\t\t\"relationCode\": \"\",\n" +
-			"\t\t\"disabled\": \"false\",\n" +
-			"\t\t\"sort\": 2,\n" +
-			"\t\t\"fieldTitle\": \"类型\",\n" +
-			"\t\t\"fieldValue\": \"\",\n" +
-			"\t\t\"fieldType\": \"String\",\n" +
-			"\t\t\"required\": \"false\"\n" +
-			"\t}, {\n" +
-			"\t\t\"componentType\": \"input\",\n" +
-			"\t\t\"fieldName\": \"accordingList\",\n" +
-			"\t\t\"dicData\": \"\",\n" +
-			"\t\t\"relationCode\": \"\",\n" +
-			"\t\t\"disabled\": \"false\",\n" +
-			"\t\t\"sort\": 3,\n" +
-			"\t\t\"fieldTitle\": \"备注\",\n" +
-			"\t\t\"fieldValue\": \"\",\n" +
-			"\t\t\"fieldType\": \"String\",\n" +
-			"\t\t\"required\": \"false\"\n" +
-			"\t}],\n" +
-			"\t\"relationCode\": \"ContractAccording\",\n" +
-			"\t\"disabled\": \"false\",\n" +
-			"\t\"sort\": 6,\n" +
-			"\t\"fieldTitle\": \"相对方\",\n" +
-			"\t\"fieldValue\": \"\",\n" +
-			"\t\"fieldType\": \"List\",\n" +
-			"\t\"required\": \"false\"\n" +
-			"}]";
-
-
-		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(json, TemplateFieldEntity.class);
-		JSONObject j = new JSONObject();
-		for(TemplateFieldEntity templateField : templateFieldList){
-			if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
-				ContractFormInfoEntity contractFormInfoEntity=JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
-				if("ContractAccording".equals(templateField.getRelationCode())){
-					/*保存依据信息*/
-					/*if(contractFormInfo.getAccording().size()>0){
-						contractFormInfoService.saveAccording(contractFormInfo);
-					}*/
-				}
-			}else{
-				j.put(templateField.getFieldName(), templateField.getFieldValue());
-			}
-		}
-
 		return R.data(TemplateWrapper.build().entityVO(detail));
 	}
 

@@ -51,7 +51,7 @@
     </select>
 
     <!--根据合同id查询签订信息-->
-    <select id="selectById" resultMap="signingResultMap">
+    <select id="selectBySigningId" resultMap="signingResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
         FROM contract_signing

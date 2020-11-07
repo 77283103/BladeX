@@ -89,6 +89,14 @@ public interface IUserService extends BaseService<User> {
 	User userByAccount(String tenantId, String account);
 
 	/**
+	 * 根据账号获取用户
+	 *
+	 * @param userName
+	 * @return
+	 */
+	User getByUserName(String userName);
+
+	/**
 	 * 给用户设置角色
 	 *
 	 * @param userIds

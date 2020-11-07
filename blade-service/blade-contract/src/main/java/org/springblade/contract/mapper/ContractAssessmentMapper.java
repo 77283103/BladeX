@@ -36,5 +36,5 @@ public interface ContractAssessmentMapper extends BaseMapper<ContractAssessmentE
 	 * @param id
 	 * @return
 	 */
-	ContractAssessmentEntity selectById(Long id);
+	ContractAssessmentEntity selectByAssessmentId(Long id);
 }

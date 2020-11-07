@@ -56,7 +56,7 @@ public class TemplateFieldEntity extends BaseEntity {
 	 * 字典data
 	 */
 	@TableField(exist = false)
-	@ApiModelProperty(value = "字典code")
+	@ApiModelProperty(value = "字典数据")
 	private String dicData;
 	/**
 	 * 关联code
@@ -103,6 +103,16 @@ public class TemplateFieldEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "日期格式化")
 	private String format;
+	/**
+	 * 提示
+	 */
+	@ApiModelProperty(value = "提示")
+	private String tips;
+	/**
+	 * 布局
+	 */
+	@ApiModelProperty(value = "布局")
+	private Integer layout;
 
 
 }

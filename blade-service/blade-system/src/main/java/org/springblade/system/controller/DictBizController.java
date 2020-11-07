@@ -141,6 +141,19 @@ public class DictBizController extends BladeController {
 	 *
 	 * @return
 	 */
+	@GetMapping("/treeMap")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "树形结构", notes = "树形结构")
+	public R<Map<String,List<DictBizVO>>> treeMap(String codes) {
+		Map<String,List<DictBizVO>> dictBizTreeMap= dictService.treeMap(Func.toStrList(StringPool.COMMA, codes));
+		return R.data(dictBizTreeMap);
+	}
+
+	/**
+	 * 获取字典树形结构
+	 *
+	 * @return
+	 */
 	@GetMapping("/parent-tree")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "树形结构", notes = "树形结构")

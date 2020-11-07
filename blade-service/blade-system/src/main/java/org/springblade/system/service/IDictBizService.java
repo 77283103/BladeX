@@ -41,6 +41,13 @@ public interface IDictBizService extends IService<DictBiz> {
 	List<DictBizVO> tree(String code);
 
 	/**
+	 * 树形结构map
+	 *
+	 * @return
+	 */
+	Map<String, List<DictBizVO>>  treeMap(List<String> codes);
+
+	/**
 	 * 树形结构
 	 *
 	 * @return

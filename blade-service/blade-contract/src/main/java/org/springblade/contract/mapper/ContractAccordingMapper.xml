@@ -14,6 +14,7 @@
         <result column="according_address" property="accordingAddress"/>
         <result column="status" property="status"/>
         <result column="is_reused" property="isReused"/>
+        <result column="contract_id" property="contractId"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
@@ -32,6 +33,7 @@
         use_status,
         according_address,
         is_reused,
+        contract_id,
         status,
         is_deleted,
         create_user,

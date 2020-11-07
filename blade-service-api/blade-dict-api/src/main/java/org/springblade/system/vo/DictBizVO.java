@@ -50,6 +50,14 @@ public class DictBizVO extends DictBiz implements INode {
 	@JsonSerialize(using = ToStringSerializer.class)
 	private Long parentId;
 
+	/*private String title;
+
+	@JsonSerialize(using = ToStringSerializer.class)
+	private Long key;
+
+	@JsonSerialize(using = ToStringSerializer.class)
+	private Long value;*/
+
 	/**
 	 * 子孙节点
 	 */

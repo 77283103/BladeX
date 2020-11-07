@@ -14,8 +14,9 @@ import java.io.IOException;
  */ //该文件不用修改
 public class EKPSSOClientAuthenticationFilter implements Filter {
 
-	private static final Log logger = LogFactory
-			.getLog(EKPSSOClientAuthenticationFilter.class);
+	public EKPSSOClientAuthenticationFilter() {
+	}
+
 	@Override
 	public void destroy() {
 		System.out.println("destroy");
@@ -24,14 +25,18 @@ public class EKPSSOClientAuthenticationFilter implements Filter {
 	@Override
 	public void doFilter(ServletRequest req, ServletResponse res,
 						 final FilterChain chain) throws IOException, ServletException {
-		HttpServletRequest request = (HttpServletRequest) req;
-		System.out.println("this is MyFilter,url :"+request.getRequestURI());
-		EKPSSOUserData userData = EKPSSOUserData.getInstance();
-		if (userData.isUserChanged()) {
-			HttpServletResponse response = (HttpServletResponse) res;
-			String username = userData.getCurrentUsername();
-			System.out.println(username);
-			userData.acceptUserChange();
+		try{
+			EKPSSOUserData userData = EKPSSOUserData.getInstance();
+			if (userData.isUserChanged()) {
+				HttpServletResponse response = (HttpServletResponse) res;
+				String username = userData.getCurrentUsername();
+				System.out.println(username);
+				userData.acceptUserChange();
+			}
+		}catch(Exception e){
+			e.printStackTrace();
+		}finally {
+		System.out.println(123456);
 		}
 		chain.doFilter(req, res);
 	}

@@ -50,6 +50,11 @@ public class UserClient implements IUserClient {
 	}
 
 	@Override
+	public R<User> userInfoByUserName(String userName) {
+		return R.data(service.getByUserName(userName));
+	}
+
+	@Override
 	@GetMapping(USER_INFO_BY_ACCOUNT)
 	public R<User> userByAccount(String tenantId, String account) {
 		return R.data(service.userByAccount(tenantId, account));

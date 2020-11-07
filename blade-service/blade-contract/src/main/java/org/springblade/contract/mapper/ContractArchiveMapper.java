@@ -27,5 +27,5 @@ public interface ContractArchiveMapper extends BaseMapper<ContractArchiveEntity>
 	 * @param id
 	 * @return
 	 */
-	ContractArchiveEntity selectById(Long id);
+	ContractArchiveEntity selectByArchiveId(Long id);
 }

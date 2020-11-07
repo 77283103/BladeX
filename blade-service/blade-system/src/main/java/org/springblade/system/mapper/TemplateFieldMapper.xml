@@ -19,6 +19,8 @@
         <result column="bean_name" property="beanName"/>
         <result column="disabled" property="disabled"/>
         <result column="format" property="format"/>
+        <result column="tips" property="tips"/>
+        <result column="layout" property="layout"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
         <result column="create_time" property="createTime"/>
@@ -44,6 +46,8 @@
         bean_name,
         disabled,
         format,
+        tips,
+        layout,
         create_user,
         create_dept,
         create_time,

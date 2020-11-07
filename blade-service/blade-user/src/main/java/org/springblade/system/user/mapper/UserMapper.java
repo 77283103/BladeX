@@ -84,4 +84,12 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @return
 	 */
 	List<User> findByBenchMinister(String benchUserId);
+
+
+	/**
+	 * 根据用户名查用户信息
+	 * @param userName
+	 * @return
+	 */
+	User getByUserName(String userName);
 }

@@ -230,4 +230,16 @@
         </if>
         and d.post_id = '1123598817738675201'
     </select>
+
+
+    <select id="getByUserName" resultType="org.springblade.system.user.entity.User">
+        SELECT
+        u.*
+        FROM
+        blade_user u
+        where u.is_deleted = 0
+        <if test="deptId!=null and deptId != ''">
+            and u.account = #{userName}
+        </if>
+    </select>
 </mapper>

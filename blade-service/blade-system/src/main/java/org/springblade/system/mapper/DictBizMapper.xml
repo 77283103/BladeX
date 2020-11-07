@@ -34,6 +34,7 @@
         <result column="title" property="title"/>
         <result column="value" property="value"/>
         <result column="key" property="key"/>
+        <result column="code" property="code"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -107,6 +108,16 @@
             and dict.code like concat(concat('%', #{param2.code}),'%')
         </if>
         ORDER BY dict.sort
+    </select>
+
+    <select id="treeMap" resultMap="treeNodeResultMap">
+        select id, parent_id, dict_value as title, id as "value", id as "key",code
+        from blade_dict_biz
+        where is_deleted = 0
+        <foreach collection="codes" item="code" open="and code in (" separator="," close=")">
+            #{code}
+        </foreach>
+        ORDER BY sort
     </select>
 
     <select id="dictionaryByCodes" resultType="org.springblade.system.entity.DictBiz">

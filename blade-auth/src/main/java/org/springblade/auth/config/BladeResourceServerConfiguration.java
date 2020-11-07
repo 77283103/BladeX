@@ -50,6 +50,7 @@ public class BladeResourceServerConfiguration extends ResourceServerConfigurerAd
 			.antMatchers(
 				"/actuator/**",
 				"/token/**",
+				"/auth/login",
 				"/oauth/captcha",
 				"/oauth/logout",
 				"/oauth/select-depart",

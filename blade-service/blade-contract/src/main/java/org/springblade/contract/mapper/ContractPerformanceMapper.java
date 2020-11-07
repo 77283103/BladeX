@@ -3,29 +3,22 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractPerformanceEntity;
-
-import java.util.List;
+import org.springblade.contract.vo.ContractPerformanceRequestVO;
 
 /**
- * 合同履约计划 Mapper 接口
+ * 接收/提供服务计划清单 Mapper 接口
  *
- * @author liyj
- * @date : 2020-09-23 19:26:28
+ * @author szw
+ * @date : 2020-11-05 17:06:55
  */
 public interface ContractPerformanceMapper extends BaseMapper<ContractPerformanceEntity> {
 
 	/**
 	 * 分页查询
 	 * @param page
-	 * @param performance
+	 * @param contractPerformance
 	 * @return
 	 */
-	IPage<ContractPerformanceEntity> pageList(IPage<ContractPerformanceEntity> page, ContractPerformanceEntity performance);
+	IPage<ContractPerformanceEntity> pageList(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance);
 
-	/**
-	 * 根据合同id查询履约集合
-	 * @param id 合同id
-	 * @return
-	 */
-	List<ContractPerformanceEntity> selectByContractId(Long id);
 }

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractBondMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractBondResultMap" type="org.springblade.contract.entity.ContractBondEntity">
+        <result column="id" property="id"/>
+        <result column="bond_name" property="bondName"/>
+        <result column="is_not_bond" property="isNotBond"/>
+        <result column="type" property="type"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="currency_category" property="currencyCategory"/>
+        <result column="plan_pay_time" property="planPayTime"/>
+        <result column="plan_pay_amount" property="planPayAmount"/>
+        <result column="actual _pay_time" property="actual PayTime"/>
+        <result column="actual_pay_amount" property="actualPayAmount"/>
+        <result column="plan_return_time" property="planReturnTime"/>
+        <result column="plan_return_amount" property="planReturnAmount"/>
+        <result column="actual_return_time" property="actualReturnTime"/>
+        <result column="actual_return_amount" property="actualReturnAmount"/>
+        <result column="counterpart_id" property="counterpartId"/>
+        <result column="factories" property="factories"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        bond_name,
+        is_not_bond,
+        type,
+        contract_number,
+        currency_category,
+        plan_pay_time,
+        plan_pay_amount,
+        actual _pay_time,
+        actual_pay_amount,
+        plan_return_time,
+        plan_return_amount,
+        actual_return_time,
+        actual_return_amount,
+        counterpart_id,
+        factories,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractBondResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_bond
+        WHERE is_deleted = 0
+        <if test="contractBond.bondName != null and contractBond.bondName != ''">
+            AND bond_name like concat('%',#{contractBond.bondName},'%')
+        </if>
+    </select>
+</mapper>

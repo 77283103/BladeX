@@ -25,5 +25,5 @@ public interface ContractSigningMapper extends BaseMapper<ContractSigningEntity>
 	 * @param id
 	 * @return
 	 */
-	ContractSigningEntity selectById(Long id);
+	ContractSigningEntity selectBySigningId(Long id);
 }
