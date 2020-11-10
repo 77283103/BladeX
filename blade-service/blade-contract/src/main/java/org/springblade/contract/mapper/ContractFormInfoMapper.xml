@@ -140,7 +140,9 @@
         FROM contract_form_info
         WHERE is_deleted = 0
         <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
-            AND contract_status = concat(#{contractFormInfo.contractStatus})
+            <foreach collection="contractFormInfo.code" item="contract_status" open="and contract_status in (" separator="," close=")">
+                #{contract_status}
+            </foreach>
         </if>
         <if test="contractFormInfo.contractBigCategory != null and contractFormInfo.contractBigCategory != ''">
             AND contract_big_category = concat(#{contractFormInfo.contractBigCategory})
@@ -151,7 +153,7 @@
     </select>
     <!--修改合同状态-->
     <update id="updateExportStatus">
-        UPDATE contract_form_info SET contract_status = ${contractStatus} WHERE id = ${id}
+        UPDATE contract_form_info SET contract_status = #{contractStatus} WHERE id = #{id}
     </update>
     <!--用印分页-->
     <select id="pageListSealInfo" resultMap="formInfoResultMap">

@@ -65,5 +65,8 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="履约计划收付款集合")
 	private List<ContractPerformanceColPayEntity> performanceColPayList;
 
+	@ApiModelProperty(value="合同状态集合")
+	private List<String> code;
+
 
 }

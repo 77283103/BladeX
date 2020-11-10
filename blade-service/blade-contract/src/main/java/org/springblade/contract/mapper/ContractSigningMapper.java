@@ -22,8 +22,17 @@ public interface ContractSigningMapper extends BaseMapper<ContractSigningEntity>
 
 	/**
 	 * 根据合同id查询签订信息
+	 * 一对多
 	 * @param id
 	 * @return
 	 */
 	ContractSigningEntity selectBySigningId(Long id);
+
+	/**
+	 * 根据合同id查询签订信息
+	 * 一对一
+	 * @param id
+	 * @return
+	 */
+	ContractSigningEntity selectSigningById(Long id);
 }

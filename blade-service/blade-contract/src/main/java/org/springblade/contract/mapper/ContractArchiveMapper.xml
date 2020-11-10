@@ -1,35 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.springblade.contract.mapper.ContractArchiveMapper">
-
     <!-- 通用查询映射结果 -->
-    <resultMap id="archiveResultMap" type="org.springblade.contract.entity.ContractArchiveEntity">
+    <resultMap id="contractArchiveResultMap" type="org.springblade.contract.entity.ContractArchiveEntity">
         <result column="id" property="id"/>
         <result column="contract_id" property="contractId"/>
-        <result column="archive_instructions" property="archiveInstructions"/>
-        <result column="manage_message" property="manageMessage"/>
+        <result column="performance_complete_time" property="performanceCompleteTime"/>
+        <result column="print_company" property="printCompany"/>
+        <result column="archive_month" property="archiveMonth"/>
+        <result column="archive_number" property="archiveNumber"/>
+        <result column="contract_print_init_dept" property="contractPrintInitDept"/>
+        <result column="print_apply_init_time" property="printApplyInitTime"/>
+        <result column="print_applicant" property="printApplicant"/>
+        <result column="print_apply_number" property="printApplyNumber"/>
+        <result column="contract_main_content" property="contractMainContent"/>
+        <result column="archive_description" property="archiveDescription"/>
+        <result column="remark" property="remark"/>
+        <result column="manage_unit" property="manageUnit"/>
+        <result column="manage_dept" property="manageDept"/>
+        <result column="archive_date" property="archiveDate"/>
+        <result column="archiver" property="archiver"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
         contract_id,
-        archive_instructions,
-        manage_message,
+        performance_complete_time,
+        print_company,
+        archive_month,
+        archive_number,
+        contract_print_init_dept,
+        print_apply_init_time,
+        print_applicant,
+        print_apply_number,
+        contract_main_content,
+        archive_description,
+        remark,
+        manage_unit,
+        manage_dept,
+        archive_date,
+        archiver,
         status,
         is_deleted,
         create_user,
         create_time,
         update_user,
-        update_time
+        update_time,
+        create_dept
     </sql>
     <!-- 分页 -->
-    <select id="pageList" resultMap="archiveResultMap">
+    <select id="pageList" resultMap="contractArchiveResultMap">
         SELECT
             <include refid="baseColumnList"></include>
         FROM contract_archive
@@ -46,12 +73,22 @@
     </select>
 
     <!--根据合同id查询归档信息-->
-    <select id="selectByArchiveId" resultMap="archiveResultMap">
+    <select id="selectByArchiveId" resultMap="contractArchiveResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
         FROM contract_archive
         WHERE is_deleted = 0
         AND
         id =(SELECT c.contract_archive_id FROM  contract_archive_setting c WHERE c.contract_id = #{id})
+    </select>
+
+    <!--根据合同id查询归档信息-->
+    <select id="selectArchiveById" resultMap="contractArchiveResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_archive
+        WHERE is_deleted = 0
+        AND
+        contract_id = #{id}
     </select>
 </mapper>

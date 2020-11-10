@@ -20,7 +20,7 @@ public interface IContractCaseRegistrationService extends BaseService<ContractCa
 	 * @param contractCaseRegistration
 	 * @return
 	 */
-	IPage<ContractCaseRegistrationEntity> pageList(IPage<ContractCaseRegistrationEntity> page, ContractCaseRegistrationRequestVO contractCaseRegistration);
+	IPage<ContractCaseRegistrationResponseVO> pageList(IPage<ContractCaseRegistrationEntity> page, ContractCaseRegistrationRequestVO contractCaseRegistration);
 
 	/**
 	 * 案件

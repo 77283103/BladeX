@@ -229,6 +229,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value="归档信息")
 	@TableField(exist = false)
 	private ContractArchiveEntity archiveEntity;
+	/**
+	 * 关联合同归档信息
+	 */
+	@ApiModelProperty(value="未归档信息")
+	@TableField(exist = false)
+	private ContractArchiveNotEntity archiveNotEntity;
 
 	/**
 	 * 合同文件导出次数统计
