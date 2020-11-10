@@ -85,8 +85,11 @@
         <if test="contractCaseRegistration.caseTargetAmount != null and contractCaseRegistration.caseTargetAmount != ''">
             AND case_target_amount =#{contractCaseRegistration.caseTargetAmount}
         </if>
+
         <if test="contractCaseRegistration.caseStatus != null and contractCaseRegistration.caseStatus != ''">
-            AND case_status = #{contractCaseRegistration.caseStatus}
+            <foreach collection="contractCaseRegistration.code" item="case_status" open="and case_status in (" separator="," close=")">
+                #{case_status}
+            </foreach>
         </if>
     </select>
 

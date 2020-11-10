@@ -41,8 +41,8 @@ public class ContractCaseClosedController extends BladeController {
 
 	private IContractCaseClosedService contractCaseClosedService;
 	private IContractCaseRegistrationService registrationService;
-	private static final String CONTRACT_CASE_CLOSED_SAVE="40";
-	private static final String CONTRACT_CASE_CLOSED_SUBMIT="50";
+	private static final String CONTRACT_CASE_CLOSED_SAVE="60";
+	private static final String CONTRACT_CASE_CLOSED_SUBMIT="70";
 
 	/**
 	 * 详情

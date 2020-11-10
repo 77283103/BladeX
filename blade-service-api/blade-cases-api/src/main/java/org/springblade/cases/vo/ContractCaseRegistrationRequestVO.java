@@ -8,6 +8,8 @@ import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import org.springframework.format.annotation.DateTimeFormat;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -95,5 +97,8 @@ public class ContractCaseRegistrationRequestVO extends BaseEntity {
 
     @ApiModelProperty(value="关联合同")
 	private String associatedContract;
+
+	@ApiModelProperty(value="案件状态集合")
+    private List<String> code;
 
 }

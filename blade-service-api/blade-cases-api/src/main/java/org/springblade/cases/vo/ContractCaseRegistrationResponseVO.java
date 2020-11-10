@@ -10,9 +10,11 @@ import org.springblade.cases.entity.ContractCaseRegistrationEntity;
 import io.swagger.annotations.ApiModel;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.resource.vo.FileVO;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 案件登记表 返回模型VO
@@ -46,4 +48,20 @@ public class ContractCaseRegistrationResponseVO extends ContractCaseRegistration
 	 * 合同币种
 	 */
 	private String  currencyCategory;
+	/**
+	 * 案件附件
+	 */
+	private List<FileVO> attachedFileVOList;
+	/**
+	 * 案件处理附件
+	 */
+	private List<FileVO> handleAttachedFileVOList;
+	/**
+	 * 案件处理
+	 */
+	private List<FileVO> handleReplyVOList;
+	/**
+	 * 案件结案文书
+	 */
+	private List<FileVO> closeCaseDocumentVOList;
 }
