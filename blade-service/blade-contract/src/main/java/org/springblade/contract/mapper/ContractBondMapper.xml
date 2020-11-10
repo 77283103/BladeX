@@ -12,7 +12,7 @@
         <result column="currency_category" property="currencyCategory"/>
         <result column="plan_pay_time" property="planPayTime"/>
         <result column="plan_pay_amount" property="planPayAmount"/>
-        <result column="actual _pay_time" property="actual PayTime"/>
+        <result column="actual_pay_time" property="actualPayTime"/>
         <result column="actual_pay_amount" property="actualPayAmount"/>
         <result column="plan_return_time" property="planReturnTime"/>
         <result column="plan_return_amount" property="planReturnAmount"/>
@@ -38,7 +38,7 @@
         currency_category,
         plan_pay_time,
         plan_pay_amount,
-        actual _pay_time,
+        actual_pay_time,
         actual_pay_amount,
         plan_return_time,
         plan_return_amount,
@@ -63,5 +63,36 @@
         <if test="contractBond.bondName != null and contractBond.bondName != ''">
             AND bond_name like concat('%',#{contractBond.bondName},'%')
         </if>
+    </select>
+
+    <!--保存关联保证金-->
+    <insert id="saveBond">
+        insert into contract_bond_setting
+        (
+        contract_id,
+        bond_id
+        )
+        values
+        <foreach collection="ids" item="item" index="index" open="" close="" separator=",">
+            (
+            #{id},
+            #{item}
+            )
+        </foreach>
+    </insert>
+
+    <!--删除关联保证金-->
+    <delete id="deleteBond" parameterType="java.lang.Long">
+          DELETE FROM contract_bond_setting  WHERE contract_id=#{id}
+    </delete>
+
+    <!--根据合同id查询相对方集合-->
+    <select id="selectByIds" resultMap="contractBondResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_bond
+        WHERE is_deleted = 0
+        AND
+        id IN (SELECT c.bond_id FROM  contract_bond_setting c WHERE c.contract_id = #{id})
     </select>
 </mapper>

@@ -73,7 +73,7 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 		ContractCaseRegistrationResponseVO registrationResponseVO= ContractCaseRegistrationWrapper.build().entityPV(registrationEntity);
 		if (Func.isNotBlank(registrationEntity.getAssociatedContract())){
 			ContractFormInfoEntity contractFormInfo=infoMapper.selectById(registrationEntity.getAssociatedContract());
-			ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityVO(contractFormInfo);
+			ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(contractFormInfo);
 			registrationResponseVO.setInfoEntity(formInfoResponseVO);
 		}
 		//将处理信息返回vo

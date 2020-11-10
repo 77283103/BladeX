@@ -79,7 +79,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	void saveSigning(ContractFormInfoRequestVO vo);
 
 	/**
-	 * 合同保存方法
+	 * 合同详情
 	 * @param id 合同id
 	 * @return
 	 */

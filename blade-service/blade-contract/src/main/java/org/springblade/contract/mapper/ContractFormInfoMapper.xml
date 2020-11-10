@@ -187,16 +187,16 @@
         counterpart_id
         )
         values
-        <foreach collection="counterpartIds" item="item" index="index" open="" close="" separator=",">
+        <foreach collection="counterpart" item="item" index="index" open="" close="" separator=",">
             (
             #{id},
-            #{item}
+            #{item.id}
             )
         </foreach>
     </insert>
 
 
-
+    <!--删除关联相对方-->
     <delete id="deleteCounterpart" parameterType="java.lang.Long">
           DELETE FROM contract_counterpart_setting  WHERE contract_id=#{id}
     </delete>

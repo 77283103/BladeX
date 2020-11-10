@@ -67,8 +67,6 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:detail')")
 	public R<ContractFormInfoResponseVO> detail(@RequestParam Long id) {
 		ContractFormInfoResponseVO detail = contractFormInfoService.getById(id);
-		String[] sealNameList = detail.getSealName().split(",");
-		detail.setSealNameList(sealNameList);
 		return R.data(detail);
 	}
 
@@ -93,7 +91,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:listSealInfo')")
 	public R<IPage<ContractFormInfoResponseVO>> listSealInfo(ContractFormInfoRequestVO contractFormInfoRequestVO, Query query) {
 		IPage<ContractFormInfoEntity> pages = contractFormInfoService.pageListSealInfo(Condition.getPage(query), contractFormInfoRequestVO);
-		return R.data(ContractFormInfoWrapper.build().pageVO(pages));
+		return R.data(ContractFormInfoWrapper.build().entityPVPage(pages));
 	}
 
 	/**
@@ -104,11 +102,16 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
-		String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");;
+		contractFormInfo.setContractSoure("1");
+		String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
 		contractFormInfo.setSealName(sealName);
         ContractFormInfoEntity entity = new ContractFormInfoEntity();
         BeanUtil.copy(contractFormInfo,entity);
-		contractFormInfoService.save(entity);
+		if (Func.isEmpty(contractFormInfo.getId())){
+			contractFormInfoService.save(entity);
+		}else{
+			contractFormInfoService.updateById(entity);
+		}
 		contractFormInfo.setId(entity.getId());
 		/*保存相对方信息*/
 		if(contractFormInfo.getCounterpart().size()>0){
@@ -121,6 +124,7 @@ public class ContractFormInfoController extends BladeController {
 				contractBondService.save(contractBondEntity);
 				list.add(contractBondEntity.getId());
 			}
+			contractBondService.saveBond(list,contractFormInfo.getId());
 		}
 		/*保存依据信息*/
 		if(contractFormInfo.getAccording().size()>0){
@@ -142,7 +146,7 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
-		return R.data(entity);
+		return R.data(contractFormInfo);
 	}
 
 

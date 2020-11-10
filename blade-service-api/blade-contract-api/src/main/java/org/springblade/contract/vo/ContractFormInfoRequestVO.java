@@ -50,8 +50,8 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="依据集合")
 	private String[] sealNameList;
 
-	@ApiModelProperty(value="相对方ids")
-	private List<Long> counterpart;
+	@ApiModelProperty(value="相对方集合")
+	private List<ContractCounterpartEntity> counterpart;
 
 	@ApiModelProperty(value="依据集合")
 	private List<ContractAccordingEntity> according;

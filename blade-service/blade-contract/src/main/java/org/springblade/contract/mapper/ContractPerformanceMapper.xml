@@ -65,4 +65,13 @@
             AND type = #{contractPerformance.type}
         </if>
     </select>
+    <!--根据合同id查询履约计划清单集合-->
+    <select id="selectByIds" resultMap="contractPerformanceResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_performance
+        WHERE is_deleted = 0
+        AND
+        contract_id = #{id}
+    </select>
 </mapper>

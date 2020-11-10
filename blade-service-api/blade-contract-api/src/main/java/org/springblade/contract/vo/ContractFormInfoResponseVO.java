@@ -3,7 +3,7 @@ package org.springblade.contract.vo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.*;
 import org.springblade.resource.vo.FileVO;
 
 import java.io.File;
@@ -23,8 +23,9 @@ import java.util.List;
 public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	private static final long serialVersionUID = 1L;
 
-
-	@ApiModelProperty(value="依据集合")
+	/**
+	 * 依据集合
+	 */
 	private String[] sealNameList;
 
 	/**
@@ -46,6 +47,31 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 创建者所在组织
 	 */
 	private String userDepartName;
+
+	/**
+	 * 相对方集合
+	 */
+	private List<ContractCounterpartEntity> counterpart;
+
+	/**
+	 * 依据集合
+	 */
+	private List<ContractAccordingEntity> according;
+
+	/**
+	 * 保证金集合
+	 */
+	private List<ContractBondEntity> contractBond;
+
+	/**
+	 * 履约计划集合
+	 */
+	private List<ContractPerformanceEntity> performanceList;
+
+	/**
+	 * 履约计划收付款集合
+	 */
+	private List<ContractPerformanceColPayEntity> performanceColPayList;
 
 	/**
 	 * 签订文件扫描件列表

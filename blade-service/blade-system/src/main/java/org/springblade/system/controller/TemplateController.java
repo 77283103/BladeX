@@ -61,17 +61,6 @@ public class TemplateController extends BladeController {
 	@ApiOperation(value = "详情", notes = "传入template")
 	@PreAuth("hasPermission('template:template:detail')")
 	public R<TemplateResponseVO> detail(@RequestParam Long id,HttpServletResponse response) throws IOException {
-		response.setStatus(302);
-		//response.setHeader("Access-Control-Allow-Origin", "*");
-		//response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS, DELETE");
-		// 预检请求的结果缓存60分钟
-		//response.setHeader("Access-Control-Max-Age", "3600");
-		// 响应头设置
-		//response.setHeader("Access-Control-Allow-Headers", "x-requested-with");
-		response.setHeader("Location", "http://localhost:1888/#/wel/index");
-		response.setHeader("Vary","Accept, Accept-Encoding");
-		//response.setContentType("application/json;charset=utf-8");
-		//response.sendRedirect("http://localhost:1888/#/wel/index");
 		TemplateEntity detail = templateService.getById(id);
 		return R.data(TemplateWrapper.build().entityVO(detail));
 	}

@@ -195,22 +195,26 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value="关联相对方信息")
 	@TableField(exist = false)
-	private List<ContractCounterpartEntity> counterpartList;
+	private List<ContractCounterpartEntity> counterpart;
 
 	/**
 	 * 关联依据信息
 	 */
 	@ApiModelProperty(value="关联依据信息")
 	@TableField(exist = false)
-	private List<ContractAccordingEntity> accordingList;
+	private List<ContractAccordingEntity> according;
 
-	/**
-	 * 关联履约信息
-	 */
-	@ApiModelProperty(value="关联履约信息")
+	@ApiModelProperty(value="保证金集合")
+	@TableField(exist = false)
+	private List<ContractBondEntity> contractBond;
+
+	@ApiModelProperty(value="履约计划集合")
 	@TableField(exist = false)
 	private List<ContractPerformanceEntity> performanceList;
 
+	@ApiModelProperty(value="履约计划收付款集合")
+	@TableField(exist = false)
+	private List<ContractPerformanceColPayEntity> performanceColPayList;
 
 	/**
 	 * 关联合同评估信息

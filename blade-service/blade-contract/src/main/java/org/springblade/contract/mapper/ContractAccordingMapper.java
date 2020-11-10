@@ -31,4 +31,14 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 	 * @return
 	 */
 	List<ContractAccordingEntity> selectByIds(Long id);
+
+
+	/**
+	 * 根据合同id查询查询相关依据信息
+	 *
+	 * @param id
+	 * @return
+	 */
+	List<ContractAccordingEntity> selectByIdAccording(Long id);
+
 }

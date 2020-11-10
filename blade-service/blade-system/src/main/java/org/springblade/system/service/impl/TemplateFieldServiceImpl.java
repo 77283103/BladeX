@@ -69,7 +69,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 				}
 				jo.put("dicData", array);
 				//组装可编辑列表data
-			}else if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
+			}else if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())||"formList".equals(templateField.getComponentType())){
 				TemplateFieldRelationEntity templateFieldRelationEntity=new TemplateFieldRelationEntity();
 				QueryWrapper<TemplateFieldRelationEntity> queryWrapper = Condition.getQueryWrapper(templateFieldRelationEntity)
 					.eq("code",templateField.getRelationCode())

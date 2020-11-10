@@ -44,10 +44,10 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 
 	/**
 	 * 保存合同相对方关联表
-	 * @param counterpartIds 相对方id
+	 * @param counterpart 相对方
 	 * @param id 合同id
 	 */
-	void saveCounterpart(Long  id, List<Long> counterpartIds);
+	void saveCounterpart(Long  id, List<ContractCounterpartEntity> counterpart);
 
 
 	/**

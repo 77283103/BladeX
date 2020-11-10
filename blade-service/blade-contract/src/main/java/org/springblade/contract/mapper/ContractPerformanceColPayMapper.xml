@@ -61,4 +61,13 @@
         FROM contract_performance_col_pay
         WHERE is_deleted = 0
     </select>
+    <!--根据合同id查询履约计划收付款集合-->
+    <select id="selectByIds" resultMap="contractPerformanceColPayResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_performance_col_pay
+        WHERE is_deleted = 0
+        AND
+        contract_id = #{id}
+    </select>
 </mapper>
