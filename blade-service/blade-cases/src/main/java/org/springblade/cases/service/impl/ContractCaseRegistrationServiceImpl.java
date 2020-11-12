@@ -51,7 +51,7 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 	private ContractCaseRegistrationMapper registrationMapper;
 	private IFileClient fileClient;
 	@Override
-	public IPage<ContractCaseRegistrationEntity> pageList(IPage<ContractCaseRegistrationEntity> page, ContractCaseRegistrationRequestVO contractCaseRegistration) {
+	public IPage<ContractCaseRegistrationResponseVO> pageList(IPage<ContractCaseRegistrationEntity> page, ContractCaseRegistrationRequestVO contractCaseRegistration) {
 		String[] code = contractCaseRegistration.getCaseStatus().split(",");
 		contractCaseRegistration.setCode(Arrays.asList(code));
 		page=baseMapper.pageList(page, contractCaseRegistration);
@@ -67,7 +67,7 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
-		return page;
+		return pages;
 	}
 	/**
 	 * 返回vo
@@ -80,7 +80,7 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 		ContractCaseRegistrationResponseVO registrationResponseVO= ContractCaseRegistrationWrapper.build().entityPV(registrationEntity);
 		if (Func.isNotBlank(registrationEntity.getAssociatedContract())){
 			ContractFormInfoEntity contractFormInfo=infoMapper.selectById(registrationEntity.getAssociatedContract());
-			ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(contractFormInfo);
+			ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityVO(contractFormInfo);
 			registrationResponseVO.setInfoEntity(formInfoResponseVO);
 
 		}

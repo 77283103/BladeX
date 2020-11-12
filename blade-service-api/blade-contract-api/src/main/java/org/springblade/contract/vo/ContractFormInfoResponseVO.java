@@ -51,7 +51,7 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	/**
 	 * 相对方集合
 	 */
-	private List<ContractCounterpartEntity> counterpart;
+	private List<ContractCounterpartEntity> counterpartEntityList;
 
 	/**
 	 * 依据集合

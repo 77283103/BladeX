@@ -77,7 +77,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:list')")
-	public R<IPage<ContractFormInfoResponseVO>> list(ContractFormInfoEntity contractFormInfo, Query query) {
+	public R<IPage<ContractFormInfoResponseVO>> list(ContractFormInfoRequestVO contractFormInfo, Query query) {
 		IPage<ContractFormInfoResponseVO> pages = contractFormInfoService.pageList(Condition.getPage(query), contractFormInfo);
 		return R.data(pages);
 	}

@@ -1,32 +1,48 @@
 package org.springblade.contract.wrapper;
 
-import org.springblade.core.mp.support.BaseEntityWrapper;
-import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.contract.entity.ContractSealUsingInfoEntity;
+import java.util.Optional;
+import org.springblade.system.user.entity.User;
+import org.springblade.core.mp.support.IEntityWrapper;
 import org.springblade.contract.vo.ContractSealUsingInfoResponseVO;
+import org.springblade.contract.vo.ContractSealUsingInfoRequestVO;
+import org.springblade.contract.entity.ContractSealUsingInfoEntity;
+import org.springframework.stereotype.Component;
+import org.springblade.system.cache.SysCache;
+import org.springblade.system.user.cache.UserCache;
+
 
 /**
- * 用印名称 包装类,返回视图层所需的字段
+ * 合同用印 包装类,返回视图层所需的字段
  *
- * @author szw
- * @date : 2020-09-24 01:27:14
+ * @author 合同用印
+ * @date : 2020-11-05 09:29:27
  */
-public class ContractSealUsingInfoWrapper extends BaseEntityWrapper<ContractSealUsingInfoEntity, ContractSealUsingInfoResponseVO>  {
+@Component
+public class ContractSealUsingInfoWrapper implements IEntityWrapper<ContractSealUsingInfoEntity, ContractSealUsingInfoRequestVO, ContractSealUsingInfoResponseVO> {
 
 	public static ContractSealUsingInfoWrapper build() {
 		return new ContractSealUsingInfoWrapper();
  	}
 
-	@Override
-	public ContractSealUsingInfoResponseVO entityVO(ContractSealUsingInfoEntity sealInfo) {
-		ContractSealUsingInfoResponseVO sealInfoResponseVO = BeanUtil.copy(sealInfo, ContractSealUsingInfoResponseVO.class);
-
-		//User createUser = UserCache.getUser(sealInfo.getCreateUser());
-		//User updateUser = UserCache.getUser(sealInfo.getUpdateUser());
-		//sealInfoResponseVO.setCreateUserName(createUser.getName());
-		//sealInfoResponseVO.setUpdateUserName(updateUser.getName());
-
-		return sealInfoResponseVO;
+    @Override
+	public ContractSealUsingInfoEntity createEntity() {
+		return new ContractSealUsingInfoEntity();
 	}
 
+	@Override
+	public ContractSealUsingInfoRequestVO createQV() {
+		return new ContractSealUsingInfoRequestVO();
+	}
+
+	@Override
+	public ContractSealUsingInfoResponseVO createPV() {
+		return new ContractSealUsingInfoResponseVO();
+	}
+
+    @Override
+    public void selectUserName(ContractSealUsingInfoResponseVO responseVO) {
+        responseVO.setCreateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getCreateUser())).orElse(new User()).getRealName());
+        responseVO.setUpdateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getUpdateUser())).orElse(new User()).getRealName());
+        responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));
+    }
 }

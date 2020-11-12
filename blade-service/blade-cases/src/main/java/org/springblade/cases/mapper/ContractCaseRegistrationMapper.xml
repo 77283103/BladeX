@@ -93,7 +93,7 @@
         </if>
     </select>
 
-    <!--修改借阅申请信息状态-->
+    <!--修改案件信息状态-->
     <update id="updateCaseStatusById">
         UPDATE contract_case_registration SET case_status = #{caseStatus} WHERE id = #{id}
     </update>

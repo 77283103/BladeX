@@ -66,8 +66,8 @@ public class ContractCaseRegistrationController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入contractCaseRegistration")
 	@PreAuth("hasPermission('contractCaseRegistation:contractCaseRegistration:page')")
 	public R<IPage<ContractCaseRegistrationResponseVO>> list(ContractCaseRegistrationRequestVO contractCaseRegistration, Query query) {
-		IPage<ContractCaseRegistrationEntity> pages = contractCaseRegistrationService.pageList(Condition.getPage(query), contractCaseRegistration);
-		return R.data(ContractCaseRegistrationWrapper.build().entityPVPage(pages));
+		IPage<ContractCaseRegistrationResponseVO> pages = contractCaseRegistrationService.pageList(Condition.getPage(query), contractCaseRegistration);
+		return R.data(pages);
 	}
 
 	/**

@@ -1,32 +1,48 @@
 package org.springblade.contract.wrapper;
 
-import org.springblade.core.mp.support.BaseEntityWrapper;
-import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.contract.entity.ContractArchiveEntity;
+import java.util.Optional;
+import org.springblade.system.user.entity.User;
+import org.springblade.core.mp.support.IEntityWrapper;
 import org.springblade.contract.vo.ContractArchiveResponseVO;
+import org.springblade.contract.vo.ContractArchiveRequestVO;
+import org.springblade.contract.entity.ContractArchiveEntity;
+import org.springframework.stereotype.Component;
+import org.springblade.system.cache.SysCache;
+import org.springblade.system.user.cache.UserCache;
+
 
 /**
- * 合同归档管理 包装类,返回视图层所需的字段
+ * 合同归档 包装类,返回视图层所需的字段
  *
- * @author XHB
- * @date : 2020-09-23 18:32:15
+ * @author 合同归档
+ * @date : 2020-11-05 09:41:39
  */
-public class ContractArchiveWrapper extends BaseEntityWrapper<ContractArchiveEntity, ContractArchiveResponseVO>  {
+@Component
+public class ContractArchiveWrapper implements IEntityWrapper<ContractArchiveEntity, ContractArchiveRequestVO, ContractArchiveResponseVO> {
 
 	public static ContractArchiveWrapper build() {
 		return new ContractArchiveWrapper();
  	}
 
-	@Override
-	public ContractArchiveResponseVO entityVO(ContractArchiveEntity archive) {
-		ContractArchiveResponseVO archiveResponseVO = BeanUtil.copy(archive, ContractArchiveResponseVO.class);
-
-		//User createUser = UserCache.getUser(archive.getCreateUser());
-		//User updateUser = UserCache.getUser(archive.getUpdateUser());
-		//archiveResponseVO.setCreateUserName(createUser.getName());
-		//archiveResponseVO.setUpdateUserName(updateUser.getName());
-
-		return archiveResponseVO;
+    @Override
+	public ContractArchiveEntity createEntity() {
+		return new ContractArchiveEntity();
 	}
 
+	@Override
+	public ContractArchiveRequestVO createQV() {
+		return new ContractArchiveRequestVO();
+	}
+
+	@Override
+	public ContractArchiveResponseVO createPV() {
+		return new ContractArchiveResponseVO();
+	}
+
+    @Override
+    public void selectUserName(ContractArchiveResponseVO responseVO) {
+        responseVO.setCreateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getCreateUser())).orElse(new User()).getRealName());
+        responseVO.setUpdateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getUpdateUser())).orElse(new User()).getRealName());
+        responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));
+    }
 }

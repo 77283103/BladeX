@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractArchiveNotMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractArchiveNotResultMap" type="org.springblade.contract.entity.ContractArchiveNotEntity">
+        <result column="id" property="id"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="print_date" property="printDate"/>
+        <result column="other_company_name" property="otherCompanyName"/>
+        <result column="estimate_archive_date" property="estimateArchiveDate"/>
+        <result column="not_archive_reason" property="notArchiveReason"/>
+        <result column="archive_reason" property="archiveReason"/>
+        <result column="remark" property="remark"/>
+        <result column="manage_unit" property="manageUnit"/>
+        <result column="manage_dept" property="manageDept"/>
+        <result column="manager" property="manager"/>
+        <result column="manage_date" property="manageDate"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        contract_id,
+        contract_number,
+        print_date,
+        other_company_name,
+        estimate_archive_date,
+        not_archive_reason,
+        archive_reason,
+        remark,
+        manage_unit,
+        manage_dept,
+        manager,
+        manage_date,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractArchiveNotResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_archive_not
+        WHERE is_deleted = 0
+    </select>
+
+
+    <!--根据合同id查询未归档信息-->
+    <select id="selectArchiveNotById" resultMap="contractArchiveNotResultMap">
+    SELECT
+        <include refid="baseColumnList"> </include>
+    FROM contract_archive_not
+    WHERE is_deleted = 0
+    AND
+    contract_id = #{id}
+    </select>
+</mapper>

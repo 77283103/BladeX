@@ -3,13 +3,21 @@
 <mapper namespace="org.springblade.contract.mapper.ContractSealUsingInfoMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="sealInfoResultMap" type="org.springblade.contract.entity.ContractSealUsingInfoEntity">
+    <resultMap id="contractSealUsingInfoResultMap" type="org.springblade.contract.entity.ContractSealUsingInfoEntity">
         <result column="id" property="id"/>
+        <result column="ref_contract_id" property="refContractId"/>
         <result column="sign_time" property="signTime"/>
         <result column="sign_person" property="signPerson"/>
+        <result column="manage_unit" property="manageUnit"/>
+        <result column="manage_dept" property="manageDept"/>
+        <result column="manager" property="manager"/>
+        <result column="manage_date" property="manageDate"/>
+        <result column="actual_printing_count" property="actualPrintingCount"/>
+        <result column="actual_printing_type" property="actualPrintingType"/>
+        <result column="contract_type" property="contractType"/>
         <result column="sign_remark" property="signRemark"/>
-        <result column="ref_contract_id" property="refContractId"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="status" property="status"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
         <result column="update_user" property="updateUser"/>
@@ -19,11 +27,19 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        ref_contract_id,
         sign_time,
         sign_person,
+        manage_unit,
+        manage_dept,
+        manager,
+        manage_date,
+        actual_printing_count,
+        actual_printing_type,
+        contract_type,
         sign_remark,
-        ref_contract_id,
         is_deleted,
+        status,
         create_user,
         create_time,
         update_user,
@@ -31,7 +47,7 @@
         create_dept
     </sql>
     <!-- 用印分页 -->
-    <select id="pageList" resultMap="sealInfoResultMap">
+    <select id="pageList" resultMap="contractSealUsingInfoResultMap">
         SELECT
             <include refid="baseColumnList"></include>
         FROM contract_seal_using_info
@@ -42,12 +58,21 @@
     </select>
 
     <!--根据合同id查询归档信息-->
-    <select id="selectBySealUsingInfoId" resultMap="sealInfoResultMap">
+    <select id="selectBySealUsingInfoId" resultMap="contractSealUsingInfoResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
         FROM contract_seal_using_info
         WHERE is_deleted = 0
         AND
         id =(SELECT c.contract_seal_using_id FROM  contract_seal_using_setting c WHERE c.contract_id = #{id})
+    </select>
+    <!--根据合同id查询归档信息-->
+    <select id="selectUsingById" resultMap="contractSealUsingInfoResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_seal_using_info
+        WHERE is_deleted = 0
+        AND
+        ref_contract_id = #{id}
     </select>
 </mapper>

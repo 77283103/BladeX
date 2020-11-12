@@ -10,20 +10,27 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractSealUsingInfoEntity;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.service.IContractSealUsingInfoService;
+import org.springblade.contract.vo.ContractBorrowApplicationResponseVO;
 import org.springblade.contract.vo.ContractSealUsingInfoRequestVO;
 import org.springblade.contract.vo.ContractSealUsingInfoResponseVO;
+import org.springblade.contract.wrapper.ContractBorrowApplicationWrapper;
 import org.springblade.contract.wrapper.ContractSealUsingInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.cache.SysCache;
+import org.springblade.system.user.cache.UserCache;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Date;
 
 
 /**
@@ -38,75 +45,105 @@ import javax.validation.Valid;
 @Api(value = "用印名称", tags = "用印名称")
 public class ContractSealUsingInfoController extends BladeController {
 
-	private IContractSealUsingInfoService sealInfoService;
+	private IContractSealUsingInfoService contractSealUsingInfoService;
 	private IContractFormInfoService contractFormInfoService;
+	private static final String CONTRACT_SEAL_INFO_SAVE_STATUS="45";
+	private static final String CONTRACT_SEAL_INFO_SUBMIT_STATUS="50";
+
 	/**
 	 * 详情
 	 */
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入sealInfo")
+	@ApiOperation(value = "详情", notes = "传入contractSealUsingInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:detail')")
 	public R<ContractSealUsingInfoResponseVO> detail(@RequestParam Long id) {
-		ContractSealUsingInfoEntity detail = sealInfoService.getById(id);
-		return R.data(ContractSealUsingInfoWrapper.build().entityVO(detail));
+		ContractSealUsingInfoEntity detail = contractSealUsingInfoService.getById(id);
+		return R.data(ContractSealUsingInfoWrapper.build().entityPV(detail));
 	}
 
 	/**
 	 * 分页
 	 */
-	@GetMapping("/list")
+	@GetMapping("/page")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入sealInfo")
-	@PreAuth("hasPermission('signInfo:sealInfo:list')")
-	public R<IPage<ContractSealUsingInfoResponseVO>> list(ContractSealUsingInfoEntity sealInfo, Query query) {
-		IPage<ContractSealUsingInfoEntity> pages = sealInfoService.pageList(Condition.getPage(query), sealInfo);
-		return R.data(ContractSealUsingInfoWrapper.build().pageVO(pages));
+	@ApiOperation(value = "分页", notes = "传入contractSealUsingInfo")
+	@PreAuth("hasPermission('signInfo:sealInfo:page')")
+	public R<IPage<ContractSealUsingInfoResponseVO>> list(ContractSealUsingInfoRequestVO contractSealUsingInfo, Query query) {
+		IPage<ContractSealUsingInfoEntity> pages = contractSealUsingInfoService.pageList(Condition.getPage(query), contractSealUsingInfo);
+		return R.data(ContractSealUsingInfoWrapper.build().entityPVPage(pages));
 	}
 
 	/**
 	 * 新增
 	 */
 	@PostMapping("/add")
-	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "新增", notes = "传入sealInfo")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "新增", notes = "传入contractSealUsingInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:add')")
-	public R save(@Valid @RequestBody ContractSealUsingInfoRequestVO sealInfo) {
-        ContractSealUsingInfoEntity entity = new ContractSealUsingInfoEntity();
-        BeanUtil.copy(sealInfo,entity);
-		sealInfoService.save(entity);
-		//从保存到实体对象里面的归档id赋值给vo里面的id
-		sealInfo.setId(entity.getId());
-		//获取实体的数据id保存到关联表里
-		sealInfoService.saveSeal(sealInfo);
-		return R.data(entity);
+	public R save(@Valid @RequestBody ContractSealUsingInfoResponseVO contractSealUsingInfo) {
+		String contractStatus=CONTRACT_SEAL_INFO_SAVE_STATUS;
+		contractFormInfoService.updateExportStatus(contractStatus,contractSealUsingInfo.getRefContractId());
+		return R.status(contractSealUsingInfoService.save(ContractSealUsingInfoWrapper.build().PVEntity(contractSealUsingInfo)));
 	}
 
+	/**
+	 * 提交
+	 */
+	@PostMapping("/submit")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "新增", notes = "传入contractSealUsingInfo")
+	@PreAuth("hasPermission('signInfo:sealInfo:submit')")
+	public R submit(@Valid @RequestBody ContractSealUsingInfoResponseVO contractSealUsingInfo) {
+		String contractStatus=CONTRACT_SEAL_INFO_SUBMIT_STATUS;
+		contractFormInfoService.updateExportStatus(contractStatus,contractSealUsingInfo.getRefContractId());
+		return R.status(contractSealUsingInfoService.save(ContractSealUsingInfoWrapper.build().PVEntity(contractSealUsingInfo)));
+	}
 	/**
 	 * 修改
 	 */
 	@PostMapping("/update")
-	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入sealInfo")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "修改", notes = "传入contractSealUsingInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:update')")
-	public R update(@Valid @RequestBody ContractSealUsingInfoRequestVO sealInfo) {
-	    if (Func.isEmpty(sealInfo.getId())){
-            throw new ServiceException("id不能为空");
-        }
-	    ContractSealUsingInfoEntity entity = new ContractSealUsingInfoEntity();
-        BeanUtil.copy(sealInfo,entity);
-		return R.status(sealInfoService.updateById(entity));
+	public R update(@Valid @RequestBody ContractSealUsingInfoResponseVO contractSealUsingInfo) {
+		if (Func.isEmpty(contractSealUsingInfo.getId())){
+			throw new ServiceException("id不能为空");
+		}
+		String contractStatus=CONTRACT_SEAL_INFO_SUBMIT_STATUS;
+		contractFormInfoService.updateExportStatus(contractStatus,contractSealUsingInfo.getRefContractId());
+		return R.status(contractSealUsingInfoService.updateById(ContractSealUsingInfoWrapper.build().PVEntity(contractSealUsingInfo)));
 	}
 
 	/**
 	 * 删除
 	 */
 	@PostMapping("/remove")
-	@ApiOperationSupport(order = 7)
+	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
 	@PreAuth("hasPermission('signInfo:sealInfo:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
-		return R.status(sealInfoService.deleteLogic(Func.toLongList(ids)));
+		return R.status(contractSealUsingInfoService.deleteLogic(Func.toLongList(ids)));
+	}
+
+	/**
+	 * 获取当前用户登录信息
+	 * @return
+	 */
+	@GetMapping("/logInfo")
+	@ApiOperationSupport(order = 1)
+	@ApiOperation(value = "查询登当前录用户信息")
+	@PreAuth("hasPermission('signInfo:sealInfo:logInfo')")
+	public R<ContractSealUsingInfoResponseVO> logInfo() {
+		ContractSealUsingInfoResponseVO responseVO = ContractSealUsingInfoWrapper.build().createPV();
+		BladeUser user = AuthUtil.getUser();
+		Long userId = Long.valueOf(user.getUserId());
+		Long deptId = Long.valueOf(AuthUtil.getDeptId());
+		Date now = new Date();
+		responseVO.setCreateUserName(UserCache.getUser(userId).getRealName());
+		responseVO.setCreateDeptName(SysCache.getDeptName(deptId));
+		responseVO.setCreateSystemTime(now);
+		return R.data(responseVO);
 	}
 
 }
