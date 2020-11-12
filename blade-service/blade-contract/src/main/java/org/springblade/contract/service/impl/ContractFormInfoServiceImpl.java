@@ -1,5 +1,8 @@
 package org.springblade.contract.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.*;
@@ -18,9 +21,11 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
+import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -251,5 +256,33 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	public boolean textExportCount(Long id, Integer fileExportCount, String  fileExportCategory) {
 		return contractFormInfoMapper.textExportCount(id, fileExportCount,fileExportCategory);
 	}
+
+	/**
+	 *范本起草保存
+	 * @param template 合同模板
+	 */
+	@Override
+	public ContractFormInfoEntity templateDraft(TemplateRequestVO template) {
+		//把Json对象转成对象
+		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+		JSONObject j = new JSONObject();
+		for(TemplateFieldEntity templateField : templateFieldList){
+			if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
+				if("ContractCounterpart".equals(templateField.getRelationCode())){
+					JSONObject obj= JSON.parseObject(templateField.getTableData().toString());
+					String counterpart=obj.getString("contractBond");
+					JSONArray arry= (JSONArray) obj.get("contractBond");
+					ContractCounterpartEntity contractCounterpart=JSONObject.toJavaObject((JSONObject) arry.get(0), ContractCounterpartEntity.class);
+					System.out.println(obj.getString("contractBond"));
+				}
+			}else{
+				j.put(templateField.getFieldName(), templateField.getFieldValue());
+			}
+		}
+		ContractFormInfoEntity contractFormInfoEntity=JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
+
+		return contractFormInfoEntity;
+	}
+
 
 }

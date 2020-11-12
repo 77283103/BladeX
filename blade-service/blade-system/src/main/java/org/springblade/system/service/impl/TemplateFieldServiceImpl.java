@@ -70,43 +70,16 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 				jo.put("dicData", array);
 				//组装可编辑列表data
 			}else if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())||"formList".equals(templateField.getComponentType())){
-				TemplateFieldRelationEntity templateFieldRelationEntity=new TemplateFieldRelationEntity();
-				QueryWrapper<TemplateFieldRelationEntity> queryWrapper = Condition.getQueryWrapper(templateFieldRelationEntity)
-					.eq("code",templateField.getRelationCode())
-					.ne("field_title","")
-					.orderByAsc("sort");
-				List<TemplateFieldRelationEntity> listTemplateFieldRelation = templateFieldRelationService.list(queryWrapper);
-				JSONArray jsonRelation = new JSONArray();
-				for(TemplateFieldRelationEntity templateFieldRelation : listTemplateFieldRelation){
-					JSONObject joRelation = new JSONObject();
-					joRelation.put("fieldName", templateFieldRelation.getFieldName());
-					joRelation.put("fieldValue", templateFieldRelation.getFieldValue());
-					joRelation.put("fieldTitle", templateFieldRelation.getFieldTitle());
-					joRelation.put("componentType", templateFieldRelation.getComponentType());
-					//判断字典code是否为空
-					if("select".equals(templateFieldRelation.getComponentType())||"cascader".equals(templateFieldRelation.getComponentType())||"radio".equals(templateFieldRelation.getComponentType())){
-						tree = dictBizService.getList(templateFieldRelation.getDicCode());
-						JSONArray array = new JSONArray();
-						for (DictBiz dictBiz:tree){
-							JSONObject dic = new JSONObject();
-							dic.put("fieldValue", dictBiz.getDictKey());
-							dic.put("fieldTitle", dictBiz.getDictValue());
-							array.add(dic);
-						}
-						joRelation.put("dicData", array);
-					}else{
-						joRelation.put("dicData", "");
-					}
-					joRelation.put("fieldType", templateFieldRelation.getFieldType());
-					joRelation.put("relationCode", templateFieldRelation.getRelationCode());
-					joRelation.put("required", templateFieldRelation.getRequired());
-					joRelation.put("disabled", templateFieldRelation.getDisabled());
-					joRelation.put("sort", templateFieldRelation.getSort());
-					jsonRelation.add(joRelation);
+				if("ContractCounterpart".equals(templateField.getRelationCode())){
+					JSONArray datas = new JSONArray();
+					JSONObject data = new JSONObject();
+					data.put("counterpart",datas);
+					data.put("contractBond",datas);
+					jo.put("tableData", data);
+				}else{
+					JSONArray data = new JSONArray();
+					jo.put("tableData", data);
 				}
-				jo.put("dicData", jsonRelation);
-				JSONArray data = new JSONArray();
-				jo.put("tableData", data);
 			}else{
 				jo.put("dicData", "");
 			}

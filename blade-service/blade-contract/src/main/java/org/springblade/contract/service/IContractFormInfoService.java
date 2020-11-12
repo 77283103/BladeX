@@ -6,6 +6,7 @@ import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractSigningRequestVO;
 import org.springblade.core.mp.base.BaseService;
+import org.springblade.system.vo.TemplateRequestVO;
 
 /**
  *  服务类
@@ -93,4 +94,10 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	boolean textExportCount(Long id,Integer fileExportCount,String  fileExportCategory);
 
+
+	/**
+	 *范本起草保存
+	 * @param template 合同模板
+	 */
+	ContractFormInfoEntity templateDraft(TemplateRequestVO template);
 }

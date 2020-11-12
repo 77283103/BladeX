@@ -113,6 +113,10 @@ public class TemplateFieldEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "布局")
 	private Integer layout;
-
+	/**
+	 * 布局
+	 */
+	@ApiModelProperty(value = "数据")
+	private Object tableData;
 
 }

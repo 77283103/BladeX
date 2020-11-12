@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import com.mysql.cj.xdevapi.JsonArray;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -29,8 +30,7 @@ import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -158,25 +158,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateSave')")
 	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody TemplateRequestVO template) {
-		//把Json对象转成对象
-		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
-
-
-		JSONObject j = new JSONObject();
-		for(TemplateFieldEntity templateField : templateFieldList){
-			if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
-				if("ContractAccording".equals(templateField.getRelationCode())){
-					/*保存依据信息*/
-					/*if(contractFormInfo.getAccording().size()>0){
-						contractFormInfoService.saveAccording(contractFormInfo);
-					}*/
-				}
-			}else{
-				j.put(templateField.getFieldName(), templateField.getFieldValue());
-			}
-		}
-		ContractFormInfoEntity contractFormInfoEntity=JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
-		return R.data(contractFormInfoEntity);
+		return R.data(contractFormInfoService.templateDraft(template));
 	}
 
 
