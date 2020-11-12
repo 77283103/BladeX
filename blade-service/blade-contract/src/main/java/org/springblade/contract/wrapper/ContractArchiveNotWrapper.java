@@ -1,5 +1,6 @@
 package org.springblade.contract.wrapper;
 
+import java.util.List;
 import java.util.Optional;
 import org.springblade.system.user.entity.User;
 import org.springblade.core.mp.support.IEntityWrapper;
@@ -45,4 +46,5 @@ public class ContractArchiveNotWrapper implements IEntityWrapper<ContractArchive
         responseVO.setUpdateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getUpdateUser())).orElse(new User()).getRealName());
         responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));
     }
+    
 }

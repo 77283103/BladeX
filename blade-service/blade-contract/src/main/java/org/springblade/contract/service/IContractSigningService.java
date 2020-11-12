@@ -21,7 +21,7 @@ public interface IContractSigningService extends BaseService<ContractSigningEnti
 	 * @param signing
 	 * @return
 	 */
-	IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningEntity signing);
+	IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningRequestVO signing);
 
 	/**
 	 * 插入数据

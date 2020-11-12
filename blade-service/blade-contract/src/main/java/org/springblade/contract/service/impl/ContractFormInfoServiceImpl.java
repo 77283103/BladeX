@@ -2,6 +2,7 @@ package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.IContractFormInfoService;
@@ -61,6 +62,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	private ContractSigningMapper signingMapper;
 
+	private ContractArchiveNotMapper archiveNotMapper;
+
 
 
 	@Override
@@ -81,15 +84,32 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			v.setCounterpartEntityList(counterpartEntityList);
 			//将用印信息存入合同分页 获取用印日期
 			ContractSealUsingInfoEntity sealUsingInfoEntity=sealUsingInfoMapper.selectUsingById(v.getId());
-			v.setSealInfoEntity(sealUsingInfoEntity);
+			if (Func.isNotEmpty(sealUsingInfoEntity)) {
+				v.setSignTime(sealUsingInfoEntity.getSignTime());
+				v.setSealInfoEntity(sealUsingInfoEntity);
+			}
 			//将归档信息存入合同分页  获取归档日期，用印申请人，用印申请单位，用印公司,归档月份
 			ContractArchiveEntity archiveEntity=contractArchiveMapper.selectArchiveById(v.getId());
-			v.setArchiveEntity(archiveEntity);
+			if(Func.isNotEmpty(archiveEntity)) {
+				v.setArchiveMonth(archiveEntity.getArchiveMonth());
+				v.setPrintApplicant(archiveEntity.getPrintApplicant());
+				v.setPrintCompany(archiveEntity.getPrintCompany());
+				v.setContractPrintInitDept(archiveEntity.getContractPrintInitDept());
+				v.setArchiveEntity(archiveEntity);
+			}
 			//将签订信息存入合同分页 获取邮寄日期
 			ContractSigningEntity signingEntity=signingMapper.selectSigningById(v.getId());
-			v.setSigningEntity(signingEntity);
-			//将为归档信息存入合同分页  获取未归档原因，用印时间，经办人，经办部门
-			ContractArchiveNotEntity archiveNotEntity=contractArchiveNotMapper.selectArchiveNotById(v.getId());
+			if(Func.isNotEmpty(signingEntity)) {
+				v.setSignDate(signingEntity.getSignDate());
+				v.setContractStartingTime(signingEntity.getContractStartTime());
+				v.setContractEndTime(signingEntity.getContractEndTime());
+				v.setSigningEntity(signingEntity);
+			}
+			//将未归档信息存入合同分页  获取未归档原因
+			List<ContractArchiveNotEntity> archiveNotEntity=contractArchiveNotMapper.selectArchiveNotById(v.getId());
+			if(archiveNotEntity.size()>0) {
+				v.setArchiveNotEntity(archiveNotEntity);
+			}
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
@@ -175,11 +195,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			contractFormInfoResponseVO.setSealNameList(sealNameList);
 		}
 		//查询依据
-		List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIdAccording(id);
-		contractFormInfoResponseVO.setAccording(contractAccordingList);
+		List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(id);
+		contractFormInfoResponseVO.setAccordingEntityList(contractAccordingList);
 		//查询相对方
 		List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
-		contractFormInfoResponseVO.setCounterpart(contractCounterpartList);
+		contractFormInfoResponseVO.setCounterpartEntityList(contractCounterpartList);
 		//查询保证金
 		List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(id);
 		contractFormInfoResponseVO.setContractBond(contractBondList);
@@ -189,13 +209,37 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//查询履约计划收付款
 		List<ContractPerformanceColPayEntity> contractPerformanceColPayList = contractPerformanceColPayMapper.selectByIds(id);
 		contractFormInfoResponseVO.setPerformanceColPayList(contractPerformanceColPayList);
-
 		//查询合同评估并保存到合同vo
 		ContractAssessmentEntity contractAssessmentEntity= contractAssessmentMapper.selectByAssessmentId(id);
-		contractFormInfoResponseVO.setAssessmentEntity(contractAssessmentEntity);
+		if (Func.isNotEmpty(contractAssessmentEntity)) {
+			ContractAssessmentResponseVO assessmentResponseVO = ContractAssessmentWrapper.build().entityPV(contractAssessmentEntity);
+			//评估相关附件
+			if (!Func.isEmpty(assessmentResponseVO)){
+				if (Func.isNoneBlank(assessmentResponseVO.getAttachedFiles())) {
+					R<List<FileVO>> result = fileClient.getByIds(assessmentResponseVO.getAttachedFiles());
+					if (result.isSuccess()) {
+						assessmentResponseVO.setAssessmentAttachedVOList(result.getData());
+					}
+				}
+			}
+			contractFormInfoResponseVO.setAssessmentEntity(assessmentResponseVO);
+		}
+		//查询合同未归档原因集合并保存到合同vo
+		List<ContractArchiveNotEntity> archiveNotEntity=archiveNotMapper.selectArchiveNotById(id);
+		contractFormInfoResponseVO.setArchiveNotEntity(archiveNotEntity);
 		//查询合同归档并保存到合同vo
-		ContractArchiveEntity contractArchiveEntity=contractArchiveMapper.selectByArchiveId(id);
-		contractFormInfoResponseVO.setArchiveEntity(contractArchiveEntity);
+		ContractArchiveEntity contractArchiveEntity = contractArchiveMapper.selectArchiveById(id);
+		if(Func.isNotEmpty(contractArchiveEntity)) {
+			ContractArchiveResponseVO archiveResponseVO = ContractArchiveWrapper.build().entityPV(contractArchiveEntity);
+			BladeUser user = AuthUtil.getUser();
+			Long userId = Long.valueOf(user.getUserId());
+			Long deptId = Long.valueOf(AuthUtil.getDeptId());
+			Date now = new Date();
+			archiveResponseVO.setCreateUserName(UserCache.getUser(userId).getRealName());
+			archiveResponseVO.setCreateDeptName(SysCache.getDeptName(deptId));
+			archiveResponseVO.setCreateSystemTime(now);
+			contractFormInfoResponseVO.setArchiveEntity(archiveResponseVO);
+		}
 		//查询合同用印信息保存到合同vo
 		if (Func.isEmpty(contractFormInfoResponseVO.getSealInfoEntity())) {
 			ContractSealUsingInfoEntity sealUsingInfoEntity = sealUsingInfoMapper.selectUsingById(id);
@@ -205,10 +249,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			}
 		}
 		//查询合同签订信息保存到合同vo
-		ContractSigningEntity signingEntity=signingMapper.selectBySigningId(id);
+		ContractSigningEntity signingEntity=signingMapper.selectSigningById(id);
 		contractFormInfoResponseVO.setSigningEntity(signingEntity);
-		ContractSigningResponseVO signingResponseVO= ContractSigningWrapper.build().entityVO(signingEntity);
-		ContractAssessmentResponseVO assessmentResponseVO= ContractAssessmentWrapper.build().entityVO(contractAssessmentEntity);
+		ContractSigningResponseVO signingResponseVO= ContractSigningWrapper.build().entityPV(signingEntity);
 		//查询合同文本
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getTextFile())){
 			R<List<FileVO>> result = fileClient.getByIds(contractFormInfoResponseVO.getTextFile());
@@ -234,15 +277,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			String dept = sysClient.getDeptName(contractFormInfoResponseVO.getCreateDept()).getData();
 			contractFormInfoResponseVO.setUserDepartName(dept);
 		}
-		//评估相关附件
-		if (!Func.isEmpty(assessmentResponseVO)){
-			if (Func.isNoneBlank(assessmentResponseVO.getAttachedFiles())) {
-				R<List<FileVO>> result = fileClient.getByIds(assessmentResponseVO.getAttachedFiles());
-				if (result.isSuccess()) {
-					contractFormInfoResponseVO.setAssessmentAttachedVOList(result.getData());
-				}
-			}
-		}
+
 		//签订文本扫描件
 		if (!Func.isEmpty(signingResponseVO)){
 			if (Func.isNoneBlank(signingResponseVO.getTextFiles())) {
@@ -261,7 +296,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		}
-
 		return contractFormInfoResponseVO;
 	}
 

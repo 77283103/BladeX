@@ -1,24 +1,33 @@
 package org.springblade.contract.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springblade.core.tool.utils.DateUtil;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
+import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import lombok.Getter;
+import lombok.Setter;
 import java.util.Date;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 
 /**
  * 合同签订表 实体类
  *
- * @author liyj
- * @date : 2020-09-23 19:27:05
+ * @author 合同签订
+ * @date : 2020-11-05 09:34:31
  */
-@Setter
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
+@Setter
 @TableName("contract_signing")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "ContractSigning对象", description = "合同签订表")
@@ -27,49 +36,96 @@ public class ContractSigningEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * 关联合同ID
+	 */
+    @JsonSerialize(using = ToStringSerializer.class)
+    @ApiModelProperty(value="关联合同ID")
+	private Long contractId;
+	/**
+	 * 承办单位
+	 */
+    @ApiModelProperty(value="承办单位")
+	private String manageUnit;
+	/**
+	 * 承办人
+	 */
+    @ApiModelProperty(value="承办人")
+	private String manager;
+	/**
 	 * 签订时间
 	 */
-	@ApiModelProperty(value = "签订时间")
-	private LocalDateTime signDate;
+    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
+    @ApiModelProperty(value="签订时间")
+	private Date signDate;
 	/**
 	 * 我方签约人
 	 */
-	@ApiModelProperty(value = "我方签约人")
+    @ApiModelProperty(value="我方签约人")
 	private String signForUs;
 	/**
 	 * 对方签约人
 	 */
-	@ApiModelProperty(value = "对方签约人")
+    @ApiModelProperty(value="对方签约人")
 	private String signForOther;
 	/**
 	 * 合同起始时间
 	 */
-	@ApiModelProperty(value = "合同起始时间")
-	private LocalDateTime contractStartTime;
+    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
+    @ApiModelProperty(value="合同起始时间")
+	private Date contractStartTime;
 	/**
 	 * 合同结束时间
 	 */
-	@ApiModelProperty(value = "合同结束时间")
-	private LocalDateTime contractEndTime;
+    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
+    @ApiModelProperty(value="合同结束时间")
+	private Date contractEndTime;
 	/**
 	 * 合同文本扫描件
 	 */
-	@ApiModelProperty(value = "合同文本扫描件")
+    @ApiModelProperty(value="合同文本扫描件")
 	private String textFiles;
 	/**
 	 * 合同附件扫描件
 	 */
-	@ApiModelProperty(value = "合同附件扫描件")
+    @ApiModelProperty(value="合同附件扫描件")
 	private String attachedFiles;
+	/**
+	 * 递交方式（字典）
+	 */
+    @ApiModelProperty(value="递交方式（字典）")
+	private String submissionType;
+	/**
+	 * 快递单号
+	 */
+    @ApiModelProperty(value="快递单号")
+	private String courierNum;
+	/**
+	 * 快递公司
+	 */
+    @ApiModelProperty(value="快递公司")
+	private String courierCompany;
+	/**
+	 * 收件人
+	 */
+    @ApiModelProperty(value="收件人")
+	private String addressee;
+	/**
+	 * 收件人地址
+	 */
+    @ApiModelProperty(value="收件人地址")
+	private String address;
+	/**
+	 * 文件存放位置
+	 */
+    @ApiModelProperty(value="文件存放位置")
+	private String fileAddress;
 	/**
 	 * 备注说明
 	 */
-	@ApiModelProperty(value = "备注说明")
+    @ApiModelProperty(value="备注说明")
 	private String remark;
-	/**
-	 * 合同id
-	 */
-	@ApiModelProperty(value = "合同id")
-	private Long contractId;
 
 }

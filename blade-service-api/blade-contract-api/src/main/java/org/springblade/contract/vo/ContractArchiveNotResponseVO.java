@@ -1,11 +1,15 @@
 package org.springblade.contract.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractArchiveNotEntity;
 import io.swagger.annotations.ApiModel;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 /**
@@ -28,4 +32,9 @@ public class ContractArchiveNotResponseVO extends ContractArchiveNotEntity {
 	private String createDeptName;
 
 	private String updateUserName;
+
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	private Date createSystemTime;
+
 }

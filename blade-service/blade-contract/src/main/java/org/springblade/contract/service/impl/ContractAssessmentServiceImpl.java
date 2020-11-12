@@ -8,6 +8,7 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.ContractAssessmentRequestVO;
+import org.springblade.contract.vo.ContractAssessmentResponseVO;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.ContractAssessmentEntity;
 import org.springblade.contract.mapper.ContractAssessmentMapper;
@@ -33,7 +34,7 @@ public class ContractAssessmentServiceImpl extends BaseServiceImpl<ContractAsses
 	private IContractFormInfoService contractFormInfoService;
 
 	@Override
-	public IPage<ContractAssessmentEntity> pageList(IPage<ContractAssessmentEntity> page, ContractAssessmentEntity assessment) {
+	public IPage<ContractAssessmentEntity> pageList(IPage<ContractAssessmentEntity> page, ContractAssessmentRequestVO assessment) {
 		return baseMapper.pageList(page, assessment);
 	}
 

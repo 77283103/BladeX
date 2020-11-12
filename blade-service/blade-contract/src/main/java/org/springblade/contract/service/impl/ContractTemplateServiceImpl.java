@@ -88,7 +88,6 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 		//将实体数据存入vo
 		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityVO(templateEntity);
 		templateResponseVO.setTemplateEntityOldVOList(templateEntityList);
-
 		return templateResponseVO;
 	}
 

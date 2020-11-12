@@ -195,14 +195,14 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value="关联相对方信息")
 	@TableField(exist = false)
-	private List<ContractCounterpartEntity> counterpart;
+	private List<ContractCounterpartEntity> counterpartEntityList;
 
 	/**
 	 * 关联依据信息
 	 */
 	@ApiModelProperty(value="关联依据信息")
 	@TableField(exist = false)
-	private List<ContractAccordingEntity> according;
+	private List<ContractAccordingEntity> accordingEntityList;
 
 	@ApiModelProperty(value="保证金集合")
 	@TableField(exist = false)
@@ -230,11 +230,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private ContractArchiveEntity archiveEntity;
 	/**
-	 * 关联合同归档信息
+	 * 关联合同未归档信息
 	 */
 	@ApiModelProperty(value="未归档信息")
 	@TableField(exist = false)
-	private ContractArchiveNotEntity archiveNotEntity;
+	private List<ContractArchiveNotEntity> archiveNotEntity;
 
 	/**
 	 * 合同文件导出次数统计

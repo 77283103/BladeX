@@ -1,32 +1,48 @@
 package org.springblade.contract.wrapper;
 
-import org.springblade.core.mp.support.BaseEntityWrapper;
-import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.contract.entity.ContractAssessmentEntity;
+import java.util.Optional;
+import org.springblade.system.user.entity.User;
+import org.springblade.core.mp.support.IEntityWrapper;
 import org.springblade.contract.vo.ContractAssessmentResponseVO;
+import org.springblade.contract.vo.ContractAssessmentRequestVO;
+import org.springblade.contract.entity.ContractAssessmentEntity;
+import org.springframework.stereotype.Component;
+import org.springblade.system.cache.SysCache;
+import org.springblade.system.user.cache.UserCache;
+
 
 /**
  * 合同评估表 包装类,返回视图层所需的字段
  *
- * @author liyj
- * @date : 2020-09-24 10:41:34
+ * @author 合同评估表
+ * @date : 2020-11-05 09:37:40
  */
-public class ContractAssessmentWrapper extends BaseEntityWrapper<ContractAssessmentEntity, ContractAssessmentResponseVO>  {
+@Component
+public class ContractAssessmentWrapper implements IEntityWrapper<ContractAssessmentEntity, ContractAssessmentRequestVO, ContractAssessmentResponseVO> {
 
 	public static ContractAssessmentWrapper build() {
 		return new ContractAssessmentWrapper();
  	}
 
-	@Override
-	public ContractAssessmentResponseVO entityVO(ContractAssessmentEntity assessment) {
-		ContractAssessmentResponseVO assessmentResponseVO = BeanUtil.copy(assessment, ContractAssessmentResponseVO.class);
-
-		//User createUser = UserCache.getUser(assessment.getCreateUser());
-		//User updateUser = UserCache.getUser(assessment.getUpdateUser());
-		//assessmentResponseVO.setCreateUserName(createUser.getName());
-		//assessmentResponseVO.setUpdateUserName(updateUser.getName());
-
-		return assessmentResponseVO;
+    @Override
+	public ContractAssessmentEntity createEntity() {
+		return new ContractAssessmentEntity();
 	}
 
+	@Override
+	public ContractAssessmentRequestVO createQV() {
+		return new ContractAssessmentRequestVO();
+	}
+
+	@Override
+	public ContractAssessmentResponseVO createPV() {
+		return new ContractAssessmentResponseVO();
+	}
+
+    @Override
+    public void selectUserName(ContractAssessmentResponseVO responseVO) {
+        responseVO.setCreateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getCreateUser())).orElse(new User()).getRealName());
+        responseVO.setUpdateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getUpdateUser())).orElse(new User()).getRealName());
+        responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));
+    }
 }
