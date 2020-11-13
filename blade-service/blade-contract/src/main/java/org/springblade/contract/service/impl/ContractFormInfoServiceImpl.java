@@ -1,5 +1,8 @@
 package org.springblade.contract.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.*;
@@ -7,6 +10,7 @@ import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -21,7 +25,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,7 +63,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private ContractSealUsingInfoMapper sealUsingInfoMapper;
 
 	private ContractSigningMapper signingMapper;
-
 
 
 	@Override
@@ -282,26 +284,68 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 * @param template 合同模板
 	 */
 	@Override
-	public ContractFormInfoEntity templateDraft(TemplateRequestVO template) {
+	public ContractFormInfoEntity templateDraft(ContractFormInfoEntity contractFormInfo,TemplateRequestVO template) {
 		//把Json对象转成对象
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
-		JSONObject j = new JSONObject();
 		for(TemplateFieldEntity templateField : templateFieldList){
 			if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
+				if("ContractAccording".equals(templateField.getRelationCode())){
+					List<ContractAccordingEntity> accordingList = JSON.parseArray(templateField.getTableData().toString(), ContractAccordingEntity.class);
+					/*保存依据信息*/
+					if(accordingList.size()>0){
+						ContractAccordingEntity contractAccording=accordingList.get(0);
+						contractAccording.setContractId(contractFormInfo.getId());
+						//contractAccordingMapper.insert(contractAccording);
+					}
+				}
 				if("ContractCounterpart".equals(templateField.getRelationCode())){
 					JSONObject obj= JSON.parseObject(templateField.getTableData().toString());
-					String counterpart=obj.getString("contractBond");
-					JSONArray arry= (JSONArray) obj.get("contractBond");
-					ContractCounterpartEntity contractCounterpart=JSONObject.toJavaObject((JSONObject) arry.get(0), ContractCounterpartEntity.class);
-					System.out.println(obj.getString("contractBond"));
+					JSONArray counterpartObject= (JSONArray) obj.get("counterpart");
+					List<ContractCounterpartEntity> contractCounterpart=JSON.parseArray(counterpartObject.toString(), ContractCounterpartEntity.class);
+					if(contractCounterpart.size()>0){
+						contractFormInfoMapper.deleteCounterpart(contractFormInfo.getId());
+						contractFormInfoMapper.saveCounterpart(contractFormInfo.getId(),contractCounterpart);
+					}
+					JSONArray contractBondArry= (JSONArray) obj.get("contractBond");
+					List<ContractBondEntity> contractBond=JSON.parseArray(contractBondArry.toString(), ContractBondEntity.class);
+					if(contractCounterpart.size()>0){
+						contractBondMapper.deleteBond(contractFormInfo.getId());
+						List<Long> list=new ArrayList<>();
+						for(ContractBondEntity contractBondEntity:contractBond){
+							if (Func.isEmpty(contractFormInfo.getId())){
+								contractBondMapper.insert(contractBondEntity);
+							}else{
+								contractBondMapper.updateById(contractBondEntity);
+							}
+							list.add(contractBondEntity.getId());
+						}
+						contractBondMapper.saveBond(list,contractFormInfo.getId());
+					}
 				}
-			}else{
-				j.put(templateField.getFieldName(), templateField.getFieldValue());
+				if("ContractPerformance".equals(templateField.getRelationCode())){
+					List<ContractPerformanceEntity> performanceList = JSON.parseArray(templateField.getTableData().toString(), ContractPerformanceEntity.class);
+					/*保存履约信息*/
+					if(performanceList.size()>0){
+						//contractPerformanceMapper.d
+						performanceList.forEach(performance->{
+							performance.setContractId(contractFormInfo.getId());
+							contractPerformanceMapper.insert(performance);
+						});
+					}
+				}
+				if("ContractPerformanceColPay".equals(templateField.getRelationCode())){
+					List<ContractPerformanceColPayEntity> performanceColPayList = JSON.parseArray(templateField.getTableData().toString(), ContractPerformanceColPayEntity.class);
+					/*保存履约计划收付款*/
+					if(performanceColPayList.size()>0){
+						performanceColPayList.forEach(performanceColPay->{
+							performanceColPay.setContractId(contractFormInfo.getId());
+							contractPerformanceColPayMapper.insert(performanceColPay);
+						});
+					}
+				}
 			}
 		}
-		ContractFormInfoEntity contractFormInfoEntity=JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
-
-		return contractFormInfoEntity;
+		return contractFormInfo;
 	}
 
 

@@ -71,7 +71,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 				//组装可编辑列表data
 			}else if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())||"formList".equals(templateField.getComponentType())){
 				if("ContractCounterpart".equals(templateField.getRelationCode())){
-					JSONArray datas = new JSONArray();
+					JSONObject datas = new JSONObject();
 					JSONObject data = new JSONObject();
 					data.put("counterpart",datas);
 					data.put("contractBond",datas);
@@ -80,6 +80,11 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					JSONArray data = new JSONArray();
 					jo.put("tableData", data);
 				}
+			}else if("secondSelect".equals(templateField.getComponentType())){
+				JSONObject data = new JSONObject();
+				data.put("first","");
+				data.put("second","");
+				jo.put("tableData", data);
 			}else{
 				jo.put("dicData", "");
 			}

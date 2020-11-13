@@ -27,6 +27,7 @@ import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.vo.TemplateRequestVO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -101,6 +102,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
+	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		contractFormInfo.setContractSoure("1");
 		String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
@@ -157,8 +159,16 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateSave')")
+	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody TemplateRequestVO template) {
-		return R.data(contractFormInfoService.templateDraft(template));
+		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+		JSONObject j = new JSONObject();
+		for(TemplateFieldEntity templateField : templateFieldList){
+			j.put(templateField.getFieldName(), templateField.getFieldValue());
+		}
+		ContractFormInfoEntity contractFormInfoEntity=JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
+		contractFormInfoService.save(contractFormInfoEntity);
+		return R.data(contractFormInfoService.templateDraft(contractFormInfoEntity,template));
 	}
 
 
