@@ -2,6 +2,7 @@ package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.ehcache.xml.model.ListenersType;
+import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractTemplateEntity;
@@ -23,7 +24,7 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @param template
 	 * @return
 	 */
-	IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateEntity template);
+	IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template);
 
 	/**
 	 * 修改范本状态

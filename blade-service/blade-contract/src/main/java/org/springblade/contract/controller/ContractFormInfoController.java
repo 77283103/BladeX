@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.json.simple.JSONArray;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
@@ -299,6 +300,40 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:remove')")
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(contractFormInfoService.deleteLogic(Func.toLongList(ids)));
+	}
+
+	/**
+	 * 合同大类金额
+	 */
+	@PostMapping("/getAmountList")
+	@ApiOperation(value = "合同大类金额", notes = "")
+	public ArrayList<Map<String,String>>  getAmountList() {
+		List<ContractFormInfoEntity> list = contractFormInfoService.getAmountList();
+		ArrayList<Map<String,String>> listMap = new ArrayList<>();
+		for(int i = 0;i < list.size();i++){
+			HashMap<String, String> map = new HashMap<>();
+			map.put("name",list.get(i).getDictValue());
+			map.put("value",String.valueOf(list.get(i).getContractAmount()));
+			listMap.add(map);
+		}
+		return listMap;
+	}
+
+	/**
+	 * 合同大类数量
+	 */
+	@PostMapping("/getNumList")
+	@ApiOperation(value = "合同大类数量", notes = "传入ids")
+	public ArrayList<Map<String,String>>  getNumList() {
+		List<ContractFormInfoEntity> list = contractFormInfoService.getNumList();
+		ArrayList<Map<String,String>> listMap = new ArrayList<>();
+		for(int i = 0;i < list.size();i++){
+			HashMap<String, String> map = new HashMap<>();
+			map.put("name",list.get(i).getDictValue());
+			map.put("value",String.valueOf(list.get(i).getCount()));
+			listMap.add(map);
+		}
+		return listMap;
 	}
 
 }

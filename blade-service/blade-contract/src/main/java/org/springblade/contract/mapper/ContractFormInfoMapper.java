@@ -105,4 +105,16 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	boolean textExportCount(Long id,Integer fileExportCount,String  fileExportCategory);
 
+	/**
+	 * 合同大类金额
+	 * @return list
+	 */
+	List<ContractFormInfoEntity> getAmountList();
+
+	/**
+	 * 合同大类数量
+	 * @return list
+	 */
+	List<ContractFormInfoEntity> getNumList();
+
 }

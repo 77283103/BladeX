@@ -3,21 +3,28 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractRelieveEntity;
+import org.springblade.contract.vo.ContractRelieveRequestVO;
 
 /**
- *  Mapper 接口
+ * 合同解除 Mapper 接口
  *
- * @author szw
- * @date : 2020-09-23 20:10:29
+ * @author 合同解除
+ * @date : 2020-11-05 09:24:00
  */
 public interface ContractRelieveMapper extends BaseMapper<ContractRelieveEntity> {
 
 	/**
 	 * 分页查询
 	 * @param page
-	 * @param relieve
+	 * @param contractRelieve
 	 * @return
 	 */
-	IPage<ContractRelieveEntity> pageList(IPage<ContractRelieveEntity> page, ContractRelieveEntity relieve);
+	IPage<ContractRelieveEntity> pageList(IPage<ContractRelieveEntity> page, ContractRelieveRequestVO contractRelieve);
 
+	/**
+	 * 根据合同id查询销毁信息
+	 * @param id
+	 * @return
+	 */
+	ContractRelieveEntity selectRelieveById(Long id);
 }

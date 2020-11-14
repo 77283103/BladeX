@@ -6,18 +6,19 @@ import org.springblade.contract.entity.ContractRelieveEntity;
 import org.springblade.contract.mapper.ContractRelieveMapper;
 import org.springblade.contract.service.IContractRelieveService;
 import org.springframework.stereotype.Service;
+import org.springblade.contract.vo.ContractRelieveRequestVO;
 
 /**
- *  服务实现类
+ * 合同解除 服务实现类
  *
- * @author szw
- * @date : 2020-09-23 20:10:29
+ * @author 合同解除
+ * @date : 2020-11-05 09:24:01
  */
 @Service
 public class ContractRelieveServiceImpl extends BaseServiceImpl<ContractRelieveMapper, ContractRelieveEntity> implements IContractRelieveService {
 
 	@Override
-	public IPage<ContractRelieveEntity> pageList(IPage<ContractRelieveEntity> page, ContractRelieveEntity relieve) {
-		return baseMapper.pageList(page, relieve);
+	public IPage<ContractRelieveEntity> pageList(IPage<ContractRelieveEntity> page, ContractRelieveRequestVO contractRelieve) {
+		return baseMapper.pageList(page, contractRelieve);
 	}
 }

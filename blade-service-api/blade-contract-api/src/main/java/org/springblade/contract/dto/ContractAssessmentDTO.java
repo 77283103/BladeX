@@ -1,15 +1,17 @@
 package org.springblade.contract.dto;
 
-import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springblade.contract.entity.ContractAssessmentEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
+import java.util.Date;
 
 /**
  * 合同评估表 模型DTO
  *
- * @author liyj
- * @date : 2020-09-24 10:41:34
+ * @author 合同评估表
+ * @date : 2020-11-05 09:37:39
  */
 @Getter
 @Setter
@@ -18,10 +20,5 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 public class ContractAssessmentDTO extends ContractAssessmentEntity {
 
 	private static final long serialVersionUID = 1L;
-	/**
-	 * 一对一关联的合同对象
-	 */
-	@ApiModelProperty(value = "一对一关联的合同对象")
-	private ContractFormInfoDTO infoEntity;
 
 }

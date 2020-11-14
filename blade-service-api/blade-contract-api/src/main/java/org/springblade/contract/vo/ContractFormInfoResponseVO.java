@@ -1,12 +1,16 @@
 package org.springblade.contract.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springblade.contract.entity.*;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.resource.vo.FileVO;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,10 +52,6 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 */
 	private String userDepartName;
 
-	/**
-	 * 相对方集合
-	 */
-	private List<ContractCounterpartEntity> counterpartEntityList;
 
 	/**
 	 * 依据集合
@@ -91,5 +91,46 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	private String createDeptName;
 
 	private String updateUserName;
+	/**
+	 * 归档月份
+	 */
+	private String archiveMonth;
+
+	/**
+	 * 合同期限起始时间
+	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	private Date contractStartingTime;
+	/**
+	 * 合同期限截止时间
+	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	private Date contractEndTime;
+	/**
+	 * 邮寄日期
+	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	private Date signDate;
+	/**
+	 * 用印日期
+	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	private Date signTime;
+	/**
+	 * 用印申请人
+	 */
+	private String printApplicant;
+	/**
+	 * 用印申请单位
+	 */
+	private String contractPrintInitDept;
+	/**
+	 * 用印公司
+	 */
+	private String printCompany;
 
 }

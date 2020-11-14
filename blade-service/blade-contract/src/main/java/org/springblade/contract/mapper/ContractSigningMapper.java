@@ -3,6 +3,7 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractSigningEntity;
+import org.springblade.contract.vo.ContractSigningRequestVO;
 
 /**
  * 合同签订表 Mapper 接口
@@ -18,7 +19,7 @@ public interface ContractSigningMapper extends BaseMapper<ContractSigningEntity>
 	 * @param signing
 	 * @retur
 	 */
-	IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningEntity signing);
+	IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningRequestVO signing);
 
 	/**
 	 * 根据合同id查询签订信息

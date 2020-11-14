@@ -8,6 +8,8 @@ import org.springblade.contract.vo.ContractSigningRequestVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.vo.TemplateRequestVO;
 
+import java.util.List;
+
 /**
  *  服务类
  *
@@ -100,4 +102,16 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @param contractFormInfoEntity 合同模板
 	 */
 	ContractFormInfoEntity templateDraft(ContractFormInfoEntity contractFormInfoEntity,TemplateRequestVO template);
+
+	/**
+	 * 合同大类金额
+	 * @return list
+	 */
+	List<ContractFormInfoEntity> getAmountList();
+
+	/**
+	 * 合同大类数量
+	 * @return list
+	 */
+	List<ContractFormInfoEntity> getNumList();
 }

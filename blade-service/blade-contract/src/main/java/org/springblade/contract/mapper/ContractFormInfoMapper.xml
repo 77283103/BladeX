@@ -150,6 +150,10 @@
         <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
             AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
         </if>
+        <!--金额区间查询-->
+        <if test="contractFormInfo.maxAmount !=null and contractFormInfo.maxAmount !='' or contractFormInfo.minAmount !=null and  contractFormInfo.minAmount!=''">
+            and  contract_amount between #{maxAmount} and #{minAmount}
+        </if>
     </select>
     <!--修改合同状态-->
     <update id="updateExportStatus">
@@ -276,7 +280,34 @@
 
     <!--统计合同下载次数-->
     <update id="textExportCount">
-        UPDATE contract_form_info SET file_export_count = ${fileExportCount},file_export_category=${fileExportCategory}
-        WHERE id = ${id}
+        UPDATE contract_form_info SET file_export_count = #{fileExportCount},file_export_category=#{fileExportCategory}
+        WHERE id =#{id}
     </update>
+
+    <!--合同大类金额-->
+    <select id="getAmountList" resultMap="formInfoResultMap">
+        SELECT
+            contract_big_category,
+            sum( contract_amount ) AS contract_amount,
+            dict_value
+        FROM
+            `contract_form_info`  info,
+            blade_dict_biz biz
+            where info.contract_big_category = biz.id
+        GROUP BY
+            contract_big_category;
+    </select>
+    <!--合同大类数量-->
+    <select id="getNumList" resultMap="formInfoResultMap">
+        SELECT
+            count(contract_big_category) as count,
+            contract_big_category ,
+                dict_value
+        FROM
+            `contract_form_info`  info,
+            blade_dict_biz biz
+            where info.contract_big_category = biz.id
+        GROUP BY
+            contract_big_category
+    </select>
 </mapper>
