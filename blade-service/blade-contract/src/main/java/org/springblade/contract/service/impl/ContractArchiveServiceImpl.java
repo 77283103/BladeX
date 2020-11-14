@@ -21,9 +21,4 @@ public class ContractArchiveServiceImpl extends BaseServiceImpl<ContractArchiveM
 	public IPage<ContractArchiveEntity> pageList(IPage<ContractArchiveEntity> page, ContractArchiveRequestVO contractArchive) {
 		return baseMapper.pageList(page, contractArchive);
 	}
-
-	@Override
-	public void exportTargetDataResult() {
-
-	}
 }
