@@ -71,6 +71,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 收付款期限
 	 */
+	@ApiModelProperty(value ="付款方式")
+	private String colPayType;
+	/**
+	 * 收付款期限
+	 */
 	@ApiModelProperty(value ="收付款期限")
 	private String colPayTerm;
 	/**

@@ -26,7 +26,7 @@ public interface IContractBondService extends BaseService<ContractBondEntity> {
 
 
 	/**
-	 * 依据保存方法
+	 * 保证金存方法
 	 * @param ids 保证金id
 	 * @param id 合同id
 	 * @return

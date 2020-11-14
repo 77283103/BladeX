@@ -117,6 +117,6 @@ public class TemplateFieldEntity extends BaseEntity {
 	 * 布局
 	 */
 	@ApiModelProperty(value = "数据")
-	private Object tableData;
+	private String tableData;
 
 }
