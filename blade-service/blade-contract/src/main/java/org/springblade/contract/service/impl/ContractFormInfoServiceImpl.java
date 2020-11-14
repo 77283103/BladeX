@@ -1,5 +1,8 @@
 package org.springblade.contract.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,12 +12,16 @@ import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.system.cache.SysCache;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.ISysClient;
+import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -24,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import static com.alibaba.fastjson.JSON.*;
 
 /**
  *  服务实现类
@@ -63,6 +72,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private ContractSigningMapper signingMapper;
 
 	private ContractArchiveNotMapper archiveNotMapper;
+
+	private ContractRelieveMapper relieveMapper;
 
 
 
@@ -209,6 +220,22 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//查询履约计划收付款
 		List<ContractPerformanceColPayEntity> contractPerformanceColPayList = contractPerformanceColPayMapper.selectByIds(id);
 		contractFormInfoResponseVO.setPerformanceColPayList(contractPerformanceColPayList);
+		//查询解除信息
+        ContractRelieveEntity relieveEntity=relieveMapper.selectRelieveById(id);
+        if (Func.isNotEmpty(relieveEntity)) {
+			ContractRelieveResponseVO relieveResponseVO = ContractRelieveWrapper.build().entityPV(relieveEntity);
+			if (Func.isNotEmpty(relieveEntity.getSigningBasis())) {
+				relieveResponseVO.setAccordingEntity(contractAccordingMapper.selectById(relieveEntity.getSigningBasis()));
+			}
+			if (Func.isNotBlank(relieveEntity.getTermAgreement())){
+				//判断解除协议是否为空，不为空将查出来返回道VO
+				R<List<FileVO>> result = fileClient.getByIds(relieveResponseVO.getTermAgreement());
+				if (result.isSuccess()) {
+					relieveResponseVO.setTermAgreementFileVOList(result.getData());
+				}
+			}
+			contractFormInfo.setRelieveEntity(relieveResponseVO);
+		}
 		//查询合同评估并保存到合同vo
 		ContractAssessmentEntity contractAssessmentEntity= contractAssessmentMapper.selectByAssessmentId(id);
 		if (Func.isNotEmpty(contractAssessmentEntity)) {
@@ -318,12 +345,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Override
 	public ContractFormInfoEntity templateDraft(TemplateRequestVO template) {
 		//把Json对象转成对象
-		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+		List<TemplateFieldEntity> templateFieldList = parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
 		for(TemplateFieldEntity templateField : templateFieldList){
 			if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
 				if("ContractCounterpart".equals(templateField.getRelationCode())){
-					JSONObject obj= JSON.parseObject(templateField.getTableData().toString());
+					JSONObject obj= parseObject(templateField.getTableData().toString());
 					String counterpart=obj.getString("contractBond");
 					JSONArray arry= (JSONArray) obj.get("contractBond");
 					ContractCounterpartEntity contractCounterpart=JSONObject.toJavaObject((JSONObject) arry.get(0), ContractCounterpartEntity.class);

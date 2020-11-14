@@ -1,30 +1,50 @@
 package org.springblade.contract.vo;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.EqualsAndHashCode;
+import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractRelieveEntity;
 import io.swagger.annotations.ApiModel;
-import org.springblade.system.vo.UserDepartVO;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springblade.resource.feign.IFileClient;
+import org.springblade.resource.vo.FileVO;
+import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 
 /**
- *  返回模型VO
+ * 合同解除 返回模型VO
  *
- * @author szw
- * @date : 2020-09-23 20:10:29
+ * @author 合同解除
+ * @date : 2020-11-05 09:24:02
  */
-@Data
-@ApiModel(description = "返回对象")
+@Getter
+@Setter
+@ToString
+@ApiModel(description = "合同解除返回对象")
 @EqualsAndHashCode(callSuper = true)
 public class ContractRelieveResponseVO extends ContractRelieveEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	private String createUserName;
+
+	private String createDeptName;
+
+	private String updateUserName;
+
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	private Date createSystemTime;
+
+	private  List<FileVO> termAgreementFileVOList;
+
 	/**
-	 * 人员身份信息
+	 * 解除协议
 	 */
-	private List<UserDepartVO> userDepartList;
+	private ContractAccordingEntity accordingEntity;
 }

@@ -145,5 +145,4 @@ public class ContractSealUsingInfoController extends BladeController {
 		responseVO.setCreateSystemTime(now);
 		return R.data(responseVO);
 	}
-
 }

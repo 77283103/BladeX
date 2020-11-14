@@ -255,4 +255,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "签订信息")
 	@TableField(exist = false)
 	private ContractSigningEntity signingEntity;
+
+	/**
+	 * 关联合同解除信息
+	 */
+	@ApiModelProperty(value = "解除信息")
+	@TableField(exist = false)
+	private ContractRelieveEntity relieveEntity;
 }

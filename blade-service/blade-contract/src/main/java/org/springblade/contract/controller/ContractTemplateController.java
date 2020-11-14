@@ -78,7 +78,7 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入template")
 	@PreAuth("hasPermission('contract:template:list')")
-	public R<IPage<ContractTemplateResponseVO>> list(ContractTemplateEntity template, Query query) {
+	public R<IPage<ContractTemplateResponseVO>> list(ContractTemplateRequestVO template, Query query) {
 		IPage<ContractTemplateEntity> pages = templateService.pageList(Condition.getPage(query), template);
 		return R.data(ContractTemplateWrapper.build().pageVO(pages));
 	}

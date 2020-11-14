@@ -86,6 +86,7 @@ public class ContractSigningController extends BladeController {
 	@PreAuth("hasPermission('contract:signing:add')")
 	public R save(@Valid @RequestBody ContractSigningResponseVO contractSigning) {
 		String contractForm=contractFormInfoService.getById(contractSigning.getContractId()).getContractForm();
+		//判断合同类型是否为电子合同，是则签订完即可自动归档
 		if (CONTRACT_CONTRACT_FORM_VALUE.equals(contractForm)){
 			String contractStatus=CONTRACT_ARCHIVE_STATUS;
 			contractFormInfoService.updateExportStatus(contractStatus,contractSigning.getContractId());

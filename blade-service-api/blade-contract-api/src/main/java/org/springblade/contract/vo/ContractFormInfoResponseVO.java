@@ -132,4 +132,5 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 用印公司
 	 */
 	private String printCompany;
+
 }

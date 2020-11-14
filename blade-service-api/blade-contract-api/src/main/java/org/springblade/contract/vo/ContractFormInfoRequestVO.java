@@ -68,5 +68,10 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="合同状态集合")
 	private List<String> code;
 
+	@ApiModelProperty(value="合同金额")
+	private Double maxAmount;
+
+	@ApiModelProperty(value="合同金额")
+	private Double minAmount;
 
 }
