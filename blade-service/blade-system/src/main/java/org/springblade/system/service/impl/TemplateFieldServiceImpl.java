@@ -81,10 +81,18 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					jo.put("tableData", data);
 				}
 			}else if("secondSelect".equals(templateField.getComponentType())){
-				JSONObject data = new JSONObject();
-				data.put("first","");
-				data.put("second","");
-				jo.put("tableData", data);
+				if("Classification".equals(templateField.getRelationCode())){
+					JSONObject data = new JSONObject();
+					data.put("first","");
+					data.put("second","");
+					data.put("template","");
+					jo.put("tableData", data);
+				}else{
+					JSONObject data = new JSONObject();
+					data.put("first","");
+					data.put("second","");
+					jo.put("tableData", data);
+				}
 			}else{
 				jo.put("dicData", "");
 			}
