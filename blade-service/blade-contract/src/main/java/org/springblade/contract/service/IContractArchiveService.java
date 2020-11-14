@@ -20,4 +20,6 @@ public interface IContractArchiveService extends BaseService<ContractArchiveEnti
 	 * @return
 	 */
 	IPage<ContractArchiveEntity> pageList(IPage<ContractArchiveEntity> page, ContractArchiveRequestVO contractArchive);
+
+
 }
