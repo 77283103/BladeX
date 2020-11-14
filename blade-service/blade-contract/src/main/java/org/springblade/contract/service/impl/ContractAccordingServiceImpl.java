@@ -39,4 +39,9 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 		return baseMapper.pageList(page, according);
 	}
 
+	@Override
+	public void saveAccording(List<Long> ids, Long id) {
+
+	}
+
 }

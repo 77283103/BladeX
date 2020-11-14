@@ -5,6 +5,8 @@ import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.util.List;
+
 /**
  * 范本管理 请求模型VO
  *
@@ -75,4 +77,7 @@ public class ContractTemplateRequestVO extends BaseEntity {
 
 	@ApiModelProperty(value = "备注")
 	private String remarks;
+
+	@ApiModelProperty(value="模板状态集合")
+	private List<String> code;
 }

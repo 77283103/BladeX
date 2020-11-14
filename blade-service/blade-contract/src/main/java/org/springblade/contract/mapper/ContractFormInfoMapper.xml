@@ -150,6 +150,10 @@
         <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
             AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
         </if>
+        <!--金额区间查询-->
+        <if test="contractFormInfo.maxAmount !=null and contractFormInfo.maxAmount !='' or contractFormInfo.minAmount !=null and  contractFormInfo.minAmount!=''">
+            and  contract_amount between #{maxAmount} and #{minAmount}
+        </if>
     </select>
     <!--修改合同状态-->
     <update id="updateExportStatus">
@@ -276,7 +280,7 @@
 
     <!--统计合同下载次数-->
     <update id="textExportCount">
-        UPDATE contract_form_info SET file_export_count = ${fileExportCount},file_export_category=${fileExportCategory}
-        WHERE id = ${id}
+        UPDATE contract_form_info SET file_export_count = #{fileExportCount},file_export_category=#{fileExportCategory}
+        WHERE id =#{id}
     </update>
 </mapper>

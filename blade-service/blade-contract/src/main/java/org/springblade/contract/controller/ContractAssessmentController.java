@@ -44,47 +44,43 @@ public class ContractAssessmentController extends BladeController {
 
 	private IContractAssessmentService assessmentService;
 	private IContractFormInfoService contractFormInfoService;
-	private static final String ASSESSMENTS_CONTRACT_STATUS="100";
+	private static final String CONTRACT_ASSESSMENTS_CONTRACT_STATUS="100";
 
 	/**
 	 * 详情
 	 */
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入assessment")
-	@PreAuth("hasPermission('contract:assessment:detail')")
+	@ApiOperation(value = "详情", notes = "传入contractAssessment")
+	@PreAuth("hasPermission('contractAssessment:contractAssessment:detail')")
 	public R<ContractAssessmentResponseVO> detail(@RequestParam Long id) {
 		ContractAssessmentEntity detail = assessmentService.getById(id);
-		return R.data(ContractAssessmentWrapper.build().entityVO(detail));
+		return R.data(ContractAssessmentWrapper.build().entityPV(detail));
 	}
 
 	/**
 	 * 分页
 	 */
-	@GetMapping("/list")
+	@GetMapping("/page")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入assessment")
-	@PreAuth("hasPermission('contract:assessment:list')")
-	public R<IPage<ContractAssessmentResponseVO>> list(ContractAssessmentEntity assessment, Query query) {
-		IPage<ContractAssessmentEntity> pages = assessmentService.pageList(Condition.getPage(query), assessment);
-		return R.data(ContractAssessmentWrapper.build().pageVO(pages));
+	@ApiOperation(value = "分页", notes = "传入contractAssessment")
+	@PreAuth("hasPermission('contractAssessment:contractAssessment:page')")
+	public R<IPage<ContractAssessmentResponseVO>> list(ContractAssessmentRequestVO contractAssessment, Query query) {
+		IPage<ContractAssessmentEntity> pages = assessmentService.pageList(Condition.getPage(query), contractAssessment);
+		return R.data(ContractAssessmentWrapper.build().entityPVPage(pages));
 	}
 
 	/**
-	 * 新增 同时新增合同评估关联id数据
+	 * 新增
 	 */
 	@PostMapping("/add")
-	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "新增", notes = "传入assessment")
+	@ApiOperationSupport(order = 3)
+	@ApiOperation(value = "新增", notes = "传入contractAssessment")
 	@PreAuth("hasPermission('contract:assessment:add')")
-	public R save(@Valid @RequestBody ContractAssessmentRequestVO assessment) {
-        ContractAssessmentEntity entity = new ContractAssessmentEntity();
-        BeanUtil.copy(assessment,entity);
-        assessmentService.save(entity);
-		assessment.setId(entity.getId());
-		/* 保存合同id评估id信息*/
-		assessmentService.saveAssessment(assessment);
-		return R.data(entity);
+	public R save(@Valid @RequestBody ContractAssessmentResponseVO contractAssessment) {
+		String contractStatus=CONTRACT_ASSESSMENTS_CONTRACT_STATUS;
+		contractFormInfoService.updateExportStatus(contractStatus,contractAssessment.getContractId());
+		return R.status(assessmentService.save(ContractAssessmentWrapper.build().PVEntity(contractAssessment)));
 	}
 
 	/**

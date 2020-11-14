@@ -3,6 +3,7 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractTemplateEntity;
+import org.springblade.contract.vo.ContractTemplateRequestVO;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 * @param template
 	 * @return
 	 */
-	IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateEntity template);
+	IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template);
 
 
 	/**
@@ -41,6 +42,11 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 */
 	boolean updateTemplateStatus(String templateStatus, Long id);
 
+	/**
+	 * 历史版本列表查询
+	 * @param id
+	 * @return
+	 */
     List<ContractTemplateEntity> versionInfo(Long id);
 
 }
