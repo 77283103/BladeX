@@ -21,12 +21,5 @@ public interface IContractArchiveService extends BaseService<ContractArchiveEnti
 	 */
 	IPage<ContractArchiveEntity> pageList(IPage<ContractArchiveEntity> page, ContractArchiveRequestVO contractArchive);
 
-    /**
-    * @Description: 合同归档信息excel 导出
-    * @Param:
-    * @return:
-    * @Author: lm
-    * @Date: 2020/11/14 13:58
-    */
-    void exportTargetDataResult();
+
 }
