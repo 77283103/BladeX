@@ -403,5 +403,21 @@
 			return contractFormInfo;
 		}
 
+		/**
+		 * 合同大类金额
+		 * @return list
+		 */
+		@Override
+		public List<ContractFormInfoEntity> getAmountList() {
+			return contractFormInfoMapper.getAmountList();
+		}
 
+		/**
+		 * 合同大类数量
+		 * @return list
+		 */
+		@Override
+		public List<ContractFormInfoEntity> getNumList() {
+			return contractFormInfoMapper.getNumList();
+		}
 	}

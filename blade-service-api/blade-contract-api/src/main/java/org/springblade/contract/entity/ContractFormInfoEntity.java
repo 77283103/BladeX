@@ -267,4 +267,16 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "解除信息")
 	@TableField(exist = false)
 	private ContractRelieveEntity relieveEntity;
+
+	/**
+	 * 翻译
+	 */
+	@TableField(exist = false)
+	private String dictValue;
+
+	/**
+	 * 分类合同数量
+	 */
+	@TableField(exist = false)
+	private Integer count;
 }
