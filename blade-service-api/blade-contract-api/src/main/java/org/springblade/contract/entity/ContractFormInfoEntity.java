@@ -170,7 +170,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同节点状态")
 	private String contractStatus;
 	/**
-	 * 合同审核状态
+	 * 合同审核状态9
 	 */
 	@ApiModelProperty(value = "合同审核状态")
 	private String submitStatus;
@@ -260,4 +260,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "签订信息")
 	@TableField(exist = false)
 	private ContractSigningEntity signingEntity;
+
+	/**
+	 * 归档日期
+	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value = "归档日期")
+	private Date fileTime;
 }
