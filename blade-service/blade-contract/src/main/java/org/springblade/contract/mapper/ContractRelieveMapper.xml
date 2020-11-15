@@ -3,15 +3,23 @@
 <mapper namespace="org.springblade.contract.mapper.ContractRelieveMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="relieveResultMap" type="org.springblade.contract.entity.ContractRelieveEntity">
+    <resultMap id="contractRelieveResultMap" type="org.springblade.contract.entity.ContractRelieveEntity">
         <result column="id" property="id"/>
+        <result column="ref_contract_id" property="refContractId"/>
+        <result column="rescission_date" property="rescissionDate"/>
         <result column="relieve_category" property="relieveCategory"/>
         <result column="breach_amount" property="breachAmount"/>
         <result column="breach_category" property="breachCategory"/>
         <result column="compensation_amount" property="compensationAmount"/>
         <result column="compensation_category" property="compensationCategory"/>
         <result column="relieve_remark" property="relieveRemark"/>
-        <result column="ref_contract_id" property="refContractId"/>
+        <result column="status" property="status"/>
+        <result column="term_agreement" property="termAgreement"/>
+        <result column="signing_basis" property="signingBasis"/>
+        <result column="manage_unit" property="manageUnit"/>
+        <result column="manage_dept" property="manageDept"/>
+        <result column="manager" property="manager"/>
+        <result column="manage_date" property="manageDate"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
@@ -22,13 +30,21 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        ref_contract_id,
+        rescission_date,
         relieve_category,
         breach_amount,
         breach_category,
         compensation_amount,
         compensation_category,
+        signing_basis,
         relieve_remark,
-        ref_contract_id,
+        status,
+        term_agreement,
+        manage_unit,
+        manage_dept,
+        manager,
+        manage_date,
         is_deleted,
         create_user,
         create_time,
@@ -37,13 +53,20 @@
         create_dept
     </sql>
     <!-- 分页 -->
-    <select id="pageList" resultMap="relieveResultMap">
+    <select id="pageList" resultMap="contractRelieveResultMap">
         SELECT
             <include refid="baseColumnList"></include>
         FROM contract_relieve
         WHERE is_deleted = 0
-        <if test="relieve.relieveCategory != null and relieve.relieveCategory != ''">
-            AND relieve_category like concat('%',#{relieve.relieveCategory},'%')
-        </if>
+    </select>
+
+    <!--根据合同id查询签订信息-->
+    <select id="selectRelieveById" resultMap="contractRelieveResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_relieve
+        WHERE is_deleted = 0
+        AND
+        ref_contract_id = #{id}
     </select>
 </mapper>

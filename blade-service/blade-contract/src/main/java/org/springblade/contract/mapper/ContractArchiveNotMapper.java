@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractArchiveNotEntity;
 import org.springblade.contract.vo.ContractArchiveNotRequestVO;
 
+import java.util.List;
+
 /**
  * 未归档原因 Mapper 接口
  *
@@ -26,5 +28,5 @@ public interface ContractArchiveNotMapper extends BaseMapper<ContractArchiveNotE
 	 * @param id
 	 * @return
 	 */
-	ContractArchiveNotEntity selectArchiveNotById(Long id);
+	List<ContractArchiveNotEntity> selectArchiveNotById(Long id);
 }

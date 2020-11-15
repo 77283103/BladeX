@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.springblade.contract.mapper.ContractAssessmentMapper">
-    <!-- 评估通用查询映射结果 -->
-    <resultMap id="assessmentResultMap" type="org.springblade.contract.entity.ContractAssessmentEntity">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractAssessmentResultMap" type="org.springblade.contract.entity.ContractAssessmentEntity">
         <result column="id" property="id"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="contract_evaluation_id" property="contractEvaluationId"/>
+        <result column="contract_performance_evaluation" property="contractPerformanceEvaluation"/>
+        <result column="contract_performance_description" property="contractPerformanceDescription"/>
+        <result column="according_degree_cooperation" property="accordingDegreeCooperation"/>
         <result column="attached_files" property="attachedFiles"/>
         <result column="assessment_remark" property="assessmentRemark"/>
-        <result column="contract_id" property="contractId"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -15,13 +19,16 @@
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
     </resultMap>
-
-    <!-- 评估通用查询结果列 -->
+    <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        contract_id,
+        contract_evaluation_id,
+        contract_performance_evaluation,
+        contract_performance_description,
+        according_degree_cooperation,
         attached_files,
         assessment_remark,
-        contract_id,
         status,
         is_deleted,
         create_user,
@@ -55,7 +62,7 @@
         contract_small_category
     </sql>
     <!-- 评估信息分页 -->
-    <select id="pageList" resultMap="assessmentResultMap">
+    <select id="pageList" resultMap="contractAssessmentResultMap">
         SELECT
         <include refid="baseColumnList"></include>
         FROM contract_assessment
@@ -63,12 +70,21 @@
     </select>
 
      <!--根据合同id查询评估信息-->
-    <select id="selectByAssessmentId" resultMap="assessmentResultMap">
+    <select id="selectByAssessmentIds" resultMap="contractAssessmentResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
         FROM contract_assessment
         WHERE is_deleted = 0
         AND
         id =(SELECT c.contract_assessment_id FROM  contract_assessment_setting c WHERE c.contract_id = #{id})
+    </select>
+    <!--根据合同id查询评估信息-->
+    <select id="selectByAssessmentId" resultMap="contractAssessmentResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_assessment
+        WHERE is_deleted = 0
+        AND
+        contract_id = #{id}
     </select>
 </mapper>

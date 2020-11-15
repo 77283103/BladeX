@@ -170,7 +170,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同节点状态")
 	private String contractStatus;
 	/**
-	 * 合同审核状态9
+	 * 合同审核状态
 	 */
 	@ApiModelProperty(value = "合同审核状态")
 	private String submitStatus;
@@ -200,14 +200,21 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value="关联相对方信息")
 	@TableField(exist = false)
-	private List<ContractCounterpartEntity> counterpart;
+	private List<ContractCounterpartEntity> counterpartEntityList;
+
+	/**
+	 * 关联相对方信息  独立起草 一条合同信息
+	 */
+	@ApiModelProperty(value="关联相对方信息")
+	@TableField(exist = false)
+	private ContractCounterpartEntity counterpartEntity;
 
 	/**
 	 * 关联依据信息
 	 */
 	@ApiModelProperty(value="关联依据信息")
 	@TableField(exist = false)
-	private List<ContractAccordingEntity> according;
+	private List<ContractAccordingEntity> accordingEntityList;
 
 	@ApiModelProperty(value="保证金集合")
 	@TableField(exist = false)
@@ -235,11 +242,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private ContractArchiveEntity archiveEntity;
 	/**
-	 * 关联合同归档信息
+	 * 关联合同未归档信息
 	 */
 	@ApiModelProperty(value="未归档信息")
 	@TableField(exist = false)
-	private ContractArchiveNotEntity archiveNotEntity;
+	private List<ContractArchiveNotEntity> archiveNotEntity;
 
 	/**
 	 * 合同文件导出次数统计
@@ -261,6 +268,24 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private ContractSigningEntity signingEntity;
 
+	/**
+	 * 关联合同解除信息
+	 */
+	@ApiModelProperty(value = "解除信息")
+	@TableField(exist = false)
+	private ContractRelieveEntity relieveEntity;
+
+	/**
+	 * 翻译
+	 */
+	@TableField(exist = false)
+	private String dictValue;
+
+	/**
+	 * 分类合同数量
+	 */
+	@TableField(exist = false)
+	private Integer count;
 	/**
 	 * 归档日期
 	 */

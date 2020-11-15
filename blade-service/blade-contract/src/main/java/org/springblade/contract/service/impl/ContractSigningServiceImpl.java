@@ -37,7 +37,7 @@ public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningM
 
 
 	@Override
-	public IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningEntity signing) {
+	public IPage<ContractSigningEntity> pageList(IPage<ContractSigningEntity> page, ContractSigningRequestVO signing) {
 		return baseMapper.pageList(page, signing);
 	}
 

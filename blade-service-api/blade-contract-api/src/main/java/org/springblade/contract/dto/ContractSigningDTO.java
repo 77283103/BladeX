@@ -1,19 +1,21 @@
 package org.springblade.contract.dto;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springblade.contract.entity.ContractSigningEntity;
+import java.util.Date;
 
 /**
  * 合同签订表 模型DTO
  *
- * @author liyj
- * @date : 2020-09-23 19:27:05
+ * @author 合同签订
+ * @date : 2020-11-05 09:34:31
  */
 @Getter
 @Setter
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class ContractSigningDTO extends ContractSigningEntity {
 

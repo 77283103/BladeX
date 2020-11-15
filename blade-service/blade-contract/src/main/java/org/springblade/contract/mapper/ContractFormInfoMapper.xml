@@ -168,7 +168,11 @@
             DATE_FORMAT( now(), '%e' )- DATE_FORMAT( file_time, '%e' )) &gt;= '0'))
         </if>
         <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
-            AND contract_small_category like concat('%',#{.contractSmallCategory},'%')
+            AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
+        </if>
+        <!--金额区间查询-->
+        <if test="contractFormInfo.maxAmount !=null and contractFormInfo.maxAmount !='' or contractFormInfo.minAmount !=null and  contractFormInfo.minAmount!=''">
+            and  contract_amount between #{maxAmount} and #{minAmount}
         </if>
         <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
             AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
@@ -193,16 +197,16 @@
         a.id = b.ref_contract_id
         <if test="contractFormInfoRequestVO.startingTime != null and contractFormInfoRequestVO.endTime != null">
             WHERE
-            <if test="contractFormInfoRequestVO.startingTime != null and contractFormInfo.contractSmallCategory != ''">
+            <if test="contractFormInfoRequestVO.startingTime != null">
                 b.sign_time &gt; concat(#{contractFormInfoRequestVO.startingTime})
             </if>
-            <if test="contractFormInfoRequestVO.endTime != null and contractFormInfo.contractSmallCategory != ''">
+            <if test="contractFormInfoRequestVO.endTime != null">
                 AND b.sign_time &lt; concat(#{contractFormInfoRequestVO.endTime})
             </if>
-            <if test="contractFormInfoRequestVO.minContractAmount != null and contractFormInfo.contractSmallCategory != ''">
+            <if test="contractFormInfoRequestVO.minContractAmount != null">
                 AND a.contract_amount &gt; concat(#{contractFormInfoRequestVO.minContractAmount})
             </if>
-            <if test="contractFormInfoRequestVO.maxContractAmount != null and contractFormInfo.contractSmallCategory != ''">
+            <if test="contractFormInfoRequestVO.maxContractAmount != null">
                 AND a.contract_amount &lt; concat(#{contractFormInfoRequestVO.maxContractAmount})
             </if>
         </if>
@@ -302,7 +306,34 @@
 
     <!--统计合同下载次数-->
     <update id="textExportCount">
-        UPDATE contract_form_info SET file_export_count = ${fileExportCount},file_export_category=${fileExportCategory}
-        WHERE id = ${id}
+        UPDATE contract_form_info SET file_export_count = #{fileExportCount},file_export_category=#{fileExportCategory}
+        WHERE id =#{id}
     </update>
+
+    <!--合同大类金额-->
+    <select id="getAmountList" resultMap="formInfoResultMap">
+        SELECT
+            contract_big_category,
+            sum( contract_amount ) AS contract_amount,
+            dict_value
+        FROM
+            `contract_form_info`  info,
+            blade_dict_biz biz
+            where info.contract_big_category = biz.id
+        GROUP BY
+            contract_big_category;
+    </select>
+    <!--合同大类数量-->
+    <select id="getNumList" resultMap="formInfoResultMap">
+        SELECT
+            count(contract_big_category) as count,
+            contract_big_category ,
+                dict_value
+        FROM
+            `contract_form_info`  info,
+            blade_dict_biz biz
+            where info.contract_big_category = biz.id
+        GROUP BY
+            contract_big_category
+    </select>
 </mapper>

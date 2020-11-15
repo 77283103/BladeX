@@ -28,13 +28,22 @@ public interface ContractAssessmentMapper extends BaseMapper<ContractAssessmentE
 	 * @param assessment
 	 * @return
 	 */
-	IPage<ContractAssessmentEntity> pageList(IPage<ContractAssessmentEntity> page, ContractAssessmentEntity assessment);
+	IPage<ContractAssessmentEntity> pageList(IPage<ContractAssessmentEntity> page, ContractAssessmentRequestVO assessment);
 
 
 	/**
+	 * 一对一
 	 * 根据id合同信息关联评估信息查询
 	 * @param id
 	 * @return
 	 */
 	ContractAssessmentEntity selectByAssessmentId(Long id);
+
+	/**
+	 * 一对多
+	 * 根据id合同信息关联评估信息查询
+	 * @param id
+	 * @return
+	 */
+	ContractAssessmentEntity selectByAssessmentIds(Long id);
 }

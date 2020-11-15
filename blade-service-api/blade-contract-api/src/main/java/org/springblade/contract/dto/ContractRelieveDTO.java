@@ -1,16 +1,21 @@
 package org.springblade.contract.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springblade.contract.entity.ContractRelieveEntity;
+import java.util.Date;
 
 /**
- *  模型DTO
+ * 合同解除 模型DTO
  *
- * @author szw
- * @date : 2020-09-23 20:10:29
+ * @author 合同解除
+ * @date : 2020-11-05 09:24:00
  */
-@Data
+@Getter
+@Setter
+@ToString
 @EqualsAndHashCode(callSuper = true)
 public class ContractRelieveDTO extends ContractRelieveEntity {
 

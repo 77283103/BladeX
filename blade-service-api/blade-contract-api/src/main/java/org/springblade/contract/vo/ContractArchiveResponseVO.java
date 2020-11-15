@@ -30,4 +30,8 @@ public class ContractArchiveResponseVO extends ContractArchiveEntity {
 
 	private String updateUserName;
 
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	private Date createSystemTime;
+
 }

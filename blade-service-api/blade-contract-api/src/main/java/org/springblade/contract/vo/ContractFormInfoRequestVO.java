@@ -71,5 +71,10 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="合同销毁专用")
 	private String undestruction;
 
+	@ApiModelProperty(value="合同金额")
+	private Double maxAmount;
+
+	@ApiModelProperty(value="合同金额")
+	private Double minAmount;
 
 }

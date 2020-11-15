@@ -16,6 +16,7 @@ import org.springblade.resource.vo.FileVO;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,7 +33,11 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 
 	private IFileClient fileClient;
 	@Override
-	public IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateEntity template) {
+	public IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template) {
+		if (Func.isNotBlank(template.getTemplateStatus())) {
+			String[] code = template.getTemplateStatus().split(",");
+			template.setCode(Arrays.asList(code));
+		}
 		return baseMapper.pageList(page, template);
 	}
 
@@ -88,7 +93,6 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 		//将实体数据存入vo
 		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityVO(templateEntity);
 		templateResponseVO.setTemplateEntityOldVOList(templateEntityList);
-
 		return templateResponseVO;
 	}
 

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.dto.ContractAssessmentDTO;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractAssessmentRequestVO;
+import org.springblade.contract.vo.ContractAssessmentResponseVO;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractAssessmentEntity;
@@ -22,7 +23,7 @@ public interface IContractAssessmentService extends BaseService<ContractAssessme
 	 * @param assessment
 	 * @return
 	 */
-	IPage<ContractAssessmentEntity> pageList(IPage<ContractAssessmentEntity> page, ContractAssessmentEntity assessment);
+	IPage<ContractAssessmentEntity> pageList(IPage<ContractAssessmentEntity> page, ContractAssessmentRequestVO assessment);
 
 	/**
 	 * 合同评估保存方法
