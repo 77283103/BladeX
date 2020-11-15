@@ -203,6 +203,13 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private List<ContractCounterpartEntity> counterpartEntityList;
 
 	/**
+	 * 关联相对方信息  独立起草 一条合同信息
+	 */
+	@ApiModelProperty(value="关联相对方信息")
+	@TableField(exist = false)
+	private ContractCounterpartEntity counterpartEntity;
+
+	/**
 	 * 关联依据信息
 	 */
 	@ApiModelProperty(value="关联依据信息")

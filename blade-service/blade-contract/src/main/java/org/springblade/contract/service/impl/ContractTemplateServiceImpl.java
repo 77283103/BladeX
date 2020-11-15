@@ -34,8 +34,10 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	private IFileClient fileClient;
 	@Override
 	public IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template) {
-		String[] code = template.getTemplateStatus().split(",");
-		template.setCode(Arrays.asList(code));
+		if (Func.isNotBlank(template.getTemplateStatus())) {
+			String[] code = template.getTemplateStatus().split(",");
+			template.setCode(Arrays.asList(code));
+		}
 		return baseMapper.pageList(page, template);
 	}
 

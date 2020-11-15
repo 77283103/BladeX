@@ -86,7 +86,7 @@
 				/*为每个对象，设置创建者名字和组织名字*/
 				v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
 				v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
-				//将相对方存入合同分页显示 获取相对方名称
+				//将多方起草关联的   相对方存入合同分页显示 获取相对方名称
 				List<ContractCounterpartEntity> counterpartEntityList=contractCounterpartMapper.selectByIds(v.getId());
 				v.setCounterpartEntityList(counterpartEntityList);
 				//将用印信息存入合同分页 获取用印日期
@@ -204,9 +204,12 @@
 			//查询依据
 			List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(id);
 			contractFormInfoResponseVO.setAccordingEntityList(contractAccordingList);
-			//查询相对方
+			//查询多方起草关联相对方
 			List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
 			contractFormInfoResponseVO.setCounterpartEntityList(contractCounterpartList);
+			//查询独立起草关联相对方
+			ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectById(id);
+			contractFormInfoResponseVO.setCounterpartEntity(counterpartEntity);
 			//查询保证金
 			List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(id);
 			contractFormInfoResponseVO.setContractBond(contractBondList);
@@ -230,7 +233,7 @@
 						relieveResponseVO.setTermAgreementFileVOList(result.getData());
 					}
 				}
-				contractFormInfo.setRelieveEntity(relieveResponseVO);
+				contractFormInfoResponseVO.setRelieveEntity(relieveResponseVO);
 			}
 			//查询合同评估并保存到合同vo
 			ContractAssessmentEntity contractAssessmentEntity= contractAssessmentMapper.selectByAssessmentId(id);

@@ -133,4 +133,9 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 */
 	private String printCompany;
 
+	/**
+	 * 相对方名称字符串
+	 */
+	private List<String > counterpartName;
+
 }

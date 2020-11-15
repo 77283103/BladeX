@@ -147,7 +147,8 @@
         <if test="contractFormInfo.contractBigCategory != null and contractFormInfo.contractBigCategory != ''">
             AND contract_big_category = concat(#{contractFormInfo.contractBigCategory})
         </if>
-        <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
+        <if test="contractFormInfo.contractSmallCategory !=
+                null and contractFormInfo.contractSmallCategory != ''">
             AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
         </if>
         <!--金额区间查询-->

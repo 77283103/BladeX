@@ -110,7 +110,7 @@ public class ContractRelieveEntity extends BaseEntity {
 	/**
 	 * 对应签呈依据
 	 */
-	@ApiModelProperty(value="承办人")
+	@ApiModelProperty(value="签呈依据")
     private Long signingBasis;
 
 }

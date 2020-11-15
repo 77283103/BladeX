@@ -11,9 +11,13 @@ import lombok.AllArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
+import org.apache.poi.ss.formula.functions.Column;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.service.IContractArchiveNotService;
 import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.tool.utils.*;
 import org.springblade.core.secure.BladeUser;
@@ -150,8 +154,7 @@ public class ContractArchiveController extends BladeController {
 	@PostMapping("/exportTargetDataResult")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "导出", notes = "")
-	public void exportTargetDataResult(@RequestBody List<ContractFormInfoEntity> formInfoEntityList, HttpServletResponse response) {
-
+	public void exportTargetDataResult(@RequestBody List<ContractFormInfoResponseVO> formInfoEntityList, HttpServletResponse response) {
 		if(CollectionUtil.isNotEmpty(formInfoEntityList)){
 			 /* 导出文件名称 */
 			String  fileName = "合同归档信息导出";
@@ -159,35 +162,61 @@ public class ContractArchiveController extends BladeController {
 			/* 导出的sheet的名称 */
 			sheet1.setSheetName("合同归档信息导出");
 			sheet1.setSheetNo(0);
+
 			/* 需要存入的数据 */
 			List<List<Object>> data = new ArrayList<>();
 			/* formInfoEntityList 表示要写入的数据 因为是前台显示列表 由前台进行传值，后期可以根据自己的需求进行改变 */
-			for(ContractFormInfoEntity contractFormInfoEntity:formInfoEntityList){
+			for(ContractFormInfoResponseVO contractFormInfoEntity:formInfoEntityList){
 				/* 属性 cloumns 表示一行，cloumns包含的数据是一行的数据
 				  要将一行的每个值 作为list的一个属性存进到list里 ，数据要和展示的excel表头一致*/
 				List<Object> cloumns = new ArrayList<Object>();
+				/* 合同编号*/
+				cloumns.add(contractFormInfoEntity.getContractNumber());
                  /* 合同名称 */
 				cloumns.add(contractFormInfoEntity.getContractName());
-				/* 币种 */
-				cloumns.add(contractFormInfoEntity.getCurrencyCategory());
-				/* 合同金额 */
-				cloumns.add(contractFormInfoEntity.getContractAmount());
-				/* 创建人 */
-				cloumns.add(contractFormInfoEntity.getCreateUser());
-				/* 创建时间 */
-				cloumns.add(contractFormInfoEntity.getCreateTime());
-				/* 创建部门标识 */
-				cloumns.add(contractFormInfoEntity.getCreateDept());
 				/* 合同一级分类 */
 				cloumns.add(contractFormInfoEntity.getContractBigCategory());
 				/* 合同二级分类 */
 				cloumns.add(contractFormInfoEntity.getContractSmallCategory());
+				/*合同相对方名称*/
+				StringBuilder name=new  StringBuilder();
+				for(ContractCounterpartEntity counterpartEntity:contractFormInfoEntity.getCounterpartEntityList()){
+					name.append(counterpartEntity.getName());
+					name.append(",");
+				}
+				name.substring(0,name.length());
+				cloumns.add(name.toString());
+				/* 合同金额 */
+				cloumns.add(contractFormInfoEntity.getContractAmount());
+				/* 合同状态*/
+				cloumns.add(contractFormInfoEntity.getContractStatus());
+				/*归档月份*/
+				cloumns.add(contractFormInfoEntity.getArchiveMonth());
+				/*合同期限起始时间*/
+				cloumns.add(contractFormInfoEntity.getContractStartingTime());
+				/*合同期限截止时间*/
+				cloumns.add(contractFormInfoEntity.getContractEndTime());
+				/*审核完成日期*/
+				cloumns.add(contractFormInfoEntity.getCreateTime());
+				/*邮寄日期*/
+				cloumns.add(contractFormInfoEntity.getSignDate());
+				/*份数*/
+				cloumns.add(contractFormInfoEntity.getShare());
+				/*用印日期*/
+				cloumns.add(contractFormInfoEntity.getSignTime());
+				/*用印申请人*/
+				cloumns.add(contractFormInfoEntity.getPrintApplicant());
+				/*用印申请单位*/
+				cloumns.add(contractFormInfoEntity.getContractPrintInitDept());
+				/*用印公司*/
+				cloumns.add(contractFormInfoEntity.getPrintCompany());
+
 				data.add(cloumns);
 			}
 			/* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
 			List<List<String>> headList = new ArrayList<List<String>>();
 			/* 此处表头为一行要显示的所有表头，要和数据的顺序对应上  需要转换为list */
-			List<String> head = Arrays.asList("合同名称", "币种", "合同金额","创建人", "创建时间", "创建部门标识","合同一级分类","合同二级分类");
+			List<String> head = Arrays.asList("合同编号","合同名称","合同一级分类","合同二级分类","合同相对方名称","合同金额","合同状态","归档月份","合同期限起始时间","合同期限截止时间","审核完成日期","邮寄日期","份数","用印日期","用印申请人", "用印申请单位", "用印公司");
 			/* 为了生成一个独立的list对象，所进行的初始化 */
 			List<String>  head2 =null;
 			for( String head1:head){

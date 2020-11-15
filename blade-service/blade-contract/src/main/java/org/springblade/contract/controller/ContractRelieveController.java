@@ -49,9 +49,9 @@ public class ContractRelieveController extends BladeController {
 
 	private IContractRelieveService contractRelieveService;
 	private IContractFormInfoService formInfoService;
-	private static final String CONTRACT_RELIEVE_SAVE="10";
-	private static final String CONTRACT_RELIEVE_REVIEW="20";
-	private static final String CONTRACT_RELIEVE_SUBMIT="30";
+	private static final String CONTRACT_RELIEVE_SAVE="88";
+	private static final String CONTRACT_RELIEVE_SUBMIT="89";
+	private static final String CONTRACT_RELIEVE_PASS="90";
 
 	/**
 	 * 详情
@@ -85,6 +85,8 @@ public class ContractRelieveController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractRelieve")
 	@PreAuth("hasPermission('contractRelieve:relieve:add')")
 	public R save(@Valid @RequestBody ContractRelieveResponseVO contractRelieve) {
+		String contractStatus=CONTRACT_RELIEVE_SAVE;
+		formInfoService.updateExportStatus(contractStatus,contractRelieve.getRefContractId());
 		return R.status(contractRelieveService.save(ContractRelieveWrapper.build().PVEntity(contractRelieve)));
 	}
 
@@ -111,6 +113,8 @@ public class ContractRelieveController extends BladeController {
 	    if (Func.isEmpty(contractRelieve.getId())){
             throw new ServiceException("id不能为空");
         }
+		String contractStatus=CONTRACT_RELIEVE_SUBMIT;
+		formInfoService.updateExportStatus(contractStatus,contractRelieve.getRefContractId());
 		return R.status(contractRelieveService.updateById(ContractRelieveWrapper.build().PVEntity(contractRelieve)));
 	}
 

@@ -22,7 +22,7 @@ public interface ContractRelieveMapper extends BaseMapper<ContractRelieveEntity>
 	IPage<ContractRelieveEntity> pageList(IPage<ContractRelieveEntity> page, ContractRelieveRequestVO contractRelieve);
 
 	/**
-	 * 根据合同id查询销毁信息
+	 * 根据合同id查询信息解除
 	 * @param id
 	 * @return
 	 */
