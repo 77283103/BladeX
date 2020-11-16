@@ -133,7 +133,7 @@ public class ContractFormInfoController extends BladeController {
 		if(contractFormInfo.getAccording().size()>0){
 			ContractAccordingEntity contractAccording=contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
-			accordingService.save(contractAccording);
+			accordingService.updateById(contractAccording);
 		}
 		/*保存履约信息*/
 		if(contractFormInfo.getPerformanceList().size()>0){
