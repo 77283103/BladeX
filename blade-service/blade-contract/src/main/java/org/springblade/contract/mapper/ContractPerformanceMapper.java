@@ -18,12 +18,30 @@ public interface ContractPerformanceMapper extends BaseMapper<ContractPerformanc
 
 	/**
 	 * 分页查询
+	 * 一般超期
 	 * @param page
 	 * @param contractPerformance
 	 * @return
 	 */
 	IPage<ContractPerformanceEntity> pageList(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance);
 
+	/**
+	 * 分页查询
+	 * 严重超期
+	 * @param page
+	 * @param contractPerformance
+	 * @return
+	 */
+	IPage<ContractPerformanceEntity> pageListSerious(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance);
+
+	/**
+	 * 分页查询
+	 * 超期超期
+	 * @param page
+	 * @param contractPerformance
+	 * @return
+	 */
+	IPage<ContractPerformanceEntity> pageListLong(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance);
 
 	/**
 	 * 根据合同id查询查询履约计划信息
@@ -32,6 +50,8 @@ public interface ContractPerformanceMapper extends BaseMapper<ContractPerformanc
 	 * @return
 	 */
 	List<ContractPerformanceEntity> selectByIds(Long id);
+
+	Integer selectByIdDays(Long id);
 
 
 }

@@ -18,12 +18,29 @@ public interface ContractPerformanceColPayMapper extends BaseMapper<ContractPerf
 
 	/**
 	 * 分页查询
+	 * 一般超期
 	 * @param page
 	 * @param contractPerformanceColPay
 	 * @return
 	 */
 	IPage<ContractPerformanceColPayEntity> pageList(IPage<ContractPerformanceColPayEntity> page, ContractPerformanceColPayRequestVO contractPerformanceColPay);
 
+	/**
+	 * 分页查询
+	 * 严重超期
+	 * @param page
+	 * @param contractPerformanceColPay
+	 * @return
+	 */
+	IPage<ContractPerformanceColPayEntity> pageListSerious(IPage<ContractPerformanceColPayEntity> page, ContractPerformanceColPayRequestVO contractPerformanceColPay);
+	/**
+	 * 分页查询
+	 * 超期超期
+	 * @param page
+	 * @param contractPerformanceColPay
+	 * @return
+	 */
+	IPage<ContractPerformanceColPayEntity> pageListLong(IPage<ContractPerformanceColPayEntity> page, ContractPerformanceColPayRequestVO contractPerformanceColPay);
 
 	/**
 	 * 根据合同id查询查询履约计划收付款信息

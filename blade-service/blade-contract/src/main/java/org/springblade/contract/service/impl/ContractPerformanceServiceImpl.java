@@ -1,12 +1,27 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.AllArgsConstructor;
+import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.mapper.ContractCounterpartMapper;
+import org.springblade.contract.mapper.ContractFormInfoMapper;
+import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractPerformanceRequestVO;
+import org.springblade.contract.vo.ContractPerformanceResponseVO;
+import org.springblade.contract.wrapper.ContractFormInfoWrapper;
+import org.springblade.contract.wrapper.ContractPerformanceWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.mapper.ContractPerformanceMapper;
 import org.springblade.contract.service.IContractPerformanceService;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * 接收/提供服务计划清单 服务实现类
@@ -15,10 +30,51 @@ import org.springframework.stereotype.Service;
  * @date : 2020-11-05 17:06:56
  */
 @Service
+@AllArgsConstructor
 public class ContractPerformanceServiceImpl extends BaseServiceImpl<ContractPerformanceMapper, ContractPerformanceEntity> implements IContractPerformanceService {
 
+	private ContractFormInfoMapper formInfoMapper;
+	private IContractFormInfoService formInfoService;
+	private ContractCounterpartMapper counterpartMapper;
 	@Override
-	public IPage<ContractPerformanceEntity> pageList(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance) {
-		return baseMapper.pageList(page, contractPerformance);
+	public IPage<ContractPerformanceResponseVO> pageList(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance) {
+		page=baseMapper.pageList(page, contractPerformance);
+		IPage<ContractPerformanceResponseVO> pages= ContractPerformanceWrapper.build().entityPVPage(page);
+		List<ContractPerformanceResponseVO> records = pages.getRecords();
+		List<ContractPerformanceResponseVO> recordList = new ArrayList<>();
+		for(ContractPerformanceResponseVO v : records) {
+			ContractFormInfoEntity formInfoEntity = formInfoMapper.selectById(v.getContractId());
+			if (Func.isNotEmpty(formInfoEntity)) {
+				v.setContractFormInfoEntity(formInfoEntity);
+				List<ContractCounterpartEntity> counterpartEntity = counterpartMapper.selectByIds(formInfoEntity.getId());
+				v.setCounterpartEntityList(counterpartEntity);
+			}
+		}
+		return pages;
+	}
+
+	@Override
+	public IPage<ContractPerformanceEntity> pageListSerious(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance) {
+		page=baseMapper.pageListSerious(page, contractPerformance);
+		return page;
+	}
+
+	@Override
+	public IPage<ContractPerformanceEntity> pageListLong(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance) {
+		page=baseMapper.pageListLong(page, contractPerformance);
+		return page;
+	}
+
+	@Override
+	public ContractPerformanceResponseVO getById(Long id) {
+		ContractPerformanceEntity performanceEntity=baseMapper.selectById(id);
+		ContractPerformanceResponseVO performanceResponseVO= ContractPerformanceWrapper.build().entityPV(performanceEntity);
+		ContractFormInfoEntity formInfoEntity = formInfoMapper.selectById(performanceEntity.getContractId());
+		if (Func.isNotEmpty(formInfoEntity)) {
+			performanceEntity.setContractFormInfoEntity(formInfoEntity);
+			List<ContractCounterpartEntity> counterpartEntity = counterpartMapper.selectByIds(formInfoEntity.getId());
+			performanceEntity.setCounterpartEntityList(counterpartEntity);
+		}
+		return performanceResponseVO;
 	}
 }

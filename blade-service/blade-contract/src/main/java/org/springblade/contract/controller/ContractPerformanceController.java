@@ -59,8 +59,8 @@ public class ContractPerformanceController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入contractPerformance")
 	@PreAuth("hasPermission('contractPerformance:contractPerformance:page')")
 	public R<IPage<ContractPerformanceResponseVO>> list(ContractPerformanceRequestVO contractPerformance, Query query) {
-		IPage<ContractPerformanceEntity> pages = contractPerformanceService.pageList(Condition.getPage(query), contractPerformance);
-		return R.data(ContractPerformanceWrapper.build().entityPVPage(pages));
+		IPage<ContractPerformanceResponseVO> pages = contractPerformanceService.pageList(Condition.getPage(query), contractPerformance);
+		return R.data(pages);
 	}
 
 	/**

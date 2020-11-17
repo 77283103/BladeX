@@ -17,13 +17,30 @@ public interface IContractBondService extends BaseService<ContractBondEntity> {
 
 	/**
 	 * 分页查询
+	 * 一般超期
 	 * @param page
 	 * @param contractBond
 	 * @return
 	 */
 	IPage<ContractBondEntity> pageList(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond);
 
+	/**
+	 * 分页查询
+	 * 严重超期
+	 * @param page
+	 * @param contractBond
+	 * @return
+	 */
+	IPage<ContractBondEntity> pageListSerious(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond);
 
+	/**
+	 * 分页查询
+	 * 超长超期
+	 * @param page
+	 * @param contractBond
+	 * @return
+	 */
+	IPage<ContractBondEntity> pageListLong(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond);
 
 	/**
 	 * 保证金存方法
