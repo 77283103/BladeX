@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
+import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
@@ -165,11 +166,33 @@ public class ContractFormInfoController extends BladeController {
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
 		for(TemplateFieldEntity templateField : templateFieldList){
-			j.put(templateField.getFieldName(), templateField.getFieldValue());
+			if (ContractFormInfoTemplateContract.CONTRACT_BIG_CATEGORY.equals(templateField.getRelationCode())) {
+				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
+				JSONObject json = JSON.parseObject(jsonObj.get("template").toString());
+				j.put("contractBigCategory", jsonObj.get("first"));
+				j.put("contractSmallCategory", jsonObj.get("second"));
+				j.put("contractTemplateId", json.get("id"));
+			}else if (ContractFormInfoTemplateContract.CONTRACT_COL_PAY.equals(templateField.getRelationCode())){
+				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
+				j.put("colPayType", jsonObj.get("first"));
+				j.put("colPayTerm", jsonObj.get("second"));
+				j.put("days", jsonObj.get("days"));
+			}else{
+				j.put(templateField.getFieldName(), templateField.getFieldValue());
+			}
 		}
 		ContractFormInfoEntity contractFormInfoEntity=JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
-		contractFormInfoService.save(contractFormInfoEntity);
-		return R.data(contractFormInfoService.templateDraft(contractFormInfoEntity,template));
+		if (Func.isEmpty(contractFormInfoEntity.getId())){
+			contractFormInfoEntity.setContractSoure("30");
+			contractFormInfoEntity.setContractStatus("10");
+			contractFormInfoService.save(contractFormInfoEntity);
+		}else{
+			contractFormInfoService.updateById(contractFormInfoEntity);
+		}
+		String json=contractFormInfoService.templateDraft(contractFormInfoEntity,template);
+		contractFormInfoEntity.setJson(json);
+		contractFormInfoService.updateById(contractFormInfoEntity);
+		return R.data(contractFormInfoEntity);
 	}
 
 

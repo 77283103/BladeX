@@ -2,12 +2,11 @@ package org.springblade.system.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
-import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import java.time.LocalDateTime;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
+
 import java.util.List;
 
 
@@ -24,7 +23,7 @@ import java.util.List;
 @TableName("template_field")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "TemplateField对象", description = "")
-public class TemplateFieldEntity extends BaseEntity {
+public class TemplateFieldJsonEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -116,10 +115,48 @@ public class TemplateFieldEntity extends BaseEntity {
 	private Integer layout;
 
 	/**
+	 * 字典dataList
+	 */
+	@TableField(exist = false)
+	@ApiModelProperty(value = "字典数据")
+	private List dicDataList;
+
+	/**
+	 * 校验
+	 */
+	@ApiModelProperty(value = "校验")
+	private String requiredData;
+
+	/**
+	 * 校验List
+	 */
+	@ApiModelProperty(value = "校验")
+	private List requiredDataList;
+
+	/**
 	 * 列表数据
 	 */
 	@ApiModelProperty(value = "数据")
 	private String tableData;
+
+	/**
+	 * 列表数据List
+	 */
+	@ApiModelProperty(value = "数据")
+	private List tableDataList;
+
+
+	/**
+	 * 列表数据对象
+	 */
+	@ApiModelProperty(value = "数据")
+	private String tableDataObject;
+
+	/**
+	 * 列表数据对象object
+	 */
+	@ApiModelProperty(value = "数据")
+	private Object tableDataObjectList;
 
 
 	/**
@@ -127,6 +164,12 @@ public class TemplateFieldEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "数据")
 	private String secondSelectData;
+
+	/**
+	 * 二级联动列表数据object
+	 */
+	@ApiModelProperty(value = "数据")
+	private Object secondSelectDataObject;
 
 
 }

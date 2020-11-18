@@ -101,7 +101,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 *范本起草保存
 	 * @param contractFormInfoEntity 合同模板
 	 */
-	ContractFormInfoEntity templateDraft(ContractFormInfoEntity contractFormInfoEntity,TemplateRequestVO template);
+	String templateDraft(ContractFormInfoEntity contractFormInfoEntity,TemplateRequestVO template);
 
 	/**
 	 * 合同大类金额

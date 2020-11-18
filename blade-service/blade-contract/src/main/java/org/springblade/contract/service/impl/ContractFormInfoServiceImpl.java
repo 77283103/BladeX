@@ -5,6 +5,7 @@
 	import com.alibaba.fastjson.JSONObject;
 	import com.baomidou.mybatisplus.core.metadata.IPage;
 	import lombok.AllArgsConstructor;
+	import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 	import org.springblade.contract.entity.*;
 	import org.springblade.contract.mapper.*;
 	import org.springblade.contract.service.IContractFormInfoService;
@@ -14,11 +15,13 @@
 	import org.springblade.core.secure.BladeUser;
 	import org.springblade.core.secure.utils.AuthUtil;
 	import org.springblade.core.tool.api.R;
+	import org.springblade.core.tool.utils.CollectionUtil;
 	import org.springblade.core.tool.utils.Func;
 	import org.springblade.resource.feign.IFileClient;
 	import org.springblade.resource.vo.FileVO;
 	import org.springblade.system.cache.SysCache;
 	import org.springblade.system.entity.TemplateFieldEntity;
+	import org.springblade.system.entity.TemplateFieldJsonEntity;
 	import org.springblade.system.feign.ISysClient;
 	import org.springblade.system.user.cache.UserCache;
 	import org.springblade.system.user.entity.User;
@@ -338,72 +341,146 @@
 		}
 
 		/**
-		 *范本起草保存
+		 * 范本起草保存
+		 *
 		 * @param template 合同模板
 		 */
 		@Override
-		public ContractFormInfoEntity templateDraft(ContractFormInfoEntity contractFormInfo,TemplateRequestVO template) {
+		public String templateDraft(ContractFormInfoEntity contractFormInfo, TemplateRequestVO template) {
 			//把Json对象转成对象
-			List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
-			for(TemplateFieldEntity templateField : templateFieldList){
-				if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())){
-					if("ContractAccording".equals(templateField.getRelationCode())){
-						List<ContractAccordingEntity> accordingList = JSON.parseArray(templateField.getTableData().toString(), ContractAccordingEntity.class);
+			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldJsonEntity.class);
+			for (TemplateFieldJsonEntity templateField : templateFieldList) {
+				if (ContractFormInfoTemplateContract.CONTRACT_ID.equals(templateField.getComponentType())){
+					templateField.setFieldValue(contractFormInfo.getId().toString());
+				}
+				if (ContractFormInfoTemplateContract.COMPONENT_TYPE_SELECT.equals(templateField.getComponentType())) {
+					Object object = JSON.parseObject(templateField.getSecondSelectData(), Object.class);
+					if (null != object) {
+						templateField.setSecondSelectDataObject(object);
+					}
+				}
+				if (ContractFormInfoTemplateContract.COMPONENT_TYPE_REQUORED.equals(templateField.getRequired())) {
+					List<Object> objectList = JSON.parseArray(templateField.getRequiredData(), Object.class);
+					if (CollectionUtil.isNotEmpty(objectList)) {
+						templateField.setRequiredDataList(objectList);
+					}
+				}
+				if (ContractFormInfoTemplateContract.COMPONENT_TYPE_SMALL.contains(templateField.getComponentType())) {
+					List<Object> objectList = JSON.parseArray(templateField.getDicData(), Object.class);
+					if (CollectionUtil.isNotEmpty(objectList)) {
+						templateField.setDicDataList(objectList);
+					}
+				}
+				if (ContractFormInfoTemplateContract.COMPONENT_TYPE.contains(templateField.getComponentType())) {
+					if (ContractFormInfoTemplateContract.CONTRACT_ACCORDING.equals(templateField.getRelationCode())) {
+						List<ContractAccordingEntity> accordingList = JSON.parseArray(templateField.getTableData(), ContractAccordingEntity.class);
 						/*保存依据信息*/
-						if(accordingList.size()>0){
-							ContractAccordingEntity contractAccording=accordingList.get(0);
+						if (CollectionUtil.isNotEmpty(accordingList)) {
+							ContractAccordingEntity contractAccording = accordingList.get(0);
 							contractAccording.setContractId(contractFormInfo.getId());
 							//contractAccordingMapper.insert(contractAccording);
+							accordingList.get(0).setId(contractAccording.getId());
+							templateField.setTableData(JSONObject.toJSONString(accordingList));
+							templateField.setTableDataList(accordingList);
 						}
 					}
-					if("ContractCounterpart".equals(templateField.getRelationCode())){
-						JSONObject obj= JSON.parseObject(templateField.getTableData().toString());
-						JSONArray counterpartObject= (JSONArray) obj.get("counterpart");
-						List<ContractCounterpartEntity> contractCounterpart=JSON.parseArray(counterpartObject.toString(), ContractCounterpartEntity.class);
-						if(contractCounterpart.size()>0){
-							contractFormInfoMapper.deleteCounterpart(contractFormInfo.getId());
-							contractFormInfoMapper.saveCounterpart(contractFormInfo.getId(),contractCounterpart);
-						}
-						JSONArray contractBondArry= (JSONArray) obj.get("contractBond");
-						List<ContractBondEntity> contractBond=JSON.parseArray(contractBondArry.toString(), ContractBondEntity.class);
-						if(contractCounterpart.size()>0){
-							contractBondMapper.deleteBond(contractFormInfo.getId());
-							List<Long> list=new ArrayList<>();
-							for(ContractBondEntity contractBondEntity:contractBond){
-								if (Func.isEmpty(contractFormInfo.getId())){
-									contractBondMapper.insert(contractBondEntity);
-								}else{
-									contractBondMapper.updateById(contractBondEntity);
-								}
-								list.add(contractBondEntity.getId());
+					if (ContractFormInfoTemplateContract.CONTRACT_COUNTERPART.equals(templateField.getRelationCode())) {
+						//字符串对象转成JSONObject
+						JSONObject obj = JSON.parseObject(templateField.getTableDataObject());
+						//判断相对方是否为空
+						if (!"{}".equals(obj.getString(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_COUNTERPART))) {
+							com.alibaba.fastjson.JSONArray counterpartObject = obj.getJSONArray(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_COUNTERPART);
+							List<ContractCounterpartEntity> contractCounterpart = JSON.parseArray(counterpartObject.toString(), ContractCounterpartEntity.class);
+							if (contractCounterpart.size() > 0) {
+								contractFormInfoMapper.deleteCounterpart(contractFormInfo.getId());
+								contractFormInfoMapper.saveCounterpart(contractFormInfo.getId(), contractCounterpart);
+								contractCounterpart.get(0).setId(contractCounterpart.get(0).getId());
+								obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_COUNTERPART,contractCounterpart);
 							}
-							contractBondMapper.saveBond(list,contractFormInfo.getId());
+							//判断保证金是否为空
+							if (!"{}".equals(obj.getString(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND))) {
+								com.alibaba.fastjson.JSONArray contractBondArry = obj.getJSONArray(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND);
+								List<ContractBondEntity> contractBond = JSON.parseArray(contractBondArry.toString(), ContractBondEntity.class);
+								if (CollectionUtil.isNotEmpty(contractCounterpart)) {
+									contractBondMapper.deleteBond(contractFormInfo.getId());
+									List<Long> list = new ArrayList<>();
+									if (Func.isEmpty(contractFormInfo.getId())) {
+										contractBondMapper.insert(contractBond.get(0));
+										contractBond.get(0).setId(contractBond.get(0).getId());
+										obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND,contractBond);
+									} else {
+										contractBondMapper.updateById(contractBond.get(0));
+									}
+									list.add(contractBond.get(0).getId());
+									contractBondMapper.saveBond(list, contractFormInfo.getId());
+								}
+							}
+							templateField.setTableDataObject(JSONObject.toJSONString(obj));
+							templateField.setTableDataObjectList(obj);
 						}
 					}
-					if("ContractPerformance".equals(templateField.getRelationCode())){
+					if (ContractFormInfoTemplateContract.CONTRACT_PERFORMANCE.equals(templateField.getRelationCode())) {
 						List<ContractPerformanceEntity> performanceList = JSON.parseArray(templateField.getTableData().toString(), ContractPerformanceEntity.class);
-						/*保存履约信息*/
-						if(performanceList.size()>0){
+						//*保存履约信息*//*
+						if (performanceList.size() > 0) {
 							//contractPerformanceMapper.d
-							performanceList.forEach(performance->{
+							List<ContractPerformanceEntity> list = new ArrayList<ContractPerformanceEntity>();
+							performanceList.forEach(performance -> {
 								performance.setContractId(contractFormInfo.getId());
 								contractPerformanceMapper.insert(performance);
+								list.add(performance);
 							});
+							templateField.setTableData(JSONObject.toJSONString(list));
+							templateField.setTableDataList(list);
 						}
 					}
-					if("ContractPerformanceColPay".equals(templateField.getRelationCode())){
-						List<ContractPerformanceColPayEntity> performanceColPayList = JSON.parseArray(templateField.getTableData().toString(), ContractPerformanceColPayEntity.class);
-						/*保存履约计划收付款*/
-						if(performanceColPayList.size()>0){
-							performanceColPayList.forEach(performanceColPay->{
+					if (ContractFormInfoTemplateContract.CONTRACT_PERFORMANCE_COLPAY.equals(templateField.getRelationCode())) {
+						List<ContractPerformanceColPayEntity> performanceColPayList = JSON.parseArray(templateField.getTableData(), ContractPerformanceColPayEntity.class);
+						//*保存履约计划收付款*//*
+						if (performanceColPayList.size() > 0) {
+							List<ContractPerformanceColPayEntity> list = new ArrayList<ContractPerformanceColPayEntity>();
+							performanceColPayList.forEach(performanceColPay -> {
 								performanceColPay.setContractId(contractFormInfo.getId());
 								contractPerformanceColPayMapper.insert(performanceColPay);
+								list.add(performanceColPay);
 							});
+							templateField.setTableData(JSONObject.toJSONString(list));
+							templateField.setTableDataList(list);
 						}
 					}
 				}
 			}
-			return contractFormInfo;
+			//把数组在转回json字符串
+			String json = JSON.toJSONString(templateFieldList);
+			//再转成json数组替换里面的数据
+			com.alibaba.fastjson.JSONArray jsonArr = JSON.parseArray(json);
+			JSONArray jsonArray = new JSONArray();
+			for (int i = 0; i < jsonArr.size(); i++) {
+				JSONObject jsonObject2 = jsonArr.getJSONObject(i);
+				if (null != (jsonObject2.get("secondSelectDataObject"))) {
+					jsonObject2.put("secondSelectData", jsonObject2.get("secondSelectDataObject"));
+					jsonObject2.remove("secondSelectDataObject");
+				}
+				if (null != (jsonObject2.get("tableDataList"))) {
+					jsonObject2.put("tableData", jsonObject2.get("tableDataList"));
+					jsonObject2.remove("tableDataList");
+				}
+				if (null != (jsonObject2.get("requiredDataList"))) {
+					jsonObject2.put("requiredData", jsonObject2.get("requiredDataList"));
+					jsonObject2.remove("requiredDataList");
+				}
+				if (null != (jsonObject2.get("dicDataList"))) {
+					jsonObject2.put("dicData", jsonObject2.get("dicDataList"));
+					jsonObject2.remove("dicDataList");
+				}
+				if (null != (jsonObject2.get("tableDataObjectList"))) {
+					jsonObject2.put("tableDataObject", jsonObject2.get("tableDataObjectList"));
+					jsonObject2.remove("tableDataObjectList");
+				}
+				jsonArray.add(jsonObject2);
+			}
+			json = jsonArray.toJSONString();
+			return json;
 		}
 
 		/**

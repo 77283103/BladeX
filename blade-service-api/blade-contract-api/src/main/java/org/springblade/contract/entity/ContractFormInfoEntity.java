@@ -282,6 +282,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private String dictValue;
 
 	/**
+	 * 翻译
+	 */
+	@TableField(exist = false)
+	private String json;
+
+	/**
 	 * 分类合同数量
 	 */
 	@TableField(exist = false)

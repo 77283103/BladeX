@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONArray;
+import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.mp.support.Condition;
@@ -50,6 +51,10 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 		//字段属性json对象
 		JSONArray json = new JSONArray();
 		List<DictBiz> tree=new ArrayList<DictBiz>();
+		JSONObject id = new JSONObject();
+		id.put("fieldValue", "");
+		id.put("componentType", "id");
+		json.add(id);
 		for(TemplateFieldEntity templateField : list){
 			JSONObject jo = new JSONObject();
 			jo.put("fieldName", templateField.getFieldName());
@@ -75,7 +80,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					JSONObject data = new JSONObject();
 					data.put("counterpart",datas);
 					data.put("contractBond",datas);
-					jo.put("tableData", data);
+					jo.put("tableDataObject", data);
 				}else{
 					JSONArray data = new JSONArray();
 					jo.put("tableData", data);
@@ -86,12 +91,18 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					data.put("first","");
 					data.put("second","");
 					data.put("template","");
-					jo.put("tableData", data);
+					jo.put("secondSelectData", data);
+				}if(ContractFormInfoTemplateContract.CONTRACT_COL_PAY.equals(templateField.getRelationCode())){
+					JSONObject data = new JSONObject();
+					data.put("first","");
+					data.put("second","");
+					data.put("days","");
+					jo.put("secondSelectData", data);
 				}else{
 					JSONObject data = new JSONObject();
 					data.put("first","");
 					data.put("second","");
-					jo.put("tableData", data);
+					jo.put("secondSelectData", data);
 				}
 			}else{
 				jo.put("dicData", "");
