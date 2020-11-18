@@ -455,27 +455,26 @@
 			//再转成json数组替换里面的数据
 			com.alibaba.fastjson.JSONArray jsonArr = JSON.parseArray(json);
 			JSONArray jsonArray = new JSONArray();
+			JSONArray array = new JSONArray();
 			for (int i = 0; i < jsonArr.size(); i++) {
 				JSONObject jsonObject2 = jsonArr.getJSONObject(i);
 				if (null != (jsonObject2.get("secondSelectDataObject"))) {
 					jsonObject2.put("secondSelectData", jsonObject2.get("secondSelectDataObject"));
 					jsonObject2.remove("secondSelectDataObject");
-				}
-				if (null != (jsonObject2.get("tableDataList"))) {
+				}else if (null != (jsonObject2.get("tableDataList"))) {
 					jsonObject2.put("tableData", jsonObject2.get("tableDataList"));
 					jsonObject2.remove("tableDataList");
-				}
-				if (null != (jsonObject2.get("requiredDataList"))) {
+				}else if (null != (jsonObject2.get("requiredDataList"))) {
 					jsonObject2.put("requiredData", jsonObject2.get("requiredDataList"));
 					jsonObject2.remove("requiredDataList");
-				}
-				if (null != (jsonObject2.get("dicDataList"))) {
+				}else if (null != (jsonObject2.get("dicDataList"))) {
 					jsonObject2.put("dicData", jsonObject2.get("dicDataList"));
 					jsonObject2.remove("dicDataList");
-				}
-				if (null != (jsonObject2.get("tableDataObjectList"))) {
+				}else if (null != (jsonObject2.get("tableDataObjectList"))) {
 					jsonObject2.put("tableDataObject", jsonObject2.get("tableDataObjectList"));
 					jsonObject2.remove("tableDataObjectList");
+				}else if("[]".equals(jsonObject2.get("tableData"))){
+					jsonObject2.put("tableData", array);
 				}
 				jsonArray.add(jsonObject2);
 			}

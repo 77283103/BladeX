@@ -2,29 +2,21 @@ package org.springblade.system.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
-import org.apache.poi.ss.formula.functions.T;
 import org.json.simple.JSONArray;
-import org.springblade.contract.constant.ContractFormInfoTemplateContract;
-import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.system.constant.ContractFormInfoTemplateContract;
 import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateEntity;
 import org.springblade.system.entity.TemplateFieldEntity;
-import org.springblade.system.entity.TemplateFieldRelationEntity;
 import org.springblade.system.mapper.TemplateFieldMapper;
 import org.springblade.system.service.IDictBizService;
 import org.springblade.system.service.ITemplateFieldRelationService;
 import org.springblade.system.service.ITemplateFieldService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import springfox.documentation.spring.web.json.Json;
 
 import java.lang.reflect.Field;
 import java.util.*;
@@ -76,7 +68,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 				//组装可编辑列表data
 			}else if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())||"formList".equals(templateField.getComponentType())){
 				if("ContractCounterpart".equals(templateField.getRelationCode())){
-					JSONObject datas = new JSONObject();
+					JSONArray datas = new JSONArray();
 					JSONObject data = new JSONObject();
 					data.put("counterpart",datas);
 					data.put("contractBond",datas);

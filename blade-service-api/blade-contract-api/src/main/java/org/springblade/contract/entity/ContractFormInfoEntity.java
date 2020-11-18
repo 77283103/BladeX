@@ -196,6 +196,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private String contractSmallCategory;
 
 	/**
+	 * json数据串
+	 */
+	@ApiModelProperty(value = "json数据串")
+	private String json;
+	/**
 	 * 关联相对方信息
 	 */
 	@ApiModelProperty(value="关联相对方信息")
@@ -281,11 +286,6 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private String dictValue;
 
-	/**
-	 * 翻译
-	 */
-	@ApiModelProperty(value="归档信息")
-	private String json;
 
 	/**
 	 * 分类合同数量
