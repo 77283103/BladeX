@@ -90,6 +90,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
             </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash; 生成可执行的jar的名字：xxx-exec.jar &ndash;&gt;-->
+<!--                    &lt;!&ndash; 不固定，写成abcd都可以 &ndash;&gt;-->
+<!--                    <classifier>blade-cases</classifier>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
         </plugins>
     </build>
 </project>

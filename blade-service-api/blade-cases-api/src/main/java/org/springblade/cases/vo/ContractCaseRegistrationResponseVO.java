@@ -10,6 +10,7 @@ import org.springblade.cases.entity.ContractCaseRegistrationEntity;
 import io.swagger.annotations.ApiModel;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.core.tool.api.R;
 import org.springblade.resource.vo.FileVO;
 
 import java.math.BigDecimal;
@@ -39,7 +40,8 @@ public class ContractCaseRegistrationResponseVO extends ContractCaseRegistration
 	/**
 	 *  合同信息
 	 */
-	private ContractFormInfoEntity infoEntity;
+	private ContractFormInfoResponseVO infoEntity;
+
 	/**
 	 * 合同状态
 	 */

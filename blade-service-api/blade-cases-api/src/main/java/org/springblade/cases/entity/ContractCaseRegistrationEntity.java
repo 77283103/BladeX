@@ -136,7 +136,7 @@ public class ContractCaseRegistrationEntity extends BaseEntity {
 	 * 关联合同
 	 */
 	@ApiModelProperty(value = "关联合同")
-	private String associatedContract;
+	private Long associatedContract;
 	/**
 	 * 案件处理
 	 */

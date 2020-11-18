@@ -2,6 +2,7 @@ package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
@@ -19,9 +20,12 @@ import org.springblade.contract.service.IContractPerformanceService;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static org.springblade.contract.service.impl.ContractBondPlanServiceImpl.plusDay;
 
 /**
  * 接收/提供服务计划清单 服务实现类
@@ -36,6 +40,7 @@ public class ContractPerformanceServiceImpl extends BaseServiceImpl<ContractPerf
 	private ContractFormInfoMapper formInfoMapper;
 	private IContractFormInfoService formInfoService;
 	private ContractCounterpartMapper counterpartMapper;
+	@SneakyThrows
 	@Override
 	public IPage<ContractPerformanceResponseVO> pageList(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance) {
 		page=baseMapper.pageList(page, contractPerformance);
@@ -48,6 +53,8 @@ public class ContractPerformanceServiceImpl extends BaseServiceImpl<ContractPerf
 				v.setContractFormInfoEntity(formInfoEntity);
 				List<ContractCounterpartEntity> counterpartEntity = counterpartMapper.selectByIds(formInfoEntity.getId());
 				v.setCounterpartEntityList(counterpartEntity);
+				String endTime=plusDay(15,new SimpleDateFormat("yy-MM-dd").format(v.getPlanPayTime()));
+				v.setPlanPayTimeEnd(endTime);
 			}
 		}
 		return pages;

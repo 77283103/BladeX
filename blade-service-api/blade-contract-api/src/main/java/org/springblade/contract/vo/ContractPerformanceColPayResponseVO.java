@@ -1,5 +1,6 @@
 package org.springblade.contract.vo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,4 +29,6 @@ public class ContractPerformanceColPayResponseVO extends ContractPerformanceColP
 	private String createDeptName;
 
 	private String updateUserName;
+	@ApiModelProperty(value = "履约规定结束时间")
+	private String  planPayTimeEnd;
 }

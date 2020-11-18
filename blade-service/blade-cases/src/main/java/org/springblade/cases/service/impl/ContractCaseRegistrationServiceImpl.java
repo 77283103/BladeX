@@ -17,9 +17,8 @@ import org.springblade.cases.wrapper.ContractCaseClosedWrapper;
 import org.springblade.cases.wrapper.ContractCaseHandlingWrapper;
 import org.springblade.cases.wrapper.ContractCaseRegistrationWrapper;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.mapper.ContractFormInfoMapper;
+import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
-import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -45,7 +44,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<ContractCaseRegistrationMapper, ContractCaseRegistrationEntity> implements IContractCaseRegistrationService {
 
-	private ContractFormInfoMapper infoMapper;
+	private IContractClient infoMapper;
 	private ContractCaseHandlingMapper handlingMapper;
 	private ContractCaseClosedMapper closedMapper;
 	private ContractCaseRegistrationMapper registrationMapper;
@@ -60,10 +59,12 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 		List<ContractCaseRegistrationResponseVO> recordList = new ArrayList<>();
 		/*为每个对象，设置合同信息*/
 		for(ContractCaseRegistrationResponseVO v : records){
-			ContractFormInfoEntity infoEntity=infoMapper.selectById(v.getAssociatedContract());
-			v.setInfoEntity(infoEntity);
-			v.setContractStatus(infoEntity.getContractStatus());
-			v.setCurrencyCategory(infoEntity.getCurrencyCategory());
+			R<ContractFormInfoResponseVO> infoEntity=infoMapper.getById(v.getAssociatedContract());
+			v.setInfoEntity(infoEntity.getData());
+			v.setContractStatus(infoEntity.getData().getContractStatus());
+			v.setCurrencyCategory(infoEntity.getData().getCurrencyCategory());
+			v.setContractStatus(infoEntity.getData().getContractStatus());
+			v.setCurrencyCategory(infoEntity.getData().getCurrencyCategory());
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
@@ -78,10 +79,9 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 	public ContractCaseRegistrationResponseVO getById(Long id) {
 		ContractCaseRegistrationEntity registrationEntity=baseMapper.selectById(id);
 		ContractCaseRegistrationResponseVO registrationResponseVO= ContractCaseRegistrationWrapper.build().entityPV(registrationEntity);
-		if (Func.isNotBlank(registrationEntity.getAssociatedContract())){
-			ContractFormInfoEntity contractFormInfo=infoMapper.selectById(registrationEntity.getAssociatedContract());
-			ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(contractFormInfo);
-			registrationResponseVO.setInfoEntity(formInfoResponseVO);
+		if (Func.notNull(registrationEntity.getAssociatedContract())){
+			ContractFormInfoResponseVO contractFormInfo=infoMapper.getById(registrationEntity.getAssociatedContract()).getData();
+			registrationResponseVO.setInfoEntity(contractFormInfo);
 
 		}
 		//将处理信息返回vo

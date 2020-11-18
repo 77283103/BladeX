@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractBondPlanMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractBondResultMap" type="org.springblade.contract.entity.ContractBondPlanEntity">
+        <result column="id" property="id"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="bond_name" property="bondName"/>
+        <result column="is_not_bond" property="isNotBond"/>
+        <result column="type" property="type"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="currency_category" property="currencyCategory"/>
+        <result column="plan_pay_time" property="planPayTime"/>
+        <result column="plan_pay_amount" property="planPayAmount"/>
+        <result column="actual_pay_time" property="actualPayTime"/>
+        <result column="actual_pay_amount" property="actualPayAmount"/>
+        <result column="plan_return_time" property="planReturnTime"/>
+        <result column="plan_return_amount" property="planReturnAmount"/>
+        <result column="actual_return_time" property="actualReturnTime"/>
+        <result column="actual_return_amount" property="actualReturnAmount"/>
+        <result column="counterpart_id" property="counterpartId"/>
+        <result column="factories" property="factories"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        contract_id,
+        bond_name,
+        is_not_bond,
+        type,
+        contract_number,
+        currency_category,
+        plan_pay_time,
+        plan_pay_amount,
+        actual_pay_time,
+        actual_pay_amount,
+        plan_return_time,
+        plan_return_amount,
+        actual_return_time,
+        actual_return_amount,
+        counterpart_id,
+        factories,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 一般超期 -->
+    <select id="pageList" resultMap="contractBondResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_bond_plan
+        WHERE is_deleted = 0
+        <if test="contractBond.bondName != null and contractBond.bondName != ''">
+            AND bond_name like concat('%',#{contractBond.bondName},'%')
+        </if>
+        <if test="contractBond.contractBond =='ContractBondGeneral'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '15'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '30'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '15'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '30'
+            )
+        </if>
+        <if test="contractBond.contractBond =='ContractBondSerious'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+        </if>
+        <if test="contractBond.contractBond =='ContractBondLong'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+        </if>
+    </select>
+    <!-- 严重超期 -->
+    <select id="pageListSerious" resultMap="contractBondResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_bond_plan
+        WHERE is_deleted = 0
+        <if test="contractBond.bondName != null and contractBond.bondName != ''">
+            AND bond_name like concat('%',#{contractBond.bondName},'%')
+        </if>
+        <if test="contractBond.contractBond =='contractBond'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+        </if>
+    </select>
+    <!-- 长期超期 -->
+    <select id="pageListLong" resultMap="contractBondResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_bond_plan
+        WHERE is_deleted = 0
+        <if test="contractBond.bondName != null and contractBond.bondName != ''">
+            AND bond_name like concat('%',#{contractBond.bondName},'%')
+        </if>
+        <if test="contractBond.contractBond =='contractBond'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+        </if>
+    </select>
+    <!--保存关联保证金-->
+    <insert id="saveBond">
+        insert into contract_bond_setting
+        (
+        contract_id,
+        bond_id
+        )
+        values
+        <foreach collection="ids" item="item" index="index" open="" close="" separator=",">
+            (
+            #{id},
+            #{item}
+            )
+        </foreach>
+    </insert>
+
+    <!--删除关联保证金-->
+    <delete id="deleteBond" parameterType="java.lang.Long">
+          DELETE FROM contract_bond_setting  WHERE contract_id=#{id}
+    </delete>
+
+    <!--根据合同id查询相对方集合-->
+    <select id="selectByIds" resultMap="contractBondResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_bond_plan
+        WHERE is_deleted = 0
+        AND
+        id IN (SELECT c.bond_id FROM  contract_bond_setting c WHERE c.contract_id = #{id})
+    </select>
+</mapper>
