@@ -59,8 +59,8 @@ public class ContractBondController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入contractBond")
 	@PreAuth("hasPermission('contractBond:contractBond:page')")
 	public R<IPage<ContractBondResponseVO>> list(ContractBondRequestVO contractBond, Query query) {
-		IPage<ContractBondEntity> pages = contractBondService.pageList(Condition.getPage(query), contractBond);
-		return R.data(ContractBondWrapper.build().entityPVPage(pages));
+		IPage<ContractBondResponseVO> pages = contractBondService.pageList(Condition.getPage(query), contractBond);
+		return R.data(pages);
 	}
 
 	/**

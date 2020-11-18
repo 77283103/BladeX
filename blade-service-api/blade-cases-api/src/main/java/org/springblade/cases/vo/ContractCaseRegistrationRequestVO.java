@@ -96,7 +96,7 @@ public class ContractCaseRegistrationRequestVO extends BaseEntity {
 	private String caseStatus;
 
     @ApiModelProperty(value="关联合同")
-	private String associatedContract;
+	private Long associatedContract;
 
 	@ApiModelProperty(value="案件状态集合")
     private List<String> code;

@@ -1,15 +1,15 @@
 package org.springblade.contract.vo;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.EqualsAndHashCode;
-import org.springblade.contract.entity.ContractBondEntity;
-import io.swagger.annotations.ApiModel;
-import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.*;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 保证金 返回模型VO
@@ -22,7 +22,7 @@ import java.util.Date;
 @ToString
 @ApiModel(description = "保证金返回对象")
 @EqualsAndHashCode(callSuper = true)
-public class ContractBondResponseVO extends ContractBondEntity {
+public class ContractBondPlanResponseVO extends ContractBondPlanEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +35,12 @@ public class ContractBondResponseVO extends ContractBondEntity {
 	@ApiModelProperty(value = "关联合同信息")
 	private ContractFormInfoEntity contractFormInfoEntity;
 
-	@ApiModelProperty(value = "关联合同ID")
-	private Long contractId;
+	@ApiModelProperty(value = "合同相对方")
+	private List<ContractCounterpartEntity> counterpartEntityList;
+
+	@ApiModelProperty(value = "签订")
+	private ContractSigningEntity signingEntity;
+
+	@ApiModelProperty(value = "履约规定结束时间")
+	private String  planPayTimeEnd;
 }

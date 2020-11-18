@@ -1,12 +1,15 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.entity.ContractBondEntity;
+import org.springblade.contract.entity.ContractBondPlanEntity;
+import org.springblade.contract.vo.ContractBondPlanRequestVO;
+import org.springblade.contract.vo.ContractBondPlanResponseVO;
 import org.springblade.contract.vo.ContractBondRequestVO;
 import org.springblade.contract.vo.ContractBondResponseVO;
-import org.springblade.contract.vo.ContractPerformanceResponseVO;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.contract.entity.ContractBondEntity;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -15,7 +18,7 @@ import java.util.List;
  * @author szw
  * @date : 2020-11-04 18:28:11
  */
-public interface IContractBondService extends BaseService<ContractBondEntity> {
+public interface IContractBondPlanService extends BaseService<ContractBondPlanEntity> {
 
 	/**
 	 * 分页查询
@@ -24,7 +27,7 @@ public interface IContractBondService extends BaseService<ContractBondEntity> {
 	 * @param contractBond
 	 * @return
 	 */
-	IPage<ContractBondResponseVO> pageList(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond);
+	IPage<ContractBondPlanResponseVO> pageList(IPage<ContractBondPlanEntity> page, ContractBondPlanRequestVO contractBond);
 
 	/**
 	 * 分页查询
@@ -33,7 +36,7 @@ public interface IContractBondService extends BaseService<ContractBondEntity> {
 	 * @param contractBond
 	 * @return
 	 */
-	IPage<ContractBondEntity> pageListSerious(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond);
+	IPage<ContractBondPlanEntity> pageListSerious(IPage<ContractBondPlanEntity> page, ContractBondPlanRequestVO contractBond);
 
 	/**
 	 * 分页查询
@@ -42,7 +45,7 @@ public interface IContractBondService extends BaseService<ContractBondEntity> {
 	 * @param contractBond
 	 * @return
 	 */
-	IPage<ContractBondEntity> pageListLong(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond);
+	IPage<ContractBondPlanEntity> pageListLong(IPage<ContractBondPlanEntity> page, ContractBondPlanRequestVO contractBond);
 
 	/**
 	 * 保证金存方法
