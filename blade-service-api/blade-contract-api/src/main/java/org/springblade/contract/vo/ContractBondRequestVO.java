@@ -15,6 +15,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 
+import javax.validation.constraints.NotNull;
+
 
 /**
  * 保证金 请求模型VO
@@ -36,4 +38,21 @@ public class ContractBondRequestVO extends BaseEntity{
 
     @ApiModelProperty(value = "保证金名称")
 	private String bondName;
+	@ApiModelProperty(value = "服务内容")
+	private String name;
+	@ApiModelProperty(value = "交易类别")
+	private String type;
+	@NotNull(message = "计划缴纳时间不能为空")
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value = "计划缴纳时间", required = true)
+	private Date planPayTime;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value = "实际缴纳时间")
+	private Date actualPayTime;
+	@ApiModelProperty(value = "保证金履约金额缴纳期限")
+	private String  contractBond;
+
+
 }

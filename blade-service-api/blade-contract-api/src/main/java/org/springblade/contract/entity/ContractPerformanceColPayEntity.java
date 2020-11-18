@@ -20,6 +20,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -127,5 +128,10 @@ public class ContractPerformanceColPayEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="接收条件")
 	private String acceptanceConditions;
+	@ApiModelProperty(value = "关联合同信息")
+	private ContractFormInfoEntity contractFormInfoEntity;
+
+	@ApiModelProperty(value = "合同相对方")
+	private List<ContractCounterpartEntity> counterpartEntityList;
 
 }

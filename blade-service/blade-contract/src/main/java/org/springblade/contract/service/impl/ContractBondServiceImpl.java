@@ -24,7 +24,20 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 
 	@Override
 	public IPage<ContractBondEntity> pageList(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
-		return baseMapper.pageList(page, contractBond);
+		page=baseMapper.pageList(page, contractBond);
+		return page;
+	}
+
+	@Override
+	public IPage<ContractBondEntity> pageListSerious(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
+		page=baseMapper.pageListSerious(page, contractBond);
+		return page;
+	}
+
+	@Override
+	public IPage<ContractBondEntity> pageListLong(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
+		page = baseMapper.pageListLong(page, contractBond);
+		return page;
 	}
 
 	@Override

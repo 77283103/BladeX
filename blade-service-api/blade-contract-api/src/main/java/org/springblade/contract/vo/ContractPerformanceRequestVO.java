@@ -6,6 +6,10 @@ import lombok.Setter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
+import java.util.List;
+
+import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,6 +18,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+
+import javax.validation.constraints.NotNull;
 
 
 /**
@@ -38,4 +44,24 @@ public class ContractPerformanceRequestVO extends BaseEntity{
 	private String name;
     @ApiModelProperty(value = "交易类别")
 	private String type;
+	@NotNull(message = "计划缴纳时间不能为空")
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value = "计划缴纳时间", required = true)
+	private Date planPayTime;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value = "实际缴纳时间")
+	private Date actualPayTime;
+    @ApiModelProperty(value = "服务接受履约金额缴纳期限")
+	private String  contractPerformance;
+	@ApiModelProperty(value = "关联合同信息")
+	private ContractFormInfoEntity contractFormInfoEntity;
+
+	@JsonSerialize(using = ToStringSerializer.class)
+	@ApiModelProperty(value = "合同id")
+	private Long contractId;
+	@ApiModelProperty(value = "合同相对方")
+	private List<ContractCounterpartEntity> counterpartEntityList;
+
 }

@@ -54,7 +54,7 @@
         status,
         is_deleted
     </sql>
-    <!-- 分页 -->
+    <!-- 一般超期 -->
     <select id="pageList" resultMap="contractBondResultMap">
         SELECT
             <include refid="baseColumnList"></include>
@@ -63,8 +63,107 @@
         <if test="contractBond.bondName != null and contractBond.bondName != ''">
             AND bond_name like concat('%',#{contractBond.bondName},'%')
         </if>
+        <if test="contractBond.contractBond =='ContractBondGeneral'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '15'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '30'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '15'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '30'
+            )
+        </if>
+        <if test="contractBond.contractBond =='ContractBondSerious'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+        </if>
+        <if test="contractBond.contractBond =='ContractBondLong'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+        </if>
     </select>
-
+    <!-- 严重超期 -->
+    <select id="pageListSerious" resultMap="contractBondResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_bond
+        WHERE is_deleted = 0
+        <if test="contractBond.bondName != null and contractBond.bondName != ''">
+            AND bond_name like concat('%',#{contractBond.bondName},'%')
+        </if>
+        <if test="contractBond.contractBond =='contractBond'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+        </if>
+    </select>
+    <!-- 长期超期 -->
+    <select id="pageListLong" resultMap="contractBondResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_bond
+        WHERE is_deleted = 0
+        <if test="contractBond.bondName != null and contractBond.bondName != ''">
+            AND bond_name like concat('%',#{contractBond.bondName},'%')
+        </if>
+        <if test="contractBond.contractBond =='contractBond'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+        </if>
+    </select>
     <!--保存关联保证金-->
     <insert id="saveBond">
         insert into contract_bond_setting

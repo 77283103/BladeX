@@ -54,12 +54,107 @@
         status,
         is_deleted
     </sql>
-    <!-- 分页 -->
+
+    <!-- 一般超期 -->
     <select id="pageList" resultMap="contractPerformanceColPayResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+        <include refid="baseColumnList"></include>
         FROM contract_performance_col_pay
         WHERE is_deleted = 0
+        <if test="contractPerformanceColPay.contractPerformanceColPay =='ContractPerformanceColPayGeneral'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '15'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '30'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '15'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '30'
+            )
+        </if>
+        <if test="contractPerformanceColPay.contractPerformanceColPay =='ContractPerformanceColPaySerious'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+        </if>
+        <if test="contractPerformanceColPay.contractPerformanceColPay =='ContractPerformanceColPayLong'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+        </if>
+    </select>
+    <!-- 严重超期 -->
+    <select id="pageListSerious" resultMap="contractPerformanceColPayResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_performance_col_pay
+        WHERE is_deleted = 0
+        <if test="contractPerformanceColPay.contractPerformanceColPay =='contractPerformanceColPay'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '30'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '60'
+            )
+        </if>
+    </select>
+    <!-- 长期超期 -->
+    <select id="pageListLong" resultMap="contractPerformanceColPayResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_performance_col_pay
+        WHERE is_deleted = 0
+        <if test="contractPerformanceColPay.contractPerformanceColPay =='contractPerformanceColPay'">
+            AND plan_pay_time is not null
+            And plan_pay_time != ''
+            AND ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+            OR ((
+            DATE_FORMAT( actual_pay_time, '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) is null
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &gt; '60'
+            AND (
+            DATE_FORMAT( now(), '%j' )- DATE_FORMAT( plan_pay_time, '%j' )) &lt;= '120'
+            )
+        </if>
     </select>
     <!--根据合同id查询履约计划收付款集合-->
     <select id="selectByIds" resultMap="contractPerformanceColPayResultMap">
