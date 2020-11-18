@@ -284,7 +284,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 翻译
 	 */
-	@TableField(exist = false)
+	@ApiModelProperty(value="归档信息")
 	private String json;
 
 	/**
