@@ -47,4 +47,11 @@ public interface IContractPerformanceService extends BaseService<ContractPerform
 	 * @return
 	 */
 	ContractPerformanceResponseVO getById(Long id);
+
+	/**
+	 * 保存履约计划清单
+	 *
+	 */
+	ContractPerformanceEntity savePerformance(ContractPerformanceEntity contractPerformance);
+
 }

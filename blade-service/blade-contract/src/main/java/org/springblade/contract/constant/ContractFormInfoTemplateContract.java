@@ -4,11 +4,11 @@ public interface ContractFormInfoTemplateContract {
 
 	//元件类型
 	String COMPONENT_TYPE = "editList,relationList,formList";
-	//元件类型
+	//二级联动组件类型
 	String COMPONENT_TYPE_SELECT = "secondSelect";
 	//组件小类型
 	String COMPONENT_TYPE_SMALL = "select,cascader,radio";
-	//组件小类型
+	//字段验证规则
 	String COMPONENT_TYPE_REQUORED = "true";
 	//合同
 	String CONTRACT_ACCORDING = "ContractAccording";

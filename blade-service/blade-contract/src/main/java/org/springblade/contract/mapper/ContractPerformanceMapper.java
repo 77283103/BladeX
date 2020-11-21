@@ -51,7 +51,13 @@ public interface ContractPerformanceMapper extends BaseMapper<ContractPerformanc
 	 */
 	List<ContractPerformanceEntity> selectByIds(Long id);
 
+
 	Integer selectByIdDays(Long id);
 
-
+	/**
+	 * 根据合同id删除履约计划信息
+	 * @param id
+	 * @return
+	 */
+	void deleteByContractId(Long id);
 }

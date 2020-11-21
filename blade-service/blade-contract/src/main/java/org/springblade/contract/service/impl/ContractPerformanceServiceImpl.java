@@ -40,6 +40,8 @@ public class ContractPerformanceServiceImpl extends BaseServiceImpl<ContractPerf
 	private ContractFormInfoMapper formInfoMapper;
 	private IContractFormInfoService formInfoService;
 	private ContractCounterpartMapper counterpartMapper;
+	private ContractPerformanceMapper performanceMapper;
+
 	@SneakyThrows
 	@Override
 	public IPage<ContractPerformanceResponseVO> pageList(IPage<ContractPerformanceEntity> page, ContractPerformanceRequestVO contractPerformance) {
@@ -83,5 +85,12 @@ public class ContractPerformanceServiceImpl extends BaseServiceImpl<ContractPerf
 			performanceEntity.setCounterpartEntityList(counterpartEntity);
 		}
 		return performanceResponseVO;
+	}
+
+	@Override
+	public ContractPerformanceEntity savePerformance(ContractPerformanceEntity contractPerformance) {
+		performanceMapper.deleteByContractId(contractPerformance.getContractId());
+		performanceMapper.insert(contractPerformance);
+		return contractPerformance;
 	}
 }

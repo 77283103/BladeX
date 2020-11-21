@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractFormInfoService;
@@ -39,6 +40,7 @@ public class ContractPerformanceColPayServiceImpl extends BaseServiceImpl<Contra
 	private ContractFormInfoMapper formInfoMapper;
 	private IContractFormInfoService formInfoService;
 	private ContractCounterpartMapper counterpartMapper;
+	private ContractPerformanceColPayMapper performanceColPayMapper;
 	@SneakyThrows
 	@Override
 	public IPage<ContractPerformanceColPayResponseVO> pageList(IPage<ContractPerformanceColPayEntity> page, ContractPerformanceColPayRequestVO contractPerformanceColPay) {
@@ -84,4 +86,10 @@ public class ContractPerformanceColPayServiceImpl extends BaseServiceImpl<Contra
 		return performanceColPayResponseVO;
 	}
 
+	@Override
+	public ContractPerformanceColPayEntity savePerformanceColPay(ContractPerformanceColPayEntity contractPerformanceColPay) {
+		performanceColPayMapper.deleteByContractId(contractPerformanceColPay.getContractId());
+		performanceColPayMapper.insert(contractPerformanceColPay);
+		return contractPerformanceColPay;
+	}
 }

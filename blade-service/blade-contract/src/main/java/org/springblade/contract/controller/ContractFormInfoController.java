@@ -106,7 +106,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
-		contractFormInfo.setContractSoure("1");
+		contractFormInfo.setContractSoure("10");
 		String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
 		contractFormInfo.setSealName(sealName);
         ContractFormInfoEntity entity = new ContractFormInfoEntity();
@@ -140,7 +140,7 @@ public class ContractFormInfoController extends BladeController {
 		if(contractFormInfo.getPerformanceList().size()>0){
 			contractFormInfo.getPerformanceList().forEach(performance->{
 				performance.setContractId(contractFormInfo.getId());
-				performanceService.save(performance);
+				performanceService.savePerformance(performance);
 			});
 		}
 		/*保存履约计划收付款*/
@@ -177,6 +177,8 @@ public class ContractFormInfoController extends BladeController {
 				j.put("colPayType", jsonObj.get("first"));
 				j.put("colPayTerm", jsonObj.get("second"));
 				j.put("days", jsonObj.get("days"));
+			}else if ("id".equals(templateField.getComponentType())){
+				j.put("id", templateField.getFieldValue());
 			}else{
 				j.put(templateField.getFieldName(), templateField.getFieldValue());
 			}

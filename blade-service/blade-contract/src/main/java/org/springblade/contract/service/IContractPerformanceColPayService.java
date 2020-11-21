@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.vo.ContractPerformanceColPayRequestVO;
 import org.springblade.contract.vo.ContractPerformanceColPayResponseVO;
 import org.springblade.core.mp.base.BaseService;
@@ -44,4 +45,10 @@ public interface IContractPerformanceColPayService extends BaseService<ContractP
 	 * @return
 	 */
 	ContractPerformanceColPayResponseVO getById(Long id);
+
+	/**
+	 * 保存履约计划收付款清单
+	 *
+	 */
+	ContractPerformanceColPayEntity savePerformanceColPay(ContractPerformanceColPayEntity contractPerformanceColPay);
 }

@@ -49,4 +49,11 @@ public interface ContractPerformanceColPayMapper extends BaseMapper<ContractPerf
 	 * @return
 	 */
 	List<ContractPerformanceColPayEntity> selectByIds(Long id);
+
+	/**
+	 * 根据合同id删除履约计划收付款信息
+	 * @param id
+	 * @return
+	 */
+	void deleteByContractId(Long id);
 }
