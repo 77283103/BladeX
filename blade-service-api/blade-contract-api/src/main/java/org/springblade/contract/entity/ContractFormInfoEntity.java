@@ -195,6 +195,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private String contractSmallCategory;
 
 	/**
+	 * 合同范本id
+	 */
+	@ApiModelProperty(value = "合同二级分类")
+	private Long contractTemplateId;
+
+	/**
 	 * json数据串
 	 */
 	@ApiModelProperty(value = "json数据串")
