@@ -42,7 +42,15 @@
         <result column="seal_type" property="sealType"/>
         <result column="seal_number" property="sealNumber"/>
         <result column="file_time" property="fileTime"/>
-
+        <result column="json" property="json"/>
+        <result column="a_name" property="aName"/>
+        <result column="a_person" property="aPerson"/>
+        <result column="a_address" property="aAddress"/>
+        <result column="a_telephone" property="aTelephone"/>
+        <result column="a_email" property="aEmail"/>
+        <result column="a_bank_number" property="aBankNumber"/>
+        <result column="a_bank_name" property="aBankName"/>
+        <result column="a_account_name" property="aAccountName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->

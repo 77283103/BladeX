@@ -41,13 +41,13 @@ public class ContractPerformanceColPayEntity extends BaseEntity {
 	/**
 	 * 服务内容
 	 */
- @NotBlank(message = "服务内容不能为空")
+ 	@NotBlank(message = "服务内容不能为空")
     @ApiModelProperty(value="服务内容",required = true)
 	private String name;
 	/**
 	 * 交易类别
 	 */
- @NotBlank(message = "交易类别不能为空")
+ 	@NotBlank(message = "交易类别不能为空")
     @ApiModelProperty(value="交易类别",required = true)
 	private String type;
 	/**
@@ -58,7 +58,7 @@ public class ContractPerformanceColPayEntity extends BaseEntity {
 	/**
 	 * 计划缴纳时间
 	 */
- @NotNull(message = "计划缴纳时间不能为空")
+ 	@NotNull(message = "计划缴纳时间不能为空")
     @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
     @JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value="计划缴纳时间",required = true)
@@ -66,7 +66,7 @@ public class ContractPerformanceColPayEntity extends BaseEntity {
 	/**
 	 * 计划缴纳金额
 	 */
- @NotNull(message = "计划缴纳金额不能为空")
+ 	@NotNull(message = "计划缴纳金额不能为空")
     @ApiModelProperty(value="计划缴纳金额",required = true)
 	private BigDecimal planPayAmount;
 	/**
