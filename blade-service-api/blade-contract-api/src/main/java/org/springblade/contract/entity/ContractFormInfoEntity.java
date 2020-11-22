@@ -68,7 +68,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同结束时间")
 	private Date endTime;
 	/**
-	 * 收付款期限
+	 * 付款方式
 	 */
 	@ApiModelProperty(value = "付款方式")
 	private String colPayType;

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractRawMaterialsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractRawMaterialsResultMap" type="org.springblade.contract.entity.ContractRawMaterialsEntity">
+        <result column="id" property="id"/>
+        <result column="ywl_full_name" property="ywlFullName"/>
+        <result column="ywl_name_of_opposite" property="ywlNameOfOpposite"/>
+        <result column="ywl_serial_number" property="ywlSerialNumber"/>
+        <result column="ywl_Item_no" property="ywlItemNo"/>
+        <result column="ywl_product_name" property="ywlProductName"/>
+        <result column="ywl_specifications" property="ywlSpecifications"/>
+        <result column="ywl_company" property="ywlCompany"/>
+        <result column="ywl_price" property="ywlPrice"/>
+        <result column="ywl_remarks" property="ywlRemarks"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        ywl_full_name,
+        ywl_name_of_opposite,
+        ywl_serial_number,
+        ywl_Item_no,
+        ywl_product_name,
+        ywl_specifications,
+        ywl_company,
+        ywl_price,
+        ywl_remarks,
+        contract_id,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractRawMaterialsResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_raw_materials
+        WHERE is_deleted = 0
+    </select>
+</mapper>
