@@ -40,7 +40,7 @@ public class ContractCaseRegistrationResponseVO extends ContractCaseRegistration
 	/**
 	 *  合同信息
 	 */
-	private ContractFormInfoResponseVO infoEntity;
+	private ContractFormInfoEntity infoEntity;
 
 	/**
 	 * 合同状态

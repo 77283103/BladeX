@@ -101,4 +101,12 @@
         AND
         id IN (SELECT c.counterpart_id FROM  contract_counterpart_setting c WHERE c.contract_id = #{id})
     </select>
+    <select id="selectById" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_counterpart
+        WHERE is_deleted = 0
+        AND
+       contract_id = #{id}
+    </select>
 </mapper>

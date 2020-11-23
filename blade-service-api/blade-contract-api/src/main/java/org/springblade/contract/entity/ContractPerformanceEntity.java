@@ -1,5 +1,6 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springblade.core.tool.utils.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -133,9 +134,11 @@ public class ContractPerformanceEntity extends BaseEntity {
 	@ApiModelProperty(value = "接收条件")
 	private String acceptanceConditions;
 	@ApiModelProperty(value = "关联合同信息")
+	@TableField(exist = false)
 	private ContractFormInfoEntity contractFormInfoEntity;
 
 	@ApiModelProperty(value = "合同相对方")
+	@TableField(exist = false)
 	private List<ContractCounterpartEntity> counterpartEntityList;
 
 }

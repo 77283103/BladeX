@@ -117,7 +117,7 @@ public class ContractBondPlanEntity extends BaseEntity {
 	/**
 	 * 相对方id
 	 */
-	@ApiModelProperty(value = "实际退回金额")
+	@ApiModelProperty(value = "相对方id")
 	private Long counterpartId;
 
 	/**

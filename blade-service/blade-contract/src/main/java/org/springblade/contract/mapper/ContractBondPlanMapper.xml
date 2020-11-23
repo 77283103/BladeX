@@ -194,6 +194,35 @@
         FROM contract_bond_plan
         WHERE is_deleted = 0
         AND
-        id IN (SELECT c.bond_id FROM  contract_bond_setting c WHERE c.contract_id = #{id})
+        contract_id = #{id}
+    </select>
+    <!--履约信息-->
+    <select id="selectById" resultMap="contractBondResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_bond_plan
+        WHERE is_deleted = 0
+        AND
+        id = #{id}
+    </select>
+    <!--计算合同履约个数-->
+    <select id="countById" resultType="java.lang.Integer">
+        SELECT
+        COUNT(contract_id)
+        FROM contract_bond_plan
+        WHERE is_deleted = 0
+        AND
+        contract_id = #{id}
+    </select>
+    <!--计算合同履约已完成个数-->
+    <select id="countOKById" resultType="java.lang.Integer">
+        SELECT
+        COUNT(contract_id)
+        FROM contract_bond_plan
+        WHERE is_deleted = 0
+        AND
+        contract_id = #{id}
+        AND
+        actual_pay_time IS NOT NULL
     </select>
 </mapper>

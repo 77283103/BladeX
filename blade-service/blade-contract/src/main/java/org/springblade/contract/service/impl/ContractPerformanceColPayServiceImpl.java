@@ -6,6 +6,7 @@ import lombok.SneakyThrows;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractPerformanceEntity;
+import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractFormInfoService;
@@ -41,6 +42,7 @@ public class ContractPerformanceColPayServiceImpl extends BaseServiceImpl<Contra
 	private IContractFormInfoService formInfoService;
 	private ContractCounterpartMapper counterpartMapper;
 	private ContractPerformanceColPayMapper performanceColPayMapper;
+	private IContractClient contractClient;
 	@SneakyThrows
 	@Override
 	public IPage<ContractPerformanceColPayResponseVO> pageList(IPage<ContractPerformanceColPayEntity> page, ContractPerformanceColPayRequestVO contractPerformanceColPay) {

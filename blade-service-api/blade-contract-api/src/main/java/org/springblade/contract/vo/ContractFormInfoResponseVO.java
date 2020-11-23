@@ -59,9 +59,13 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	private List<ContractAccordingEntity> according;
 
 	/**
-	 * 保证金集合
+	 * 保证金库集合
 	 */
 	private List<ContractBondEntity> contractBond;
+	/**
+	 * 履约保证金集合
+	 */
+	private List<ContractBondPlanEntity> bondPlanEntityList;
 
 	/**
 	 * 履约计划集合
@@ -137,5 +141,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 相对方名称字符串
 	 */
 	private List<String > counterpartName;
+
+	/**
+	 * 履约进度
+	 */
+	private String planSchedule;
 
 }

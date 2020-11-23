@@ -56,4 +56,18 @@ public interface ContractPerformanceColPayMapper extends BaseMapper<ContractPerf
 	 * @return
 	 */
 	void deleteByContractId(Long id);
+
+	/**
+	 *查询合同履约计划个数
+	 * @param id
+	 * @return
+	 */
+	Integer countById(Long id);
+	/**
+	 * 计算合同履约计划完成的条数
+	 * @param id
+	 * @return
+	 */
+	Integer countOKById(Long id);
+
 }

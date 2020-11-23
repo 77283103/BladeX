@@ -51,6 +51,13 @@ public interface ContractPerformanceMapper extends BaseMapper<ContractPerformanc
 	 */
 	List<ContractPerformanceEntity> selectByIds(Long id);
 
+	/**
+	 * 计算合同履约计划完成的条数
+	 * @param id
+	 * @return
+	 */
+	Integer countOKById(Long id);
+
 
 	Integer selectByIdDays(Long id);
 
@@ -60,4 +67,11 @@ public interface ContractPerformanceMapper extends BaseMapper<ContractPerformanc
 	 * @return
 	 */
 	void deleteByContractId(Long id);
+
+	/**
+	 * 计算合同率约个数
+	 * @param id
+	 * @return
+	 */
+	Integer countById(Long id);
 }

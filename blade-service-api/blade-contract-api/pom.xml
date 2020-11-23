@@ -32,6 +32,10 @@
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springblade</groupId>-->
+<!--            <artifactId>blade-starter-cache</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
     <packaging>jar</packaging>
 
