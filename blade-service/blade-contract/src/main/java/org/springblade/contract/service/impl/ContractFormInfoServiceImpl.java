@@ -407,7 +407,7 @@
 							if (!"{}".equals(obj.getString(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND))) {
 								com.alibaba.fastjson.JSONArray contractBondArry = obj.getJSONArray(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND);
 								List<ContractBondEntity> contractBond = JSON.parseArray(contractBondArry.toString(), ContractBondEntity.class);
-								if (CollectionUtil.isNotEmpty(contractCounterpart)) {
+								if (CollectionUtil.isNotEmpty(contractBond)) {
 									contractBondMapper.deleteBond(contractFormInfo.getId());
 									List<Long> list = new ArrayList<>();
 									if (Func.isEmpty(contractFormInfo.getId())) {
@@ -456,7 +456,7 @@
 					}
 				}
 			}
-			toJSONString(templateFieldList);
+			//toJSONString(templateFieldList);
 			return toJSONString(templateFieldList);
 		}
 

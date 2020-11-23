@@ -117,6 +117,12 @@ public class ContractPerformanceEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同id")
 	private Long contractId;
 	/**
+	 * 相对方id
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	@ApiModelProperty(value = "相对方id")
+	private Long counterpartId;
+	/**
 	 * 厂别
 	 */
 	@ApiModelProperty(value = "厂别")
@@ -128,7 +134,7 @@ public class ContractPerformanceEntity extends BaseEntity {
 	private String acceptanceConditions;
 	@ApiModelProperty(value = "关联合同信息")
 	private ContractFormInfoEntity contractFormInfoEntity;
-	
+
 	@ApiModelProperty(value = "合同相对方")
 	private List<ContractCounterpartEntity> counterpartEntityList;
 

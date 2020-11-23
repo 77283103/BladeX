@@ -96,6 +96,10 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					data.put("second","");
 					jo.put("secondSelectData", data);
 				}
+			}else if("upload".equals(templateField.getComponentType())){
+				//处理文件类型
+				JSONArray data = new JSONArray();
+				jo.put("fileData", data);
 			}else{
 				jo.put("dicData", "");
 			}

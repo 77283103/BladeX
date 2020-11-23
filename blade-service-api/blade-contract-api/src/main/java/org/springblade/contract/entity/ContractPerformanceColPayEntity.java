@@ -114,6 +114,12 @@ public class ContractPerformanceColPayEntity extends BaseEntity {
     @ApiModelProperty(value="合同id")
 	private Long contractId;
 	/**
+	 * 相对方id
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	@ApiModelProperty(value = "相对方id")
+	private Long counterpartId;
+	/**
 	 * 厂别
 	 */
     @ApiModelProperty(value="厂别")

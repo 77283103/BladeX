@@ -145,6 +145,11 @@ public class TemplateFieldJsonEntity extends BaseEntity {
 	@ApiModelProperty(value = "数据")
 	private List tableDataList;
 
+	/**
+	 * 文件数据
+	 */
+	@ApiModelProperty(value = "文件数据")
+	private List fileData;
 
 	/**
 	 * 列表数据对象
