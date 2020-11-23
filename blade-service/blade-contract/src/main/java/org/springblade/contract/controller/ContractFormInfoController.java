@@ -235,6 +235,24 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.updateExportStatus(contractStatus,id));
 	}
 
+	/**
+	 * 复用导出合同文本
+	 */
+	@PostMapping("/repeatExport")
+	@ApiOperationSupport(order = 6)
+	@ApiOperation(value = "修改", notes = "传入id")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:repeatExport')")
+	public R repeatExport(@RequestParam Long id) {
+		String fileExportCategory= FILE_EXPORT_CATEGORY;
+		ContractFormInfoEntity infoEntity=contractFormInfoService.getById(id);
+		Integer fileExportCount=infoEntity.getFileExportCount();
+		fileExportCount+=1;
+		if (Func.isEmpty(id)){
+			throw new ServiceException("id不能为空");
+		}
+		return R.status(contractFormInfoService.textExportCount(id,fileExportCount,fileExportCategory));
+	}
+
 
 	/**
 	 * 审核后修改状态为待导出

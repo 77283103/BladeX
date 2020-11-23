@@ -80,6 +80,13 @@ public class ContractBondPlanServiceImpl extends BaseServiceImpl<ContractBondPla
         baseMapper.saveBond(ids, id);
     }
 
+    @Override
+    public ContractBondPlanResponseVO getById(Long id) {
+        ContractBondPlanEntity bondPlanEntity=baseMapper.selectById(id);
+        ContractBondPlanResponseVO bondPlanResponseVO=ContractBondPlanWrapper.build().entityPV(bondPlanEntity);
+        return bondPlanResponseVO;
+    }
+
     /**
      * 指定日期加上天数后的日期
      *
@@ -97,4 +104,7 @@ public class ContractBondPlanServiceImpl extends BaseServiceImpl<ContractBondPla
         String endDate = format.format(currDate);
         return endDate;
     }
+
+
+
 }

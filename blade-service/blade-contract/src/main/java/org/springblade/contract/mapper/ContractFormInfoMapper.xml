@@ -98,6 +98,7 @@
                 file_time,
                 contract_template_id
 
+
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">
@@ -141,7 +142,16 @@
                 a.seal_type,
                 a.seal_number,
                 a.contract_template_id,
-                file_time
+                file_time,
+                json,
+                a_name,
+                a_person,
+                a_address,
+                a_telephone,
+                a_email,
+                a_bank_number,
+                a_bank_name,
+                a_account_name
 
     </sql>
     <!-- 分页 -->
@@ -159,6 +169,9 @@
         </if>
         <if test="contractFormInfo.contractName != null and contractFormInfo.contractName != ''">
             AND contract_name like concat('%',#{contractFormInfo.contractName},'%')
+        </if>
+        <if test="contractFormInfo.fileExportCategory != null and contractFormInfo.fileExportCategory != ''">
+            AND file_export_category = #{contractFormInfo.fileExportCategory}
         </if>
         <if test="contractFormInfo.contractBigCategory != null and contractFormInfo.contractBigCategory != ''">
             AND contract_big_category like concat('%',#{contractFormInfo.contractBigCategory},'%')

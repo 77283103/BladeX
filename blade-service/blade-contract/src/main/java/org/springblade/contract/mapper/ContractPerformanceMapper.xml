@@ -193,4 +193,25 @@
     <delete id="deleteByContractId" parameterType="java.lang.Long">
           DELETE FROM contract_performance  WHERE contract_id=#{id}
     </delete>
+
+    <!--计算合同履约个数-->
+    <select id="countById" resultType="java.lang.Integer">
+        SELECT
+        COUNT(contract_id)
+        FROM contract_performance
+        WHERE is_deleted = 0
+        AND
+        contract_id = #{id}
+    </select>
+    <!--计算合同履约已完成个数-->
+    <select id="countOKById" resultType="java.lang.Integer">
+        SELECT
+        COUNT(contract_id)
+        FROM contract_performance
+        WHERE is_deleted = 0
+        AND
+        contract_id = #{id}
+        AND
+        actual_pay_time  IS NOT NULL
+    </select>
 </mapper>

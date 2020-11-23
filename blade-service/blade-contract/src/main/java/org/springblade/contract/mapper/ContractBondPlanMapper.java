@@ -56,7 +56,13 @@ public interface ContractBondPlanMapper extends BaseMapper<ContractBondPlanEntit
 	 * @param id 合同id
 	 */
 	void deleteBond(Long id);
-
+	/**
+	 * 根据合同id查询保证金
+	 *
+	 * @param id
+	 * @return
+	 */
+	ContractBondPlanEntity selectById(Long id);
 	/**
 	 * 根据合同id查询保证金
 	 *
@@ -64,5 +70,19 @@ public interface ContractBondPlanMapper extends BaseMapper<ContractBondPlanEntit
 	 * @return
 	 */
 	List<ContractBondPlanEntity> selectByIds(Long id);
+
+	/**
+	 * 计算合同履约计划的条数
+	 * @param id 合同id
+	 * @return
+	 */
+	Integer countById(Long id);
+
+	/**
+	 * 计算合同履约计划完成的条数
+	 * @param id
+	 * @return
+	 */
+	Integer countOKById(Long id);
 
 }

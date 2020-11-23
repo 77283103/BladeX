@@ -44,7 +44,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<ContractCaseRegistrationMapper, ContractCaseRegistrationEntity> implements IContractCaseRegistrationService {
 
-	private IContractClient infoMapper;
+	private IContractClient contractClient;
 	private ContractCaseHandlingMapper handlingMapper;
 	private ContractCaseClosedMapper closedMapper;
 	private ContractCaseRegistrationMapper registrationMapper;
@@ -59,12 +59,14 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 		List<ContractCaseRegistrationResponseVO> recordList = new ArrayList<>();
 		/*为每个对象，设置合同信息*/
 		for(ContractCaseRegistrationResponseVO v : records){
-			R<ContractFormInfoResponseVO> infoEntity=infoMapper.getById(v.getAssociatedContract());
-			v.setInfoEntity(infoEntity.getData());
-			v.setContractStatus(infoEntity.getData().getContractStatus());
-			v.setCurrencyCategory(infoEntity.getData().getCurrencyCategory());
-			v.setContractStatus(infoEntity.getData().getContractStatus());
-			v.setCurrencyCategory(infoEntity.getData().getCurrencyCategory());
+			ContractFormInfoEntity infoEntity= contractClient.getById(v.getAssociatedContract()).getData();
+			if (Func.isNotEmpty(infoEntity)) {
+				v.setInfoEntity(infoEntity);
+				v.setContractStatus(infoEntity.getContractStatus());
+				v.setCurrencyCategory(infoEntity.getCurrencyCategory());
+				v.setContractStatus(infoEntity.getContractStatus());
+				v.setCurrencyCategory(infoEntity.getCurrencyCategory());
+			}
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
@@ -80,7 +82,7 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 		ContractCaseRegistrationEntity registrationEntity=baseMapper.selectById(id);
 		ContractCaseRegistrationResponseVO registrationResponseVO= ContractCaseRegistrationWrapper.build().entityPV(registrationEntity);
 		if (Func.notNull(registrationEntity.getAssociatedContract())){
-			ContractFormInfoResponseVO contractFormInfo=infoMapper.getById(registrationEntity.getAssociatedContract()).getData();
+			ContractFormInfoResponseVO contractFormInfo=contractClient.getById(registrationEntity.getAssociatedContract()).getData();
 			registrationResponseVO.setInfoEntity(contractFormInfo);
 
 		}

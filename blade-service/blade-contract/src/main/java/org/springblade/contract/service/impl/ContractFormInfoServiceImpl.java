@@ -75,6 +75,8 @@
 
 		private ContractRelieveMapper relieveMapper;
 
+		private ContractBondPlanMapper bondPlanMapper;
+
 
 		@Override
 		public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
@@ -120,6 +122,20 @@
 				if(archiveNotEntity.size()>0) {
 					v.setArchiveNotEntity(archiveNotEntity);
 				}
+				//计算履约进度,保证金，首付款，服务接受
+//				List<ContractBondPlanEntity> bondPlanEntityList=bondPlanMapper.selectByIds(v.getId());
+//				v.setBondPlanEntityList(bondPlanEntityList);
+//				List<ContractPerformanceEntity> performanceEntityList=contractPerformanceMapper.selectByIds(v.getId());
+//				v.setPerformanceList(performanceEntityList);
+//				List<ContractPerformanceColPayEntity> performanceColPayEntityList=contractPerformanceColPayMapper.selectByIds(v.getId());
+//				v.setPerformanceColPayList(performanceColPayEntityList);
+//				if (bondPlanEntityList.size()>0 || performanceEntityList.size()>0 || performanceColPayEntityList.size()>0) {
+//					String planSchedule=
+//							bondPlanMapper.countOKById(v.getId())+contractPerformanceColPayMapper.countOKById(v.getId())+contractPerformanceMapper.countOKById(v.getId())+
+//							"/"+
+//							Integer.valueOf(bondPlanEntityList.size()+performanceEntityList.size()+performanceColPayEntityList.size());
+//					v.setPlanSchedule(planSchedule);
+//				}
 				recordList.add(v);
 			}
 			pages.setRecords(recordList);
@@ -213,7 +229,7 @@
 			List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
 			contractFormInfoResponseVO.setCounterpartEntityList(contractCounterpartList);
 			//查询独立起草关联相对方
-			ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectById(id);
+			ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectByIds(id).get(0);
 			contractFormInfoResponseVO.setCounterpartEntity(counterpartEntity);
 			//查询保证金
 			List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(id);

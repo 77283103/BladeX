@@ -54,4 +54,11 @@ public interface IContractBondPlanService extends BaseService<ContractBondPlanEn
 	 * @return
 	 */
 	void saveBond(List<Long> ids, Long id);
+
+	/**
+	 * vo
+	 * @param id
+	 * @return
+	 */
+	ContractBondPlanResponseVO getById(Long id);
 }

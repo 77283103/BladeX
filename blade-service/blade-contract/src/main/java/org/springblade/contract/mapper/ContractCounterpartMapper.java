@@ -29,4 +29,11 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	 */
 	List<ContractCounterpartEntity> selectByIds(Long id);
 
+	/**
+	 *
+	 * @param id
+	 * @return
+	 */
+	ContractCounterpartEntity selectById(Long id);
+
 }
