@@ -40,6 +40,7 @@ public interface IDictBizClient {
 	String API_PREFIX = "/client";
 	String GET_BY_ID = API_PREFIX + "/dict-biz/get-by-id";
 	String GET_VALUE = API_PREFIX + "/dict-biz/get-value";
+	String GET_VALUES = API_PREFIX + "/dict-biz/get-values";
 	String GET_LIST = API_PREFIX + "/dict-biz/get-list";
 
 	/**
@@ -60,7 +61,15 @@ public interface IDictBizClient {
 	 */
 	@GetMapping(GET_VALUE)
 	R<String> getValue(@RequestParam("code") String code, @RequestParam("dictKey") String dictKey);
-
+	/**
+	 * 获取字典表对应中文
+	 *
+	 * @param code    字典编号
+	 * @param parentId 父主键
+	 * @return
+	 */
+	@GetMapping(GET_VALUES)
+	R<String> getValues(@RequestParam("code") String code, @RequestParam("parentId") Long parentId);
 	/**
 	 * 获取字典表
 	 *

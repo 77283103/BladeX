@@ -226,11 +226,17 @@
 			List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(id);
 			contractFormInfoResponseVO.setAccordingEntityList(contractAccordingList);
 			//查询多方起草关联相对方
-			List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
-			contractFormInfoResponseVO.setCounterpartEntityList(contractCounterpartList);
+			if ( contractCounterpartMapper.selectByIds(id).size()>=1) {
+				List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
+				contractFormInfoResponseVO.setCounterpartEntityList(contractCounterpartList);
+			}
 			//查询独立起草关联相对方
-			ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectByIds(id).get(0);
-			contractFormInfoResponseVO.setCounterpartEntity(counterpartEntity);
+			if (contractCounterpartMapper.selectByIds(id).size()==1) {
+				ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectById(id);
+				if (Func.isNotEmpty(counterpartEntity)) {
+					contractFormInfoResponseVO.setCounterpartEntity(counterpartEntity);
+				}
+			}
 			//查询保证金
 			List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(id);
 			contractFormInfoResponseVO.setContractBond(contractBondList);

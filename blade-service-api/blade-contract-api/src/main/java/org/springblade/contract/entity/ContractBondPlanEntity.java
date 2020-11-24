@@ -25,7 +25,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("contract_bond")
+@TableName("contract_bond_plan")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "ContractBond对象", description = "保证金")
 public class ContractBondPlanEntity extends BaseEntity {
