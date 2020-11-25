@@ -125,10 +125,10 @@ public class ContractPerformanceController extends BladeController {
 
 		if (Func.isNotEmpty(performanceEntity)) {
 			/* 导出文件名称 */
-			String fileName = "收付款计划清单-收付款信息导出";
+			String fileName = "接受/提供服务计划清单-信息导出";
 			WriteSheet sheet1 = new WriteSheet();
 			/* 导出的sheet的名称 */
-			sheet1.setSheetName("收付款计划清单-收付款信息导出");
+			sheet1.setSheetName("接受/提供服务计划清单-信息导出");
 			sheet1.setSheetNo(0);
 			/* 需要存入的数据 */
 			List<Object> data = new ArrayList<>();
@@ -179,7 +179,7 @@ public class ContractPerformanceController extends BladeController {
 			/* 此处表头为一行要显示的所有表头，要和数据的顺序对应上  需要转换为list */
 			List<String> head = Arrays.asList("合同名称", "合同编号", "相对方名称", "服务内容", "交易类型", "计划缴纳时间",
 					"计划缴纳金额", "实际缴纳时间","实际缴纳金额","计划退回时间","计划缴纳金额","实际退回时间","实际退回金额",
-					"厂别","账期","接受条件","状态");
+					"厂别","接受条件","状态");
 			/* 为了生成一个独立的list对象，所进行的初始化 */
 			List<String> head2 = null;
 			for (String head1 : head) {
