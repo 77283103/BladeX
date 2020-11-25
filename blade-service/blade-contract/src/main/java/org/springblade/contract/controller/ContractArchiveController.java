@@ -180,7 +180,7 @@ public class ContractArchiveController extends BladeController {
 				cloumns.add(contractFormInfoEntity.getContractSmallCategory());
 				/*合同相对方名称*/
 				StringBuilder name=new  StringBuilder();
-				for(ContractCounterpartEntity counterpartEntity:contractFormInfoEntity.getCounterpartEntityList()){
+				for(ContractCounterpartEntity counterpartEntity:contractFormInfoEntity.getCounterpart()){
 					name.append(counterpartEntity.getName());
 					name.append(",");
 				}

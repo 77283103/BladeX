@@ -93,7 +93,7 @@
 				v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
 				//将多方起草关联的   相对方存入合同分页显示 获取相对方名称
 				List<ContractCounterpartEntity> counterpartEntityList=contractCounterpartMapper.selectByIds(v.getId());
-				v.setCounterpartEntityList(counterpartEntityList);
+				v.setCounterpart(counterpartEntityList);
 				//将用印信息存入合同分页 获取用印日期
 				ContractSealUsingInfoEntity sealUsingInfoEntity=sealUsingInfoMapper.selectUsingById(v.getId());
 				if (Func.isNotEmpty(sealUsingInfoEntity)) {

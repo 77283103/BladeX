@@ -194,7 +194,7 @@ public class ContractSigningController extends BladeController {
             cloumns.add(bizClient.getValues("HTDL", Long.valueOf(formInfoEntity.getContractSmallCategory())).getData());
             /*合同相对方名称*/
             StringBuilder name = new StringBuilder();
-            for (ContractCounterpartEntity counterpartEntity : formInfoEntity.getCounterpartEntityList()) {
+            for (ContractCounterpartEntity counterpartEntity : formInfoEntity.getCounterpart()) {
                 name.append(counterpartEntity.getName());
                 name.append(",");
             }
