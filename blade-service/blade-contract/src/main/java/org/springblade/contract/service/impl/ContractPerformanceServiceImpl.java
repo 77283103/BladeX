@@ -80,9 +80,9 @@ public class ContractPerformanceServiceImpl extends BaseServiceImpl<ContractPerf
 		ContractPerformanceResponseVO performanceResponseVO= ContractPerformanceWrapper.build().entityPV(performanceEntity);
 		ContractFormInfoEntity formInfoEntity = formInfoMapper.selectById(performanceEntity.getContractId());
 		if (Func.isNotEmpty(formInfoEntity)) {
-			performanceEntity.setContractFormInfoEntity(formInfoEntity);
+			performanceResponseVO.setContractFormInfoEntity(formInfoEntity);
 			List<ContractCounterpartEntity> counterpartEntity = counterpartMapper.selectByIds(formInfoEntity.getId());
-			performanceEntity.setCounterpartEntityList(counterpartEntity);
+			performanceResponseVO.setCounterpartEntityList(counterpartEntity);
 		}
 		return performanceResponseVO;
 	}

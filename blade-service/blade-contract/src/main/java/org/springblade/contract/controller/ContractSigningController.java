@@ -13,6 +13,8 @@ import javax.validation.Valid;
 
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.mapper.ContractCounterpartMapper;
+import org.springblade.contract.service.IContractCounterpartService;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractSealUsingInfoResponseVO;
@@ -65,6 +67,8 @@ public class ContractSigningController extends BladeController {
     private IDictBizClient bizClient;
     private IContractSigningService contractSigningService;
     private IContractFormInfoService contractFormInfoService;
+    private IContractCounterpartService counterpartService;
+    private ContractCounterpartMapper counterpartMapper;
     private static final String CONTRACT_SIGNING_SAVE_STATUS = "60";
     private static final String CONTRACT_CONTRACT_FORM_VALUE = "1";
     private static final String CONTRACT_ARCHIVE_STATUS = "110";
@@ -169,7 +173,7 @@ public class ContractSigningController extends BladeController {
     @PostMapping("/exportTargetDataResult")
     @ApiOperationSupport(order = 7)
     @ApiOperation(value = "导出", notes = "")
-    public void exportTargetDataResult(@RequestBody ContractFormInfoEntity formInfoEntity, HttpServletResponse response) {
+    public void exportTargetDataResult(@RequestBody ContractFormInfoResponseVO formInfoEntity, HttpServletResponse response) {
 
         if (Func.isNotEmpty(formInfoEntity)) {
             /* 导出文件名称 */
@@ -203,13 +207,13 @@ public class ContractSigningController extends BladeController {
             /* 合同金额 */
             cloumns.add(formInfoEntity.getContractAmount());
             /*币种*/
-            cloumns.add(bizClient.getValue("bz",formInfoEntity.getCurrencyCategory()).getData());
+            cloumns.add(bizClient.getValue("bz", formInfoEntity.getCurrencyCategory()).getData());
             /*审核信息*/
             cloumns.add(formInfoEntity.getSubmitStatus());
             /*完成时间*/
             cloumns.add(formInfoEntity.getCreateTime());
             /*文本导出次数*/
-            cloumns.add(formInfoEntity.getFileExportCount());
+            cloumns.add(formInfoEntity.getFileExportCount()+1);
             data.add(cloumns);
             /* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
             List<List<String>> headList = new ArrayList<List<String>>();
@@ -235,7 +239,5 @@ public class ContractSigningController extends BladeController {
                 e.printStackTrace();
             }
         }
-
     }
-
 }

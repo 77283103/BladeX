@@ -31,6 +31,7 @@ import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
+import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -60,6 +61,7 @@ import java.util.*;
 @Api(value = "合同归档", tags = "合同归档")
 public class ContractArchiveController extends BladeController {
 
+	private IDictBizClient dictBizClient;
 	private IContractArchiveService contractArchiveService;
 	private IContractArchiveNotService contractArchiveNotService;
 	private IContractFormInfoService contractFormInfoService;
@@ -175,9 +177,9 @@ public class ContractArchiveController extends BladeController {
                  /* 合同名称 */
 				cloumns.add(contractFormInfoEntity.getContractName());
 				/* 合同一级分类 */
-				cloumns.add(contractFormInfoEntity.getContractBigCategory());
+				cloumns.add(dictBizClient.getValues("HTDL",Long.valueOf(contractFormInfoEntity.getContractBigCategory())).getData());
 				/* 合同二级分类 */
-				cloumns.add(contractFormInfoEntity.getContractSmallCategory());
+				cloumns.add(dictBizClient.getValues("HTDL",Long.valueOf(contractFormInfoEntity.getContractSmallCategory())).getData());
 				/*合同相对方名称*/
 				StringBuilder name=new  StringBuilder();
 				for(ContractCounterpartEntity counterpartEntity:contractFormInfoEntity.getCounterpart()){
@@ -189,7 +191,7 @@ public class ContractArchiveController extends BladeController {
 				/* 合同金额 */
 				cloumns.add(contractFormInfoEntity.getContractAmount());
 				/* 合同状态*/
-				cloumns.add(contractFormInfoEntity.getContractStatus());
+				cloumns.add(dictBizClient.getValue("contractStatus",contractFormInfoEntity.getContractStatus()).getData());
 				/*归档月份*/
 				cloumns.add(contractFormInfoEntity.getArchiveMonth());
 				/*合同期限起始时间*/

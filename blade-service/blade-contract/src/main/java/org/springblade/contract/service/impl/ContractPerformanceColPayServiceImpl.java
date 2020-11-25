@@ -81,9 +81,9 @@ public class ContractPerformanceColPayServiceImpl extends BaseServiceImpl<Contra
 		ContractPerformanceColPayResponseVO performanceColPayResponseVO=ContractPerformanceColPayWrapper.build().entityPV(performanceColPayEntity);
 		ContractFormInfoEntity formInfoEntity = formInfoMapper.selectById(performanceColPayEntity.getContractId());
 		if (Func.isNotEmpty(formInfoEntity)) {
-			performanceColPayEntity.setContractFormInfoEntity(formInfoEntity);
+			performanceColPayResponseVO.setContractFormInfoEntity(formInfoEntity);
 			List<ContractCounterpartEntity> counterpartEntity = counterpartMapper.selectByIds(formInfoEntity.getId());
-			performanceColPayEntity.setCounterpartEntityList(counterpartEntity);
+			performanceColPayResponseVO.setCounterpartEntityList(counterpartEntity);
 		}
 		return performanceColPayResponseVO;
 	}
