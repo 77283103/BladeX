@@ -107,6 +107,6 @@
         FROM contract_counterpart
         WHERE is_deleted = 0
         AND
-        id IN (SELECT c.counterpart_id FROM  contract_counterpart_setting c WHERE c.contract_id = #{id})
+        id = #{id}
     </select>
 </mapper>
