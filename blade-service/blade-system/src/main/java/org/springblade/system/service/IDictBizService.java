@@ -62,7 +62,14 @@ public interface IDictBizService extends IService<DictBiz> {
 	 * @return
 	 */
 	String getValue(String code, String dictKey);
-
+	/**
+	 * 获取字典表对应中文
+	 *
+	 * @param code    字典编号
+	 * @param parentId 父主键
+	 * @return
+	 */
+	String getValues(String code, Long parentId);
 	/**
 	 * 获取字典表
 	 *

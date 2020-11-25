@@ -231,7 +231,7 @@ public class ContractArchiveController extends BladeController {
 				 response.setContentType("application/vnd.ms-excel");
 				 response.setCharacterEncoding(Charsets.UTF_8.name());
 				 fileName = URLEncoder.encode(fileName, Charsets.UTF_8.name());
-				 response.setHeader("Content-disposition", "att	achment;filename=" + fileName + ".xlsx");
+				 response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
 				 EasyExcel.write(response.getOutputStream()).head(headList).sheet().doWrite(data);
 			 }catch (IOException e) {
 				e.printStackTrace();

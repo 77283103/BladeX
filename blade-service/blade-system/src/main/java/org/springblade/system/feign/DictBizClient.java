@@ -53,6 +53,11 @@ public class DictBizClient implements IDictBizClient {
 	}
 
 	@Override
+	public R<String> getValues(String code, Long parentId) {
+		return  R.data(service.getValues(code, parentId));
+	}
+
+	@Override
 	@GetMapping(GET_LIST)
 	public R<List<DictBiz>> getList(String code) {
 		return R.data(service.getList(code));
