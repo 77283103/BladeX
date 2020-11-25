@@ -49,6 +49,12 @@ public interface ContractBondMapper extends BaseMapper<ContractBondEntity> {
 	 */
 	void saveBond(List<Long> ids,Long  id);
 
+	/**
+	 * 删除合同保证金脏数据
+	 * @param id 保证金id
+	 */
+	void deleteById(Long  id);
+
 
 	/**
 	 * 删除合同相保证金关联

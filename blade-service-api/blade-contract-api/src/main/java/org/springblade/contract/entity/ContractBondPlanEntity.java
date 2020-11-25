@@ -2,6 +2,8 @@ package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
@@ -25,7 +27,7 @@ import java.util.Date;
  */
 @Getter
 @Setter
-@TableName("contract_bond")
+@TableName("contract_bond_plan")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "ContractBond对象", description = "保证金")
 public class ContractBondPlanEntity extends BaseEntity {
@@ -118,6 +120,7 @@ public class ContractBondPlanEntity extends BaseEntity {
 	 * 相对方id
 	 */
 	@ApiModelProperty(value = "相对方id")
+	@JsonSerialize(using = ToStringSerializer.class)
 	private Long counterpartId;
 
 	/**
@@ -129,6 +132,7 @@ public class ContractBondPlanEntity extends BaseEntity {
 	 * 关联合同ID
 	 */
 	@ApiModelProperty(value = "关联合同ID")
+	@JsonSerialize(using = ToStringSerializer.class)
 	private Long contractId;
 
 }

@@ -225,4 +225,8 @@
         AND
         actual_pay_time IS NOT NULL
     </select>
+    <!--删除关联保证金履约计划-->
+    <delete id="deleteByContractId" parameterType="java.lang.Long">
+          DELETE FROM contract_bond_plan  WHERE contract_id=#{id}
+    </delete>
 </mapper>

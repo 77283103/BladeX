@@ -69,4 +69,12 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 		baseMapper.deleteBond(id);
 		baseMapper.saveBond(ids,id);
 	}
+
+	@Override
+	public void deleteByContractId(Long id) {
+		List<ContractBondEntity> list=baseMapper.selectByIds(id);
+		list.forEach(bond ->{
+			baseMapper.deleteById(bond.getId());
+		});
+	}
 }

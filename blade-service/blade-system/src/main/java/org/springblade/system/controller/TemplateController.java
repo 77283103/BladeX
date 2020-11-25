@@ -110,7 +110,6 @@ public class TemplateController extends BladeController {
 			return R.fail(BladeConstant.DEFAULT_FAILURE_MESSAGE);
 		}else{
 			templateService.save(entity);
-			//templateService.saveBean(entity);
 			return R.data(entity);
 		}
 	}

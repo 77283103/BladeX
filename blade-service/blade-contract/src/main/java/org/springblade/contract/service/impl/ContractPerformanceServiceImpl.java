@@ -93,4 +93,9 @@ public class ContractPerformanceServiceImpl extends BaseServiceImpl<ContractPerf
 		performanceMapper.insert(contractPerformance);
 		return contractPerformance;
 	}
+
+	@Override
+	public void deleteByContractId(Long id) {
+		baseMapper.deleteByContractId(id);
+	}
 }

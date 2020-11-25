@@ -124,6 +124,7 @@ public class ContractBondEntity extends BaseEntity {
 	/**
 	 * 相对方id
 	 */
+	@JsonSerialize(using = ToStringSerializer.class)
 	@ApiModelProperty(value = "实际退回金额")
 	private Long counterpartId;
 

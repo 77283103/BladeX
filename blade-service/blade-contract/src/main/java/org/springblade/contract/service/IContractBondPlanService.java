@@ -3,6 +3,7 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractBondPlanEntity;
+import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.vo.ContractBondPlanRequestVO;
 import org.springblade.contract.vo.ContractBondPlanResponseVO;
 import org.springblade.contract.vo.ContractBondRequestVO;
@@ -61,4 +62,13 @@ public interface IContractBondPlanService extends BaseService<ContractBondPlanEn
 	 * @return
 	 */
 	ContractBondPlanResponseVO getById(Long id);
+
+
+	/**
+	 * 通过合同id删除
+	 * @param id 合同id
+	 * @return
+	 */
+	void deleteByContractId(Long id);
+
 }

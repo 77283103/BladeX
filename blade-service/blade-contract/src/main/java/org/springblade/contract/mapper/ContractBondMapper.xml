@@ -185,6 +185,11 @@
           DELETE FROM contract_bond_setting  WHERE contract_id=#{id}
     </delete>
 
+    <!--删除保证金脏数据-->
+    <delete id="deleteById" parameterType="java.lang.Long">
+          DELETE FROM contract_bond_plan  WHERE id=#{id}
+    </delete>
+
     <!--根据合同id查询相对方集合-->
     <select id="selectByIds" resultMap="contractBondResultMap">
         SELECT

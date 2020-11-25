@@ -51,4 +51,11 @@ public interface IContractPerformanceColPayService extends BaseService<ContractP
 	 *
 	 */
 	ContractPerformanceColPayEntity savePerformanceColPay(ContractPerformanceColPayEntity contractPerformanceColPay);
+
+	/**
+	 * 通过合同id删除
+	 * @param id 合同id
+	 * @return
+	 */
+	void deleteByContractId(Long id);
 }

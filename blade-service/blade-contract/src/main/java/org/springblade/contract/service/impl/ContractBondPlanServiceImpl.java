@@ -34,9 +34,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ContractBondPlanServiceImpl extends BaseServiceImpl<ContractBondPlanMapper, ContractBondPlanEntity> implements IContractBondPlanService {
     private ContractFormInfoMapper formInfoMapper;
-    private IContractFormInfoService formInfoService;
     private ContractCounterpartMapper counterpartMapper;
-    private IContractSigningService signingService;
     private ContractSigningMapper signingMapper;
 
     @SneakyThrows
@@ -87,7 +85,12 @@ public class ContractBondPlanServiceImpl extends BaseServiceImpl<ContractBondPla
         return bondPlanResponseVO;
     }
 
-    /**
+	@Override
+	public void deleteByContractId(Long id) {
+		baseMapper.deleteByContractId(id);
+	}
+
+	/**
      * 指定日期加上天数后的日期
      *
      * @param num     为增加的天数

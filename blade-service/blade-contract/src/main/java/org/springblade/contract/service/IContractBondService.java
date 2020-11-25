@@ -51,4 +51,11 @@ public interface IContractBondService extends BaseService<ContractBondEntity> {
 	 * @return
 	 */
 	void saveBond(List<Long> ids, Long id);
+
+	/**
+	 * 删除保证金方法
+	 * @param id 合同id
+	 * @return
+	 */
+	void deleteByContractId(Long id);
 }

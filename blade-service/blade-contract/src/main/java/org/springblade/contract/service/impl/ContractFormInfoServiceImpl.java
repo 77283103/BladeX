@@ -224,13 +224,13 @@
 			}
 			//查询依据
 			List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(id);
-			contractFormInfoResponseVO.setAccordingEntityList(contractAccordingList);
+			contractFormInfoResponseVO.setAccording(contractAccordingList);
 			//查询多方起草关联相对方
 			List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
-			contractFormInfoResponseVO.setCounterpartEntityList(contractCounterpartList);
+			contractFormInfoResponseVO.setCounterpart(contractCounterpartList);
 			//查询独立起草关联相对方
-			ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectByIds(id).get(0);
-			contractFormInfoResponseVO.setCounterpartEntity(counterpartEntity);
+			/*ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectByIds(id).get(0);
+			contractFormInfoResponseVO.setCounterpartEntity(counterpartEntity);*/
 			//查询保证金
 			List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(id);
 			contractFormInfoResponseVO.setContractBond(contractBondList);

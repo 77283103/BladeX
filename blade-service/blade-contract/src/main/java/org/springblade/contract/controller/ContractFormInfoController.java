@@ -14,6 +14,7 @@ import org.json.simple.JSONArray;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
+import org.springblade.contract.entity.ContractBondPlanEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.service.*;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
@@ -26,6 +27,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -53,6 +55,7 @@ public class ContractFormInfoController extends BladeController {
 	private IContractAccordingService accordingService;
 	private IContractBondService contractBondService;
 	private IContractPerformanceColPayService contractPerformanceColPayService;
+	private IContractBondPlanService contractBondPlanService;
 	private static final String FILE_EXPORT_CATEGORY="1";
 	private static final String CONTRACT_AUDIT_QUALITY="30";
 	private static final String CONTRACT_EXPORT_STATUS="40";
@@ -108,8 +111,8 @@ public class ContractFormInfoController extends BladeController {
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> multiAdd(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		contractFormInfo.setContractSoure("20");
-		String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
-		contractFormInfo.setSealName(sealName);
+		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
+		//contractFormInfo.setSealName(sealName);
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo,entity);
 		if (Func.isEmpty(contractFormInfo.getId())){
@@ -119,33 +122,48 @@ public class ContractFormInfoController extends BladeController {
 		}
 		contractFormInfo.setId(entity.getId());
 		/*保存相对方信息*/
-		if(contractFormInfo.getCounterpart().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())){
 			contractFormInfoService.saveCounterpart(contractFormInfo);
 		}
 		/*保存保证金信息*/
-		if(contractFormInfo.getContractBond().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())){
 			List<Long> list=new ArrayList<>();
+			ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
+			//删除保证金库脏数据
+			contractBondService.deleteByContractId(contractFormInfo.getId());
+			//删除保证金履约计划脏数据
+			contractBondPlanService.deleteByContractId(contractFormInfo.getId());
 			for(ContractBondEntity contractBondEntity:contractFormInfo.getContractBond()){
-				contractBondService.save(contractBondEntity);
+				BeanUtil.copy(contractBondEntity, contractBondPlan);
+				if (Func.isEmpty(contractBondEntity.getId())){
+					contractBondService.save(contractBondEntity);
+				}
+				//保存保证金履约计划
+				contractBondPlan.setContractId(entity.getId());
+				contractBondPlanService.save(contractBondPlan);
 				list.add(contractBondEntity.getId());
 			}
 			contractBondService.saveBond(list,contractFormInfo.getId());
 		}
 		/*保存依据信息*/
-		if(contractFormInfo.getAccording().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getAccording())){
 			ContractAccordingEntity contractAccording=contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
 			accordingService.updateById(contractAccording);
 		}
 		/*保存履约信息*/
-		if(contractFormInfo.getPerformanceList().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())){
+			//删除履约信息脏数据
+			performanceService.deleteByContractId(contractFormInfo.getId());
 			contractFormInfo.getPerformanceList().forEach(performance->{
 				performance.setContractId(contractFormInfo.getId());
-				performanceService.savePerformance(performance);
+				performanceService.save(performance);
 			});
 		}
 		/*保存履约计划收付款*/
-		if(contractFormInfo.getPerformanceColPayList().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())){
+			//删除收付款脏数据
+			contractPerformanceColPayService.deleteByContractId(contractFormInfo.getId());
 			contractFormInfo.getPerformanceColPayList().forEach(performanceColPay->{
 				performanceColPay.setContractId(contractFormInfo.getId());
 				contractPerformanceColPayService.save(performanceColPay);
@@ -165,8 +183,8 @@ public class ContractFormInfoController extends BladeController {
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		contractFormInfo.setContractSoure("10");
-		String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
-		contractFormInfo.setSealName(sealName);
+		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
+		//contractFormInfo.setSealName(sealName);
         ContractFormInfoEntity entity = new ContractFormInfoEntity();
         BeanUtil.copy(contractFormInfo,entity);
 		if (Func.isEmpty(contractFormInfo.getId())){
@@ -176,33 +194,48 @@ public class ContractFormInfoController extends BladeController {
 		}
 		contractFormInfo.setId(entity.getId());
 		/*保存相对方信息*/
-		if(contractFormInfo.getCounterpart().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())){
 			contractFormInfoService.saveCounterpart(contractFormInfo);
 		}
 		/*保存保证金信息*/
-		if(contractFormInfo.getContractBond().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())){
 			List<Long> list=new ArrayList<>();
+			ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
+			//删除保证金库脏数据
+			contractBondService.deleteByContractId(contractFormInfo.getId());
+			//删除保证金履约计划脏数据
+			contractBondPlanService.deleteByContractId(contractFormInfo.getId());
 			for(ContractBondEntity contractBondEntity:contractFormInfo.getContractBond()){
-				contractBondService.save(contractBondEntity);
+				BeanUtil.copy(contractBondEntity, contractBondPlan);
+				if (Func.isEmpty(contractBondEntity.getId())){
+					contractBondService.save(contractBondEntity);
+				}
+				//保存保证金履约计划
+				contractBondPlan.setContractId(entity.getId());
+				contractBondPlanService.save(contractBondPlan);
 				list.add(contractBondEntity.getId());
 			}
 			contractBondService.saveBond(list,contractFormInfo.getId());
 		}
 		/*保存依据信息*/
-		if(contractFormInfo.getAccording().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getAccording())){
 			ContractAccordingEntity contractAccording=contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
 			accordingService.updateById(contractAccording);
 		}
 		/*保存履约信息*/
-		if(contractFormInfo.getPerformanceList().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())){
+			//删除履约信息脏数据
+			performanceService.deleteByContractId(contractFormInfo.getId());
 			contractFormInfo.getPerformanceList().forEach(performance->{
 				performance.setContractId(contractFormInfo.getId());
-				performanceService.savePerformance(performance);
+				performanceService.save(performance);
 			});
 		}
 		/*保存履约计划收付款*/
-		if(contractFormInfo.getPerformanceColPayList().size()>0){
+		if(CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())){
+			//删除收付款脏数据
+			contractPerformanceColPayService.deleteByContractId(contractFormInfo.getId());
 			contractFormInfo.getPerformanceColPayList().forEach(performanceColPay->{
 				performanceColPay.setContractId(contractFormInfo.getId());
 				contractPerformanceColPayService.save(performanceColPay);

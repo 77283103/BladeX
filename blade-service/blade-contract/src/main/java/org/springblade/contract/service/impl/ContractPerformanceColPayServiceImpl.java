@@ -94,4 +94,9 @@ public class ContractPerformanceColPayServiceImpl extends BaseServiceImpl<Contra
 		performanceColPayMapper.insert(contractPerformanceColPay);
 		return contractPerformanceColPay;
 	}
+
+	@Override
+	public void deleteByContractId(Long id) {
+		baseMapper.deleteByContractId(id);
+	}
 }

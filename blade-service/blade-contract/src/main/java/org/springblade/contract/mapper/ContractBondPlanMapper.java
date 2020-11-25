@@ -85,4 +85,11 @@ public interface ContractBondPlanMapper extends BaseMapper<ContractBondPlanEntit
 	 */
 	Integer countOKById(Long id);
 
+
+	/**
+	 * 根据合同id删除保证金履约计划信息
+	 * @param id
+	 * @return
+	 */
+	void deleteByContractId(Long id);
 }
