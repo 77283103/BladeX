@@ -13,6 +13,7 @@ import javax.validation.Valid;
 
 import org.apache.poi.ss.formula.functions.Column;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.springblade.contract.entity.ContractArchiveNotEntity;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.service.IContractArchiveNotService;
@@ -31,6 +32,7 @@ import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
+import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -60,6 +62,7 @@ import java.util.*;
 @Api(value = "合同归档", tags = "合同归档")
 public class ContractArchiveController extends BladeController {
 
+	private IDictBizClient dictBizClient;
 	private IContractArchiveService contractArchiveService;
 	private IContractArchiveNotService contractArchiveNotService;
 	private IContractFormInfoService contractFormInfoService;
@@ -175,9 +178,9 @@ public class ContractArchiveController extends BladeController {
                  /* 合同名称 */
 				cloumns.add(contractFormInfoEntity.getContractName());
 				/* 合同一级分类 */
-				cloumns.add(contractFormInfoEntity.getContractBigCategory());
+				cloumns.add(dictBizClient.getValues("HTDL",Long.valueOf(contractFormInfoEntity.getContractBigCategory())).getData());
 				/* 合同二级分类 */
-				cloumns.add(contractFormInfoEntity.getContractSmallCategory());
+				cloumns.add(dictBizClient.getValues("HTDL",Long.valueOf(contractFormInfoEntity.getContractSmallCategory())).getData());
 				/*合同相对方名称*/
 				StringBuilder name=new  StringBuilder();
 				for(ContractCounterpartEntity counterpartEntity:contractFormInfoEntity.getCounterpart()){
@@ -189,7 +192,7 @@ public class ContractArchiveController extends BladeController {
 				/* 合同金额 */
 				cloumns.add(contractFormInfoEntity.getContractAmount());
 				/* 合同状态*/
-				cloumns.add(contractFormInfoEntity.getContractStatus());
+				cloumns.add(dictBizClient.getValue("contractStatus",contractFormInfoEntity.getContractStatus()).getData());
 				/*归档月份*/
 				cloumns.add(contractFormInfoEntity.getArchiveMonth());
 				/*合同期限起始时间*/
@@ -210,7 +213,6 @@ public class ContractArchiveController extends BladeController {
 				cloumns.add(contractFormInfoEntity.getContractPrintInitDept());
 				/*用印公司*/
 				cloumns.add(contractFormInfoEntity.getPrintCompany());
-
 				data.add(cloumns);
 			}
 			/* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
@@ -237,6 +239,101 @@ public class ContractArchiveController extends BladeController {
 				e.printStackTrace();
 			}
 		}
+	}
+	/**
+	 * 导出excel
+	 * @param formInfoEntityList
+	 * @param response
+	 */
+	@PostMapping("/exportTargetDataResultBu")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "导出", notes = "")
+	public void exportTargetDataResultBu(@RequestBody List<ContractFormInfoResponseVO> formInfoEntityList, HttpServletResponse response) {
+		if (CollectionUtil.isNotEmpty(formInfoEntityList)) {
+			/* 导出文件名称 */
+			String fileName = "合同未归档信息导出";
+			WriteSheet sheet1 = new WriteSheet();
+			/* 导出的sheet的名称 */
+			sheet1.setSheetName("合同未归档信息导出");
+			sheet1.setSheetNo(0);
+			/* 需要存入的数据 */
+			List<List<Object>> data = new ArrayList<>();
+			/* formInfoEntityList 表示要写入的数据 因为是前台显示列表 由前台进行传值，后期可以根据自己的需求进行改变 */
+			for (ContractFormInfoResponseVO contractFormInfoEntity : formInfoEntityList) {
+				/* 属性 cloumns 表示一行，cloumns包含的数据是一行的数据
+				  要将一行的每个值 作为list的一个属性存进到list里 ，数据要和展示的excel表头一致*/
+				List<Object> cloumns = new ArrayList<Object>();
+				/* 合同编号*/
+				cloumns.add(contractFormInfoEntity.getContractNumber());
+				/* 合同名称 */
+				cloumns.add(contractFormInfoEntity.getContractName());
+				/* 合同一级分类 */
+				cloumns.add(dictBizClient.getValues("HTDL", Long.valueOf(contractFormInfoEntity.getContractBigCategory())).getData());
+				/* 合同二级分类 */
+				cloumns.add(dictBizClient.getValues("HTDL", Long.valueOf(contractFormInfoEntity.getContractSmallCategory())).getData());
+				/*合同相对方名称*/
+				StringBuilder name = new StringBuilder();
+				for (ContractCounterpartEntity counterpartEntity : contractFormInfoEntity.getCounterpart()) {
+					name.append(counterpartEntity.getName());
+					name.append(",");
+				}
+				name.substring(0, name.length());
+				cloumns.add(name.toString());
+				/* 合同金额 */
+				cloumns.add(contractFormInfoEntity.getContractAmount());
+				/*用印日期*/
+				cloumns.add(contractFormInfoEntity.getSignTime());
+				/*经办人*/
+				StringBuilder manager=new StringBuilder();
+				for (ContractArchiveNotEntity archiveNotEntity:contractFormInfoEntity.getArchiveNotEntity()) {
+					manager.append(archiveNotEntity.getManager());
+					manager.append(",");
+				}
+				manager.substring(0,manager.length());
+				cloumns.add(manager.toString());
+				/*经办部门*/
+				StringBuilder managerUnit = new StringBuilder();
+				for (ContractArchiveNotEntity archiveNotEntity : contractFormInfoEntity.getArchiveNotEntity()) {
+					managerUnit.append(archiveNotEntity.getManageUnit());
+					managerUnit.append(",");
+				}
+				managerUnit.substring(0, managerUnit.length());
+				cloumns.add(managerUnit.toString());
+				/* 合同状态*/
+				cloumns.add(dictBizClient.getValue("contractStatus", contractFormInfoEntity.getContractStatus()).getData());
+				/*未归档原因*/
+				StringBuilder notArchiveReason = new StringBuilder();
+				for (ContractArchiveNotEntity archiveNotEntity : contractFormInfoEntity.getArchiveNotEntity()) {
+					notArchiveReason.append(archiveNotEntity.getNotArchiveReason());
+					notArchiveReason.append(",");
+				}
+				notArchiveReason.substring(0, notArchiveReason.length());
+				cloumns.add(notArchiveReason.toString());
+				data.add(cloumns);
+			}
+			/* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
+			List<List<String>> headList = new ArrayList<List<String>>();
+			/* 此处表头为一行要显示的所有表头，要和数据的顺序对应上  需要转换为list */
+			List<String> head = Arrays.asList("合同编号", "合同名称", "合同一级分类", "合同二级分类", "合同相对方名称", "合同金额", "用印日期", "经办人", "经办部门", "合同状态", "未归档原因");
+			/* 为了生成一个独立的list对象，所进行的初始化 */
+			List<String> head2 = null;
+			for (String head1 : head) {
+				head2 = new ArrayList<>();
+				/* 将表头的数据赋值进入list对象 */
+				head2.add(head1);
+				/* 将数据赋值进入最终要输出的表头 */
+				headList.add(head2);
+			}
 
+			try {
+				response.setContentType("application/vnd.ms-excel");
+				response.setCharacterEncoding(Charsets.UTF_8.name());
+				fileName = URLEncoder.encode(fileName, Charsets.UTF_8.name());
+				response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+				EasyExcel.write(response.getOutputStream()).head(headList).sheet().doWrite(data);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

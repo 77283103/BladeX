@@ -26,6 +26,7 @@ import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.entity.Dept;
+import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserDepart;
@@ -58,6 +59,7 @@ import java.util.List;
 @Api(value = "借阅申请", tags = "借阅申请")
 public class ContractBorrowApplicationController extends BladeController {
 
+    private IDictBizClient dictBizClient;
     private IContractBorrowApplicationService contractBorrowApplicationService;
     private static final String BORROW_APPLICATION_STATUS = "10";
 
@@ -161,6 +163,9 @@ public class ContractBorrowApplicationController extends BladeController {
             /* 导出的sheet的名称 */
             sheet1.setSheetName("合同借阅信息导出");
             sheet1.setSheetNo(0);
+            sheet1.getAutomaticMergeHead();
+            sheet1.getAutoTrim();
+            sheet1.getColumnWidthMap();
             /* 需要存入的数据 */
             List<List<Object>> data = new ArrayList<>();
             /* formInfoEntityList 表示要写入的数据 因为是前台显示列表 由前台进行传值，后期可以根据自己的需求进行改变 */
@@ -173,19 +178,19 @@ public class ContractBorrowApplicationController extends BladeController {
                 /*借阅部门*/
                 cloumns.add(applicationEntity.getApplicationDepartment());
                 /*资料类型*/
-                cloumns.add(applicationEntity.getDataType());
+                cloumns.add(dictBizClient.getValue("data_type",applicationEntity.getDataType()).getData());
                 /*借阅周期（起）*/
                 cloumns.add(applicationEntity.getBorrowCycleStart());
                 /*借阅周期（止）*/
                 cloumns.add(applicationEntity.getBorrowCycleEnd());
                 /*借阅方式*/
-                cloumns.add(applicationEntity.getBorrowMode());
+                cloumns.add(dictBizClient.getValue("borrow_mode",applicationEntity.getBorrowMode()).getData());
                 /*事由*/
                 cloumns.add(applicationEntity.getExplanation());
                 /*进度*/
                 cloumns.add(applicationEntity.getBorrowSchedule());
                 /*借阅状态*/
-                cloumns.add(applicationEntity.getBorrowStatus());
+                cloumns.add(dictBizClient.getValue("borrow_status",applicationEntity.getBorrowStatus()).getData());
                 data.add(cloumns);
             }
             /* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
