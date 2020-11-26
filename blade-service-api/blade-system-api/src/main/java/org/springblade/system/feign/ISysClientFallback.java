@@ -16,8 +16,10 @@
  */
 package org.springblade.system.feign;
 
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.*;
+import org.springblade.system.vo.DeptVO;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -32,6 +34,11 @@ public class ISysClientFallback implements ISysClient {
 
 	@Override
 	public R<Menu> getMenu(Long id) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<List<DeptVO>> getDeptTree(String tenantId, BladeUser bladeUser) {
 		return R.fail("获取数据失败");
 	}
 

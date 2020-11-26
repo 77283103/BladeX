@@ -231,6 +231,10 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private List<ContractPerformanceColPayEntity> performanceColPayList;
 
+	@ApiModelProperty(value = "原物料一对多")
+	@TableField(exist = false)
+	private List<ContractRawMaterialsEntity> rawMaterialsList;
+
 	/**
 	 * 关联合同评估信息
 	 */

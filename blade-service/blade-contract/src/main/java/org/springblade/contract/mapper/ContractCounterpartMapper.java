@@ -36,4 +36,12 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	 */
 	ContractCounterpartEntity selectById(Long id);
 
+	/**
+	 * 根据相对方名称获取集合
+	 * @param name 合同name
+	 * @return
+	 */
+	List<ContractCounterpartEntity> selectByName(String name);
+
+
 }

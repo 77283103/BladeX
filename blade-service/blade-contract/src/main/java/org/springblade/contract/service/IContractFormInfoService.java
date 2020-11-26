@@ -2,6 +2,8 @@ package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.excel.ContractFormInfoImporter;
+import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractSigningRequestVO;
@@ -101,7 +103,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 *范本起草保存
 	 * @param contractFormInfoEntity 合同模板
 	 */
-	String templateDraft(ContractFormInfoEntity contractFormInfoEntity,TemplateRequestVO template);
+	String templateDraft(ContractFormInfoEntity contractFormInfoEntity,String json);
 
 	/**
 	 * 合同大类金额
@@ -114,4 +116,12 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return list
 	 */
 	List<ContractFormInfoEntity> getNumList();
+
+	/**
+	 * 导入合同数据
+	 * @param data
+	 * @param contractTemplateId
+	 */
+	void importContractFormInfo(List<ContractFormInfoImporter> data, List<ContractFormInfoImporterEx> read2, String contractTemplateId, String json);
+
 }

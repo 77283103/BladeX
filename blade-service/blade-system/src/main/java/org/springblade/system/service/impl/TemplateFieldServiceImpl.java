@@ -5,11 +5,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.json.simple.JSONArray;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.system.constant.ContractFormInfoTemplateContract;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateEntity;
 import org.springblade.system.entity.TemplateFieldEntity;
+import org.springblade.system.feign.ISysClient;
 import org.springblade.system.mapper.TemplateFieldMapper;
 import org.springblade.system.service.IDictBizService;
 import org.springblade.system.service.ITemplateFieldRelationService;
@@ -33,7 +35,7 @@ import java.util.List;
 @AllArgsConstructor
 public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMapper, TemplateFieldEntity> implements ITemplateFieldService {
 	private IDictBizService dictBizService;
-	private ITemplateFieldRelationService templateFieldRelationService;
+	private ISysClient sysClient;
 	@Override
 	public IPage<TemplateFieldEntity> pageList(IPage<TemplateFieldEntity> page, TemplateFieldEntity templateField) {
 		return baseMapper.pageList(page, templateField);
@@ -55,7 +57,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 			jo.put("fieldTitle", templateField.getFieldTitle());
 			jo.put("componentType", templateField.getComponentType());
 			//判断字典code是否为空
-			if("select".equals(templateField.getComponentType())||"cascader".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())){
+			if("select".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())){
 				tree = dictBizService.getList(templateField.getDicCode());
 				JSONArray array = new JSONArray();
 				//组装字典data
@@ -67,6 +69,9 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 				}
 				jo.put("dicData", array);
 				//组装可编辑列表data
+			}else if("cascader".equals(templateField.getComponentType())){
+				BladeUser bladeUser=new BladeUser() ;
+				sysClient.getDeptTree("000000", bladeUser);
 			}else if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())||"formList".equals(templateField.getComponentType())){
 				if("ContractCounterpart".equals(templateField.getRelationCode())){
 					JSONArray datas = new JSONArray();

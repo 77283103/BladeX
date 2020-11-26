@@ -17,9 +17,12 @@
 package org.springblade.system.feign;
 
 import lombok.AllArgsConstructor;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.*;
 import org.springblade.system.service.*;
+import org.springblade.system.vo.DeptVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -52,6 +55,12 @@ public class SysClient implements ISysClient {
 	@GetMapping(MENU)
 	public R<Menu> getMenu(Long id) {
 		return R.data(menuService.getById(id));
+	}
+
+	@Override
+	public R<List<DeptVO>> getDeptTree(String tenantId, BladeUser bladeUser) {
+		List<DeptVO> tree = deptService.tree(Func.toStrWithEmpty(tenantId, bladeUser.getTenantId()));
+		return R.data(tree);
 	}
 
 	@Override

@@ -22,11 +22,15 @@ public interface ContractFormInfoTemplateContract {
 	String CONTRACT_COUNTERPART_SUB_COUNTERPART = "counterpart";
 	//合同-保证金
 	String CONTRACT_COUNTERPART_SUB_CONTRACTBOND = "contractBond";
+	//合同-保证金
+	String CONTRACT_RAW_MATERIALS = "ContractRawMaterials";
 	//合同-分类
 	String CONTRACT_BIG_CATEGORY = "Classification";
 	//合同-收付款方式
 	String CONTRACT_COL_PAY = "ColPayType";
 	//合同-收付款方式
 	String CONTRACT_ID = "id";
+	//二级联动组件类型
+
 
 }

@@ -17,8 +17,10 @@
 package org.springblade.system.feign;
 
 import org.springblade.core.launch.constant.AppConstant;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.*;
+import org.springblade.system.vo.DeptVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,6 +41,7 @@ public interface ISysClient {
 	String API_PREFIX = "/client";
 	String MENU = API_PREFIX + "/menu";
 	String DEPT = API_PREFIX + "/dept";
+	String DEPT_TREE = API_PREFIX + "/dept-tree";
 	String DEPT_IDS = API_PREFIX + "/dept-ids";
 	String DEPT_NEW_ID = API_PREFIX + "/dept-new-id";
 	String DEPT_NAME = API_PREFIX + "/dept-name";
@@ -67,6 +70,14 @@ public interface ISysClient {
 	 */
 	@GetMapping(MENU)
 	R<Menu> getMenu(@RequestParam("id") Long id);
+
+	/**
+	 * 获取部门树形结构
+	 *
+	 * @return
+	 */
+	@GetMapping(DEPT_TREE)
+	R<List<DeptVO>> getDeptTree(@RequestParam("tenantId") String tenantId, @RequestParam("bladeUser") BladeUser bladeUser);
 
 	/**
 	 * 获取部门

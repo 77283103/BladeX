@@ -69,6 +69,10 @@
             <artifactId>poi-ooxml-schemas</artifactId>
             <version>3.17</version>
         </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-starter-excel</artifactId>
+        </dependency>
 
 
         <!--excel导出-->

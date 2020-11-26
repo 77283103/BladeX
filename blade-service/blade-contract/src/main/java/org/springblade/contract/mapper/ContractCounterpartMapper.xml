@@ -109,4 +109,15 @@
         AND
         id = #{id}
     </select>
+
+    <!--根据相对方名称查询相对方集合-->
+    <select id="selectByName" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_counterpart
+        WHERE is_deleted = 0
+        AND
+        name = #{name}
+    </select>
+
 </mapper>
