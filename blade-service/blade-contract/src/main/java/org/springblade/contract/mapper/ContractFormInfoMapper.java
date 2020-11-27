@@ -26,6 +26,20 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
 	/**
+	 * 合同类型统计分析分页查询
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> pageListStatisticsType(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+	/**
+	 * 合同状态分组统计分析分页查询
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> pageListStatisticsStatus(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+	/**
 	 * 修改合同状态
 	 * @param contractStatus,id
 	 * @return
@@ -117,4 +131,9 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	List<ContractFormInfoEntity> getNumList();
 
+	/**
+	 * 获取合同金额sum
+	 * @return
+	 */
+	Double selectAmountSum();
 }

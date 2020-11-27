@@ -533,5 +533,15 @@ public class ContractFormInfoController extends BladeController {
 		}
 		return listMap;
 	}
-
+	/**
+	 * 分页
+	 */
+	@GetMapping("/listStatistics")
+	@ApiOperationSupport(order = 2)
+	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:listStatistics')")
+	public R<IPage<ContractFormInfoResponseVO>> listStatistics(ContractFormInfoRequestVO contractFormInfo, Query query) {
+		IPage<ContractFormInfoResponseVO> pages = contractFormInfoService.pageListStatistics(Condition.getPage(query), contractFormInfo);
+		return R.data(pages);
+	}
 }

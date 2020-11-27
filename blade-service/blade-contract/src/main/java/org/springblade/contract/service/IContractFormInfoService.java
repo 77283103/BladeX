@@ -27,7 +27,13 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo);
-
+	/**
+	 * 统计分析分页查询
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 	/**
 	 * 修改合同状态
 	 * @param contractStatus,id

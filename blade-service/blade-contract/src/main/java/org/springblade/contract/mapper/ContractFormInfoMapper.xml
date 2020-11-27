@@ -56,111 +56,147 @@
 
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-
-                id,
-                contract_name,
-                contract_number,
-                text_file,
-                attached_files,
-                currency_category,
-                contract_amount,
-                change_category,
-                change_contract_id,
-                contract_status,
-                submit_status,
-                contract_soure,
-                file_export_category,
-                file_export_count,
-                is_deleted,
-                create_user,
-                create_time,
-                update_user,
-                update_time,
-                create_dept,
-                contract_big_category,
-                contract_small_category,
-                share,
-                person_contract,
-                contract_period,
-                starting_time,
-                end_time,
-                col_pay_term,
-                days,
-                extension,
-                counterpart_person,
-                telephone_person,
-                address_person,
-                email_person,
-                contract_form,
-                seal_name,
-                seal_type,
-                seal_number,
-                file_time,
-                contract_template_id
-
-
+        id,
+        contract_name,
+        contract_number,
+        text_file,
+        attached_files,
+        currency_category,
+        contract_amount,
+        change_category,
+        change_contract_id,
+        contract_status,
+        submit_status,
+        contract_soure,
+        file_export_category,
+        file_export_count,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contract_big_category,
+        contract_small_category,
+        share,
+        person_contract,
+        contract_period,
+        starting_time,
+        end_time,
+        col_pay_term,
+        days,
+        extension,
+        counterpart_person,
+        telephone_person,
+        address_person,
+        email_person,
+        contract_form,
+        seal_name,
+        seal_type,
+        seal_number,
+        file_time,
+        contract_template_id
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">
-
-                a.id,
-                a.contract_name,
-                a.contract_number,
-                a.text_file,
-                a.attached_files,
-                a.currency_category,
-                a.contract_amount,
-                a.change_category,
-                a.change_contract_id,
-                a.contract_status,
-                a.submit_status,
-                a.contract_soure,
-                a.file_export_category,
-                a.file_export_count,
-                a.is_deleted,
-                a.create_user,
-                a.create_time,
-                a.update_user,
-                a.update_time,
-                a.create_dept,
-                a.contract_big_category,
-                a.contract_small_category,
-                a.share,
-                a.person_contract,
-                a.contract_period,
-                a.starting_time,
-                a.end_time,
-                a.col_pay_term,
-                a.days,
-                a.extension,
-                a.counterpart_person,
-                a.telephone_person,
-                a.address_person,
-                a.email_person,
-                a.contract_form,
-                a.seal_name,
-                a.seal_type,
-                a.seal_number,
-                a.contract_template_id,
-                file_time,
-                json,
-                a_name,
-                a_person,
-                a_address,
-                a_telephone,
-                a_email,
-                a_bank_number,
-                a_bank_name,
-                a_account_name
-
+        a.id,
+        a.contract_name,
+        a.contract_number,
+        a.text_file,
+        a.attached_files,
+        a.currency_category,
+        a.contract_amount,
+        a.change_category,
+        a.change_contract_id,
+        a.contract_status,
+        a.submit_status,
+        a.contract_soure,
+        a.file_export_category,
+        a.file_export_count,
+        a.is_deleted,
+        a.create_user,
+        a.create_time,
+        a.update_user,
+        a.update_time,
+        a.create_dept,
+        a.contract_big_category,
+        a.contract_small_category,
+        a.share,
+        a.person_contract,
+        a.contract_period,
+        a.starting_time,
+        a.end_time,
+        a.col_pay_term,
+        a.days,
+        a.extension,
+        a.counterpart_person,
+        a.telephone_person,
+        a.address_person,
+        a.email_person,
+        a.contract_form,
+        a.seal_name,
+        a.seal_type,
+        a.seal_number,
+        a.contract_template_id,
+        file_time,
+        json,
+        a_name,
+        a_person,
+        a_address,
+        a_telephone,
+        a_email,
+        a_bank_number,
+        a_bank_name,
+        a_account_name
     </sql>
+    <!-- 分页 合同大类分组类型  合同分类总金额  合同分类签订数量-->
+    <select id="pageListStatisticsType" resultMap="formInfoResultMap">
+        SELECT contract_big_category,
+               sum(contract_amount)         AS contract_amount,
+               count(contract_big_category) AS count,
+               dict_value
+        FROM `contract_form_info` info,
+             blade_dict_biz biz
+        WHERE info.is_deleted = 0
+        AND info.contract_big_category = biz.id
+        GROUP BY contract_big_category
+        <!--金额区间查询-->
+        <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
+            and contract_amount between #{maxAmount} and #{minAmount}
+        </if>
+        <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
+            AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
+        </if>
+        <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
+            AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+        </if>
+    </select>
+    <!-- 分页 合同状态查找 合同分类总金额  合同分类签订数量-->
+    <select id="pageListStatisticsStatus" resultMap="formInfoResultMap">
+        SELECT contract_status,
+        sum(contract_amount)   AS contract_amount,
+        count(contract_status) AS count
+        FROM `contract_form_info` info
+        WHERE info.is_deleted = 0
+        GROUP BY contract_status
+        <!--金额区间查询-->
+        <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
+            and contract_amount between #{maxAmount} and #{minAmount}
+        </if>
+        <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
+            AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
+        </if>
+        <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
+            AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+        </if>
+    </select>
     <!-- 分页 -->
     <select id="pageList" resultMap="formInfoResultMap">
         SELECT
         <include refid="baseColumnList">
         </include>
         FROM contract_form_info
-        WHERE is_deleted = 0
+                WHERE is_deleted = 0
         <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
             <foreach collection="contractFormInfo.code" item="contract_status" open="and contract_status in ("
                      separator="," close=")">
@@ -168,35 +204,35 @@
             </foreach>
         </if>
         <if test="contractFormInfo.contractName != null and contractFormInfo.contractName != ''">
-            AND contract_name like concat('%',#{contractFormInfo.contractName},'%')
+            AND contract_name like concat('%', #{contractFormInfo.contractName}, '%')
         </if>
         <if test="contractFormInfo.fileExportCategory != null and contractFormInfo.fileExportCategory != ''">
             AND file_export_category = #{contractFormInfo.fileExportCategory}
         </if>
         <if test="contractFormInfo.contractBigCategory != null and contractFormInfo.contractBigCategory != ''">
-            AND contract_big_category like concat('%',#{contractFormInfo.contractBigCategory},'%')
+            AND contract_big_category like concat('%', #{contractFormInfo.contractBigCategory}, '%')
         </if>
         <if test="contractFormInfo.counterpartPerson != null and contractFormInfo.counterpartPerson != ''">
-            AND counterpart_person like concat('%',#{contractFormInfo.counterpartPerson},'%')
+            AND counterpart_person like concat('%', #{contractFormInfo.counterpartPerson}, '%')
         </if>
         <if test="contractFormInfo.undestruction == 'undestruction'">
             AND file_time is not null
             And file_time != ''
             AND ((
-            DATE_FORMAT( now(), '%y' )- DATE_FORMAT( file_time, '%y' )) &gt;= '6'
-            OR ((
-            DATE_FORMAT( now(), '%y' )- DATE_FORMAT( file_time, '%y' )) = '5'
-            AND (
-            DATE_FORMAT( now(), '%m' )- DATE_FORMAT( file_time, '%m' )) &gt;= '0'
-            AND (
-            DATE_FORMAT( now(), '%e' )- DATE_FORMAT( file_time, '%e' )) &gt;= '0'))
+                         DATE_FORMAT(now(), '%y') - DATE_FORMAT(file_time, '%y')) &gt;= '6'
+                    OR ((
+                                DATE_FORMAT(now(), '%y') - DATE_FORMAT(file_time, '%y')) = '5'
+                    AND (
+                                DATE_FORMAT(now(), '%m') - DATE_FORMAT(file_time, '%m')) &gt;= '0'
+                    AND (
+                                DATE_FORMAT(now(), '%e') - DATE_FORMAT(file_time, '%e')) &gt;= '0'))
         </if>
         <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
             AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
         </if>
         <!--金额区间查询-->
-        <if test="contractFormInfo.maxAmount !=null and contractFormInfo.maxAmount !='' or contractFormInfo.minAmount !=null and  contractFormInfo.minAmount!=''">
-            and  contract_amount between #{maxAmount} and #{minAmount}
+        <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
+            and contract_amount between #{maxAmount} and #{minAmount}
         </if>
         <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
             AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
@@ -207,18 +243,27 @@
     </select>
     <!--修改合同状态-->
     <update id="updateExportStatus">
-        UPDATE contract_form_info SET contract_status = #{contractStatus} WHERE id = #{id}
+        UPDATE contract_form_info
+        SET contract_status = #{contractStatus}
+        WHERE id = #{id}
     </update>
+    <!--计算合同金额-->
+    <select id="selectAmountSum" resultType="java.lang.Double">
+        select sum(contract_amount) AS contract_amount
+        FROM `bladex-ty`.contract_form_info
+        WHERE is_deleted=0
+        AND contract_big_category is not null
+    </select>
     <!--用印分页-->
     <select id="pageListSealInfo" resultMap="formInfoResultMap">
         SELECT
         <include refid="baseColumnListJoin">
         </include>
         FROM contract_form_info a
-        LEFT JOIN
-        contract_seal_using_info b
-        ON
-        a.id = b.ref_contract_id
+                     LEFT JOIN
+                     contract_seal_using_info b
+                             ON
+                                     a.id = b.ref_contract_id
         <if test="contractFormInfoRequestVO.startingTime != null and contractFormInfoRequestVO.endTime != null">
             WHERE
             <if test="contractFormInfoRequestVO.startingTime != null">
@@ -238,126 +283,96 @@
     <!--保存关联相对方-->
     <insert id="saveCounterpart">
         insert into contract_counterpart_setting
-        (
-        contract_id,
-        counterpart_id
-        )
-        values
+                (contract_id,
+                 counterpart_id)
+                values
         <foreach collection="counterpart" item="item" index="index" open="" close="" separator=",">
-            (
-            #{id},
-            #{item.id}
-            )
+            (#{id},
+             #{item.id})
         </foreach>
     </insert>
 
 
     <!--删除关联相对方-->
     <delete id="deleteCounterpart" parameterType="java.lang.Long">
-          DELETE FROM contract_counterpart_setting  WHERE contract_id=#{id}
+        DELETE
+        FROM contract_counterpart_setting
+        WHERE contract_id = #{id}
     </delete>
 
 
     <!--保存关联依据-->
     <insert id="saveAccording">
         insert into contract_according_setting
-        (
-        contract_id,
-        contract_according_id
-        )
-        values
+                (contract_id,
+                 contract_according_id)
+                values
         <foreach collection="accordingIds" item="item" index="index" open="" close="" separator=",">
-            (
-            #{id},
-            #{item}
-            )
+            (#{id},
+             #{item})
         </foreach>
     </insert>
 
     <!--保存关联用印-->
     <insert id="saveSeal">
         insert into contract_seal_using_setting
-        (
-        contract_id,
-        contract_seal_using_id
-        )
-        values
-        (
-        #{refContractId},
-        #{sealId}
-        )
+                (contract_id,
+                 contract_seal_using_id)
+        values (#{refContractId},
+                #{sealId})
     </insert>
     <!--保存关联签订-->
     <insert id="saveSigning">
         insert into contract_signing_setting
-        (
-        contract_id,
-        contract_signing_id
-        )
-        values
-        (
-        #{contractId},
-        #{signingId}
-        )
+                (contract_id,
+                 contract_signing_id)
+        values (#{contractId},
+                #{signingId})
     </insert>
     <!--保存关联评估-->
     <insert id="saveAssessment">
         insert into contract_assessment_setting
-        (
-        contract_id,
-        contract_assessment_id
-        )
-        values
-        (
-        #{contractId},
-        #{assessmentId}
-        )
+                (contract_id,
+                 contract_assessment_id)
+        values (#{contractId},
+                #{assessmentId})
     </insert>
 
     <!--保存关联归档-->
     <insert id="saveArchive">
         insert into contract_archive_setting
-        (
-        contract_id,
-        contract_archive_id
-        )
-        values
-        (
-        #{contractId},
-        #{archiveId}
-        )
+                (contract_id,
+                 contract_archive_id)
+        values (#{contractId},
+                #{archiveId})
     </insert>
 
     <!--统计合同下载次数-->
     <update id="textExportCount">
-        UPDATE contract_form_info SET file_export_count = #{fileExportCount},file_export_category=#{fileExportCategory}
-        WHERE id =#{id}
+        UPDATE contract_form_info
+        SET file_export_count   = #{fileExportCount},
+            file_export_category= #{fileExportCategory}
+        WHERE id = #{id}
     </update>
 
     <!--合同大类金额-->
     <select id="getAmountList" resultMap="formInfoResultMap">
-        SELECT
-            contract_big_category,
-            sum( contract_amount ) AS contract_amount,
-            dict_value
-        FROM
-            `contract_form_info`  info,
-            blade_dict_biz biz
-            where info.contract_big_category = biz.id
-        GROUP BY
-            contract_big_category;
+        SELECT contract_big_category,
+               sum(contract_amount) AS contract_amount,
+               dict_value
+        FROM `contract_form_info` info,
+             blade_dict_biz biz
+        where info.contract_big_category = biz.id
+        GROUP BY contract_big_category
     </select>
     <!--合同大类数量-->
     <select id="getNumList" resultMap="formInfoResultMap">
-        SELECT
-            count(contract_big_category) as count,
-            contract_big_category ,
-                dict_value
-        FROM
-            `contract_form_info`  info,
-            blade_dict_biz biz
-            where info.contract_big_category = biz.id
-        GROUP BY
-            contract_big_category
+        SELECT count(contract_big_category) as count,
+               contract_big_category,
+               dict_value
+        FROM `contract_form_info` info,
+             blade_dict_biz biz
+        where info.contract_big_category = biz.id
+        GROUP BY contract_big_category
     </select>
 </mapper>

@@ -148,6 +148,32 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
+	 * 统计分析分页查询
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	@Override
+	public IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
+		if (Func.isNotBlank(contractFormInfo.getContractBigCategory())) {
+			page = contractFormInfoMapper.pageListStatisticsType(page, contractFormInfo);
+		}
+		if (Func.isNotBlank(contractFormInfo.getContractStatus())) {
+			page = contractFormInfoMapper.pageListStatisticsStatus(page, contractFormInfo);
+		}
+		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
+		List<ContractFormInfoResponseVO> records = pages.getRecords();
+		List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
+		for (ContractFormInfoResponseVO v : records) {
+			BigDecimal contractAmountSum=BigDecimal.valueOf(contractFormInfoMapper.selectAmountSum());
+			v.setAmountRatio(v.getContractAmount().divide(contractAmountSum,2)+"%");
+			recordList.add(v);
+		}
+		pages.setRecords(recordList);
+		return pages;
+	}
+
+	/**
 	 * 合同数据导入
 	 *
 	 * @return list
