@@ -39,6 +39,14 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	IPage<ContractFormInfoEntity> pageListStatisticsStatus(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+
+	/**
+	 * 合同支付类型分组统计分析分页查询
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> pageListStatisticsColPayType(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 	/**
 	 * 修改合同状态
 	 * @param contractStatus,id
@@ -136,4 +144,11 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	Double selectAmountSum();
+
+	/**
+	 * 根据合同类型查询已签订合同数量
+	 * @param contractBigCategory
+	 * @return
+	 */
+	Integer selectSigningCount(String contractBigCategory);
 }

@@ -62,7 +62,7 @@
     <select id="getValues" resultType="java.lang.String">
         select
         dict_value
-        from blade_dict_biz where code = #{param1} and parent_id = #{param2} and is_deleted = 0
+        from blade_dict_biz where code = #{param1} and id = #{param2} and is_deleted = 0
     </select>
     <!-- oracle 版本 -->
     <!--<select id="getValue" resultType="java.lang.String">

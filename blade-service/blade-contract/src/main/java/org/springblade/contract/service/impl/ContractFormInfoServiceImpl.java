@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.sun.xml.internal.bind.v2.TODO;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
@@ -24,6 +25,7 @@ import org.springblade.resource.vo.FileVO;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
+import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.entity.User;
@@ -54,6 +56,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	private IUserClient userClient;
 
+	private IDictBizClient bizClient;
+
 	private ContractFormInfoMapper contractFormInfoMapper;
 
 	private ContractCounterpartMapper contractCounterpartMapper;
@@ -80,9 +84,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	private ContractRelieveMapper relieveMapper;
 
-
 	private ContractRawMaterialsMapper contractRawMaterialsMapper;
 
+	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY="1332307279915393025";
+    private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS="1332307106157961217";
+    private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE="1332307534161518593";
+	private static final Integer AMOUNT_RATIO_VALUE=100;
 	@Override
 	public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
 		String[] code = contractFormInfo.getContractStatus().split(",");
@@ -154,22 +161,66 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 * @return
 	 */
 	@Override
-	public IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo) {
-		if (Func.isNotBlank(contractFormInfo.getContractBigCategory())) {
+	public IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
+		if (Func.isNotBlank(contractFormInfo.getContractBigCategory()) && DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())) {
 			page = contractFormInfoMapper.pageListStatisticsType(page, contractFormInfo);
 		}
-		if (Func.isNotBlank(contractFormInfo.getContractStatus())) {
+		if (Func.isNotBlank(contractFormInfo.getContractStatus()) && DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())) {
 			page = contractFormInfoMapper.pageListStatisticsStatus(page, contractFormInfo);
 		}
-		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
-		List<ContractFormInfoResponseVO> records = pages.getRecords();
-		List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
-		for (ContractFormInfoResponseVO v : records) {
-			BigDecimal contractAmountSum=BigDecimal.valueOf(contractFormInfoMapper.selectAmountSum());
-			v.setAmountRatio(v.getContractAmount().divide(contractAmountSum,2)+"%");
-			recordList.add(v);
+        if (Func.isNotBlank(contractFormInfo.getColPayType()) && DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+            page = contractFormInfoMapper.pageListStatisticsColPayType(page, contractFormInfo);
+        }
+		if (Func.isNotBlank(contractFormInfo.getContractBigCategory()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())){
+		    page = contractFormInfoMapper.pageList(page,contractFormInfo);
+        }
+        if (Func.isNotBlank(contractFormInfo.getContractStatus()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())){
+            String[] code = contractFormInfo.getContractStatus().split(",");
+            contractFormInfo.setCode(Arrays.asList(code));
+            page = contractFormInfoMapper.pageList(page,contractFormInfo);
+        }
+        if (Func.isNotBlank(contractFormInfo.getColPayType()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+            page = contractFormInfoMapper.pageList(page,contractFormInfo);
+        }
+		if (!DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
+				&& !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+			List<ContractFormInfoEntity> records = page.getRecords();
+			List<ContractFormInfoEntity> recordList = new ArrayList<>();
+			for (ContractFormInfoEntity v : records) {
+				v.setContractBigCategory(bizClient.getValues("HTDL",Long.valueOf(v.getContractBigCategory())).getData());
+				//将签订信息存入合同分页 获取邮寄日期
+				ContractSigningEntity signingEntity = signingMapper.selectSigningById(v.getId());
+				if (Func.isNotEmpty(signingEntity)) {
+					v.setSigningEntity(signingEntity);
+				}
+                String contractAmount = v.getContractAmount()+"元";
+                v.setAmountTYPE(contractAmount);
+				recordList.add(v);
+			}
+			page.setRecords(recordList);
 		}
-		pages.setRecords(recordList);
+		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
+        if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory()) || DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
+        || DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+            List<ContractFormInfoResponseVO> records = pages.getRecords();
+            List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
+            for (ContractFormInfoResponseVO v : records) {
+                BigDecimal contractAmountSum = BigDecimal.valueOf(contractFormInfoMapper.selectAmountSum());
+                v.setAmountRatio(v.getContractAmount().divide(contractAmountSum, 2).multiply(BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%");
+                if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())){
+                    v.setSigningCount(contractFormInfoMapper.selectSigningCount(v.getContractBigCategory()));
+                    v.setContractBigCategory(v.getDictValue());
+                    //TODO 金额计算在合同起草时选择币种之后根据币种转换成人民币计算存入数据库
+                    String contractAmount = v.getContractAmount()+"元";
+                    v.setAmountTYPE(contractAmount);
+                }
+                if (DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())){
+                    v.setColPayType(v.getDictValue());
+                }
+                recordList.add(v);
+            }
+            pages.setRecords(recordList);
+        }
 		return pages;
 	}
 
@@ -370,7 +421,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		});
 	}
 
-	//json数据拼接
+    @Override
+    public Integer selectSigningCount(String contractBigCategory) {
+        return contractFormInfoMapper.selectSigningCount(contractBigCategory);
+    }
+
+    //json数据拼接
 	public String getjson(String json, ContractFormInfoEntity contractFormInfo) {
 		JSONArray objects = new JSONArray();
 		try {

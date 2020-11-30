@@ -295,6 +295,10 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private Integer count;
 	/**
+	 * 返回页面的金额数据
+	 */
+	private String amountTYPE;
+	/**
 	 * 归档日期
 	 */
 	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)

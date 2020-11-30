@@ -33,7 +33,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @param contractFormInfo
 	 * @return
 	 */
-	IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+	IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo);
 	/**
 	 * 修改合同状态
 	 * @param contractStatus,id
@@ -130,4 +130,10 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	void importContractFormInfo(List<ContractFormInfoImporter> data, List<ContractFormInfoImporterEx> read2, String contractTemplateId, String json);
 
+	/**
+	 * 根据合同类型查询已签订合同数量
+	 * @param contractBigCategory
+	 * @return
+	 */
+	Integer selectSigningCount(String contractBigCategory);
 }

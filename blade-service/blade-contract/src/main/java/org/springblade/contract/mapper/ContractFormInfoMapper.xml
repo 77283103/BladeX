@@ -32,6 +32,7 @@
         <result column="starting_time" property="startingTime"/>
         <result column="end_time" property="endTime"/>
         <result column="col_pay_term" property="colPayTerm"/>
+        <result column="col_pay_type" property="colPayType"/>
         <result column="days" property="days"/>
         <result column="extension" property="extension"/>
         <result column="counterpart_person" property="counterpartPerson"/>
@@ -171,6 +172,15 @@
             AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
         </if>
     </select>
+    <!--计算合同类型的签订合同数量-->
+    <select id="selectSigningCount" resultType="java.lang.Integer">
+        SELECT
+        count(contract_status) AS signingCount
+        FROM contract_form_info
+        WHERE is_deleted = 0
+        AND contract_status >= 60
+        AND contract_big_category = #{contractBigCategory}
+    </select>
     <!-- 分页 合同状态查找 合同分类总金额  合同分类签订数量-->
     <select id="pageListStatisticsStatus" resultMap="formInfoResultMap">
         SELECT contract_status,
@@ -190,13 +200,34 @@
             AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
         </if>
     </select>
+    <!-- 分页 合同支付类型查找 合同分类总金额  合同分类签订数量-->
+    <select id="pageListStatisticsColPayType" resultMap="formInfoResultMap">
+        SELECT col_pay_type,
+        sum(contract_amount)   AS contract_amount,
+        count(col_pay_type) AS count,
+        dict_value
+        FROM `contract_form_info` info,
+        `bladex-ty`.blade_dict_biz biz
+        WHERE info.is_deleted = 0
+        AND info.col_pay_type = biz.id
+        GROUP BY col_pay_type
+        <!--金额区间查询-->
+        <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
+            and contract_amount between #{maxAmount} and #{minAmount}
+        </if>
+        <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
+            AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
+        </if>
+        <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
+            AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+        </if>
+    </select>
     <!-- 分页 -->
     <select id="pageList" resultMap="formInfoResultMap">
         SELECT
-        <include refid="baseColumnList">
-        </include>
+        <include refid="baseColumnList"/>
         FROM contract_form_info
-                WHERE is_deleted = 0
+                WHERE contract_form_info.is_deleted = 0
         <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
             <foreach collection="contractFormInfo.code" item="contract_status" open="and contract_status in ("
                      separator="," close=")">
@@ -211,6 +242,12 @@
         </if>
         <if test="contractFormInfo.contractBigCategory != null and contractFormInfo.contractBigCategory != ''">
             AND contract_big_category like concat('%', #{contractFormInfo.contractBigCategory}, '%')
+        </if>
+        <if test="contractFormInfo.colPayType != null and contractFormInfo.colPayType != ''">
+            AND col_pay_type = #{contractFormInfo.colPayType}
+        </if>
+        <if test="contractFormInfo.colPayTerm != null and contractFormInfo.colPayTerm != ''">
+            AND col_pay_term = #{contractFormInfo.colPayTerm}
         </if>
         <if test="contractFormInfo.counterpartPerson != null and contractFormInfo.counterpartPerson != ''">
             AND counterpart_person like concat('%', #{contractFormInfo.counterpartPerson}, '%')
@@ -228,7 +265,7 @@
                                 DATE_FORMAT(now(), '%e') - DATE_FORMAT(file_time, '%e')) &gt;= '0'))
         </if>
         <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
-            AND contract_small_category = concat(#{contractFormInfo.contractSmallCategory})
+            AND contract_small_category like concat('%',#{contractFormInfo.contractSmallCategory},'%')
         </if>
         <!--金额区间查询-->
         <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
