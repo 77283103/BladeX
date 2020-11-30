@@ -45,6 +45,11 @@ public class ContractChangeEntity extends BaseEntity {
 	@ApiModelProperty(value = "变更主导方")
 	private String changeParty;
 	/**
+	 * 变更类型
+	 */
+	@ApiModelProperty(value = "变更主导方")
+	private String changeType;
+	/**
 	 * 变更说明
 	 */
 	@ApiModelProperty(value = "变更说明")

@@ -105,7 +105,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
 			//将多方起草关联的   相对方存入合同分页显示 获取相对方名称
 			List<ContractCounterpartEntity> counterpartEntityList = contractCounterpartMapper.selectByIds(v.getId());
-			v.setCounterpart(counterpartEntityList);
+			if (Func.isNotEmpty(counterpartEntityList)){
+				v.setCounterpart(counterpartEntityList);
+				StringBuilder name = new StringBuilder();
+				for (ContractCounterpartEntity counterpartEntity :counterpartEntityList) {
+					name.append(counterpartEntity.getName());
+					name.append(",");
+				}
+				name.substring(0, name.length());
+				v.setCounterpartName(name.toString());
+			}
 			//将用印信息存入合同分页 获取用印日期
 			ContractSealUsingInfoEntity sealUsingInfoEntity = sealUsingInfoMapper.selectUsingById(v.getId());
 			if (Func.isNotEmpty(sealUsingInfoEntity)) {
@@ -616,7 +625,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public ContractFormInfoResponseVO getById(Long id) {
-		ContractFormInfoEntity contractFormInfo = baseMapper.selectById(id);
+		ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
 		ContractFormInfoResponseVO contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(contractFormInfo);
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getSealName())) {
 			String[] sealNameList = contractFormInfoResponseVO.getSealName().split(",");
@@ -627,7 +636,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contractFormInfoResponseVO.setAccording(contractAccordingList);
 		//查询多方起草关联相对方
 		List<ContractCounterpartEntity> contractCounterpartList = contractCounterpartMapper.selectByIds(id);
-		contractFormInfoResponseVO.setCounterpart(contractCounterpartList);
+		if (Func.isNotEmpty(contractCounterpartList)){
+			contractFormInfoResponseVO.setCounterpart(contractCounterpartList);
+			StringBuilder name = new StringBuilder();
+			for (ContractCounterpartEntity counterpartEntity :contractCounterpartList) {
+				name.append(counterpartEntity.getName());
+				name.append(",");
+			}
+			name.substring(0, name.length());
+			contractFormInfoResponseVO.setCounterpartName(name.toString());
+		}
 		//查询独立起草关联相对方
 			/*ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectByIds(id).get(0);
 			contractFormInfoResponseVO.setCounterpartEntity(counterpartEntity);*/
@@ -697,8 +715,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 		//查询合同签订信息保存到合同vo
 		ContractSigningEntity signingEntity = signingMapper.selectSigningById(id);
-		contractFormInfoResponseVO.setSigningEntity(signingEntity);
-		ContractSigningResponseVO signingResponseVO = ContractSigningWrapper.build().entityPV(signingEntity);
+		if (Func.isNotEmpty(signingEntity)) {
+			ContractSigningResponseVO signingResponseVO = ContractSigningWrapper.build().entityPV(signingEntity);
+			contractFormInfoResponseVO.setSigningEntity(signingResponseVO);
+		}
 		//查询合同文本
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getTextFile())) {
 			R<List<FileVO>> result = fileClient.getByIds(contractFormInfoResponseVO.getTextFile());
@@ -726,18 +746,18 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 
 		//签订文本扫描件
-		if (!Func.isEmpty(signingResponseVO)) {
-			if (Func.isNoneBlank(signingResponseVO.getTextFiles())) {
-				R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getTextFiles());
+		if (!Func.isEmpty(signingEntity)) {
+			if (Func.isNoneBlank(signingEntity.getTextFiles())) {
+				R<List<FileVO>> result = fileClient.getByIds(signingEntity.getTextFiles());
 				if (result.isSuccess()) {
 					contractFormInfoResponseVO.setSigningTextFileVOList(result.getData());
 				}
 			}
 		}
 		//签订附件扫描件
-		if (!Func.isEmpty(signingResponseVO)) {
-			if (Func.isNoneBlank(signingResponseVO.getAttachedFiles())) {
-				R<List<FileVO>> result = fileClient.getByIds(signingResponseVO.getAttachedFiles());
+		if (!Func.isEmpty(signingEntity)) {
+			if (Func.isNoneBlank(signingEntity.getAttachedFiles())) {
+				R<List<FileVO>> result = fileClient.getByIds(signingEntity.getAttachedFiles());
 				if (result.isSuccess()) {
 					contractFormInfoResponseVO.setSigningAttachedFileVOList(result.getData());
 				}

@@ -150,6 +150,12 @@
         a_bank_name,
         a_account_name
     </sql>
+    <select id="selectById" resultMap="formInfoResultMap">
+        SELECT  <include refid="baseColumnList"/>
+        FROM `bladex-ty`.contract_form_info
+        WHERE is_deleted=0
+        AND id=#{id}
+    </select>
     <!-- 分页 合同大类分组类型  合同分类总金额  合同分类签订数量-->
     <select id="pageListStatisticsType" resultMap="formInfoResultMap">
         SELECT contract_big_category,

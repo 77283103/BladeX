@@ -62,7 +62,12 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	IPage<ContractFormInfoEntity> pageListSealInfo(IPage<ContractFormInfoRequestVO> page, ContractFormInfoRequestVO contractFormInfoRequestVO);
 
-
+	/**
+	 * 合同详情
+	 * @param id
+	 * @return
+	 */
+	ContractFormInfoEntity selectById(Long id);
 
 	/**
 	 * 保存合同相对方关联表

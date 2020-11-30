@@ -145,7 +145,7 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	/**
 	 * 相对方名称字符串
 	 */
-	private List<String > counterpartName;
+	private String counterpartName;
 
 	/**
 	 * 履约进度

@@ -9,6 +9,7 @@
         <result column="change_reason" property="changeReason"/>
         <result column="change_content" property="changeContent"/>
         <result column="change_party" property="changeParty"/>
+        <result column="change_type" property="changeType"/>
         <result column="change_explain" property="changeExplain"/>
         <result column="supple_agreement" property="suppleAgreement"/>
         <result column="ref_contract_id" property="refContractId"/>
@@ -26,6 +27,7 @@
         change_reason,
         change_content,
         change_party,
+        change_type,
         change_explain,
         supple_agreement,
         ref_contract_id,
