@@ -188,6 +188,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			List<ContractFormInfoEntity> recordList = new ArrayList<>();
 			for (ContractFormInfoEntity v : records) {
 				v.setContractBigCategory(bizClient.getValues("HTDL",Long.valueOf(v.getContractBigCategory())).getData());
+                v.setColPayType(bizClient.getValues("col_pay_term",Long.valueOf(v.getColPayTerm())).getData());
 				//将签订信息存入合同分页 获取邮寄日期
 				ContractSigningEntity signingEntity = signingMapper.selectSigningById(v.getId());
 				if (Func.isNotEmpty(signingEntity)) {
@@ -210,13 +211,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())){
                     v.setSigningCount(contractFormInfoMapper.selectSigningCount(v.getContractBigCategory()));
                     v.setContractBigCategory(v.getDictValue());
-                    //TODO 金额计算在合同起草时选择币种之后根据币种转换成人民币计算存入数据库
-                    String contractAmount = v.getContractAmount()+"元";
-                    v.setAmountTYPE(contractAmount);
                 }
                 if (DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())){
                     v.setColPayType(v.getDictValue());
                 }
+                //TODO 金额计算在合同起草时选择币种之后根据币种转换成人民币计算存入数据库
+                String contractAmount = v.getContractAmount()+"元";
+                v.setAmountTYPE(contractAmount);
                 recordList.add(v);
             }
             pages.setRecords(recordList);
