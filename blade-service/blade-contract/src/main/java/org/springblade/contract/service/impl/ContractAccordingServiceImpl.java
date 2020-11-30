@@ -44,4 +44,10 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 
 	}
 
+
+	@Override
+	public void deleteByContractId(Long id) {
+		//baseMapper.selectByContractId(id);
+		baseMapper.deleteAccording(id);
+	}
 }

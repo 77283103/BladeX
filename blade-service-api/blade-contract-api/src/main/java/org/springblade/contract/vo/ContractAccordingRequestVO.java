@@ -52,4 +52,6 @@ public class ContractAccordingRequestVO extends ContractAccordingEntity {
 	@ApiModelProperty(value = "是否可以复用")
 	private Integer isReused;
 
+	@ApiModelProperty(value = "依据地址")
+	private String[] contractIds;
 }

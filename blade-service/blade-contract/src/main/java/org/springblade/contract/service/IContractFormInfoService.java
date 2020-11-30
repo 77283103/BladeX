@@ -7,6 +7,7 @@ import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractSigningRequestVO;
+import org.springblade.contract.vo.ContractVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.vo.TemplateRequestVO;
 
@@ -120,8 +121,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	/**
 	 * 导入合同数据
 	 * @param data
-	 * @param contractTemplateId
 	 */
-	void importContractFormInfo(List<ContractFormInfoImporter> data, List<ContractFormInfoImporterEx> read2, String contractTemplateId, String json);
+	void importContractFormInfo(List<ContractFormInfoImporter> data, List<ContractFormInfoImporterEx> read2,String json, String contractTemplateId,String contractBigCategory,String contractSmallCategory);
 
 }

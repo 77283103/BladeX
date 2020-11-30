@@ -32,4 +32,11 @@ public interface IContractAccordingService extends BaseService<ContractAccording
 	 */
 	void saveAccording(List<Long> ids, Long id);
 
+	/**
+	 * 依据删除方法
+	 * @param id 合同id
+	 * @return
+	 */
+	void deleteByContractId(Long id);
+
 }

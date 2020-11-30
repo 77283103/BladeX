@@ -3,6 +3,7 @@ package org.springblade.contract.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
@@ -305,41 +306,49 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 甲方名称
 	 */
+	@JsonProperty(value = "aName")
 	@ApiModelProperty(value = "甲方名称")
 	private String aName;
 	/**
 	 * 甲方联系人
 	 */
+	@JsonProperty(value = "aPerson")
 	@ApiModelProperty(value = "甲方联系人")
 	private String aPerson;
 	/**
 	 * 甲方地址
 	 */
+	@JsonProperty(value = "aAddress")
 	@ApiModelProperty(value = "甲方地址")
 	private String aAddress;
 	/**
 	 * 甲方联系方式
 	 */
+	@JsonProperty(value = "aTelephone")
 	@ApiModelProperty(value = "甲方联系方式")
 	private String aTelephone;
 	/**
 	 * 甲方指定邮箱
 	 */
+	@JsonProperty(value = "aEmail")
 	@ApiModelProperty(value = "甲方指定邮箱")
 	private String aEmail;
 	/**
 	 * 甲方银行账号
 	 */
+	@JsonProperty(value = "aBankNumber")
 	@ApiModelProperty(value = "甲方银行账号")
 	private Long aBankNumber;
 	/**
 	 * 甲方开户行名称
 	 */
+	@JsonProperty(value = "aBankName")
 	@ApiModelProperty(value = "甲方开户行名称")
 	private String aBankName;
 	/**
 	 * 甲方账号名称
 	 */
+	@JsonProperty(value = "aAccountName")
 	@ApiModelProperty(value = "甲方账号名称")
 	private String aAccountName;
 	/**

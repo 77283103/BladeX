@@ -34,10 +34,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 /**
  * 服务实现类
@@ -83,6 +80,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	private ContractRawMaterialsMapper contractRawMaterialsMapper;
 
+	private ContractTemplateMapper contractTemplateMapper;
 	@Override
 	public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
 		String[] code = contractFormInfo.getContractStatus().split(",");
@@ -153,12 +151,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 * @return list
 	 */
 	@Override
-	public void importContractFormInfo(List<ContractFormInfoImporter> data, List<ContractFormInfoImporterEx> read2, String contractTemplateId, String json) {
+	public void importContractFormInfo(List<ContractFormInfoImporter> data, List<ContractFormInfoImporterEx> read2, String json, String contractTemplateId, String contractBigCategory, String contractSmallCategory) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
 		data.forEach(contractFormInfoExcel -> {
 			//保存合同数据
 			ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
 			contractFormInfoEntity.setContractTemplateId(Long.valueOf(contractTemplateId));
+			contractFormInfoEntity.setContractBigCategory(contractBigCategory);
+			contractFormInfoEntity.setContractSmallCategory(contractSmallCategory);
+			contractFormInfoEntity.setContractStatus("10");
+			contractFormInfoEntity.setContractSoure("40");
 			if (!"无".equals(contractFormInfoExcel.getSealName()) && !"".equals(contractFormInfoExcel.getSealName()) && contractFormInfoExcel.getSealName() != null) {
 				contractFormInfoEntity.setSealName(contractFormInfoExcel.getSealName());
 			}
@@ -253,19 +255,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				contractFormInfoEntity.setYwlBreachOfContract(contractFormInfoExcel.getYwlBreachOfContract());
 			}
 			/*String jsonEx = this.templateDraft(contractFormInfoEntity,json);*/
-			ContractFormInfoImporter contractFormInfoImporterEx = new ContractFormInfoImporter();
+			/*ContractFormInfoImporter contractFormInfoImporterEx = new ContractFormInfoImporter();*/
 			this.save(contractFormInfoEntity);
 			if (!"".equals(contractFormInfoEntity.getId()) && contractFormInfoEntity.getId() != null) {
-				//押金是无则不存押金数据及其关系
-				if (!"无".equals(contractFormInfoExcel.getIsNotBond())) {
-					//在相对方contract_counterpart的表里通过相对方全称查出来对应该相对方id ，相对方id和合同id保存到 contract_counterpart_setting 表中
-					if (!"".equals(contractFormInfoExcel.getCounterpartName())) {
-						List<ContractCounterpartEntity> contractCounterpartEntities = contractCounterpartMapper.selectByName(contractFormInfoExcel.getCounterpartName());
-						if (contractCounterpartEntities.size() > 0) {
-							contractFormInfoMapper.deleteCounterpart(contractFormInfoEntity.getId());
-							contractFormInfoMapper.saveCounterpart(contractFormInfoEntity.getId(), contractCounterpartEntities);
-							contractFormInfoEntity.setCounterpart(contractCounterpartEntities);
-							//保存到押金contract_bond表中 contract_bond中也需要保存相对方的id
+				//在相对方contract_counterpart的表里通过相对方全称查出来对应该相对方id ，相对方id和合同id保存到 contract_counterpart_setting 表中
+				if (!"".equals(contractFormInfoExcel.getCounterpartName())) {
+					List<ContractCounterpartEntity> contractCounterpartEntities = contractCounterpartMapper.selectByName(contractFormInfoExcel.getCounterpartName());
+					if (contractCounterpartEntities.size() > 0) {
+						contractFormInfoMapper.deleteCounterpart(contractFormInfoEntity.getId());
+						contractFormInfoMapper.saveCounterpart(contractFormInfoEntity.getId(), contractCounterpartEntities);
+						contractFormInfoEntity.setCounterpart(contractCounterpartEntities);
+						//保存到押金contract_bond表中 contract_bond中也需要保存相对方的id
+						//押金是无则不存押金数据及其关系
+						if (!"无".equals(contractFormInfoExcel.getIsNotBond())) {
 							ContractBondEntity contractBondEntity = new ContractBondEntity();
 							contractBondEntity.setIsNotBond(contractFormInfoExcel.getIsNotBond());
 							if (!"无".equals(contractFormInfoExcel.getPlanPayAmount()) && !"".equals(contractFormInfoExcel.getPlanPayAmount()) && contractFormInfoExcel.getPlanPayAmount() != null) {
@@ -275,7 +277,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 									contractBondEntity.setPlanPayAmount(new BigDecimal(2));
 								}
 							}
-
 							try {
 								if (!"无".equals(contractFormInfoExcel.getPlanPayTime()) && !"".equals(contractFormInfoExcel.getPlanPayTime()) && contractFormInfoExcel.getPlanPayTime() != null) {
 									Date parse = simpleDateFormat.parse(contractFormInfoExcel.getPlanPayTime());
@@ -303,6 +304,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					}
 				}
 				//原物料一对多的列表保存到contract_raw_materials表中    这个表中需要保存合同的id
+				List<ContractRawMaterialsEntity> contractRawMaterialsList = new ArrayList<ContractRawMaterialsEntity>();
 				for (ContractFormInfoImporterEx read2Ex : read2) {
 					if (contractFormInfoExcel.getSealName().equals(read2Ex.getYwlFullName()) && contractFormInfoExcel.getCounterpartName().equals(read2Ex.getYwlNameOfOpposite())) {
 						ContractRawMaterialsEntity contractRawMaterialsEntity = new ContractRawMaterialsEntity();
@@ -335,37 +337,55 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 						}
 						contractRawMaterialsEntity.setContractId(contractFormInfoEntity.getId());
 						contractRawMaterialsMapper.insert(contractRawMaterialsEntity);
-						//contractFormInfoEntity.setRawMaterialsList();
+						contractRawMaterialsList.add(contractRawMaterialsEntity);
 					}
 				}
+				contractFormInfoEntity.setRawMaterialsList(contractRawMaterialsList);
 			}
 			String jsonEx = this.getjson(json, contractFormInfoEntity);
 			contractFormInfoEntity.setJson(jsonEx);
+			this.saveOrUpdate(contractFormInfoEntity);
 		});
 	}
 
 	//json数据拼接
 	public String getjson(String json, ContractFormInfoEntity contractFormInfo) {
 		JSONArray objects = new JSONArray();
+		SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy",Locale.US);
 		try {
 			objects = JSONArray.parseArray(json);
-			JSONObject db =  (JSONObject)JSONObject.toJSON(contractFormInfo);
-			for (int i = 0; i < objects.size() ; i++) {
+			JSONObject db = (JSONObject) JSONObject.toJSON(contractFormInfo);
+			for (int i = 0; i < objects.size(); i++) {
 				JSONObject temp = objects.getJSONObject(i);
 				String fieldName = temp.getString("fieldName");
-				if ( fieldName != null ){
-					String dbColum = db.getString(fieldName);
-					if( dbColum != null ){
-						temp.put( "fieldValue" , dbColum );
+				String componentType = temp.getString("componentType");
+				if("datePicker".equals(componentType)){
+					if (fieldName != null) {
+						String dbColum = db.getString(fieldName);
+						if (dbColum != null) {
+						Date d=sdf.parse(dbColum);
+						temp.put("fieldValue", sd.format(d));
+						}
+					}
+				}else if("relationList".equals(componentType)){
+					System.out.println("是的");
+				}else{
+					if (fieldName != null) {
+						String dbColum = db.getString(fieldName);
+						if (dbColum != null) {
+							temp.put("fieldValue", dbColum);
+						}
 					}
 				}
-				objects.set( i , temp );
+				objects.set(i, temp);
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		json=objects.toJSONString();
+		json = objects.toJSONString();
 		List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+		ContractTemplateEntity contractTemplate=contractTemplateMapper.selectById(contractFormInfo.getContractTemplateId());
 		for (TemplateFieldJsonEntity templateField : templateFieldList) {
 			if (ContractFormInfoTemplateContract.CONTRACT_ID.equals(templateField.getComponentType())) {
 				templateField.setFieldValue(contractFormInfo.getId().toString());
@@ -374,8 +394,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			if (ContractFormInfoTemplateContract.CONTRACT_BIG_CATEGORY.equals(templateField.getRelationCode())) {
 				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
 				if (null != jsonObj) {
-					jsonObj.put("first",contractFormInfo.getContractBigCategory());
-					jsonObj.put("second",contractFormInfo.getContractSmallCategory());
+					jsonObj.put("template", contractTemplate);
+					jsonObj.put("first", contractFormInfo.getContractBigCategory());
+					jsonObj.put("second", contractFormInfo.getContractSmallCategory());
 					templateField.setSecondSelectDataObject(jsonObj);
 				}
 			}
@@ -383,9 +404,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			if (ContractFormInfoTemplateContract.CONTRACT_COL_PAY.equals(templateField.getRelationCode())) {
 				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
 				if (null != jsonObj) {
-					jsonObj.put("first",contractFormInfo.getColPayType());
-					jsonObj.put("second",contractFormInfo.getColPayTerm());
-					jsonObj.put("days",contractFormInfo.getDays());
+					jsonObj.put("first", contractFormInfo.getColPayType());
+					jsonObj.put("second", contractFormInfo.getColPayTerm());
+					jsonObj.put("days", contractFormInfo.getDays());
 					templateField.setSecondSelectDataObject(jsonObj);
 				}
 			}
