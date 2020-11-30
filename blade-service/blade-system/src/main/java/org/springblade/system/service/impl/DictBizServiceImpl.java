@@ -83,8 +83,8 @@ public class DictBizServiceImpl extends BaseServiceImpl<DictBizMapper, DictBiz> 
 	}
 
 	@Override
-	public String getValues(String code, Long parentId) {
-		return Func.toStr(baseMapper.getValues(code, parentId), StringPool.EMPTY);
+	public String getValues(String code, Long id) {
+		return Func.toStr(baseMapper.getValues(code, id), StringPool.EMPTY);
 	}
 
 	@Override

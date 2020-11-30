@@ -65,11 +65,11 @@ public interface IDictBizClient {
 	 * 获取字典表对应中文
 	 *
 	 * @param code    字典编号
-	 * @param parentId 父主键
+	 * @param id 父主键
 	 * @return
 	 */
 	@GetMapping(GET_VALUES)
-	R<String> getValues(@RequestParam("code") String code, @RequestParam("parentId") Long parentId);
+	R<String> getValues(@RequestParam("code") String code, @RequestParam("id") Long id);
 	/**
 	 * 获取字典表
 	 *

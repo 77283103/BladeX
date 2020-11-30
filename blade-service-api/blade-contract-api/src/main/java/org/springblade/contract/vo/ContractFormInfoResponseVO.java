@@ -10,6 +10,7 @@ import org.springblade.resource.vo.FileVO;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -144,11 +145,23 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	/**
 	 * 相对方名称字符串
 	 */
-	private List<String > counterpartName;
+	private String counterpartName;
 
 	/**
 	 * 履约进度
 	 */
 	private String planSchedule;
+	/**
+	 * 金额sum
+	 */
+	private BigDecimal contractAmountSum;
+	/**
+	 * 签订数量
+	 */
+	private Integer signingCount;
+	/**
+	 * 占比金额比率
+	 */
+	private String amountRatio;
 
 }

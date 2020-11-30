@@ -43,5 +43,9 @@ public class ContractChangeRequestVO extends BaseEntity {
 
     @ApiModelProperty(value="关联合同id")
 	private Long refContractId;
-
+	/**
+	 * 变更类型
+	 */
+	@ApiModelProperty(value = "变更主导方")
+	private String changeType;
 }

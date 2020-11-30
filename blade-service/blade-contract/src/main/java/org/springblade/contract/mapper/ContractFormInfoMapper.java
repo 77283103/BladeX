@@ -26,6 +26,28 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
 	/**
+	 * 合同类型统计分析分页查询
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> pageListStatisticsType(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+	/**
+	 * 合同状态分组统计分析分页查询
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> pageListStatisticsStatus(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+
+	/**
+	 * 合同支付类型分组统计分析分页查询
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> pageListStatisticsColPayType(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+	/**
 	 * 修改合同状态
 	 * @param contractStatus,id
 	 * @return
@@ -40,7 +62,12 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	IPage<ContractFormInfoEntity> pageListSealInfo(IPage<ContractFormInfoRequestVO> page, ContractFormInfoRequestVO contractFormInfoRequestVO);
 
-
+	/**
+	 * 合同详情
+	 * @param id
+	 * @return
+	 */
+	ContractFormInfoEntity selectById(Long id);
 
 	/**
 	 * 保存合同相对方关联表
@@ -117,4 +144,16 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	List<ContractFormInfoEntity> getNumList();
 
+	/**
+	 * 获取合同金额sum
+	 * @return
+	 */
+	Double selectAmountSum();
+
+	/**
+	 * 根据合同类型查询已签订合同数量
+	 * @param contractBigCategory
+	 * @return
+	 */
+	Integer selectSigningCount(String contractBigCategory);
 }

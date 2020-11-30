@@ -45,10 +45,10 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 * 获取字典表对应中文
 	 *
 	 * @param code    字典编号
-	 * @param parentId 父主键
+	 * @param id 父主键
 	 * @return
 	 */
-	String getValues(String code, Long parentId);
+	String getValues(String code, Long id);
 	/**
 	 * 获取字典表
 	 *

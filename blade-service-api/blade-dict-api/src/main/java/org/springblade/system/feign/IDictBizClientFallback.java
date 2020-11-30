@@ -40,7 +40,7 @@ public class IDictBizClientFallback implements IDictBizClient {
 	}
 
 	@Override
-	public R<String> getValues(String code, Long parentId) {
+	public R<String> getValues(String code, Long id) {
 		return  R.fail("获取数据失败");
 	}
 
