@@ -275,7 +275,9 @@ public class ContractFormInfoController extends BladeController {
 				JSONObject json = JSON.parseObject(jsonObj.get("template").toString());
 				j.put("contractBigCategory", jsonObj.get("first"));
 				j.put("contractSmallCategory", jsonObj.get("second"));
-				j.put("contractTemplateId", json.get("id"));
+				if(null!=json){
+					j.put("contractTemplateId", json.get("id"));
+				}
 			} else if (ContractFormInfoTemplateContract.CONTRACT_COL_PAY.equals(templateField.getRelationCode())) {
 				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
 				j.put("colPayType", jsonObj.get("first"));

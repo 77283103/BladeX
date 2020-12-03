@@ -19,6 +19,7 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -37,7 +38,7 @@ import org.springblade.contract.wrapper.ContractAccordingWrapper;
 @RequestMapping("/according")
 @Api(value = "合同依据管理", tags = "合同依据管理")
 public class ContractAccordingController extends BladeController {
-
+	private RedisTemplate redisTemplate;
 	private IContractAccordingService accordingService;
 
 	/**
@@ -104,4 +105,16 @@ public class ContractAccordingController extends BladeController {
 		return R.status(accordingService.deleteLogic(Func.toLongList(ids)));
 	}
 
+
+	/**
+	 * 查询redis的数据
+	 */
+	@PostMapping("/according")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "查询redis的数据", notes = "传入id")
+	public R<String> according(@ApiParam(value = "主键集合", required = true) @RequestParam String id) {
+		String j= (String) redisTemplate.opsForValue().get("according-id");
+		redisTemplate.delete(id);
+		return R.data(j);
+	}
 }
