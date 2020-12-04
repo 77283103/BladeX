@@ -81,6 +81,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 履约计划收付款集合
 	 */
 	private List<ContractPerformanceColPayEntity> performanceColPayList;
+	/**
+	 * 合同变更信息
+	 */
+	private ContractChangeEntity changeEntity;
 
 	/**
 	 * 签订文件扫描件列表
@@ -90,6 +94,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 签订附件扫描件列表
 	 */
 	private List<FileVO> signingAttachedFileVOList;
+	/**
+	 *  根据合同id查询变更原合同历史版本列表
+	 */
+	private List<ContractFormInfoEntity> formInfosEntityOldVOList;
 	/**
 	 * 评估相关附件
 	 */

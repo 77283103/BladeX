@@ -105,6 +105,12 @@ public class ContractTemplateEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "使用率")
 	private String usageRate;
+
+	/**
+	 * 使用记录
+	 */
+	@ApiModelProperty(value = "使用记录")
+	private String usageRecord;
 	/**
 	 * 备注
 	 */

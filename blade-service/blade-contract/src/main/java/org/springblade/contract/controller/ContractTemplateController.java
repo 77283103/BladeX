@@ -2,42 +2,38 @@ package org.springblade.contract.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.metadata.WriteSheet;
-import io.micrometer.core.instrument.binder.db.DatabaseTableMetrics;
-import io.swagger.annotations.Api;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import org.springblade.core.log.exception.ServiceException;
+import org.springblade.contract.entity.ContractTemplateEntity;
+import org.springblade.contract.service.IContractTemplateService;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
-import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.contract.wrapper.ContractTemplateWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
-
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictBizClient;
+import org.springblade.system.feign.ISysClient;
+import org.springblade.system.user.feign.IUserClient;
 import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.contract.entity.ContractTemplateEntity;
-import org.springblade.contract.wrapper.ContractTemplateWrapper;
-import org.springblade.contract.service.IContractTemplateService;
-
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 
@@ -52,7 +48,8 @@ import java.util.List;
 @RequestMapping("/template")
 @Api(value = "范本管理", tags = "范本管理")
 public class ContractTemplateController extends BladeController {
-
+	private IUserClient userClient;
+	private ISysClient sysClient;
 	private IDictBizClient dictBizClient;
 	private IContractTemplateService templateService;
 	private static final String TEMPLATE_STATUS="10";
@@ -69,7 +66,7 @@ public class ContractTemplateController extends BladeController {
 	@PreAuth("hasPermission('contract:template:detail')")
 	public R<ContractTemplateResponseVO> detail(@RequestParam Long id) {
 		ContractTemplateEntity detail = templateService.getById(id);
-		return R.data(ContractTemplateWrapper.build().entityVO(detail));
+		return R.data(ContractTemplateWrapper.build().entityPV(detail));
 	}
 
 	/**
@@ -81,7 +78,7 @@ public class ContractTemplateController extends BladeController {
 	@PreAuth("hasPermission('contract:template:version')")
 	public R<ContractTemplateResponseVO> version(@RequestParam Long id) {
 		ContractTemplateEntity version = templateService.getByNewId(id);
-		return R.data(ContractTemplateWrapper.build().entityVO(version));
+		return R.data(ContractTemplateWrapper.build().entityPV(version));
 	}
 
 	/**
@@ -92,8 +89,8 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入template")
 	@PreAuth("hasPermission('contract:template:list')")
 	public R<IPage<ContractTemplateResponseVO>> list(ContractTemplateRequestVO template, Query query) {
-		IPage<ContractTemplateEntity> pages = templateService.pageList(Condition.getPage(query), template);
-		return R.data(ContractTemplateWrapper.build().pageVO(pages));
+		IPage<ContractTemplateResponseVO> pages = templateService.pageList(Condition.getPage(query), template);
+		return R.data(pages);
 	}
 
 	/**
@@ -225,7 +222,7 @@ public class ContractTemplateController extends BladeController {
 				/*使用范围*/
 				cloumns.add(dictBizClient.getValue("use_range",templateEntity.getUseRange()).getData());
 				/*承办单位*/
-				cloumns.add(templateEntity.getCreateUnit());
+				cloumns.add(sysClient.getDept(templateEntity.getCreateDept()).getData().getDeptName());
 				/*使用记录*/
 				cloumns.add(templateEntity.getCompletedContractCount());
 				/*使用率*/

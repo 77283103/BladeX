@@ -75,6 +75,9 @@ public class ContractTemplateRequestVO extends BaseEntity {
 	@ApiModelProperty(value = "使用率")
 	private String usageRate;
 
+	@ApiModelProperty(value = "使用记录")
+	private String usageRecord;
+
 	@ApiModelProperty(value = "备注")
 	private String remarks;
 

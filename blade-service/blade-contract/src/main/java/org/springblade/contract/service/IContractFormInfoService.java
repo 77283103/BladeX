@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
-import org.springblade.contract.vo.ContractFormInfoRequestVO;
-import org.springblade.contract.vo.ContractFormInfoResponseVO;
-import org.springblade.contract.vo.ContractSigningRequestVO;
-import org.springblade.contract.vo.ContractVO;
+import org.springblade.contract.vo.*;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.vo.TemplateRequestVO;
 
@@ -97,6 +94,12 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	ContractFormInfoResponseVO getById(Long id);
 
+	/**
+	 * 根据合同id查询变更原合同历史版本列表
+	 * @param id
+	 * @return
+	 */
+	ContractFormInfoResponseVO getByChangeHistoryId(Long id);
 	/**
 	 *统计合同导出次数
 	 * @param id 合同id

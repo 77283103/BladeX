@@ -20,4 +20,11 @@ public interface ContractChangeMapper extends BaseMapper<ContractChangeEntity> {
 	 */
 	IPage<ContractChangeEntity> pageList(IPage<ContractChangeEntity> page, ContractChangeEntity change);
 
+	/**
+	 *
+	 * @param id
+	 * @return
+	 */
+	ContractChangeEntity selectById(Long id);
+
 }

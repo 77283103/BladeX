@@ -6,6 +6,7 @@ import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
+import org.springblade.contract.vo.ContractTemplateResponseVO;
 
 import java.util.List;
 
@@ -70,6 +71,13 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	ContractFormInfoEntity selectById(Long id);
 
 	/**
+	 * 变更合同详情
+	 * @param id
+	 * @return
+	 */
+	ContractFormInfoEntity selectByChangeId(Long id);
+
+	/**
 	 * 保存合同相对方关联表
 	 * @param counterpart 相对方
 	 * @param id 合同id
@@ -112,7 +120,7 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	void saveArchive(Long contractId,Long archiveId);
 
 	/**
-	 * 保存合同归档关联表
+	 * 保存合同签订关联表
 	 * @param contractId 合同id
 	 * @param signingId 签订id
 	 */

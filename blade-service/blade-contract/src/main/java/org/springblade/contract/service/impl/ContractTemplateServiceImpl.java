@@ -3,8 +3,10 @@ package org.springblade.contract.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.mapper.ContractTemplateMapper;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
+import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.contract.wrapper.ContractTemplateWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.ContractTemplateEntity;
@@ -13,6 +15,8 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.system.feign.ISysClient;
+import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,13 +36,30 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	private ContractTemplateMapper templateMapper;
 
 	private IFileClient fileClient;
+
+	private IUserClient userClient;
+
+	private ISysClient sysClient;
+
 	@Override
-	public IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template) {
+	public IPage<ContractTemplateResponseVO> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template) {
 		if (Func.isNotBlank(template.getTemplateStatus())) {
 			String[] code = template.getTemplateStatus().split(",");
 			template.setCode(Arrays.asList(code));
 		}
-		return baseMapper.pageList(page, template);
+		page =baseMapper.pageList(page, template);
+		IPage<ContractTemplateResponseVO> pages = ContractTemplateWrapper.build().entityPVPage(page);
+		List<ContractTemplateResponseVO> records = pages.getRecords();
+		List<ContractTemplateResponseVO> recordList = new ArrayList<>();
+
+		for (ContractTemplateResponseVO v : records) {
+			/*为每个对象，设置创建者名字和组织名字*/
+			v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
+			v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
+			recordList.add(v);
+		}
+		pages.setRecords(recordList);
+		return pages;
 	}
 
 	/**
@@ -62,7 +83,7 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 		//查询实体数据
 		ContractTemplateEntity templateEntity=baseMapper.selectById(id);
 		//将实体数据存入vo
-		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityVO(templateEntity);
+		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityPV(templateEntity);
 		//判断vo的文件id是否为空
 		if (Func.isNoneBlank(templateResponseVO.getAttachedFiles())){
 			//根据文件id查询关联的文件信息
@@ -91,7 +112,7 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 			templateEntityList.add(templateEntity);
 		}
 		//将实体数据存入vo
-		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityVO(templateEntity);
+		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityPV(templateEntity);
 		templateResponseVO.setTemplateEntityOldVOList(templateEntityList);
 		return templateResponseVO;
 	}

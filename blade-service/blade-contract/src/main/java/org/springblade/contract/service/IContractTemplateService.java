@@ -24,7 +24,7 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @param template
 	 * @return
 	 */
-	IPage<ContractTemplateEntity> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template);
+	IPage<ContractTemplateResponseVO> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template);
 
 	/**
 	 * 修改范本状态

@@ -45,4 +45,12 @@
         FROM contract_change
         WHERE is_deleted = 0
     </select>
+    <!--根据合同id查询变更信息-->
+    <select id="selectById" resultMap="changeResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_change
+        WHERE is_deleted = 0
+        AND ref_contract_id = #{id}
+    </select>
 </mapper>
