@@ -253,8 +253,12 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
+
+
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
+
+
 
 
 	/**

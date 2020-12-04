@@ -113,7 +113,7 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "查询redis的数据", notes = "传入id")
 	public R<String> according(@ApiParam(value = "主键集合", required = true) @RequestParam String id) {
-		String j= (String) redisTemplate.opsForValue().get("according-id");
+		String j= (String) redisTemplate.opsForValue().get(id);
 		redisTemplate.delete(id);
 		return R.data(j);
 	}

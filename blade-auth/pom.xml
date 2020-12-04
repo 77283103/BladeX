@@ -150,6 +150,12 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/EKP-SSO-client-java.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-xxljob-admin</artifactId>
+            <version>2.5.0.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
