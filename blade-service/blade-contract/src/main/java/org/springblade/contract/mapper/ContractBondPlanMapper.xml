@@ -60,8 +60,10 @@
     <select id="pageList" resultMap="contractBondResultMap">
         SELECT
             <include refid="baseColumnList"></include>
-        FROM contract_bond_plan
-        WHERE is_deleted = 0
+        FROM contract_bond_plan bond
+        WHERE bond.is_deleted=0
+        AND bond.contract_id
+        IN (SELECT form.id FROM contract_form_info form WHERE form.contract_status='70')
         <if test="contractBond.bondName != null and contractBond.bondName != ''">
             AND bond_name like concat('%',#{contractBond.bondName},'%')
         </if>

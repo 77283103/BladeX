@@ -53,4 +53,9 @@
         WHERE is_deleted = 0
         AND ref_contract_id = #{id}
     </select>
+    <!--删除保证金脏数据-->
+    <delete id="deleteByChangeId" parameterType="java.lang.Long">
+        DELETE FROM contract_change  WHERE `bladex-ty`.contract_change.ref_contract_id=#{id}
+    </delete>
+
 </mapper>

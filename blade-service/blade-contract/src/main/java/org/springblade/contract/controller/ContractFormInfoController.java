@@ -70,7 +70,7 @@ public class ContractFormInfoController extends BladeController {
 	private IContractBondPlanService contractBondPlanService;
 	private ContractFormInfoMapper formInfoMapper;
 	private IDictBizClient bizClient;
-	private static final Integer CHANGE_CONTRACT_ID =-1;
+	private static final Integer CHANGE_CONTRACT_ID = -1;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
 	private static final String CONTRACT_REVIEW_STATUS = "20";
@@ -147,7 +147,7 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
 			contractFormInfoService.save(entity);
-		} else {
+		}else {
 			contractFormInfoService.updateById(entity);
 		}
 		contractFormInfo.setId(entity.getId());
@@ -169,7 +169,7 @@ public class ContractFormInfoController extends BladeController {
 					contractBondService.save(contractBondEntity);
 				}
 				//保存保证金履约计划
-				contractBondPlan.setContractId(entity.getId());
+				contractBondPlan.setContractId(contractFormInfo.getId());
 				contractBondPlanService.save(contractBondPlan);
 				list.add(contractBondEntity.getId());
 			}
@@ -218,10 +218,6 @@ public class ContractFormInfoController extends BladeController {
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
-			contractFormInfoService.save(entity);
-		}else if(CHANGE_CONTRACT_ID.equals(contractFormInfo.getChangeContractId())){
-			entity.setId(null);
-			entity.setChangeContractId(contractFormInfo.getId());
 			contractFormInfoService.save(entity);
 		}else {
 			contractFormInfoService.updateById(entity);
@@ -275,11 +271,6 @@ public class ContractFormInfoController extends BladeController {
 				performanceColPay.setContractId(contractFormInfo.getId());
 				contractPerformanceColPayService.save(performanceColPay);
 			});
-		}
-		//判断满足已变更新合同的条件 修改原合同状态
-		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory())&& APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())
-				&& CONTRACT_REVIEW_STATUS.equals(contractFormInfo.getContractStatus())) {
-			formInfoMapper.updateExportStatus(ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS,contractFormInfo.getChangeContractId());
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
@@ -725,4 +716,183 @@ public class ContractFormInfoController extends BladeController {
 			}
 		}
 	}
+
+	/**
+	 * 独立起草新增
+	 */
+	@PostMapping("/addChange")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:addChange')")
+	@Transactional(rollbackFor = Exception.class)
+	public R<ContractFormInfoEntity> saveChange(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		contractFormInfo.setContractSoure("10");
+		ContractFormInfoEntity entity = new ContractFormInfoEntity();
+		BeanUtil.copy(contractFormInfo, entity);
+		if (Func.isEmpty(contractFormInfo.getId())) {
+			contractFormInfoService.save(entity);
+		}else if(Long.valueOf(CHANGE_CONTRACT_ID).equals(contractFormInfo.getChangeContractId())){
+			entity.setId(null);
+			entity.setChangeContractId(contractFormInfo.getId());
+			contractFormInfoService.save(entity);
+		}else {
+			contractFormInfoService.updateById(entity);
+		}
+		contractFormInfo.setId(entity.getId());
+		/*保存相对方信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
+			contractFormInfoService.saveCounterpart(contractFormInfo);
+		}
+		/*保存保证金信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
+			List<Long> list = new ArrayList<>();
+			ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
+			//删除保证金库脏数据
+			contractBondService.deleteByContractId(contractFormInfo.getId());
+			//删除保证金履约计划脏数据
+			contractBondPlanService.deleteByContractId(contractFormInfo.getId());
+			for (ContractBondEntity contractBondEntity : contractFormInfo.getContractBond()) {
+				BeanUtil.copy(contractBondEntity, contractBondPlan);
+				if (Func.isEmpty(contractBondEntity.getId())) {
+					contractBondService.save(contractBondEntity);
+				}else {
+					contractBondPlan.setId(null);
+				}
+				//保存保证金履约计划
+				contractBondPlan.setContractId(contractFormInfo.getId());
+				contractBondPlanService.save(contractBondPlan);
+				list.add(contractBondEntity.getId());
+			}
+			contractBondService.saveBond(list, contractFormInfo.getId());
+		}
+		/*保存依据信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
+			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
+			contractAccording.setContractId(contractFormInfo.getId());
+			accordingService.updateById(contractAccording);
+			contractFormInfoService.saveAccording(contractFormInfo);
+		}
+		/*保存履约信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
+			//删除履约信息脏数据
+			performanceService.deleteByContractId(contractFormInfo.getId());
+			contractFormInfo.getPerformanceList().forEach(performance -> {
+				if (Func.isNotEmpty(performance.getId())){
+					performance.setId(null);
+				}
+				performance.setContractId(contractFormInfo.getId());
+				performanceService.save(performance);
+			});
+		}
+		/*保存履约计划收付款*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
+			//删除收付款脏数据
+			contractPerformanceColPayService.deleteByContractId(contractFormInfo.getId());
+			contractFormInfo.getPerformanceColPayList().forEach(performanceColPay -> {
+				if (Func.isNotEmpty(performanceColPay.getId())){
+					performanceColPay.setId(null);
+				}
+				performanceColPay.setContractId(contractFormInfo.getId());
+				contractPerformanceColPayService.save(performanceColPay);
+			});
+		}
+		//判断满足已变更新合同的条件 修改原合同状态
+		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory())&& APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())
+				&& CONTRACT_REVIEW_STATUS.equals(contractFormInfo.getContractStatus())) {
+			formInfoMapper.updateExportStatus(ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS,contractFormInfo.getChangeContractId());
+		}
+		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
+	}
+
+
+	/**
+	 * 多方起草新增
+	 */
+	@PostMapping("/multiAddChange")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiAddChange')")
+	@Transactional(rollbackFor = Exception.class)
+	public R<ContractFormInfoEntity> multiAddChange(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		contractFormInfo.setContractSoure("20");
+		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
+		//contractFormInfo.setSealName(sealName);
+		ContractFormInfoEntity entity = new ContractFormInfoEntity();
+		BeanUtil.copy(contractFormInfo, entity);
+		if (Func.isEmpty(contractFormInfo.getId())) {
+			contractFormInfoService.save(entity);
+		}else if(Long.valueOf(CHANGE_CONTRACT_ID).equals(contractFormInfo.getChangeContractId())) {
+			entity.setId(null);
+			entity.setChangeContractId(contractFormInfo.getId());
+			contractFormInfoService.save(entity);
+		}else {
+			contractFormInfoService.updateById(entity);
+		}
+		contractFormInfo.setId(entity.getId());
+		/*保存相对方信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
+			contractFormInfoService.saveCounterpart(contractFormInfo);
+		}
+		/*保存保证金信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
+			List<Long> list = new ArrayList<>();
+			ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
+			//删除保证金库脏数据
+			contractBondService.deleteByContractId(contractFormInfo.getId());
+			//删除保证金履约计划脏数据
+			contractBondPlanService.deleteByContractId(contractFormInfo.getId());
+			for (ContractBondEntity contractBondEntity : contractFormInfo.getContractBond()) {
+				BeanUtil.copy(contractBondEntity, contractBondPlan);
+				//判断是否为保证金库里面的保证金、或变更合同原合同的保证金
+				if (Func.isEmpty(contractBondEntity.getId())) {
+					contractBondService.save(contractBondEntity);
+				}else {
+					contractBondPlan.setId(null);
+				}
+				//保存保证金履约计划
+				contractBondPlan.setContractId(contractFormInfo.getId());
+				contractBondPlanService.save(contractBondPlan);
+				list.add(contractBondEntity.getId());
+			}
+			//保存保证ID与合同ID进行关联
+			contractBondService.saveBond(list, contractFormInfo.getId());
+		}
+		/*保存依据信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
+			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
+			contractAccording.setContractId(contractFormInfo.getId());
+			accordingService.updateById(contractAccording);
+		}
+		/*保存履约信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
+			//删除履约信息脏数据
+			performanceService.deleteByContractId(contractFormInfo.getId());
+			contractFormInfo.getPerformanceList().forEach(performance -> {
+				if (Func.isNotEmpty(performance.getId())){
+					performance.setId(null);
+				}
+				performance.setContractId(contractFormInfo.getId());
+				performanceService.save(performance);
+			});
+		}
+		/*保存履约计划收付款*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
+			//删除收付款脏数据
+			contractPerformanceColPayService.deleteByContractId(contractFormInfo.getId());
+			contractFormInfo.getPerformanceColPayList().forEach(performanceColPay -> {
+				if (Func.isNotEmpty(performanceColPay.getId())){
+					performanceColPay.setId(null);
+				}
+				performanceColPay.setContractId(contractFormInfo.getId());
+				contractPerformanceColPayService.save(performanceColPay);
+			});
+		}
+		//判断满足已变更新合同的条件 修改原合同状态
+		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory())&& APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())
+				&& CONTRACT_REVIEW_STATUS.equals(contractFormInfo.getContractStatus())) {
+			formInfoMapper.updateExportStatus(ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS,contractFormInfo.getChangeContractId());
+		}
+		return R.data(contractFormInfo);
+	}
+
 }

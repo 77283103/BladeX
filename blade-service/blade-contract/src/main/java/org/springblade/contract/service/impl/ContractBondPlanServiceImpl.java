@@ -43,7 +43,7 @@ public class ContractBondPlanServiceImpl extends BaseServiceImpl<ContractBondPla
         page = baseMapper.pageList(page, contractBond);
         IPage<ContractBondPlanResponseVO> pages = ContractBondPlanWrapper.build().entityPVPage(page);
         List<ContractBondPlanResponseVO> records = pages.getRecords();
-        List<ContractBondResponseVO> recordList = new ArrayList<>();
+        List<ContractBondPlanResponseVO> recordList = new ArrayList<>();
         for (ContractBondPlanResponseVO v : records) {
             ContractFormInfoEntity formInfoEntity = formInfoMapper.selectById(v.getContractId());
             if (Func.isNotEmpty(formInfoEntity)) {
@@ -56,7 +56,9 @@ public class ContractBondPlanServiceImpl extends BaseServiceImpl<ContractBondPla
                 String endTime=plusDay(15, new SimpleDateFormat("yy-MM-dd").format(v.getPlanPayTime()));
                 v.setPlanPayTimeEnd(endTime);
             }
+            recordList.add(v);
         }
+        pages.setRecords(recordList);
         return pages;
     }
 

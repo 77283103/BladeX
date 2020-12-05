@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractChangeEntity;
+import org.springblade.contract.mapper.ContractChangeMapper;
 import org.springblade.contract.service.IContractChangeService;
 import org.springblade.contract.vo.ContractChangeRequestVO;
 import org.springblade.contract.vo.ContractChangeResponseVO;
@@ -38,7 +39,7 @@ import javax.validation.Valid;
 public class ContractChangeController extends BladeController {
 
 	private IContractChangeService changeService;
-
+    private ContractChangeMapper changeMapper;
 	/**
 	 * 详情
 	 */
@@ -74,7 +75,10 @@ public class ContractChangeController extends BladeController {
         ContractChangeEntity entity = new ContractChangeEntity();
         BeanUtil.copy(change,entity);
         if (Func.isEmpty(change.getId())) {
-            changeService.save(entity);
+        	if (Func.isEmpty(changeService.getById(change.getRefContractId()))){
+        		changeService.deleteByChangeId(change.getRefContractId());
+				changeService.save(entity);
+			}
         } else {
             changeService.updateById(entity);
         }
