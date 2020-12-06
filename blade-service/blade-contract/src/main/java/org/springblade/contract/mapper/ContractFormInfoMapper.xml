@@ -96,7 +96,15 @@
         seal_type,
         seal_number,
         file_time,
-        contract_template_id
+        contract_template_id,
+        a_name,
+        a_person,
+        a_address,
+        a_telephone,
+        a_email,
+        a_bank_number,
+        a_bank_name,
+        a_account_name
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">
@@ -155,6 +163,13 @@
         FROM `bladex-ty`.contract_form_info
         WHERE is_deleted=0
         AND id=#{id}
+    </select>
+     <!--  变更合同详情  -->
+    <select id="selectByChangeId" resultMap="formInfoResultMap">
+        SELECT  <include refid="baseColumnList"/>
+        FROM `bladex-ty`.contract_form_info
+        WHERE is_deleted=0
+        AND change_contract_id=#{id}
     </select>
     <!-- 分页 合同大类分组类型  合同分类总金额  合同分类签订数量-->
     <select id="pageListStatisticsType" resultMap="formInfoResultMap">
@@ -239,6 +254,9 @@
                      separator="," close=")">
                 #{contract_status}
             </foreach>
+        </if>
+        <if test="contractFormInfo.changeCategory != null and contractFormInfo.changeCategory != ''">
+            AND change_category =#{contractFormInfo.changeCategory}
         </if>
         <if test="contractFormInfo.contractName != null and contractFormInfo.contractName != ''">
             AND contract_name like concat('%', #{contractFormInfo.contractName}, '%')

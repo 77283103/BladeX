@@ -165,6 +165,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 变更合同ID
 	 */
 	@ApiModelProperty(value = "变更合同ID")
+	@JsonSerialize(using = ToStringSerializer.class)
 	private Long changeContractId;
 	/**
 	 * 合同节点状态
@@ -297,6 +298,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private String dictValue;
 
+	/**
+	 * 相对方名称字符串
+	 */
+	@TableField(exist = false)
+	private String counterpartName;
 
 	/**
 	 * 分类合同数量
@@ -306,7 +312,8 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 返回页面的金额数据
 	 */
-	private String amountTYPE;
+	@TableField(exist = false)
+	private String amountVoidData;
 	/**
 	 * 归档日期
 	 */

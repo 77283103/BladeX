@@ -7,10 +7,12 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractChangeEntity;
+import org.springblade.contract.mapper.ContractChangeMapper;
 import org.springblade.contract.service.IContractChangeService;
 import org.springblade.contract.vo.ContractChangeRequestVO;
 import org.springblade.contract.vo.ContractChangeResponseVO;
 import org.springblade.contract.wrapper.ContractChangeWrapper;
+import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
@@ -37,7 +39,7 @@ import javax.validation.Valid;
 public class ContractChangeController extends BladeController {
 
 	private IContractChangeService changeService;
-
+    private ContractChangeMapper changeMapper;
 	/**
 	 * 详情
 	 */
@@ -69,10 +71,19 @@ public class ContractChangeController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入change")
 	@PreAuth("hasPermission('contractChange:change:add')")
-	public R save(@Valid @RequestBody ContractChangeRequestVO change) {
+	public R<ContractChangeEntity> save(@Valid @RequestBody ContractChangeRequestVO change) {
         ContractChangeEntity entity = new ContractChangeEntity();
         BeanUtil.copy(change,entity);
-		return R.status(changeService.save(entity));
+        if (Func.isEmpty(change.getId())) {
+        	if (Func.isEmpty(changeService.getById(change.getRefContractId()))){
+        		changeService.deleteByChangeId(change.getRefContractId());
+				changeService.save(entity);
+			}
+        } else {
+            changeService.updateById(entity);
+        }
+        change.setId(entity.getId());
+		return R.data(ContractChangeWrapper.build().entityVO(entity));
 	}
 
 	/**

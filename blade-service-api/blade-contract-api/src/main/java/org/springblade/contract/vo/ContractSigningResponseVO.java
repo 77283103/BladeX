@@ -1,12 +1,11 @@
 package org.springblade.contract.vo;
 
+import io.swagger.annotations.ApiModel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractSigningEntity;
-import io.swagger.annotations.ApiModel;
-import java.util.Date;
 
 /**
  * 合同签订表 返回模型VO

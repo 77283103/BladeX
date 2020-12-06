@@ -30,4 +30,14 @@ public class ContractTemplateResponseVO extends ContractTemplateEntity {
 	 * 范本历史版本
 	 */
 	private List<ContractTemplateEntity> templateEntityOldVOList;
+
+	private String createUserName;
+
+	private String createDeptName;
+
+	private String updateUserName;
+
+	private String userRealName;
+
+	private String userDepartName;
 }

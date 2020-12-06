@@ -1,11 +1,15 @@
 package org.springblade.contract.vo;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.ToString;
 import lombok.Getter;
 import lombok.Setter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
+import java.util.List;
+
+import org.springblade.contract.entity.ContractSigningArchiveEntity;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -91,4 +95,7 @@ public class ContractSigningRequestVO extends BaseEntity{
 
 	@ApiModelProperty(value="备注说明")
 	private String remark;
+
+	@ApiModelProperty(value="关联归档目录文件")
+	private List<ContractSigningArchiveEntity> signingArchiveEntityList;
 }

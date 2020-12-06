@@ -56,8 +56,10 @@
     <select id="pageList" resultMap="contractPerformanceResultMap">
         SELECT
         <include refid="baseColumnList"></include>
-        FROM contract_performance
-        WHERE is_deleted = 0
+        FROM contract_performance per
+        WHERE per.is_deleted = 0
+        AND per.contract_id
+        IN (SELECT form.id FROM contract_form_info form WHERE form.contract_status='70')
         <if test="contractPerformance.name != null and contractPerformance.name != ''">
             AND name like concat('%',#{contractPerformance.name},'%')
         </if>

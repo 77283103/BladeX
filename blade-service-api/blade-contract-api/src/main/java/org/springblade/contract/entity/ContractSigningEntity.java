@@ -1,5 +1,6 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springblade.core.tool.utils.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,6 +19,7 @@ import lombok.Setter;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -127,5 +129,10 @@ public class ContractSigningEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="备注说明")
 	private String remark;
-
+    /**
+     * 关联归档目录文件
+     */
+    @ApiModelProperty(value="关联归档目录文件")
+    @TableField(exist = false)
+    private List<ContractSigningArchiveEntity> signingArchiveEntityList;
 }

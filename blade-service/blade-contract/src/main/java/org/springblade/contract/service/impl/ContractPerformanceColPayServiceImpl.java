@@ -59,7 +59,9 @@ public class ContractPerformanceColPayServiceImpl extends BaseServiceImpl<Contra
 				String endTime=plusDay(15, new SimpleDateFormat("yy-MM-dd").format(v.getPlanPayTime()));
 				v.setPlanPayTimeEnd(endTime);
 			}
+			recordList.add(v);
 		}
+		pages.setRecords(recordList);
 		return pages;
 	}
 

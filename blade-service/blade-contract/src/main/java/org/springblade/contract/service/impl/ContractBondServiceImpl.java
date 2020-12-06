@@ -48,7 +48,9 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 				ContractFormInfoResponseVO formInfoResponseVO= ContractFormInfoWrapper.build().entityPV(formInfoEntity);
 				v.setContractFormInfoEntity(formInfoResponseVO);
 			}
+			recordList.add(v);
 		}
+		pages.setRecords(recordList);
 		return pages;
 	}
 

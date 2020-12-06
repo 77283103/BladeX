@@ -13,15 +13,16 @@ import javax.validation.Valid;
 
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractSigningArchiveEntity;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.service.IContractCounterpartService;
 import org.springblade.contract.service.IContractFormInfoService;
-import org.springblade.contract.vo.ContractFormInfoResponseVO;
-import org.springblade.contract.vo.ContractSealUsingInfoResponseVO;
+import org.springblade.contract.service.IContractSigningArchiveService;
+import org.springblade.contract.vo.*;
+import org.springblade.contract.wrapper.ContractRelieveWrapper;
 import org.springblade.contract.wrapper.ContractSealUsingInfoWrapper;
+import org.springblade.contract.wrapper.ContractSigningArchiveWrapper;
 import org.springblade.core.log.exception.ServiceException;
-import org.springblade.contract.vo.ContractSigningRequestVO;
-import org.springblade.contract.vo.ContractSigningResponseVO;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.utils.BeanUtil;
@@ -69,6 +70,7 @@ public class ContractSigningController extends BladeController {
     private IContractFormInfoService contractFormInfoService;
     private IContractCounterpartService counterpartService;
     private ContractCounterpartMapper counterpartMapper;
+    private IContractSigningArchiveService signingArchiveService;
     private static final String CONTRACT_SIGNING_SAVE_STATUS = "60";
     private static final String CONTRACT_CONTRACT_FORM_VALUE = "1";
     private static final String CONTRACT_ARCHIVE_STATUS = "110";
@@ -117,6 +119,16 @@ public class ContractSigningController extends BladeController {
         return R.status(contractSigningService.save(ContractSigningWrapper.build().PVEntity(contractSigning)));
     }
 
+    /**
+     * 新增归档目录文件
+     */
+    @PostMapping("/adds")
+    @ApiOperationSupport(order = 3)
+    @ApiOperation(value = "新增", notes = "signingArchive")
+    @PreAuth("hasPermission('contract:signing:adds')")
+    public R save(@Valid @RequestBody ContractSigningArchiveResponseVO signingArchive) {
+        return R.status(signingArchiveService.save(ContractSigningArchiveWrapper.build().PVEntity(signingArchive)));
+    }
     /**
      * 修改
      */

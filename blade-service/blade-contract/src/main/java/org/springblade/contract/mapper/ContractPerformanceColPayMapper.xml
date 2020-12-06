@@ -59,8 +59,10 @@
     <select id="pageList" resultMap="contractPerformanceColPayResultMap">
         SELECT
         <include refid="baseColumnList"></include>
-        FROM contract_performance_col_pay
-        WHERE is_deleted = 0
+        FROM contract_performance_col_pay pay
+        WHERE pay.is_deleted = 0
+        AND pay.contract_id
+        IN (SELECT form.id FROM contract_form_info form WHERE form.contract_status='70')
         <if test="contractPerformanceColPay.contractPerformanceColPay =='ContractPerformanceColPayGeneral'">
             AND plan_pay_time is not null
             And plan_pay_time != ''
