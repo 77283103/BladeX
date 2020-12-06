@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.YwlShopRecruitmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ywlShopRecruitmentResultMap" type="org.springblade.contract.entity.YwlShopRecruitmentEntity">
+        <result column="id" property="id"/>
+        <result column="ywl_paty_a" property="ywlPatyA"/>
+        <result column="ywl_paty_b" property="ywlPatyB"/>
+        <result column="ywl_location" property="ywlLocation"/>
+        <result column="ywl_suspension" property="ywlSuspension"/>
+        <result column="ywl_agreement_period" property="ywlAgreementPeriod"/>
+        <result column="ywl_production_costs" property="ywlProductionCosts"/>
+        <result column="ywl_amount_of" property="ywlAmount_of"/>
+        <result column="ywl_other_conventions" property="ywlOtherConventions"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        ywl_paty_a,
+        ywl_paty_b,
+        ywl_location,
+        ywl_suspension,
+        ywl_agreement_period,
+        ywl_production_costs,
+        ywl_amount_of,
+        ywl_other_conventions,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="ywlShopRecruitmentResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM ywl_shop_recruitment
+        WHERE is_deleted = 0
+    </select>
+</mapper>

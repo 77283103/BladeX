@@ -112,7 +112,7 @@ public class TemplateFieldJsonEntity extends BaseEntity {
 	 * 布局
 	 */
 	@ApiModelProperty(value = "布局")
-	private Integer layout;
+	private String layout;
 
 	/**
 	 * 字典dataList
@@ -176,5 +176,9 @@ public class TemplateFieldJsonEntity extends BaseEntity {
 	@ApiModelProperty(value = "数据")
 	private Object secondSelectDataObject;
 
-
+	/**
+	 * 是否显示
+	 */
+	@ApiModelProperty(value = "是否显示")
+	private String isShow;
 }

@@ -113,7 +113,7 @@ public class TemplateFieldEntity extends BaseEntity {
 	 * 布局
 	 */
 	@ApiModelProperty(value = "布局")
-	private Integer layout;
+	private String layout;
 
 	/**
 	 * 列表数据
@@ -128,5 +128,9 @@ public class TemplateFieldEntity extends BaseEntity {
 	@ApiModelProperty(value = "数据")
 	private String secondSelectData;
 
-
+	/**
+	 * 是否显示
+	 */
+	@ApiModelProperty(value = "是否显示")
+	private String isShow;
 }

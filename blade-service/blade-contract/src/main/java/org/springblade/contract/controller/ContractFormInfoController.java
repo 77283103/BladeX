@@ -18,6 +18,7 @@ import org.springblade.contract.entity.*;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.service.*;
+import org.springblade.contract.util.TemplateSaveUntil;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.ContractAccordingWrapper;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
@@ -295,15 +296,17 @@ public class ContractFormInfoController extends BladeController {
 				j.put(templateField.getFieldName(), templateField.getFieldValue());
 			}
 		}
+		TemplateSaveUntil templateSaveUntil =new TemplateSaveUntil();
 		//把json串转换成一个对象
 		ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
-		if (Func.isEmpty(contractFormInfoEntity.getId())) {
+		templateSaveUntil.templateSave(contractFormInfoEntity,template,j);
+		/*if (Func.isEmpty(contractFormInfoEntity.getId())) {
 			contractFormInfoEntity.setContractSoure("30");
 			contractFormInfoEntity.setContractStatus("10");
 			contractFormInfoService.save(contractFormInfoEntity);
 		} else {
 			contractFormInfoService.updateById(contractFormInfoEntity);
-		}
+		}*/
 		String json = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
 		contractFormInfoEntity.setJson(json);
 		contractFormInfoService.updateById(contractFormInfoEntity);

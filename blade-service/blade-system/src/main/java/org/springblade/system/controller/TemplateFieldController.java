@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import javax.validation.Valid;
 
+import org.springblade.contract.feign.IContractClient;
 import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
@@ -45,6 +46,7 @@ public class TemplateFieldController extends BladeController {
 
 	private ITemplateFieldService templateFieldService;
 	private ITemplateService templateService;
+	private IContractClient contractClient;
 	/**
 	 * 详情
 	 */
@@ -69,7 +71,8 @@ public class TemplateFieldController extends BladeController {
 		TemplateFieldEntity templateFieldEntity=new TemplateFieldEntity();
 		QueryWrapper<TemplateFieldEntity> queryWrapper = Condition.getQueryWrapper(templateFieldEntity)
 														.eq("code",template.getFormCode())
-														.ne("field_title","")
+														.eq("is_show","true")
+														//.ne("field_title","")
 														.orderByAsc("sort");
 		List<TemplateFieldEntity> list = templateFieldService.list(queryWrapper);
 		list=templateFieldService.selectField(list,detail);
@@ -87,12 +90,13 @@ public class TemplateFieldController extends BladeController {
 		TemplateFieldEntity templateFieldEntity=new TemplateFieldEntity();
 		QueryWrapper<TemplateFieldEntity> queryWrapper = Condition.getQueryWrapper(templateFieldEntity)
 			.eq("code",template.getFormCode())
-			.ne("field_title","")
+			.eq("is_show","true")
 			.orderByAsc("sort");
 		List<TemplateFieldEntity> listT = templateFieldService.list(queryWrapper);
 		TemplateEntity entity = new TemplateEntity();
 		BeanUtil.copy(template,entity);
 		entity.setJson(templateFieldService.json(listT));
+		contractClient.templateUpdate(entity.getTemplateCode(),entity.getJson());
 		return R.status(templateService.updateById(entity));
 
 	}

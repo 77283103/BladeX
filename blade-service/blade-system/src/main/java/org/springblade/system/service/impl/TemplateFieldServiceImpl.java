@@ -2,8 +2,10 @@ package org.springblade.system.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import org.json.simple.JSONArray;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.utils.BeanUtil;
@@ -21,6 +23,7 @@ import org.springframework.validation.annotation.Validated;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -151,12 +154,46 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 	public List<TemplateFieldEntity> selectField(List<TemplateFieldEntity> list, TemplateEntity bean) {
 		List<TemplateFieldEntity> listT=new ArrayList<TemplateFieldEntity>();
 		try {
-			Class<?> clazz = Class.forName(bean.getBean());
+			//默认先生成所有的合同主表
+			Class<?> clazz = Class.forName("org.springblade.contract.entity.ContractFormInfoEntity");
+			Field[] fieldFather = clazz.getDeclaredFields();
+			List<Field> fieldFatherList= new ArrayList(Arrays.asList(fieldFather));
+			//生成传过来的合同子表
+			Class<?> clazzz = Class.forName(bean.getBean());
+			Field[] fieldSon = clazzz.getDeclaredFields();
+			List<Field> fieldSonList1= new ArrayList(Arrays.asList(fieldSon));
+			List<Field> fieldSonList= new  ArrayList<Field>(fieldSonList1); //转换为ArrayLsit调用相关的remove方法
+			for(Field field:fieldSonList1){
+				if("serialVersionUID".equals(field.getName())){
+					fieldSonList.remove(field);
+				}
+				if("createUser".equals(field.getName())){
+					fieldSonList.remove(field);
+				}
+				if("createDept".equals(field.getName())){
+					fieldSonList.remove(field);
+				}
+				if("createTime".equals(field.getName())){
+					fieldSonList.remove(field);
+				}
+				if("updateUser".equals(field.getName())){
+					fieldSonList.remove(field);
+				}
+				if("updateTime".equals(field.getName())){
+					fieldSonList.remove(field);
+				}
+				if("status".equals(field.getName())){
+					fieldSonList.remove(field);
+				}
+				if("isDeleted".equals(field.getName())){
+					fieldSonList.remove(field);
+				}
+			}
+			fieldFatherList.addAll(fieldSonList);
 			// 获取类名
 			String strName01 = clazz.getName();
 			// 返回所有的属性
-			Field[] field02 = clazz.getDeclaredFields();
-			for(Field field:field02){
+			for(Field field:fieldFatherList){
 				TemplateFieldEntity templateFieldEntity=new TemplateFieldEntity();
 				if("serialVersionUID".equals(field.getName())){
 					templateFieldEntity.setFieldName("id");
@@ -166,8 +203,14 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 				templateFieldEntity.setFieldType(field.getType().getName().substring(field.getType().getName().lastIndexOf(".")+1));
 				templateFieldEntity.setBean(strName01);
 				templateFieldEntity.setBeanName(bean.getBeanName());
+				//反射获取ApiModelProperty注解上的注释
+				ApiModelProperty api = field.getAnnotation(ApiModelProperty.class);
+				if(null != api) {
+					templateFieldEntity.setFieldTitle(api.value());
+				}
 				templateFieldEntity.setCode(bean.getFormCode());
-				templateFieldEntity.setSort(99);
+				templateFieldEntity.setSort(200);
+				templateFieldEntity.setIsShow("false");
 				listT.add(templateFieldEntity);
 			}
 			for(TemplateFieldEntity templateField:listT){

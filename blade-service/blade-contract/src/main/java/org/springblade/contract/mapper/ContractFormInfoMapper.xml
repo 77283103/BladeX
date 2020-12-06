@@ -139,16 +139,16 @@
         a.seal_type,
         a.seal_number,
         a.contract_template_id,
-        file_time,
-        json,
-        a_name,
-        a_person,
-        a_address,
-        a_telephone,
-        a_email,
-        a_bank_number,
-        a_bank_name,
-        a_account_name
+        a.file_time,
+        a.json,
+        a.a_name,
+        a.a_person,
+        a.a_address,
+        a.a_telephone,
+        a.a_email,
+        a.a_bank_number,
+        a.a_bank_name,
+        a.a_account_name
     </sql>
     <select id="selectById" resultMap="formInfoResultMap">
         SELECT  <include refid="baseColumnList"/>

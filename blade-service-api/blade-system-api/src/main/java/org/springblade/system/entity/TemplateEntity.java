@@ -37,13 +37,18 @@ public class TemplateEntity extends BaseEntity {
 	@ApiModelProperty(value = "bean的名称")
 	private String beanName;
 	/**
-	 * 表单code
+	 * bean编号
 	 */
-	@ApiModelProperty(value = "表单code")
+	@ApiModelProperty(value = "bean编号")
 	private String formCode;
 	/**
 	 * 表单json
 	 */
 	@ApiModelProperty(value="表单json",required = true)
 	private String json;
+	/**
+	 * 模板编号
+	 */
+	@ApiModelProperty(value = "模板编号")
+	private String templateCode;
 }

@@ -2,6 +2,7 @@ package org.springblade.contract.feign;
 
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.feign.ISysClientFallback;
@@ -22,7 +23,7 @@ public interface IContractClient {
 
     String API_PREFIX = "/client";
     String CONTRACT = API_PREFIX + "/contractFormInfo";
-
+	String TEMPLATE_UPDATE = API_PREFIX + "/template_update";
 
     /**
      * 获取合同信息
@@ -31,4 +32,11 @@ public interface IContractClient {
      */
     @GetMapping(CONTRACT)
     R<ContractFormInfoResponseVO> getById(@RequestParam("id") Long id);
+
+	/**
+	 * 更新模板里json
+	 * @para @return
+	 */
+	@GetMapping(TEMPLATE_UPDATE)
+	R<ContractTemplateResponseVO> templateUpdate(@RequestParam("templateCode") String templateCode,@RequestParam("json") String json);
 }

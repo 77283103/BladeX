@@ -110,4 +110,14 @@ public class ContractTemplateEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "备注")
 	private String remarks;
+	/**
+	 * 模板编号
+	 */
+	@ApiModelProperty(value = "模板编号")
+	private String templateCode;
+	/**
+	 * json页面
+	 */
+	@ApiModelProperty(value = "json页面")
+	private String json;
 }
