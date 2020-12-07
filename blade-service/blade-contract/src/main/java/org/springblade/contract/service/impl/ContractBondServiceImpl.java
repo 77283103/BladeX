@@ -34,8 +34,6 @@ import java.util.List;
 @AllArgsConstructor
 public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper, ContractBondEntity> implements IContractBondService {
 	private ContractFormInfoMapper formInfoMapper;
-	private IContractFormInfoService formInfoService;
-	private ContractCounterpartMapper counterpartMapper;
 	@Override
 	public IPage<ContractBondResponseVO> pageList(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
 		page=baseMapper.pageList(page, contractBond);
@@ -75,6 +73,7 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 	@Override
 	public void deleteByContractId(Long id) {
 		List<ContractBondEntity> list=baseMapper.selectByIds(id);
+		baseMapper.deleteBond(id);
 		list.forEach(bond ->{
 			baseMapper.deleteById(bond.getId());
 		});

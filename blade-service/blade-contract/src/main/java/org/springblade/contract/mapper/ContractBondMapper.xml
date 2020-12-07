@@ -187,7 +187,7 @@
 
     <!--删除保证金脏数据-->
     <delete id="deleteById" parameterType="java.lang.Long">
-          DELETE FROM contract_bond_plan  WHERE id=#{id}
+          DELETE FROM contract_bond  WHERE id=#{id}
     </delete>
 
     <!--根据合同id查询相对方集合-->

@@ -11,11 +11,8 @@ import lombok.AllArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.apache.poi.ss.formula.functions.Column;
-import org.apache.poi.ss.usermodel.Sheet;
 import org.springblade.contract.entity.ContractArchiveNotEntity;
 import org.springblade.contract.entity.ContractCounterpartEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.service.IContractArchiveNotService;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -23,7 +20,6 @@ import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.tool.utils.*;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
 
 import org.springblade.core.mp.support.Condition;
@@ -64,7 +60,6 @@ public class ContractArchiveController extends BladeController {
 
 	private IDictBizClient dictBizClient;
 	private IContractArchiveService contractArchiveService;
-	private IContractArchiveNotService contractArchiveNotService;
 	private IContractFormInfoService contractFormInfoService;
 	private static final String CONTRACT_ARCHIVE_SAVE_STATUS="110";
 

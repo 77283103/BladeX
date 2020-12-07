@@ -10,13 +10,14 @@ import org.springblade.contract.entity.*;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.*;
-import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.service.*;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -84,7 +85,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private ContractTemplateMapper contractTemplateMapper;
 
     private ContractChangeMapper changeMapper;
-
+	private IYwlShopRecruitment1Service ywlShopRecruitment1Service;
+	private IContractBondPlanService contractBondPlanService;
+	private IContractBondService contractBondService;
+	private ContractPerformanceMapper performanceMapper;
+	private ContractPerformanceColPayMapper performanceColPayMapper;
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -923,27 +928,52 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         if (contractCounterpart.size() > 0) {
                             contractFormInfoMapper.deleteCounterpart(contractFormInfo.getId());
                             contractFormInfoMapper.saveCounterpart(contractFormInfo.getId(), contractCounterpart);
-                            //contractCounterpart.get(0).setId(contractCounterpart.get(0).getId());
                             obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_COUNTERPART, contractCounterpart);
                         }
                         //判断保证金是否为空
                         if (!"{}".equals(obj.getString(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND))) {
                             com.alibaba.fastjson.JSONArray contractBondArry = obj.getJSONArray(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND);
                             List<ContractBondEntity> contractBond = JSON.parseArray(contractBondArry.toString(), ContractBondEntity.class);
-                            if (CollectionUtil.isNotEmpty(contractBond)) {
+                            /*if (CollectionUtil.isNotEmpty(contractBond)) {
+								ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
                                 contractBondMapper.deleteBond(contractFormInfo.getId());
+								//删除保证金履约计划脏数据
+								contractBondPlanService.deleteByContractId(contractFormInfo.getId());
                                 List<Long> list = new ArrayList<>();
                                 if (Func.isEmpty(contractFormInfo.getId())) {
                                     contractBondMapper.insert(contractBond.get(0));
-                                    //contractBond.get(0).setId(contractBond.get(0).getId());
+                                    contractBond.get(0).setId(contractBond.get(0).getId());
                                     obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND, contractBond);
                                 } else {
                                     contractBondMapper.updateById(contractBond.get(0));
                                     obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND, contractBond);
                                 }
-									/*list.add(contractBond.get(0).getId());
-									contractBondMapper.saveBond(list, contractFormInfo.getId());*/
-                            }
+									*//*list.add(contractBond.get(0).getId());
+									contractBondMapper.saveBond(list, contractFormInfo.getId());*//*
+                            }*/
+							/*保存保证金信息*/
+							if (CollectionUtil.isNotEmpty(contractBond)) {
+								List<Long> list = new ArrayList<>();
+								List<ContractBondEntity> bondList = new ArrayList<>();
+								ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
+								//删除保证金库脏数据
+								contractBondService.deleteByContractId(contractFormInfo.getId());
+								//删除保证金履约计划脏数据
+								contractBondPlanService.deleteByContractId(contractFormInfo.getId());
+								for (ContractBondEntity contractBondEntity : contractBond) {
+									BeanUtil.copy(contractBondEntity, contractBondPlan);
+									if (Func.isEmpty(contractBondEntity.getId())) {
+										contractBondService.save(contractBondEntity);
+										bondList.add(contractBondEntity);
+									}
+									//保存保证金履约计划
+									contractBondPlan.setContractId(contractFormInfo.getId());
+									contractBondPlanService.save(contractBondPlan);
+									list.add(contractBondEntity.getId());
+								}
+								contractBondService.saveBond(list, contractFormInfo.getId());
+								obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND, bondList);
+							}
                         }
                         templateField.setTableDataObject(JSONObject.toJSONString(obj));
                         templateField.setTableDataObjectList(obj);
@@ -951,9 +981,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 }
                 //*保存履约信息
                 if (ContractFormInfoTemplateContract.CONTRACT_PERFORMANCE.equals(templateField.getRelationCode())) {
-                    List<ContractPerformanceEntity> performanceList = JSON.parseArray(templateField.getTableData().toString(), ContractPerformanceEntity.class);
-                    if (performanceList.size() > 0) {
-                        List<ContractPerformanceEntity> list = new ArrayList<ContractPerformanceEntity>();
+                    List<ContractPerformanceEntity> performanceList = JSON.parseArray(templateField.getTableData(), ContractPerformanceEntity.class);
+                    if (CollectionUtil.isNotEmpty(performanceList)) {
+						performanceMapper.deleteByContractId(contractFormInfo.getId());
+                        List<ContractPerformanceEntity> list = new ArrayList<>();
                         performanceList.forEach(performance -> {
                             performance.setContractId(contractFormInfo.getId());
                             contractPerformanceMapper.insert(performance);
@@ -966,8 +997,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 //*保存履约计划收付款
                 if (ContractFormInfoTemplateContract.CONTRACT_PERFORMANCE_COLPAY.equals(templateField.getRelationCode())) {
                     List<ContractPerformanceColPayEntity> performanceColPayList = JSON.parseArray(templateField.getTableData(), ContractPerformanceColPayEntity.class);
-                    if (performanceColPayList.size() > 0) {
-                        List<ContractPerformanceColPayEntity> list = new ArrayList<ContractPerformanceColPayEntity>();
+                    if (CollectionUtil.isNotEmpty(performanceColPayList)) {
+						performanceColPayMapper.deleteByContractId(contractFormInfo.getId());
+                        List<ContractPerformanceColPayEntity> list = new ArrayList<>();
                         performanceColPayList.forEach(performanceColPay -> {
                             performanceColPay.setContractId(contractFormInfo.getId());
                             contractPerformanceColPayMapper.insert(performanceColPay);
@@ -977,6 +1009,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         templateField.setTableDataList(list);
                     }
                 }
+				//*新陈列协议书关联表
+				if (ContractFormInfoTemplateContract.CONTRACT_YWLSHOPRECRUITMENT1.equals(templateField.getRelationCode())) {
+					List<YwlShopRecruitment1ResponseVO> ywlShopRecruitment1List = JSON.parseArray(templateField.getTableData(), YwlShopRecruitment1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(ywlShopRecruitment1List)) {
+						ywlShopRecruitment1Service.saveBatchByRefId(contractFormInfo.getId(),ywlShopRecruitment1List);
+						List<YwlShopRecruitment1ResponseVO> list =ywlShopRecruitment1Service.selectRefList(contractFormInfo.getId());
+						templateField.setTableData(JSONObject.toJSONString(list));
+						templateField.setTableDataList(list);
+					}
+				}
             }
         }
         //toJSONString(templateFieldList);

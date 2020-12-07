@@ -97,6 +97,7 @@
         seal_number,
         file_time,
         contract_template_id,
+        json,
         a_name,
         a_person,
         a_address,
