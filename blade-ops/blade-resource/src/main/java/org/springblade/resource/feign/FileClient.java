@@ -7,6 +7,7 @@ import org.springblade.resource.service.IFileService;
 import org.springblade.resource.vo.FileVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
@@ -27,8 +28,8 @@ public class FileClient implements IFileClient{
 	private IFileService fileService;
 
 	@Override
-	@PostMapping(ADD_FILE)
-	public R save(@Valid MultipartFile file) {
+	@PostMapping(value = "/client/file-add")
+	public R<FileVO> save(@RequestPart("file") MultipartFile file) {
 		return R.data(fileService.addFile(file));
 	}
 

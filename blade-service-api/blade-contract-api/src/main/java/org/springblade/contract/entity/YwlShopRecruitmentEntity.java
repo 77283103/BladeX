@@ -77,7 +77,4 @@ public class YwlShopRecruitmentEntity extends BaseEntity {
     @ApiModelProperty(value="其他约定")
 	private String ywlOtherConventions;
 
-	@ApiModelProperty(value = "新陈列协议书集合")
-	@TableField(exist = false)
-	private List<YwlShopRecruitment1Entity> ywlShopRecruitment1List;
 }

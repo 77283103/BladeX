@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.YwlANewDisplayMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ywlANewDisplayResultMap" type="org.springblade.contract.entity.YwlANewDisplayEntity">
+        <result column="id" property="id"/>
+        <result column="ywl_cooperation_content" property="ywlCooperationContent"/>
+        <result column="ywl_the_start_time" property="ywlTheStartTime"/>
+        <result column="ywl_end_of_time" property="ywlEndOfTime"/>
+        <result column="ywl_display_fee" property="ywlDisplayFee"/>
+        <result column="ywl_other" property="ywlOther"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        ywl_cooperation_content,
+        ywl_the_start_time,
+        ywl_end_of_time,
+        ywl_display_fee,
+        ywl_other,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="ywlANewDisplayResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM ywl_a_new_display
+        WHERE is_deleted = 0
+    </select>
+</mapper>

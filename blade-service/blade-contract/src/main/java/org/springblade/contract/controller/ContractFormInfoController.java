@@ -8,6 +8,8 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import com.mysql.cj.xdevapi.JsonArray;
+import feign.form.ContentType;
+import freemarker.template.TemplateException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,12 +21,10 @@ import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.*;
+import org.springblade.contract.util.TemplateExportUntil;
 import org.springblade.contract.util.TemplateSaveUntil;
 import org.springblade.contract.vo.*;
-import org.springblade.contract.wrapper.ContractAccordingWrapper;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
-import org.springblade.contract.wrapper.ContractPerformanceColPayWrapper;
-import org.springblade.contract.wrapper.ContractTemplateWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.log.exception.ServiceException;
@@ -36,17 +36,24 @@ import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.feign.IFileClient;
+import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.vo.TemplateRequestVO;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -285,7 +292,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateSave')")
 	@Transactional(rollbackFor = Exception.class)
-	public R<String> templateSave(@Valid @RequestBody TemplateRequestVO template) {
+	public R<String> templateSave(@Valid @RequestBody TemplateRequestVO template,HttpServletRequest request) throws IOException, TemplateException {
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
 		//处理合同的二级联动保存
@@ -324,6 +331,12 @@ public class ContractFormInfoController extends BladeController {
 		}*/
 		String json = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
 		contractFormInfoEntity.setJson(json);
+		//页面用这个字段来判断是否提交
+		if("30".equals(template.getBean())){
+			TemplateExportUntil templateExportUntil=new TemplateExportUntil();
+			templateExportUntil.templateSave(contractFormInfoEntity,template,json,j);
+
+		}
 		contractFormInfoService.updateById(contractFormInfoEntity);
 		return R.data(json);
 	}
