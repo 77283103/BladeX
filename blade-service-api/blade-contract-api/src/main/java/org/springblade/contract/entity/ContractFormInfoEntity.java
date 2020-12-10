@@ -89,7 +89,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 是否有自我延展的功能
 	 */
 	@ApiModelProperty(value = "是否有自我延展的功能")
-	private Integer extension;
+	private String extension;
 	/**
 	 * 相对方联系人
 	 */
@@ -171,6 +171,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "税率")
 	private Double contactTaxRate;
+	/**
+	 * 其它信息
+	 */
+	@ApiModelProperty(value = "其它信息")
+	private String otherInformation;
+
 	/**
 	 * 变更状态
 	 */

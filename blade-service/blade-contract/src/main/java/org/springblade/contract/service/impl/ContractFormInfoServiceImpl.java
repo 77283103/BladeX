@@ -295,9 +295,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 contractFormInfoEntity.setContractAmount(new BigDecimal(contractFormInfoExcel.getContractAmount()));
             }
             if ("是".equals(contractFormInfoExcel.getExtension()) && contractFormInfoExcel.getExtension() != null) {
-                contractFormInfoEntity.setExtension(2);
+                contractFormInfoEntity.setExtension("2");
             } else {
-                contractFormInfoEntity.setExtension(1);
+                contractFormInfoEntity.setExtension("1");
             }
             if (!"无".equals(contractFormInfoExcel.getContractForm()) && !"".equals(contractFormInfoExcel.getContractForm()) && contractFormInfoExcel.getContractForm() != null) {
                 contractFormInfoEntity.setContractForm(contractFormInfoExcel.getContractForm());

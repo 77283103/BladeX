@@ -13,6 +13,7 @@
         <result column="contract_amount" property="contractAmount"/>
         <result column="contract_tax_amount" property="contractTaxAmount"/>
         <result column="contact_tax_rate" property="contactTaxRate"/>
+        <result column="other_information" property="otherInformation"/>
         <result column="change_category" property="changeCategory"/>
         <result column="change_contract_id" property="changeContractId"/>
         <result column="contract_status" property="contractStatus"/>
@@ -70,6 +71,7 @@
         contract_amount,
         contract_tax_amount,
         contact_tax_rate,
+        other_information,
         change_category,
         change_contract_id,
         contract_status,
@@ -125,6 +127,7 @@
         a.contract_amount,
         a.contract_tax_amount,
         a.contact_tax_rate,
+        a.other_information,
         a.change_category,
         a.change_contract_id,
         a.contract_status,
