@@ -85,7 +85,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 合同变更信息
 	 */
 	private ContractChangeEntity changeEntity;
-
+	/**
+	 * 合同变更补充附件
+	 */
+	private List<FileVO> suppleAgreementFileVOList;
 	/**
 	 * 签订文件扫描件列表
 	 */

@@ -35,4 +35,17 @@ public interface ContractChangeMapper extends BaseMapper<ContractChangeEntity> {
 	 */
 	void deleteByChangeId(Long id);
 
+	/**
+	 * 根据文件变更ID删除文件id
+	 * @param id
+	 * @return
+	 */
+	Integer deleteChangeFileById(Long id);
+
+	/**
+	 *
+	 * @param id
+	 * @return
+	 */
+	ContractChangeEntity selectByFileId(Long id);
 }

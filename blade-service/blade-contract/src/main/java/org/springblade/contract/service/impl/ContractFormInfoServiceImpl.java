@@ -660,7 +660,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
         ContractFormInfoEntity changeFormInfoEntity = contractFormInfoMapper.selectByChangeId(id);
         if (Func.isNotEmpty(changeFormInfoEntity)) {
-            if (CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getContractStatus())) {
+            if (CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getContractStatus())
+                    && CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getChangeCategory())) {
                 contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(changeFormInfoEntity);
             } else {
                 contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(contractFormInfo);
@@ -808,6 +809,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         ContractChangeEntity changeEntity = changeMapper.selectById(id);
         if (Func.isNotEmpty(changeEntity)) {
             contractFormInfoResponseVO.setChangeEntity(changeEntity);
+            if (Func.isNoneBlank(changeEntity.getSuppleAgreement())) {
+                R<List<FileVO>> result = fileClient.getByIds(changeEntity.getSuppleAgreement());
+                if (result.isSuccess()) {
+                    contractFormInfoResponseVO.setSuppleAgreementFileVOList(result.getData());
+                }
+            }
         }
         return contractFormInfoResponseVO;
     }

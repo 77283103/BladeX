@@ -34,4 +34,9 @@ public interface IContractChangeService extends BaseService<ContractChangeEntity
 	 */
 	ContractChangeResponseVO getById(Long id);
 
+	/**
+	 * 删除上传的文件
+	 * @param id
+	 */
+	boolean deleteByChangeFileId(Long id);
 }

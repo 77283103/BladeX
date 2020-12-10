@@ -53,9 +53,21 @@
         WHERE is_deleted = 0
         AND ref_contract_id = #{id}
     </select>
+    <!--根据id查询变更信息-->
+    <select id="selectByFileId" resultMap="changeResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_change
+        WHERE is_deleted = 0
+        AND id = #{id}
+    </select>
     <!--删除保证金脏数据-->
     <delete id="deleteByChangeId" parameterType="java.lang.Long">
         DELETE FROM contract_change  WHERE `bladex-ty`.contract_change.ref_contract_id=#{id}
     </delete>
+    <!--根据文件变更ID删除文件id-->
+    <update id="deleteChangeFileById" parameterType="java.lang.Long">
+        UPDATE contract_change SET supple_agreement = NULL WHERE `bladex-ty`.contract_change.id=#{id};
+    </update>
 
 </mapper>

@@ -42,10 +42,24 @@ public class TemplateSaveUntil {
 				YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
 				templateSaveUntil.ywlShopRecruitmentService.save(ywlShopRecruitment);
 				id=ywlShopRecruitment.getId();
+			if (Func.isNotEmpty(template.getChangeContractId())){
+				contractFormInfoEntity.setChangeContractId(template.getChangeContractId());
+				contractFormInfoEntity.setChangeCategory("10");
+			}
+			if("DZHT_35".equals(template.getTemplateCode())){
+				YwlShopRecruitmentEntity ywlShopRecruitmentEntity = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
+				templateSaveUntil.ywlShopRecruitmentService.save(ywlShopRecruitmentEntity);
+				id=ywlShopRecruitmentEntity.getId();
 			}
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
+			if ("130".equals(template.getOriginalContractStatus())) {
+				contractFormInfoEntity.setSubmitStatus("10");
+				contractFormInfoEntity.setContractStatus("20");
+
+				templateSaveUntil.contractFormInfoService.updateExportStatus(template.getOriginalContractStatus(),template.getChangeContractId());
+			}
 			templateSaveUntil.contractFormInfoService.updateById(contractFormInfoEntity);
 			if("CLXY_42".equals(template.getTemplateCode())){
 				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
