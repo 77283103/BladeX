@@ -1,5 +1,7 @@
 package org.springblade.system.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.core.mp.base.BaseEntity;
@@ -41,4 +43,10 @@ public class TemplateRequestVO extends TemplateEntity {
 	@ApiModelProperty(value="表单json",required = true)
 	private String json;
 
+    @JsonSerialize(using = ToStringSerializer.class)
+    @ApiModelProperty(value="关联的原合同ID",required = true)
+	private Long changeContractId;
+
+    @ApiModelProperty(value="修改原合同状态",required = true)
+    private String originalContractStatus;
 }

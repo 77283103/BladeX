@@ -721,7 +721,7 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
-	 * 独立起草新增
+	 * 独立起草变更新增
 	 */
 	@PostMapping("/addChange")
 	@ApiOperationSupport(order = 5)
@@ -809,7 +809,7 @@ public class ContractFormInfoController extends BladeController {
 
 
 	/**
-	 * 多方起草新增
+	 * 多方起草变更新增
 	 */
 	@PostMapping("/multiAddChange")
 	@ApiOperationSupport(order = 5)
@@ -897,5 +897,4 @@ public class ContractFormInfoController extends BladeController {
 		}
 		return R.data(contractFormInfo);
 	}
-
 }

@@ -113,4 +113,14 @@ public class ContractChangeController extends BladeController {
 		return R.status(changeService.deleteLogic(Func.toLongList(ids)));
 	}
 
+	/**
+	 * 删除文件
+	 */
+	@PostMapping("/removeFile")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "逻辑删除", notes = "传入ids")
+	@PreAuth("hasPermission('contractChange:change:removeFile')")
+	public R removeFile(@ApiParam(value = "主键集合", required = true) @RequestParam Long id) {
+		return R.status(changeService.deleteByChangeFileId(Func.toLong(id)));
+	}
 }

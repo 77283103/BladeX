@@ -12,9 +12,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
-/**
- * @author xhbbo
- */
 @Component
 public class TemplateSaveUntil {
 	@Autowired
@@ -48,6 +45,7 @@ public class TemplateSaveUntil {
 			if ("130".equals(template.getOriginalContractStatus())) {
 				contractFormInfoEntity.setSubmitStatus("10");
 				contractFormInfoEntity.setContractStatus("20");
+
 				templateSaveUntil.contractFormInfoService.updateExportStatus(template.getOriginalContractStatus(),template.getChangeContractId());
 			}
 			templateSaveUntil.contractFormInfoService.updateById(contractFormInfoEntity);
