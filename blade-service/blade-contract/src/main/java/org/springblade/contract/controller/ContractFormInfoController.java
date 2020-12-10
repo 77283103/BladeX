@@ -333,8 +333,9 @@ public class ContractFormInfoController extends BladeController {
 		contractFormInfoEntity.setJson(json);
 		//页面用这个字段来判断是否提交
 		if("30".equals(template.getBean())){
-			TemplateExportUntil templateExportUntil=new TemplateExportUntil();
-			contractFormInfoEntity.setTextFilePdf(templateExportUntil.templateSave(contractFormInfoEntity,template,json,j));
+			//导出pdf文件
+			/*TemplateExportUntil templateExportUntil=new TemplateExportUntil();
+			contractFormInfoEntity.setTextFilePdf(templateExportUntil.templateSave(contractFormInfoEntity,template,json,j));*/
 			contractFormInfoEntity.setContractStatus("30");
 		}
 		contractFormInfoService.updateById(contractFormInfoEntity);
