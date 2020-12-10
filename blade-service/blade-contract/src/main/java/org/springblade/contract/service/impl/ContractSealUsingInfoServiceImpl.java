@@ -21,4 +21,9 @@ public class ContractSealUsingInfoServiceImpl extends BaseServiceImpl<ContractSe
 	public IPage<ContractSealUsingInfoEntity> pageList(IPage<ContractSealUsingInfoEntity> page, ContractSealUsingInfoRequestVO contractSealUsingInfo) {
 		return baseMapper.pageList(page, contractSealUsingInfo);
 	}
+
+	@Override
+	public ContractSealUsingInfoEntity selectSealUsing(Long id) {
+		return baseMapper.selectUsingById(id);
+	}
 }

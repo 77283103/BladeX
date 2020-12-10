@@ -7,6 +7,8 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import org.springblade.contract.entity.ContractSigningArchiveEntity;
+import org.springblade.contract.entity.ContractSigningEntity;
 import org.springblade.core.mp.base.BaseEntity;
 
 
@@ -20,7 +22,7 @@ import org.springblade.core.mp.base.BaseEntity;
 @Setter
 @ToString
 @ApiModel(description = "合同签订关联表请求对象")
-public class ContractSigningArchiveResponseVO extends BaseEntity {
+public class ContractSigningArchiveResponseVO extends ContractSigningArchiveEntity {
 
 	private static final long serialVersionUID = 1L;
 

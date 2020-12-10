@@ -1,6 +1,7 @@
 package org.springblade.contract.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springblade.contract.entity.ContractArchiveEntity;
 import io.swagger.annotations.ApiModel;
@@ -34,4 +35,6 @@ public class ContractArchiveResponseVO extends ContractArchiveEntity {
 	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	private Date createSystemTime;
 
+	@ApiModelProperty(value="未归档原因")
+	private String notArchiveReason;
 }

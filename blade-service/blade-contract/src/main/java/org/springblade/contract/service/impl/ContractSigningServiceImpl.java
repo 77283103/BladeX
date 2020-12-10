@@ -58,4 +58,14 @@ public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningM
 	public void saveSigning(ContractSigningRequestVO vo) {
      contractFormInfoMapper.saveSigning(vo.getContractId(),vo.getId());
 	}
+
+	/**
+	 * 合同id查询签订信息
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public ContractSigningEntity selectSigningById(Long id) {
+		return baseMapper.selectSigningById(id);
+	}
 }

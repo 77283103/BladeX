@@ -11,13 +11,9 @@ import lombok.AllArgsConstructor;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
-import org.springblade.contract.entity.ContractCounterpartEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractSigningArchiveEntity;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
-import org.springblade.contract.service.IContractCounterpartService;
-import org.springblade.contract.service.IContractFormInfoService;
-import org.springblade.contract.service.IContractSigningArchiveService;
+import org.springblade.contract.service.*;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.ContractRelieveWrapper;
 import org.springblade.contract.wrapper.ContractSealUsingInfoWrapper;
@@ -38,12 +34,11 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.contract.entity.ContractSigningEntity;
 import org.springblade.contract.wrapper.ContractSigningWrapper;
-import org.springblade.contract.service.IContractSigningService;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -66,6 +61,7 @@ import java.util.List;
 public class ContractSigningController extends BladeController {
 
     private IDictBizClient bizClient;
+    private IContractSealUsingInfoService sealUsingInfoService;
     private IContractSigningService contractSigningService;
     private IContractFormInfoService contractFormInfoService;
     private IContractCounterpartService counterpartService;
@@ -106,7 +102,11 @@ public class ContractSigningController extends BladeController {
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "新增", notes = "传入contractSigning")
     @PreAuth("hasPermission('contract:signing:add')")
-    public R save(@Valid @RequestBody ContractSigningResponseVO contractSigning) {
+    @Transactional(rollbackFor = Exception.class)
+    public R<ContractSigningEntity> save(@Valid @RequestBody ContractSigningResponseVO contractSigning) {
+        ContractSigningEntity entity = new ContractSigningEntity();
+        BeanUtil.copy(contractSigning,entity);
+        contractSigningService.save(entity);
         String contractForm = contractFormInfoService.getById(contractSigning.getContractId()).getContractForm();
         //判断合同类型是否为电子合同，是则签订完即可自动归档
         if (CONTRACT_CONTRACT_FORM_VALUE.equals(contractForm)) {
@@ -116,7 +116,14 @@ public class ContractSigningController extends BladeController {
             String contractStatus = CONTRACT_SIGNING_SAVE_STATUS;
             contractFormInfoService.updateExportStatus(contractStatus, contractSigning.getContractId());
         }
-        return R.status(contractSigningService.save(ContractSigningWrapper.build().PVEntity(contractSigning)));
+        contractSigning.getSigningArchiveEntityList().forEach(signingArchive -> {
+            if (Func.isNotEmpty(signingArchive.getId())){
+                signingArchive.setId(null);
+            }
+            signingArchive.setSigningId(contractSigning.getId());
+            signingArchiveService.save(signingArchive);
+        });
+        return R.data(entity);
     }
 
     /**
@@ -176,8 +183,8 @@ public class ContractSigningController extends BladeController {
     }
 
     /**
-     * /**
-     * 导出excel
+     *
+     * 文本打印导出excel
      *
      * @param formInfoEntity
      * @param response
@@ -232,6 +239,82 @@ public class ContractSigningController extends BladeController {
             /* 此处表头为一行要显示的所有表头，要和数据的顺序对应上  需要转换为list */
             List<String> head = Arrays.asList("合同编号", "合同名称", "合同一级分类", "合同二级分类", "合同向对方", "合同金额", "币种", "审核信息",
                     "完成时间", "文本导出次数");
+            /* 为了生成一个独立的list对象，所进行的初始化 */
+            List<String> head2 = null;
+            for (String head1 : head) {
+                head2 = new ArrayList<>();
+                /* 将表头的数据赋值进入list对象 */
+                head2.add(head1);
+                /* 将数据赋值进入最终要输出的表头 */
+                headList.add(head2);
+            }
+            try {
+                response.setContentType("application/vnd.ms-excel");
+                response.setCharacterEncoding(Charsets.UTF_8.name());
+                fileName = URLEncoder.encode(fileName, Charsets.UTF_8.name());
+                response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+                EasyExcel.write(response.getOutputStream()).head(headList).sheet().doWrite(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
+    /**
+     * 签订完成导出excel
+     *
+     * @param formInfoEntity
+     * @param response
+     */
+    @PostMapping("/exportTargetDataResultSigning")
+    @ApiOperationSupport(order = 7)
+    @ApiOperation(value = "导出", notes = "")
+    public void exportTargetDataResultSigning(@RequestBody ContractFormInfoResponseVO formInfoEntity, HttpServletResponse response) {
+
+        if (Func.isNotEmpty(formInfoEntity)) {
+            /* 导出文件名称 */
+            String fileName = "合同文本信息导出";
+            WriteSheet sheet1 = new WriteSheet();
+            /* 导出的sheet的名称 */
+            sheet1.setSheetName("合同文本信息导出");
+            sheet1.setSheetNo(0);
+            /* 需要存入的数据 */
+            List<Object> data = new ArrayList<>();
+            /* formInfoEntityList 表示要写入的数据 因为是前台显示列表 由前台进行传值，后期可以根据自己的需求进行改变 */
+            /* 属性 cloumns 表示一行，cloumns包含的数据是一行的数据 要将一行的每个值 作为list的一个属性存进到list里 ，数据要和展示的excel表头一致*/
+            List<Object> cloumns = new ArrayList<Object>();
+            /*合同编号*/
+            cloumns.add(formInfoEntity.getContractNumber());
+            /*合同名称*/
+            cloumns.add(formInfoEntity.getContractName());
+            /*所属合同一级分类*/
+            cloumns.add(bizClient.getValues("HTDL", Long.valueOf(formInfoEntity.getContractBigCategory())).getData());
+            /*所属合同二级分类*/
+            cloumns.add(bizClient.getValues("HTDL", Long.valueOf(formInfoEntity.getContractSmallCategory())).getData());
+            /*合同相对方名称*/
+            StringBuilder name = new StringBuilder();
+            for (ContractCounterpartEntity counterpartEntity : formInfoEntity.getCounterpart()) {
+                name.append(counterpartEntity.getName());
+                name.append(",");
+            }
+            name.substring(0, name.length());
+            cloumns.add(name.toString());
+            ContractSigningEntity signingEntity=contractSigningService.selectSigningById(formInfoEntity.getId());
+            /*承办人*/
+            cloumns.add(signingEntity.getManager());
+            ContractSealUsingInfoEntity sealUsingInfoEntity=sealUsingInfoService.selectSealUsing(formInfoEntity.getId());
+            /*用印时间*/
+            cloumns.add(sealUsingInfoEntity.getSignTime());
+            /*快递信息*/
+            cloumns.add("递交类型:"+bizClient.getValue("submission_type",signingEntity.getSubmissionType()).getData()+"//快递单号:"
+                    +signingEntity.getCourierNum()+"//快递公司:"+signingEntity.getCourierCompany()
+                    +"//收件人:"+signingEntity.getAddressee()+"//收件人地址:"+signingEntity.getAddress());
+            data.add(cloumns);
+            /* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
+            List<List<String>> headList = new ArrayList<List<String>>();
+            /* 此处表头为一行要显示的所有表头，要和数据的顺序对应上  需要转换为list */
+            List<String> head = Arrays.asList("合同编号", "合同名称", "合同一级分类", "合同二级分类", "合同向对方", "承办人", "用印时间", "快递信息");
             /* 为了生成一个独立的list对象，所进行的初始化 */
             List<String> head2 = null;
             for (String head1 : head) {

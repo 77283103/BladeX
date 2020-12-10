@@ -37,5 +37,11 @@ public interface IContractSigningService extends BaseService<ContractSigningEnti
 	 */
 	void saveSigning(ContractSigningRequestVO vo);
 
-
+	/**
+	 * 根据合同id查询签订信息
+	 * 一对一
+	 * @param id
+	 * @return
+	 */
+	ContractSigningEntity selectSigningById(Long id);
 }
