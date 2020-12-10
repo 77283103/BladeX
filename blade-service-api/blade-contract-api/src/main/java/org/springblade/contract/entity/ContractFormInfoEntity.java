@@ -157,10 +157,20 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "币种")
 	private String currencyCategory;
 	/**
-	 * 合同金额
+	 * 合同未税金额
 	 */
-	@ApiModelProperty(value = "合同金额")
+	@ApiModelProperty(value = "合同未税金额")
 	private BigDecimal contractAmount;
+	/**
+	 * 合同含税金额
+	 */
+	@ApiModelProperty(value = "合同含税金额")
+	private BigDecimal contractTaxAmount;
+	/**
+	 * 税率
+	 */
+	@ApiModelProperty(value = "税率")
+	private Double contactTaxRate;
 	/**
 	 * 变更状态
 	 */
