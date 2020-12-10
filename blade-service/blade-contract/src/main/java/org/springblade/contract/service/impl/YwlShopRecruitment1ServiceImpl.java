@@ -29,11 +29,11 @@ public class YwlShopRecruitment1ServiceImpl extends BaseServiceImpl<YwlShopRecru
 	public IPage<YwlShopRecruitment1Entity> pageList(IPage<YwlShopRecruitment1Entity> page, YwlShopRecruitment1RequestVO ywlShopRecruitment1) {
 		return baseMapper.pageList(page, ywlShopRecruitment1);
 	}
-
+	@Override
 	public void saveBatchByRefId(Long refId, List<YwlShopRecruitment1ResponseVO> responseVOList) {
 		this.saveBatchByRefId(refId,REF_COLUMN_NAME, YwlShopRecruitment1Wrapper.build().PVEntityList(responseVOList),this);
 	}
-
+	@Override
 	public List<YwlShopRecruitment1ResponseVO> selectRefList(Long refId) {
 		List<YwlShopRecruitment1Entity> casesAgentEntityList = this.selectRefList(refId, REF_COLUMN_NAME, this);
 		return YwlShopRecruitment1Wrapper.build().entityPVList(casesAgentEntityList);

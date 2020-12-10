@@ -12,6 +12,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * @author xhbbo
+ */
 @Component
 public class TemplateSaveUntil {
 	@Autowired
@@ -30,6 +33,10 @@ public class TemplateSaveUntil {
 		if (Func.isEmpty(contractFormInfoEntity.getId())) {
 			contractFormInfoEntity.setContractSoure("30");
 			contractFormInfoEntity.setContractStatus("10");
+			if (Func.isNotEmpty(template.getChangeContractId())){
+				contractFormInfoEntity.setChangeContractId(template.getChangeContractId());
+				contractFormInfoEntity.setChangeCategory("10");
+			}
 			if("DZHT_35".equals(template.getTemplateCode())){
 				YwlShopRecruitmentEntity ywlShopRecruitmentEntity = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
 				templateSaveUntil.ywlShopRecruitmentService.save(ywlShopRecruitmentEntity);
@@ -38,6 +45,11 @@ public class TemplateSaveUntil {
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
+			if ("130".equals(template.getOriginalContractStatus())) {
+				contractFormInfoEntity.setSubmitStatus("10");
+				contractFormInfoEntity.setContractStatus("20");
+				templateSaveUntil.contractFormInfoService.updateExportStatus(template.getOriginalContractStatus(),template.getChangeContractId());
+			}
 			templateSaveUntil.contractFormInfoService.updateById(contractFormInfoEntity);
 			if("DZHT_35".equals(template.getTemplateCode())){
 				YwlShopRecruitmentEntity ywlShopRecruitmentEntity = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
