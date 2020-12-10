@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglActivityExecutionContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglActivityExecutionContractResultMap" type="org.springblade.contract.entity.CglActivityExecutionContractEntity">
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglActivityExecutionContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_activity_execution_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

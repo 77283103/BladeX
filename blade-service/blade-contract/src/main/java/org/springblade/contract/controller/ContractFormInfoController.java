@@ -683,7 +683,6 @@ public class ContractFormInfoController extends BladeController {
 			/* 导出的sheet的名称 */
 			sheet1.setSheetName("合同统计分析信息导出");
 			sheet1.setSheetNo(0);
-
 			/* 需要存入的数据 */
 			List<List<Object>> data = new ArrayList<>();
 			/* formInfoEntityList 表示要写入的数据 因为是前台显示列表 由前台进行传值，后期可以根据自己的需求进行改变 */
@@ -720,7 +719,6 @@ public class ContractFormInfoController extends BladeController {
 				/* 将数据赋值进入最终要输出的表头 */
 				headList.add(head2);
 			}
-
 			try {
 				response.setContentType("application/vnd.ms-excel");
 				response.setCharacterEncoding(Charsets.UTF_8.name());
