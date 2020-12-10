@@ -142,6 +142,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同文本")
 	private String textFile;
 	/**
+	 * 合同文本
+	 */
+	@ApiModelProperty(value = "合同文本")
+	private String textFilePdf;
+	/**
 	 * 合同附件
 	 */
 	@ApiModelProperty(value = "合同附件")
@@ -201,6 +206,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 合同范本id
 	 */
+	@JsonSerialize(using = ToStringSerializer.class)
 	@ApiModelProperty(value = "合同二级分类")
 	private Long contractTemplateId;
 

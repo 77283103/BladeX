@@ -1,14 +1,17 @@
 package org.springblade.resource.feign;
 
+import feign.codec.Encoder;
+import feign.form.spring.SpringFormEncoder;
 import io.swagger.annotations.ApiParam;
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tool.api.R;
+import org.springblade.resource.Config.FeignConfig;
 import org.springblade.resource.vo.FileVO;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -21,7 +24,8 @@ import java.util.List;
  */
 @FeignClient(
 	value = AppConstant.APPLICATION_RESOURCE_NAME,
-	fallback = IFileClientFallback.class
+	//fallback = IFileClientFallback.class,
+	configuration = FeignConfig.class
 )
 public interface IFileClient {
 
@@ -36,8 +40,8 @@ public interface IFileClient {
 	 * @param file 文件
 	 * @return R
 	 */
-	@PostMapping(ADD_FILE)
-	R save(@Valid @RequestBody MultipartFile file);
+	@PostMapping(value = "/client/file-add", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	R<FileVO> save(@RequestPart(value = "file") MultipartFile file);
 
 	/**
 	 * 删除文件
@@ -54,4 +58,5 @@ public interface IFileClient {
 	 */
 	@GetMapping(FILES_INFO)
 	R<List<FileVO>> getByIds(@ApiParam(value = "主键集合", required = true) @RequestParam String ids);
+
 }

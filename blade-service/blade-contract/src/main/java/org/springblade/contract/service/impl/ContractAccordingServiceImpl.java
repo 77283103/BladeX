@@ -29,11 +29,7 @@ import java.util.List;
 @Service
 public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccordingMapper, ContractAccordingEntity> implements IContractAccordingService {
 
-	private IFileClient fileClient;
 
-	private ISysClient sysClient;
-
-	private IUserClient userClient;
 	@Override
 	public IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingEntity according) {
 		return baseMapper.pageList(page, according);
