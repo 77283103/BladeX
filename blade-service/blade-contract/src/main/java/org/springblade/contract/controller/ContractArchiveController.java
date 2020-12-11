@@ -30,6 +30,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -83,8 +84,8 @@ public class ContractArchiveController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入contractArchive")
 	@PreAuth("hasPermission('contract:archive:page')")
 	public R<IPage<ContractArchiveResponseVO>> list(ContractArchiveRequestVO contractArchive, Query query) {
-		IPage<ContractArchiveEntity> pages = contractArchiveService.pageList(Condition.getPage(query), contractArchive);
-		return R.data(ContractArchiveWrapper.build().entityPVPage(pages));
+		IPage<ContractArchiveResponseVO> pages = contractArchiveService.pageList(Condition.getPage(query), contractArchive);
+		return R.data(pages);
 	}
 
 	/**
@@ -94,6 +95,7 @@ public class ContractArchiveController extends BladeController {
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "新增", notes = "传入contractArchive")
 	@PreAuth("hasPermission('contract:archive:add')")
+	@Transactional(rollbackFor = Exception.class)
 	public R save(@Valid @RequestBody ContractArchiveResponseVO contractArchive) {
 		String contractStatus=CONTRACT_ARCHIVE_SAVE_STATUS;
 		contractFormInfoService.updateExportStatus(contractStatus,contractArchive.getContractId());

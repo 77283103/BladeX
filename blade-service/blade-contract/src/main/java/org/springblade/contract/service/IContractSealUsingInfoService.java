@@ -5,6 +5,8 @@ import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractSealUsingInfoEntity;
 import org.springblade.contract.vo.ContractSealUsingInfoRequestVO;
 
+import java.io.Serializable;
+
 /**
  * 合同用印 服务类
  *
@@ -20,4 +22,9 @@ public interface IContractSealUsingInfoService extends BaseService<ContractSealU
 	 * @return
 	 */
 	IPage<ContractSealUsingInfoEntity> pageList(IPage<ContractSealUsingInfoEntity> page, ContractSealUsingInfoRequestVO contractSealUsingInfo);
+
+
+
+	ContractSealUsingInfoEntity selectSealUsing(Long id);
+
 }

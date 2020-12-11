@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.vo.ContractArchiveResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractArchiveEntity;
 import org.springblade.contract.vo.ContractArchiveRequestVO;
@@ -19,7 +20,12 @@ public interface IContractArchiveService extends BaseService<ContractArchiveEnti
 	 * @param contractArchive
 	 * @return
 	 */
-	IPage<ContractArchiveEntity> pageList(IPage<ContractArchiveEntity> page, ContractArchiveRequestVO contractArchive);
+	IPage<ContractArchiveResponseVO> pageList(IPage<ContractArchiveEntity> page, ContractArchiveRequestVO contractArchive);
 
-
+	/**
+	 * vo
+	 * @param id
+	 * @return
+	 */
+	ContractArchiveResponseVO getById(Long id);
 }
