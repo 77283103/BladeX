@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglCategorySalesContractsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglCategorySalesContractsResultMap" type="org.springblade.contract.entity.CglCategorySalesContractsEntity">
+        <result column="id" property="id"/>
+        <result column="cgl_party_a" property="cglPartyA"/>
+        <result column="cgl_domicile" property="cglDomicile"/>
+        <result column="cgl_party_b" property="cglPartyB"/>
+        <result column="cgl_party_b_home" property="cglPartyBHome"/>
+        <result column="cgl_activity" property="cglActivity"/>
+        <result column="cgl_of_delivery" property="cglOfDelivery"/>
+        <result column="cgl_p_email_address" property="cglPEmailAddress"/>
+        <result column="cgl_b_email_address" property="cglBEmailAddress"/>
+        <result column="cgl_p_fax_number" property="cglPFaxNumber"/>
+        <result column="cgl_b_fax_number" property="cglBFaxNumber"/>
+        <result column="cgl_payment_days" property="cglPaymentDays"/>
+        <result column="cgl_special_payment" property="cglSpecialPayment"/>
+        <result column="cgl_name_of_bank" property="cglNameOfBank"/>
+        <result column="cgl_account_name" property="cglAccountName"/>
+        <result column="cgl_party_b_account" property="cglPartyBAccount"/>
+        <result column="cgl_other_conventions" property="cglOtherConventions"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cgl_party_a,
+        cgl_domicile,
+        cgl_party_b,
+        cgl_party_b_home,
+        cgl_activity,
+        cgl_of_delivery,
+        cgl_p_email_address,
+        cgl_b_email_address,
+        cgl_p_fax_number,
+        cgl_b_fax_number,
+        cgl_payment_days,
+        cgl_special_payment,
+        cgl_name_of_bank,
+        cgl_account_name,
+        cgl_party_b_account,
+        cgl_other_conventions,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglCategorySalesContractsResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_category_sales_contracts
+        WHERE is_deleted = 0
+    </select>
+</mapper>

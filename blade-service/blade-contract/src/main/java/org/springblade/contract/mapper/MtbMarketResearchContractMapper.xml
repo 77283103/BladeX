@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.MtbMarketResearchContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="mtbMarketResearchContractResultMap" type="org.springblade.contract.entity.MtbMarketResearchContractEntity">
+        <result column="id" property="id"/>
+        <result column="mtb_paty_a" property="mtbPatyA"/>
+        <result column="mtb_party_a_address" property="mtbPartyAAddress"/>
+        <result column="mtb_number" property="mtbNumber"/>
+        <result column="mtb_paty_a_fax" property="mtbPatyAFax"/>
+        <result column="mtb_paty_b" property="mtbPatyB"/>
+        <result column="mtb_paty_b_address" property="mtbPatyBAddress"/>
+        <result column="mtb_paty_b_phone" property="mtbPatyBPhone"/>
+        <result column="mtb_paty_b_fax" property="mtbPatyBFax"/>
+        <result column="mtb_project_name" property="mtbProjectName"/>
+        <result column="mtb_attachment" property="mtbAttachment"/>
+        <result column="mtb_research_methods" property="mtbResearchMethods"/>
+        <result column="mtb_number_of_respondents" property="mtbNumberOfRespondents"/>
+        <result column="mtb_results_content" property="mtbResultsContent"/>
+        <result column="mtb_schedule" property="mtbSchedule"/>
+        <result column="mtb_matters" property="mtbMatters"/>
+        <result column="mtb_total_cost" property="mtbTotalCost"/>
+        <result column="mtb_rate" property="mtbRate"/>
+        <result column="mtb_tax_amount" property="mtbTaxAmount"/>
+        <result column="mtb_cost_details" property="mtbCostDetails"/>
+        <result column="mtb_perform_cost_a" property="mtbPerformCostA"/>
+        <result column="mtb_presided_over_by" property="mtbPresidedOverBy"/>
+        <result column="mtb_travel" property="mtbTravel"/>
+        <result column="mtb_outline_designs" property="mtbOutlineDesigns"/>
+        <result column="mtb_other" property="mtbOther"/>
+        <result column="mtb_combined" property="mtbCombined"/>
+        <result column="mtb_design_and_printing" property="mtbDesignAndPrinting"/>
+        <result column="mtb_green_fees" property="mtbGreenFees"/>
+        <result column="mtb_perform_cost" property="mtbPerformCost"/>
+        <result column="mtb_outline_design" property="mtbOutlineDesign"/>
+        <result column="mtb_travel_expenses" property="mtbTravelExpenses"/>
+        <result column="mtb_other_a" property="mtbOtherA"/>
+        <result column="mtd_a_combined" property="mtdACombined"/>
+        <result column="mtb_company_name" property="mtbCompanyName"/>
+        <result column="mtb_bank" property="mtbBank"/>
+        <result column="mtb_account" property="mtbAccount"/>
+        <result column="mtb_mail_delivery" property="mtbMailDelivery"/>
+        <result column="mtb_the_contact" property="mtbTheContact"/>
+        <result column="mtb_paty_the_contact" property="mtbPatyTheContact"/>
+        <result column="mtb_zip_code" property="mtbZipCode"/>
+        <result column="mtb_phon" property="mtbPhon"/>
+        <result column="mtb_annex_ii" property="mtbAnnexIi"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        mtb_paty_a,
+        mtb_party_a_address,
+        mtb_number,
+        mtb_paty_a_fax,
+        mtb_paty_b,
+        mtb_paty_b_address,
+        mtb_paty_b_phone,
+        mtb_paty_b_fax,
+        mtb_project_name,
+        mtb_attachment,
+        mtb_research_methods,
+        mtb_number_of_respondents,
+        mtb_results_content,
+        mtb_schedule,
+        mtb_matters,
+        mtb_total_cost,
+        mtb_rate,
+        mtb_tax_amount,
+        mtb_cost_details,
+        mtb_perform_cost_a,
+        mtb_presided_over_by,
+        mtb_travel,
+        mtb_outline_designs,
+        mtb_other,
+        mtb_combined,
+        mtb_design_and_printing,
+        mtb_green_fees,
+        mtb_perform_cost,
+        mtb_outline_design,
+        mtb_travel_expenses,
+        mtb_other_a,
+        mtd_a_combined,
+        mtb_company_name,
+        mtb_bank,
+        mtb_account,
+        mtb_mail_delivery,
+        mtb_the_contact,
+        mtb_paty_the_contact,
+        mtb_zip_code,
+        mtb_phon,
+        mtb_annex_ii,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="mtbMarketResearchContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM mtb_market_research_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

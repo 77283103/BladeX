@@ -16,8 +16,14 @@ public interface ContractFormInfoTemplateContract {
 	String CONTRACT_COUNTERPART = "ContractCounterpart";
 	//合同履行
 	String CONTRACT_PERFORMANCE = "ContractPerformance";
-	//合同履行
+	//新陈列协议书关联表
 	String CONTRACT_YWLSHOPRECRUITMENT1 = "YwlShopRecruitment1";
+	//买卖合同（行销品）
+	String CONTRACT_CGLCATEGORYSALESCONTRACTS1 = "CglCategorySalesContracts1";
+	//新增原物料补充协议--买卖合同
+	String CONTRACT_CGLTHESALESCONTRACT1 = "CglTheSalesContract1";
+	//原物料-买卖合同
+	String CONTRACT_CGLRAWMATERIALS1 = "CglRawMaterials1";
 	//合同履行费
 	String CONTRACT_PERFORMANCE_COLPAY = "ContractPerformanceColPay";
 	//合同—对应方

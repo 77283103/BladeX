@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.MtbProductionContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="mtbProductionContractResultMap" type="org.springblade.contract.entity.MtbProductionContractEntity">
+        <result column="id" property="id"/>
+        <result column="mtb_paty_a" property="mtbPatyA"/>
+        <result column="mtb_contact_email" property="mtbContactEmail"/>
+        <result column="mtb_address" property="mtbAddress"/>
+        <result column="mtb_paty_b" property="mtbPatyB"/>
+        <result column="mtb_paty_b_email" property="mtbPatyBEmail"/>
+        <result column="mtb_paty_b_address" property="mtbPatyBAddress"/>
+        <result column="mtb_make_matters" property="mtbMakeMatters"/>
+        <result column="mtb_name_of_advertising" property="mtbNameOfAdvertising"/>
+        <result column="mtb_contents_of_advertisements" property="mtbContentsOfAdvertisements"/>
+        <result column="mtb_delivery_form" property="mtbDeliveryForm"/>
+        <result column="mtb_number_of" property="mtbNumberOf"/>
+        <result column="mtb_requirements" property="mtbRequirements"/>
+        <result column="mtb_cost" property="mtbCost"/>
+        <result column="mtb_have_has_not" property="mtbHaveHasNot"/>
+        <result column="mtb_property_rights" property="mtbPropertyRights"/>
+        <result column="mtb_small_kind" property="mtbSmallKind"/>
+        <result column="mtb_use_period" property="mtbUsePeriod"/>
+        <result column="mtb_use_area" property="mtbUseArea"/>
+        <result column="mtb_shooting_start_time" property="mtbShootingStartTime"/>
+        <result column="mtb_shooting_completion_time" property="mtbShootingCompletionTime"/>
+        <result column="mtb_acceptance_personnel" property="mtbAcceptancePersonnel"/>
+        <result column="mtb_unpaid_tax_rmb" property="mtbUnpaidTaxRmb"/>
+        <result column="mtb_rate" property="mtbRate"/>
+        <result column="mtb_tax_inclusive_in_rmb" property="mtbTaxInclusiveInRmb"/>
+        <result column="mtb_company_name" property="mtbCompanyName"/>
+        <result column="mtb_bank_of_party_b" property="mtbBankOfPartyB"/>
+        <result column="mtb_party_account" property="mtbPartyAccount"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        mtb_paty_a,
+        mtb_contact_email,
+        mtb_address,
+        mtb_paty_b,
+        mtb_paty_b_email,
+        mtb_paty_b_address,
+        mtb_make_matters,
+        mtb_name_of_advertising,
+        mtb_contents_of_advertisements,
+        mtb_delivery_form,
+        mtb_number_of,
+        mtb_requirements,
+        mtb_cost,
+        mtb_have_has_not,
+        mtb_property_rights,
+        mtb_small_kind,
+        mtb_use_period,
+        mtb_use_area,
+        mtb_shooting_start_time,
+        mtb_shooting_completion_time,
+        mtb_acceptance_personnel,
+        mtb_unpaid_tax_rmb,
+        mtb_rate,
+        mtb_tax_inclusive_in_rmb,
+        mtb_company_name,
+        mtb_bank_of_party_b,
+        mtb_party_account,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="mtbProductionContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM mtb_production_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

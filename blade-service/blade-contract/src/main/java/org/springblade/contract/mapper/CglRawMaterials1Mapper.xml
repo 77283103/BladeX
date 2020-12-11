@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglRawMaterials1Mapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglRawMaterials1ResultMap" type="org.springblade.contract.entity.CglRawMaterials1Entity">
+        <result column="id" property="id"/>
+        <result column="cgl_number" property="cglNumber"/>
+        <result column="cgl_Material" property="cglMaterial"/>
+        <result column="cgl_of_the_goods" property="cglOfTheGoods"/>
+        <result column="cgl_specifications" property="cglSpecifications"/>
+        <result column="cgl_unit_price" property="cglUnitPrice"/>
+        <result column="cgl_payment_days" property="cglPaymentDays"/>
+        <result column="cgl_starting_time" property="cglStartingTime"/>
+        <result column="cgl_end_of_time" property="cglEndOfTime"/>
+        <result column="cgl_minimum_quantity" property="cglMinimumQuantity"/>
+        <result column="cgl_note" property="cglNote"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cgl_number,
+        cgl_Material,
+        cgl_of_the_goods,
+        cgl_specifications,
+        cgl_unit_price,
+        cgl_payment_days,
+        cgl_starting_time,
+        cgl_end_of_time,
+        cgl_minimum_quantity,
+        cgl_note,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglRawMaterials1ResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_raw_materials_1
+        WHERE is_deleted = 0
+    </select>
+</mapper>

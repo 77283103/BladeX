@@ -8,6 +8,7 @@
         <result column="bean" property="bean"/>
         <result column="bean_name" property="beanName"/>
         <result column="form_code" property="formCode"/>
+        <result column="template_code" property="templateCode"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
         <result column="create_time" property="createTime"/>
@@ -22,6 +23,7 @@
         bean,
         bean_name,
         form_code,
+        template_code,
         create_user,
         create_dept,
         create_time,

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglLowCostHardwareMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglLowCostHardwareResultMap" type="org.springblade.contract.entity.CglLowCostHardwareEntity">
+        <result column="id" property="id"/>
+        <result column="cgl_the_buyer" property="cglTheBuyer"/>
+        <result column="cgl_buyer_domicile" property="cglBuyerDomicile"/>
+        <result column="cgl_the_seller" property="cglTheSeller"/>
+        <result column="cgl_seller_residence" property="cglSellerResidence"/>
+        <result column="cgl_amount_of_units" property="cglAmountOfUnits"/>
+        <result column="cgl_email_address" property="cglEmailAddress"/>
+        <result column="cgl_number" property="cglNumber"/>
+        <result column="cgl_email_addresss" property="cglEmailAddresss"/>
+        <result column="cgl_numbers" property="cglNumbers"/>
+        <result column="cgl_way" property="cglWay"/>
+        <result column="cgl_specify_the_email" property="cglSpecifyTheEmail"/>
+        <result column="cgl_email" property="cglEmail"/>
+        <result column="cgl_original_delivery" property="cglOriginalDelivery"/>
+        <result column="cgl_recipient" property="cglRecipient"/>
+        <result column="cgl_delivery" property="cglDelivery"/>
+        <result column="cgl_unloading" property="cglUnloading"/>
+        <result column="cgl_cost" property="cglCost"/>
+        <result column="cgl_agreed" property="cglAgreed"/>
+        <result column="cgl_payment" property="cglPayment"/>
+        <result column="cgl_bank_number" property="cglBankNumber"/>
+        <result column="cgl_account" property="cglAccount"/>
+        <result column="cgl_accounts" property="cglAccounts"/>
+        <result column="cgl_start_time" property="cglStartTime"/>
+        <result column="cgl_of_time" property="cglOfTime"/>
+        <result column="cgl_conventions" property="cglConventions"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cgl_the_buyer,
+        cgl_buyer_domicile,
+        cgl_the_seller,
+        cgl_seller_residence,
+        cgl_amount_of_units,
+        cgl_email_address,
+        cgl_number,
+        cgl_email_addresss,
+        cgl_numbers,
+        cgl_way,
+        cgl_specify_the_email,
+        cgl_email,
+        cgl_original_delivery,
+        cgl_recipient,
+        cgl_delivery,
+        cgl_unloading,
+        cgl_cost,
+        cgl_agreed,
+        cgl_payment,
+        cgl_bank_number,
+        cgl_account,
+        cgl_accounts,
+        cgl_start_time,
+        cgl_of_time,
+        cgl_conventions,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglLowCostHardwareResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_low_cost_hardware
+        WHERE is_deleted = 0
+    </select>
+</mapper>

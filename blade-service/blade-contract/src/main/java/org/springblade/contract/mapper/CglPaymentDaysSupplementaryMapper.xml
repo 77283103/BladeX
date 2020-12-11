@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglPaymentDaysSupplementaryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglPaymentDaysSupplementaryResultMap" type="org.springblade.contract.entity.CglPaymentDaysSupplementaryEntity">
+        <result column="id" property="id"/>
+        <result column="cgl_party_a" property="cglPartyA"/>
+        <result column="cgl_domicile" property="cglDomicile"/>
+        <result column="cgl_party_b" property="cglPartyB"/>
+        <result column="cgl_about_purchasing" property="cglAboutPurchasing"/>
+        <result column="cgl_procurement" property="cglProcurement"/>
+        <result column="cgl_contract_no" property="cglContractNo"/>
+        <result column="cgl_sides_agreed" property="cglSidesAgreed"/>
+        <result column="cgl_way" property="cglWay"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cgl_party_a,
+        cgl_domicile,
+        cgl_party_b,
+        cgl_about_purchasing,
+        cgl_procurement,
+        cgl_contract_no,
+        cgl_sides_agreed,
+        cgl_way,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglPaymentDaysSupplementaryResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_payment_days_supplementary
+        WHERE is_deleted = 0
+    </select>
+</mapper>

@@ -23,8 +23,8 @@ import com.fasterxml.jackson.databind.ser.std.NullSerializer;
  * @NotBlank 检查约束 (字符串) 是不是Null还有被Trim的长度是否大于0,只对字符串,且会去掉前后空格.
  * @NotEmpty 检查(集合)约束元素是否为NULL或者是EMPTY.
  *
- * @author 采购类：活动执行合同
- * @date : 2020-12-10 18:29:51
+ * @author 王策
+ * @date : 2020-12-10 22:28:05
  */
 @Getter
 @Setter

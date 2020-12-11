@@ -11,8 +11,8 @@ import java.util.Date;
 /**
  * 采购类：活动执行合同 返回模型VO
  *
- * @author 采购类：活动执行合同
- * @date : 2020-12-10 18:29:51
+ * @author 王策
+ * @date : 2020-12-10 22:28:11
  */
 @Getter
 @Setter

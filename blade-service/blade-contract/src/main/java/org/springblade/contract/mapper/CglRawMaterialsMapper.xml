@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglRawMaterialsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglRawMaterialsResultMap" type="org.springblade.contract.entity.CglRawMaterialsEntity">
+        <result column="id" property="id"/>
+        <result column="cgl_buyer" property="cglBuyer"/>
+        <result column="cgl_buyer_address" property="cglBuyerAddress"/>
+        <result column="cgl_buyer_contact" property="cglBuyerContact"/>
+        <result column="cgl_contact_information" property="cglContactInformation"/>
+        <result column="cgl_seller" property="cglSeller"/>
+        <result column="cgl_seller_address" property="cglSellerAddress"/>
+        <result column="cgl_seller_contact" property="cglSellerContact"/>
+        <result column="cgl_seller_contact_information" property="cglSellerContactInformation"/>
+        <result column="cgl_a_email_address" property="cglAEmailAddress"/>
+        <result column="cgl_b_email_address" property="cglBEmailAddress"/>
+        <result column="cgl_a_number" property="cglANumber"/>
+        <result column="cgl_b_number" property="cglBNumber"/>
+        <result column="cgl_other_conventions_1" property="cglOtherConventions1"/>
+        <result column="cgl_other_conventions_2" property="cglOtherConventions2"/>
+        <result column="cgl_name_of_bank" property="cglNameOfBank"/>
+        <result column="cgl_account" property="cglAccount"/>
+        <result column="cgl_name_of_the_account" property="cglNameOfTheAccount"/>
+        <result column="cgl_other_conventions_3" property="cglOtherConventions3"/>
+        <result column="cgl_other_conventions_4" property="cglOtherConventions4"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cgl_buyer,
+        cgl_buyer_address,
+        cgl_buyer_contact,
+        cgl_contact_information,
+        cgl_seller,
+        cgl_seller_address,
+        cgl_seller_contact,
+        cgl_seller_contact_information,
+        cgl_a_email_address,
+        cgl_b_email_address,
+        cgl_a_number,
+        cgl_b_number,
+        cgl_other_conventions_1,
+        cgl_other_conventions_2,
+        cgl_name_of_bank,
+        cgl_account,
+        cgl_name_of_the_account,
+        cgl_other_conventions_3,
+        cgl_other_conventions_4,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglRawMaterialsResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_raw_materials
+        WHERE is_deleted = 0
+    </select>
+</mapper>

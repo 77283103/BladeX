@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglTheSalesContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglTheSalesContractResultMap" type="org.springblade.contract.entity.CglTheSalesContractEntity">
+        <result column="id" property="id"/>
+        <result column="cgl_party_a" property="cglPartyA"/>
+        <result column="cgl_domicile" property="cglDomicile"/>
+        <result column="cgl_party_b" property="cglPartyB"/>
+        <result column="cgl_domicile_b" property="cglDomicileB"/>
+        <result column="cgl_procurement" property="cglProcurement"/>
+        <result column="cgl_contract_no" property="cglContractNo"/>
+        <result column="cgl_product" property="cglProduct"/>
+        <result column="cgl_number_of_delivery" property="cglNumberOfDelivery"/>
+        <result column="cgl_purchase_quantity" property="cglPurchaseQuantity"/>
+        <result column="cgl_terms_of_payment" property="cglTermsOfPayment"/>
+        <result column="cgl_effect_of_time" property="cglEffectOfTime"/>
+        <result column="cgl_convention" property="cglConvention"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cgl_party_a,
+        cgl_domicile,
+        cgl_party_b,
+        cgl_domicile_b,
+        cgl_procurement,
+        cgl_contract_no,
+        cgl_product,
+        cgl_number_of_delivery,
+        cgl_purchase_quantity,
+        cgl_terms_of_payment,
+        cgl_effect_of_time,
+        cgl_convention,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglTheSalesContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_the_sales_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

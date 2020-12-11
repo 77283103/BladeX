@@ -86,6 +86,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
     private ContractChangeMapper changeMapper;
 	private IYwlShopRecruitment1Service ywlShopRecruitment1Service;
+	private ICglCategorySalesContracts1Service cglCategorySalesContracts1Service;
+	private ICglTheSalesContract1Service cglTheSalesContract1Service;
+	private ICglRawMaterials1Service cglRawMaterials1Service;
+
 	private IContractBondPlanService contractBondPlanService;
 	private IContractBondService contractBondService;
 	private ContractPerformanceMapper performanceMapper;
@@ -1022,6 +1026,36 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					if (CollectionUtil.isNotEmpty(ywlShopRecruitment1List)) {
 						ywlShopRecruitment1Service.saveBatchByRefId(contractFormInfo.getId(),ywlShopRecruitment1List);
 						List<YwlShopRecruitment1ResponseVO> list =ywlShopRecruitment1Service.selectRefList(contractFormInfo.getId());
+						templateField.setTableData(JSONObject.toJSONString(list));
+						templateField.setTableDataList(list);
+					}
+				}
+				//*买卖合同（行销品）关联表
+				if (ContractFormInfoTemplateContract.CONTRACT_CGLCATEGORYSALESCONTRACTS1.equals(templateField.getRelationCode())) {
+					List<CglCategorySalesContracts1ResponseVO> cglCategorySalesContracts1List = JSON.parseArray(templateField.getTableData(), CglCategorySalesContracts1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(cglCategorySalesContracts1List)) {
+						cglCategorySalesContracts1Service.saveBatchByRefId(contractFormInfo.getId(),cglCategorySalesContracts1List);
+						List<CglCategorySalesContracts1ResponseVO> list =cglCategorySalesContracts1Service.selectRefList(contractFormInfo.getId());
+						templateField.setTableData(JSONObject.toJSONString(list));
+						templateField.setTableDataList(list);
+					}
+				}
+				//*新增原物料补充协议--买卖合同关联表
+				if (ContractFormInfoTemplateContract.CONTRACT_CGLTHESALESCONTRACT1.equals(templateField.getRelationCode())) {
+					List<CglTheSalesContract1ResponseVO> cglTheSalesContract1List = JSON.parseArray(templateField.getTableData(), CglTheSalesContract1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(cglTheSalesContract1List)) {
+						cglTheSalesContract1Service.saveBatchByRefId(contractFormInfo.getId(),cglTheSalesContract1List);
+						List<CglTheSalesContract1ResponseVO> list =cglTheSalesContract1Service.selectRefList(contractFormInfo.getId());
+						templateField.setTableData(JSONObject.toJSONString(list));
+						templateField.setTableDataList(list);
+					}
+				}
+				//*原物料-买卖合同联表
+				if (ContractFormInfoTemplateContract.CONTRACT_CGLRAWMATERIALS1.equals(templateField.getRelationCode())) {
+					List<CglRawMaterials1ResponseVO> cglRawMaterials1List = JSON.parseArray(templateField.getTableData(), CglRawMaterials1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(cglRawMaterials1List)) {
+						cglRawMaterials1Service.saveBatchByRefId(contractFormInfo.getId(),cglRawMaterials1List);
+						List<CglRawMaterials1ResponseVO> list =cglRawMaterials1Service.selectRefList(contractFormInfo.getId());
 						templateField.setTableData(JSONObject.toJSONString(list));
 						templateField.setTableDataList(list);
 					}

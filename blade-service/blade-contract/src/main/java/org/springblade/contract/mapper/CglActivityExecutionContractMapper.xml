@@ -4,9 +4,77 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="cglActivityExecutionContractResultMap" type="org.springblade.contract.entity.CglActivityExecutionContractEntity">
+        <result column="id" property="id"/>
+        <result column="cgl_party_a" property="cglPartyA"/>
+        <result column="cgl_party_b" property="cglPartyB"/>
+        <result column="cgl_activity" property="cglActivity"/>
+        <result column="cgl_area" property="cglArea"/>
+        <result column="cgl_by_the_time" property="cglByTheTime"/>
+        <result column="cgl_as_of_time" property="cglAsOfTime"/>
+        <result column="cgl_attachment_two" property="cglAttachmentTwo"/>
+        <result column="cgl_attachment_three" property="cglAttachmentThree"/>
+        <result column="cgl_attachment_one" property="cglAttachmentOne"/>
+        <result column="cgl_total_cost" property="cgl totalCost"/>
+        <result column="cgl_session" property="cglSession"/>
+        <result column="cgl_payment" property="cglPayment"/>
+        <result column="cgl_number_of_days" property="cglNumberOfDays"/>
+        <result column="cgl_proportion" property="cglProportion"/>
+        <result column="cgl_other_way" property="cglOtherWay"/>
+        <result column="cgl_bank_of" property="cglBankOf"/>
+        <result column="cgl_account_name" property="cglAccountName"/>
+        <result column="cgl_account" property="cglAccount"/>
+        <result column="cgl_invoice" property="cglInvoice"/>
+        <result column="cgl_date_of_request" property="cglDateOfRequest"/>
+        <result column="cgl_date_of_request1" property="cglDateOfRequest1"/>
+        <result column="cgl_breach_of_contract" property="cglBreachOfContract"/>
+        <result column="cgl_planning_scheme" property="cglPlanningScheme"/>
+        <result column="cgl_scheduling" property="cglScheduling"/>
+        <result column="cgl_the_price" property="cglThePrice"/>
+        <result column="cgl_inspection_standard" property="cglInspectionStandard"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
+        id,
+        cgl_party_a,
+        cgl_party_b,
+        cgl_activity,
+        cgl_area,
+        cgl_by_the_time,
+        cgl_as_of_time,
+        cgl_attachment_two,
+        cgl_attachment_three,
+        cgl_attachment_one,
+        cgl_total_cost,
+        cgl_session,
+        cgl_payment,
+        cgl_number_of_days,
+        cgl_proportion,
+        cgl_other_way,
+        cgl_bank_of,
+        cgl_account_name,
+        cgl_account,
+        cgl_invoice,
+        cgl_date_of_request,
+        cgl_date_of_request1,
+        cgl_breach_of_contract,
+        cgl_planning_scheme,
+        cgl_scheduling,
+        cgl_the_price,
+        cgl_inspection_standard,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="cglActivityExecutionContractResultMap">
