@@ -24,6 +24,24 @@ public interface ContractFormInfoTemplateContract {
 	String CONTRACT_CGLTHESALESCONTRACT1 = "CglTheSalesContract1";
 	//原物料-买卖合同
 	String CONTRACT_CGLRAWMATERIALS1 = "CglRawMaterials1";
+    //生产项目外包服务合同
+	String CONTRACT_SCLPROJECTOUTSOURCING1 ="SclProjectOutsourcing1";
+	//加工承揽合同（代工合同）关联表1
+	String CONTRACT_SCLCONSTRUCTIONPROJECT1 ="SclConstructionProject1";
+	//加工承揽合同（代工合同）关联表2
+	String CONTRACT_SCLCONSTRUCTIONPROJECT2 ="SclConstructionProject2";
+	//加工承揽合同（代工合同）关联表3
+	String CONTRACT_SCLCONSTRUCTIONPROJECT3 ="SclConstructionProject3";
+	//音频制作合同 关联表1
+	String CONTRACT_MTLAUDIOPRODUCTIONCONTRACT1 ="MtlAudioProductionContract1";
+	//音频制作合同 关联表2
+	String CONTRACT_MTLAUDIOPRODUCTIONCONTRACT2 ="MtlAudioProductionContract2";
+	//修图合同关联表1
+	String CONTRACT_MTLEDITEDTHECONTRACT1="MtlEditedTheContract1";
+	//视频制作合同关联表1
+	String CONTRACT_MTLVIDEOPRODUCTIONCONTRACT1="MtlVideoProductionContract1";
+	//视频制作合同 关联表2
+	String CONTRACT_MTLVIDEOPRODUCTIONCONTRACT2="MtlVideoProductionContract2";
 	//合同履行费
 	String CONTRACT_PERFORMANCE_COLPAY = "ContractPerformanceColPay";
 	//合同—对应方

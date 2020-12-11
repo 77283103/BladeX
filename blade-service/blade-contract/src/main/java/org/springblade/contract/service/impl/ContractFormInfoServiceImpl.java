@@ -89,7 +89,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private ICglCategorySalesContracts1Service cglCategorySalesContracts1Service;
 	private ICglTheSalesContract1Service cglTheSalesContract1Service;
 	private ICglRawMaterials1Service cglRawMaterials1Service;
+    private ISclProjectOutsourcing1Service sclProjectOutsourcing1Service;
 
+    private IMtlVideoProductionContract1Service mtlVideoProductionContract1Service;
+    private IMtlVideoProductionContract2Service mtlVideoProductionContract2Service;
+    private IMtlEditedTheContract1Service mtlEditedTheContract1Service;
+    private IMtlAudioProductionContract1Service mtlAudioProductionContract1Service;
+    private IMtlAudioProductionContract2Service mtlAudioProductionContract2Service;
+    private ISclConstructionProject1Service sclConstructionProject1Service;
+    private ISclConstructionProject2Service sclConstructionProject2Service;
+    private ISclConstructionProject3Service sclConstructionProject3Service;
 	private IContractBondPlanService contractBondPlanService;
 	private IContractBondService contractBondService;
 	private ContractPerformanceMapper performanceMapper;
@@ -1060,6 +1069,96 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 						templateField.setTableDataList(list);
 					}
 				}
+                //*生产项目外包服务合同 关联表
+                if (ContractFormInfoTemplateContract.CONTRACT_SCLPROJECTOUTSOURCING1.equals(templateField.getRelationCode())) {
+                    List<SclProjectOutsourcing1ResponseVO> sclProsjectOutsourcing1List = JSON.parseArray(templateField.getTableData(), SclProjectOutsourcing1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(sclProsjectOutsourcing1List)) {
+                        sclProjectOutsourcing1Service.saveBatchByRefId(contractFormInfo.getId(),sclProsjectOutsourcing1List);
+                        List<SclProjectOutsourcing1ResponseVO> list =sclProjectOutsourcing1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*加工承揽合同（代工合同）关联表1
+                if (ContractFormInfoTemplateContract.CONTRACT_SCLCONSTRUCTIONPROJECT1.equals(templateField.getRelationCode())) {
+                    List<SclConstructionProject1ResponseVO> sclConstructionProject1List = JSON.parseArray(templateField.getTableData(), SclConstructionProject1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(sclConstructionProject1List)) {
+                        sclConstructionProject1Service.saveBatchByRefId(contractFormInfo.getId(),sclConstructionProject1List);
+                        List<SclConstructionProject1ResponseVO> list =sclConstructionProject1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*加工承揽合同（代工合同）关联表2
+                if (ContractFormInfoTemplateContract.CONTRACT_SCLCONSTRUCTIONPROJECT2.equals(templateField.getRelationCode())) {
+                    List<SclConstructionProject2ResponseVO> sclConstructionProject2List = JSON.parseArray(templateField.getTableData(), SclConstructionProject2ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(sclConstructionProject2List)) {
+                        sclConstructionProject2Service.saveBatchByRefId(contractFormInfo.getId(),sclConstructionProject2List);
+                        List<SclConstructionProject2ResponseVO> list =sclConstructionProject2Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*加工承揽合同（代工合同）关联表3
+                if (ContractFormInfoTemplateContract.CONTRACT_SCLCONSTRUCTIONPROJECT3.equals(templateField.getRelationCode())) {
+                    List<SclConstructionProject3ResponseVO> sclConstructionProject3List = JSON.parseArray(templateField.getTableData(), SclConstructionProject3ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(sclConstructionProject3List)) {
+                        sclConstructionProject3Service.saveBatchByRefId(contractFormInfo.getId(),sclConstructionProject3List);
+                        List<SclConstructionProject3ResponseVO> list =sclConstructionProject3Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*音频制作合同 关联表1
+                if (ContractFormInfoTemplateContract.CONTRACT_MTLAUDIOPRODUCTIONCONTRACT1.equals(templateField.getRelationCode())) {
+                    List<MtlAudioProductionContract1ResponseVO> mtlAudioProductionContract1List = JSON.parseArray(templateField.getTableData(),MtlAudioProductionContract1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(mtlAudioProductionContract1List)) {
+                        mtlAudioProductionContract1Service.saveBatchByRefId(contractFormInfo.getId(),mtlAudioProductionContract1List);
+                        List<MtlAudioProductionContract1ResponseVO> list =mtlAudioProductionContract1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*音频制作合同 关联表2
+                if (ContractFormInfoTemplateContract.CONTRACT_MTLAUDIOPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
+                    List<MtlAudioProductionContract2ResponseVO> mtlAudioProductionContract2List = JSON.parseArray(templateField.getTableData(),MtlAudioProductionContract2ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(mtlAudioProductionContract2List)) {
+                        mtlAudioProductionContract2Service.saveBatchByRefId(contractFormInfo.getId(),mtlAudioProductionContract2List);
+                        List<MtlAudioProductionContract2ResponseVO> list =mtlAudioProductionContract2Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*修图合同关联表1
+                if (ContractFormInfoTemplateContract.CONTRACT_MTLEDITEDTHECONTRACT1.equals(templateField.getRelationCode())) {
+                    List<MtlEditedTheContract1ResponseVO> mtlEditedTheContract1List = JSON.parseArray(templateField.getTableData(),MtlEditedTheContract1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(mtlEditedTheContract1List)) {
+                        mtlEditedTheContract1Service.saveBatchByRefId(contractFormInfo.getId(),mtlEditedTheContract1List);
+                        List<MtlEditedTheContract1ResponseVO> list =mtlEditedTheContract1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*视频制作合同关联表1
+                if (ContractFormInfoTemplateContract.CONTRACT_MTLVIDEOPRODUCTIONCONTRACT1.equals(templateField.getRelationCode())) {
+                    List<MtlVideoProductionContract1ResponseVO> mtlVideoProductionContract1List = JSON.parseArray(templateField.getTableData(),MtlVideoProductionContract1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(mtlVideoProductionContract1List)) {
+                        mtlVideoProductionContract1Service.saveBatchByRefId(contractFormInfo.getId(),mtlVideoProductionContract1List);
+                        List<MtlVideoProductionContract1ResponseVO> list =mtlVideoProductionContract1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*视频制作合同关联表2
+                if (ContractFormInfoTemplateContract.CONTRACT_MTLVIDEOPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
+                    List<MtlVideoProductionContract2ResponseVO> mtlVideoProductionContract2List = JSON.parseArray(templateField.getTableData(),MtlVideoProductionContract2ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(mtlVideoProductionContract2List)) {
+                        mtlVideoProductionContract2Service.saveBatchByRefId(contractFormInfo.getId(),mtlVideoProductionContract2List);
+                        List<MtlVideoProductionContract2ResponseVO> list =mtlVideoProductionContract2Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
             }
         }
         //toJSONString(templateFieldList);

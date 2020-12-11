@@ -1,25 +1,20 @@
 package org.springblade.contract.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -183,5 +178,17 @@ public class MtlVideoProductionContractEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="上述广告作品给甲方指定人员【？】验收")
 	private String mtlAcceptance;
+	/**
+	 * 视频制作合同关联表1
+	 */
+	@ApiModelProperty(value="视频制作合同关联表1")
+	@TableField(exist = false)
+	private List<MtlVideoProductionContract1Entity> mtlVideoProductionContract1EntityList;
+	/**
+	 * 视频制作合同关联表2
+	 */
+	@ApiModelProperty(value="视频制作合同关联表2")
+	@TableField(exist = false)
+	private List<MtlVideoProductionContract2Entity> mtlVideoProductionContract2EntityList;
 
 }

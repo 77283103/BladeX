@@ -42,7 +42,12 @@ public class TemplateSaveUntil {
 	private IMtlEditedTheContractService mtlEditedTheContractService;
 	@Autowired
 	private IMtlVideoProductionContractService mtlVideoProductionContractService;
-
+	@Autowired
+	private ISclProjectOutsourcingService sclProjectOutsourcingService;
+	@Autowired
+	private ISclConstructionProjectService sclConstructionProjectService;
+	@Autowired
+	private IMtlAudioProductionContractService mtlAudioProductionContractService;
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -146,6 +151,24 @@ public class TemplateSaveUntil {
 				templateSaveUntil.mtlEditedTheContractService.save(mtlEditedTheContract);
 				id = mtlEditedTheContract.getId();
 			}
+			//生产项目外包服务合同
+			else if ("FWHT_22".equals(template.getTemplateCode())) {
+				SclProjectOutsourcingEntity sclProjectOutsourcingContract= JSONObject.toJavaObject(j, SclProjectOutsourcingEntity.class);
+				templateSaveUntil.sclProjectOutsourcingService.save(sclProjectOutsourcingContract);
+				id = sclProjectOutsourcingContract.getId();
+			}
+			//加工承揽合同（代工合同）
+			else if ("CLHT_19".equals(template.getTemplateCode())) {
+				SclConstructionProjectEntity sclConstructionProjectContract= JSONObject.toJavaObject(j, SclConstructionProjectEntity.class);
+				templateSaveUntil.sclConstructionProjectService.save(sclConstructionProjectContract);
+				id = sclConstructionProjectContract.getId();
+			}
+			//音频制作合同
+			else if ("ZZHT_18".equals(template.getTemplateCode())) {
+				MtlAudioProductionContractEntity mtlAudioProductionContract= JSONObject.toJavaObject(j, MtlAudioProductionContractEntity.class);
+				templateSaveUntil.mtlAudioProductionContractService.save(mtlAudioProductionContract);
+				id = mtlAudioProductionContract.getId();
+			}
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
@@ -236,6 +259,24 @@ public class TemplateSaveUntil {
 				MtlEditedTheContractEntity mtlEditedTheContract= JSONObject.toJavaObject(j, MtlEditedTheContractEntity.class);
 				mtlEditedTheContract.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.mtlEditedTheContractService.updateById(mtlEditedTheContract);
+			}
+			//生产项目外包服务合同
+			else if ("FWHT_22".equals(template.getTemplateCode())) {
+				SclProjectOutsourcingEntity sclProjectOutsourcingContract= JSONObject.toJavaObject(j, SclProjectOutsourcingEntity.class);
+				templateSaveUntil.sclProjectOutsourcingService.save(sclProjectOutsourcingContract);
+				id = sclProjectOutsourcingContract.getId();
+			}
+			//加工承揽合同（代工合同）
+			else if ("CLHT_19".equals(template.getTemplateCode())) {
+				SclConstructionProjectEntity sclConstructionProjectContract= JSONObject.toJavaObject(j, SclConstructionProjectEntity.class);
+				templateSaveUntil.sclConstructionProjectService.save(sclConstructionProjectContract);
+				id = sclConstructionProjectContract.getId();
+			}
+			//音频制作合同
+			else if ("ZZHT_18".equals(template.getTemplateCode())) {
+				MtlAudioProductionContractEntity mtlAudioProductionContract= JSONObject.toJavaObject(j, MtlAudioProductionContractEntity.class);
+				templateSaveUntil.mtlAudioProductionContractService.save(mtlAudioProductionContract);
+				id = mtlAudioProductionContract.getId();
 			}
 		}
 		return "templateSave";
