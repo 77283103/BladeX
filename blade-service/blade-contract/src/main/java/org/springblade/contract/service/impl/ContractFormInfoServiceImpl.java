@@ -673,8 +673,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
         ContractFormInfoEntity changeFormInfoEntity = contractFormInfoMapper.selectByChangeId(id);
         if (Func.isNotEmpty(changeFormInfoEntity)) {
-            if (CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getContractStatus())
-                    && CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getChangeCategory())) {
+            if (CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getContractStatus())) {
                 contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(changeFormInfoEntity);
             } else {
                 contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(contractFormInfo);

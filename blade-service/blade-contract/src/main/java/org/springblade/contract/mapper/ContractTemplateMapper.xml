@@ -65,19 +65,19 @@
         FROM contract_template
         WHERE is_deleted = 0
         <if test="template.name != null and template.name != ''">
-            AND name = #{template.name}
+            AND name like concat('%', #{template.name}, '%')
         </if>
         <if test="template.templateCategory != null and template.templateCategory != ''">
-            AND template_category = #{template.templateCategory}
+            AND template_category like concat('%', #{template.templateCategory}, '%')
         </if>
         <if test="template.templateNumber != null and template.templateNumber != ''">
-            AND template_number = #{template.templateNumber}
+            AND template_number like concat('%', #{template.templateNumber}, '%')
         </if>
         <if test="template.contractSmallCategory != null and template.contractSmallCategory != ''">
-            AND contract_small_category = #{template.contractSmallCategory}
+            AND contract_small_category like concat('%', #{template.contractSmallCategory}, '%')
         </if>
         <if test="template.contractBigCategory != null and template.contractBigCategory != ''">
-            AND contract_big_category = #{template.contractBigCategory}
+            AND contract_big_category like concat('%', #{template.contractBigCategory}, '%')
         </if>
         <if test="template.createUnit != null and template.createUnit != ''">
             AND create_unit = #{template.createUnit}

@@ -7,23 +7,25 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
-import com.mysql.cj.xdevapi.JsonArray;
-import feign.form.ContentType;
 import freemarker.template.TemplateException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
-import org.springblade.contract.entity.*;
+import org.springblade.contract.entity.ContractAccordingEntity;
+import org.springblade.contract.entity.ContractBondEntity;
+import org.springblade.contract.entity.ContractBondPlanEntity;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.*;
 import org.springblade.contract.util.TemplateExportUntil;
 import org.springblade.contract.util.TemplateSaveUntil;
-import org.springblade.contract.vo.*;
+import org.springblade.contract.vo.ContractAccordingRequestVO;
+import org.springblade.contract.vo.ContractFormInfoRequestVO;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.excel.util.ExcelUtil;
@@ -36,13 +38,10 @@ import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.resource.feign.IFileClient;
-import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.vo.TemplateRequestVO;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,10 +49,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -741,7 +737,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:addChange')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> saveChange(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
-		contractFormInfo.setContractSoure("10");
+//		contractFormInfo.setContractSoure("10");
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
@@ -829,7 +825,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiAddChange')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> multiAddChange(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
-		contractFormInfo.setContractSoure("20");
+//		contractFormInfo.setContractSoure("20");
 		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
 		//contractFormInfo.setSealName(sealName);
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();

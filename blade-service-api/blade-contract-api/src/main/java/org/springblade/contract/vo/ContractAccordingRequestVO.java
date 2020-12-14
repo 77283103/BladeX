@@ -1,9 +1,12 @@
 package org.springblade.contract.vo;
 
-import lombok.*;
-import org.springblade.contract.entity.ContractAccordingEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -23,7 +26,7 @@ import java.util.Date;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "合同依据管理请求对象")
-public class ContractAccordingRequestVO extends ContractAccordingEntity {
+public class ContractAccordingRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -35,6 +38,9 @@ public class ContractAccordingRequestVO extends ContractAccordingEntity {
 	private String fileId;
 
 	@ApiModelProperty(value = "同步时间")
+
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	private Date synchDate;
 
 	@ApiModelProperty(value = "主题内容")
