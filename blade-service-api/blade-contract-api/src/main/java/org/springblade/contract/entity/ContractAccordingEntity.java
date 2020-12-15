@@ -1,10 +1,15 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
-import org.springblade.core.mp.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -45,6 +50,8 @@ public class ContractAccordingEntity extends BaseEntity {
 	/**
 	 * 同步时间
 	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	@ApiModelProperty(value = "同步时间")
 	private Date synchDate;
 	/**
@@ -76,6 +83,7 @@ public class ContractAccordingEntity extends BaseEntity {
 	 * 关联合同
 	 */
 	@ApiModelProperty(value = "关联合同")
+	@JsonSerialize(using = ToStringSerializer.class)
 	private Long contractId;
 
 }

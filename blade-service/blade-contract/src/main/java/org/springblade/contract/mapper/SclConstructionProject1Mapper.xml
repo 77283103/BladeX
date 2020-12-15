@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.SclConstructionProject1Mapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="sclConstructionProject1ResultMap" type="org.springblade.contract.entity.SclConstructionProject1Entity">
+        <result column="id" property="id"/>
+        <result column="varieties" property="varieties"/>
+        <result column="specifications" property="specifications"/>
+        <result column="processing_cost" property="processingCost"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contract_id" property="contractId"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        varieties,
+        specifications,
+        processing_cost,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contract_id
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="sclConstructionProject1ResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM scl_construction_project1
+        WHERE is_deleted = 0
+    </select>
+</mapper>

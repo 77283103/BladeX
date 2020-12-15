@@ -1,12 +1,14 @@
 package org.springblade.contract.vo;
 
-import lombok.*;
-import org.springblade.contract.entity.ContractCounterpartEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -61,6 +63,8 @@ public class ContractCounterpartRequestVO extends ContractCounterpartEntity {
 	private String passportId;
 
 	@ApiModelProperty(value = "首次合作日期")
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	private Date firstCooperationDate;
 
 	@ApiModelProperty(value = "电子印章序列号")
@@ -73,9 +77,13 @@ public class ContractCounterpartRequestVO extends ContractCounterpartEntity {
 	private String paymentMethod;
 
 	@ApiModelProperty(value = "信息同步时间")
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	private Date informationSynDate;
 
 	@ApiModelProperty(value = "成立日期")
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	private Date establishDate;
 
 	@ApiModelProperty(value = "公司地址")

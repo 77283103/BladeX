@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.SclProjectOutsourcingMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="sclProjectOutsourcingResultMap" type="org.springblade.contract.entity.SclProjectOutsourcingEntity">
+        <result column="id" property="id"/>
+        <result column="scl_delegate" property="sclDelegate"/>
+        <result column="scl_residence" property="sclResidence"/>
+        <result column="scl_contractor" property="sclContractor"/>
+        <result column="scl_premises" property="sclPremises"/>
+        <result column="scl_number" property="sclNumber"/>
+        <result column="scl_start_time" property="sclStartTime"/>
+        <result column="scl_end_time" property="sclEndTime"/>
+        <result column="scl_compensation" property="sclCompensation"/>
+        <result column="scl_proportion" property="sclProportion"/>
+        <result column="scl_contract" property="sclContract"/>
+        <result column="scl_contact" property="sclContact"/>
+        <result column="scl_contacts" property="sclContacts"/>
+        <result column="scl_service_fee" property="sclServiceFee"/>
+        <result column="scl_month" property="sclMonth"/>
+        <result column="scl_invoice" property="sclInvoice"/>
+        <result column="scl_pay" property="sclPay"/>
+        <result column="scl_account_name" property="sclAccountName"/>
+        <result column="scl_account" property="sclAccount"/>
+        <result column="scl_shere" property="sclShere"/>
+        <result column="scl_performance_bond" property="sclPerformanceBond"/>
+        <result column="scl_margin" property="sclMargin"/>
+        <result column="scl_remove" property="sclRemove"/>
+        <result column="scl_margin_collection" property="sclMarginCollection"/>
+        <result column="scl_accounta" property="sclAccounta"/>
+        <result column="scl_sdhere" property="sclSdhere"/>
+        <result column="scl_breach_a" property="sclBreachA"/>
+        <result column="scl_breach_b" property="sclBreachB"/>
+        <result column="scl_breach_c" property="sclBreachC"/>
+        <result column="scl_breach_d" property="sclBreachD"/>
+        <result column="scl_breach_f" property="sclBreachF"/>
+        <result column="scl_agreement" property="sclAgreement"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        scl_delegate,
+        scl_residence,
+        scl_contractor,
+        scl_premises,
+        scl_number,
+        scl_start_time,
+        scl_end_time,
+        scl_compensation,
+        scl_proportion,
+        scl_contract,
+        scl_contact,
+        scl_contacts,
+        scl_service_fee,
+        scl_month,
+        scl_invoice,
+        scl_pay,
+        scl_account_name,
+        scl_account,
+        scl_shere,
+        scl_performance_bond,
+        scl_margin,
+        scl_remove,
+        scl_margin_collection,
+        scl_accounta,
+        scl_sdhere,
+        scl_breach_a,
+        scl_breach_b,
+        scl_breach_c,
+        scl_breach_d,
+        scl_breach_f,
+        scl_agreement,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="sclProjectOutsourcingResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM scl_project_outsourcing
+        WHERE is_deleted = 0
+    </select>
+</mapper>

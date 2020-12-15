@@ -1,17 +1,12 @@
 package org.springblade.system.vo;
 
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
-import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springblade.system.entity.TemplateRelationEntity;
 
-import java.util.Date;
-
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * 关联表单 请求模型VO
@@ -23,6 +18,7 @@ import javax.validation.constraints.NotNull;
  * @author szw
  * @date : 2020-10-23 17:24:27
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @ApiModel(description = "关联表单请求对象")
 public class TemplateRelationRequestVO extends TemplateRelationEntity {

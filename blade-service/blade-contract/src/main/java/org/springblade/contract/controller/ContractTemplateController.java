@@ -26,6 +26,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.feign.IUserClient;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -70,7 +71,7 @@ public class ContractTemplateController extends BladeController {
 	}
 
 	/**
-	 * 详情
+	 * 历史版本详情列表信息
 	 */
 	@GetMapping("/version")
 	@ApiOperationSupport(order = 1)
@@ -100,6 +101,7 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入template")
 	@PreAuth("hasPermission('contract:template:add')")
+	@Transactional(rollbackFor = Exception.class)
 	public R save(@Valid @RequestBody ContractTemplateRequestVO template) {
         ContractTemplateEntity entity = new ContractTemplateEntity();
         BeanUtil.copy(template,entity);
@@ -172,14 +174,16 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入template")
 	@PreAuth("hasPermission('contract:template:Revision')")
+	@Transactional(rollbackFor = Exception.class)
 	public R Revision(@Valid @RequestBody ContractTemplateRequestVO template) {
-		String  templateStatus = TEMPLATE_REVISION_STATUS;
-		String  templateStatusOld = TEMPLATE_REVISION_STATUS_OLD;
+		if (Func.isNotEmpty(template.getId())) {
+			template.setId(null);
+		}
 		ContractTemplateEntity entity = new ContractTemplateEntity();
 		BeanUtil.copy(template,entity);
-		entity.setTemplateStatus(templateStatus);
+		entity.setTemplateStatus(TEMPLATE_REVISION_STATUS);
 		templateService.save(entity);
-		templateService.updateTemplateStatus(templateStatusOld,entity.getOriginalTemplateId());
+		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD,entity.getOriginalTemplateId());
 		return R.data(entity);
 	}
 

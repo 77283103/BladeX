@@ -2,20 +2,19 @@ package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
+import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.mapper.ContractTemplateMapper;
-import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.service.IContractTemplateService;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
-import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.contract.wrapper.ContractTemplateWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.contract.entity.ContractTemplateEntity;
-import org.springblade.contract.service.IContractTemplateService;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.feign.ISysClient;
+import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 
@@ -93,6 +92,16 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 				//将文件信息set到vo 的 list
 				templateResponseVO.setTemplateFileVOList(result.getData());
 			}
+		}
+		/* 查询创建者 */
+		if (Func.isNoneBlank(templateResponseVO.getCreateUser().toString())) {
+			User user = userClient.userInfoById(templateResponseVO.getCreateUser()).getData();
+			templateResponseVO.setUserRealName(user.getRealName());
+		}
+		/* 查询创建者组织 */
+		if (Func.isNoneBlank(templateResponseVO.getCreateDept().toString())) {
+			String dept = sysClient.getDeptName(templateResponseVO.getCreateDept()).getData();
+			templateResponseVO.setUserDepartName(dept);
 		}
 		//返回vo
 		return templateResponseVO;

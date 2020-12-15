@@ -80,16 +80,19 @@
         FROM contract_counterpart
         WHERE is_deleted = 0
         <if test="counterpart.name != null and counterpart.name != ''">
-            AND name = #{counterpart.name}
+            AND name like concat('%', #{counterpart.name}, '%')
         </if>
         <if test="counterpart.natureCategory != null and counterpart.natureCategory != ''">
-            AND nature_category = #{counterpart.natureCategory}
+            AND nature_category like concat('%', #{counterpart.natureCategory}, '%')
         </if>
         <if test="counterpart.firstCooperationDate != null and counterpart.firstCooperationDate != ''">
             AND first_cooperation_date = #{counterpart.firstCooperationDate}
         </if>
         <if test="counterpart.idNumber != null and counterpart.idNumber != ''">
-            AND id_number = #{counterpart.idNumber}
+            AND id_number like concat('%', #{counterpart.idNumber}, '%')
+        </if>
+        <if test="counterpart.legalRepresentative != null and counterpart.legalRepresentative != ''">
+            AND legal_representative like concat('%', #{counterpart.legalRepresentative}, '%')
         </if>
     </select>
     <!--根据合同id查询相对方集合-->

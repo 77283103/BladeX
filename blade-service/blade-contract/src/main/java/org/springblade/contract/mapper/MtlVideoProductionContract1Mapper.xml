@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.MtlVideoProductionContract1Mapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="mtlVideoProductionContract1ResultMap" type="org.springblade.contract.entity.MtlVideoProductionContract1Entity">
+        <result column="id" property="id"/>
+        <result column="Form_delivery" property="formDelivery"/>
+        <result column="number" property="number"/>
+        <result column="content_theme" property="contentTheme"/>
+        <result column="requirements" property="requirements"/>
+        <result column="expenses" property="expenses"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="contract_id" property="contractId"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        Form_delivery,
+        number,
+        content_theme,
+        requirements,
+        expenses,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted,
+        contract_id
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="mtlVideoProductionContract1ResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM mtl_video_production_contract1
+        WHERE is_deleted = 0
+    </select>
+</mapper>

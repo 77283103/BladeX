@@ -49,24 +49,15 @@
         FROM contract_according
         WHERE is_deleted = 0
         <if test="according.accordingName != null and according.accordingName != ''">
-            AND according_name = #{according.accordingName}
+            AND according_name like concat('%', #{according.accordingName}, '%')
         </if>
         <if test="according.synchDate != null and according.synchDate != ''">
-            AND synch_date = #{according.synchDate}
+            AND synch_date like concat('%', #{according.synchDate}, '%')
         </if>
         <if test="according.useStatus != null and according.useStatus != ''">
             AND use_status = #{according.useStatus}
         </if>
     </select>
-    <!--根据合同id查询相依据集合-->
-    <!--<select id="selectByIds" resultMap="accordingResultMap">
-        SELECT
-        <include refid="baseColumnList"> </include>
-        FROM contract_according
-        WHERE is_deleted = 0
-        AND
-        id IN (SELECT c.contract_according_id FROM  contract_according_setting c WHERE c.contract_id = #{id})
-    </select>-->
     <select id="selectByIds" resultMap="accordingResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
