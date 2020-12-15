@@ -12,8 +12,10 @@ import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.CollectionUtil;
+import org.springblade.system.entity.TemplateEntity;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -40,17 +42,17 @@ public class ContractClient implements IContractClient{
     }
 
 	@Override
-	@GetMapping(TEMPLATE_UPDATE)
-	public R<ContractTemplateResponseVO> templateUpdate(String templateCode, String json) {
+	@PostMapping(TEMPLATE_UPDATE)
+	public R<ContractTemplateResponseVO> templateUpdate(TemplateEntity entity) {
 		ContractTemplateEntity templateFieldEntity=new ContractTemplateEntity();
 		QueryWrapper<ContractTemplateEntity> queryWrapper = Condition.getQueryWrapper(templateFieldEntity)
-			.eq("template_code",templateCode)
+			.eq("template_code",entity.getTemplateCode())
 			.eq("is_deleted",0)
 			.eq("template_status","10")
 			.or().eq("template_status","40");
 		List<ContractTemplateEntity> list = templateService.list(queryWrapper);
 		if(CollectionUtil.isNotEmpty(list)){
-			list.get(0).setJson(json);
+			list.get(0).setJson(entity.getJson());
 			templateService.updateById(list.get(0));
 		}
 		return null;

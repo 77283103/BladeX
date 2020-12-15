@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.SclEquipmentMaintenanceMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="sclEquipmentMaintenanceResultMap" type="org.springblade.contract.entity.SclEquipmentMaintenanceEntity">
+        <result column="id" property="id"/>
+        <result column="scl_paty_a" property="sclPatyA"/>
+        <result column="scl_paty_bs" property="sclPatyBs"/>
+        <result column="scl_paty_b" property="sclPatyB"/>
+        <result column="scl_address" property="sclAddress"/>
+        <result column="scl_project_name" property="sclProjectName"/>
+        <result column="scl_home" property="sclHome"/>
+        <result column="scl_serial_number" property="sclSerialNumber"/>
+        <result column="scl_device_name" property="sclDeviceName"/>
+        <result column="scl_brand" property="sclBrand"/>
+        <result column="scl_specification" property="sclSpecification"/>
+        <result column="scl_number_of" property="sclNumberOf"/>
+        <result column="scl_other" property="sclOther"/>
+        <result column="scl_total_rmb" property="sclTotalRmb"/>
+        <result column="scl_capital_rmb" property="sclCapitalRmb"/>
+        <result column="scl_note" property="sclNote"/>
+        <result column="scl_equipment" property="sclEquipment"/>
+        <result column="scl_maintenancessss" property="sclMaintenancessss"/>
+        <result column="scl_quality" property="sclQuality"/>
+        <result column="scl_routine_maintenancess" property="sclRoutineMaintenancess"/>
+        <result column="scl_month" property="sclMonth"/>
+        <result column="scl_maintenance" property="sclMaintenance"/>
+        <result column="scl_period" property="sclPeriod"/>
+        <result column="scl_maintenances" property="sclMaintenances"/>
+        <result column="scl_routine" property="sclRoutine"/>
+        <result column="scl_cumulative" property="sclCumulative"/>
+        <result column="scl_cumulatives" property="sclCumulatives"/>
+        <result column="scl_specifically_agreed" property="sclSpecificallyAgreed"/>
+        <result column="scl_contract" property="sclContract"/>
+        <result column="scl_party_as" property="sclPartyAs"/>
+        <result column="scl_service_telephone" property="sclServiceTelephone"/>
+        <result column="scl_should_be_in" property="sclShouldBeIn"/>
+        <result column="scl_maintenanceq" property="sclMaintenanceq"/>
+        <result column="scl_sides" property="sclSides"/>
+        <result column="scl_payment" property="sclPayment"/>
+        <result column="scl_other_way" property="sclOtherWay"/>
+        <result column="scl_bank" property="sclBank"/>
+        <result column="scl_name" property="sclName"/>
+        <result column="scl_account" property="sclAccount"/>
+        <result column="scl_contracts" property="sclContracts"/>
+        <result column="scl_limit" property="sclLimit"/>
+        <result column="scl_gold" property="sclGold"/>
+        <result column="scl_than" property="sclThan"/>
+        <result column="scl_bou" property="sclBou"/>
+        <result column="scl_start" property="sclStart"/>
+        <result column="scl_laste" property="sclLaste"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="scl_company" property="sclCompany"/>
+        <result column="scl_agreed" property="sclAgreed"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        scl_paty_a,
+        scl_paty_bs,
+        scl_paty_b,
+        scl_address,
+        scl_project_name,
+        scl_home,
+        scl_serial_number,
+        scl_device_name,
+        scl_brand,
+        scl_specification,
+        scl_number_of,
+        scl_other,
+        scl_total_rmb,
+        scl_capital_rmb,
+        scl_note,
+        scl_equipment,
+        scl_maintenancessss,
+        scl_quality,
+        scl_routine_maintenancess,
+        scl_month,
+        scl_maintenance,
+        scl_period,
+        scl_maintenances,
+        scl_routine,
+        scl_cumulative,
+        scl_cumulatives,
+        scl_specifically_agreed,
+        scl_contract,
+        scl_party_as,
+        scl_service_telephone,
+        scl_should_be_in,
+        scl_maintenanceq,
+        scl_sides,
+        scl_payment,
+        scl_other_way,
+        scl_bank,
+        scl_name,
+        scl_account,
+        scl_contracts,
+        scl_limit,
+        scl_gold,
+        scl_than,
+        scl_bou,
+        scl_start,
+        scl_laste,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        scl_company,
+        scl_agreed
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="sclEquipmentMaintenanceResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM scl_equipment_maintenance
+        WHERE is_deleted = 0
+    </select>
+</mapper>

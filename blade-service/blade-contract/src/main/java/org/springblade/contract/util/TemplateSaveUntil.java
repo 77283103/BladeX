@@ -42,6 +42,8 @@ public class TemplateSaveUntil {
 	private IMtlEditedTheContractService mtlEditedTheContractService;
 	@Autowired
 	private IMtlVideoProductionContractService mtlVideoProductionContractService;
+	@Autowired
+	private ISclEquipmentMaintenanceService sclEquipmentMaintenanceService;
 
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
@@ -146,6 +148,12 @@ public class TemplateSaveUntil {
 				templateSaveUntil.mtlEditedTheContractService.save(mtlEditedTheContract);
 				id = mtlEditedTheContract.getId();
 			}
+			//设备维修保养合同
+			else if ("BYHT_21".equals(template.getTemplateCode())) {
+				SclEquipmentMaintenanceEntity sclEquipmentMaintenance= JSONObject.toJavaObject(j, SclEquipmentMaintenanceEntity.class);
+				templateSaveUntil.sclEquipmentMaintenanceService.save(sclEquipmentMaintenance);
+				id = sclEquipmentMaintenance.getId();
+			}
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
@@ -236,6 +244,12 @@ public class TemplateSaveUntil {
 				MtlEditedTheContractEntity mtlEditedTheContract= JSONObject.toJavaObject(j, MtlEditedTheContractEntity.class);
 				mtlEditedTheContract.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.mtlEditedTheContractService.updateById(mtlEditedTheContract);
+			}
+			//设备维修保养合同
+			else if ("BYHT_21".equals(template.getTemplateCode())) {
+				SclEquipmentMaintenanceEntity sclEquipmentMaintenance= JSONObject.toJavaObject(j, SclEquipmentMaintenanceEntity.class);
+				sclEquipmentMaintenance.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.sclEquipmentMaintenanceService.updateById(sclEquipmentMaintenance);
 			}
 		}
 		return "templateSave";

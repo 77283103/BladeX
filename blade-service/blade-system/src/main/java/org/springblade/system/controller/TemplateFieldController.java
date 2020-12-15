@@ -96,7 +96,7 @@ public class TemplateFieldController extends BladeController {
 		TemplateEntity entity = new TemplateEntity();
 		BeanUtil.copy(template,entity);
 		entity.setJson(templateFieldService.json(listT));
-		contractClient.templateUpdate(entity.getTemplateCode(),entity.getJson());
+		contractClient.templateUpdate(entity);
 		return R.status(templateService.updateById(entity));
 
 	}

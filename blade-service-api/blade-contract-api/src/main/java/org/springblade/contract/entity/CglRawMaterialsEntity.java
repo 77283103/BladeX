@@ -1,5 +1,6 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springblade.core.tool.utils.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,6 +19,7 @@ import lombok.Setter;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -131,4 +133,7 @@ public class CglRawMaterialsEntity extends BaseEntity {
     @ApiModelProperty(value="（第十一.11.2项）其他约定")
 	private String cglOtherConventions4;
 
+	@ApiModelProperty(value = "原物料-买卖合同关联表")
+	@TableField(exist = false)
+	private List<CglRawMaterials1Entity> cglRawMaterials1List;
 }

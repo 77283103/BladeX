@@ -1,5 +1,6 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springblade.core.tool.utils.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -18,6 +19,7 @@ import lombok.Setter;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -97,4 +99,7 @@ public class CglTheSalesContractEntity extends BaseEntity {
     @ApiModelProperty(value="终止时间双方约定采用如下第【？】种方式确认")
 	private String cglConvention;
 
+	@ApiModelProperty(value = "新增原物料补充协议--买卖合同")
+	@TableField(exist = false)
+	private List<CglTheSalesContract1Entity> cglTheSalesContract1List;
 }

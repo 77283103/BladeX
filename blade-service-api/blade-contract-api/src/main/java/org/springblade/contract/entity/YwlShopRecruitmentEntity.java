@@ -77,4 +77,5 @@ public class YwlShopRecruitmentEntity extends BaseEntity {
     @ApiModelProperty(value="其他约定")
 	private String ywlOtherConventions;
 
+
 }
