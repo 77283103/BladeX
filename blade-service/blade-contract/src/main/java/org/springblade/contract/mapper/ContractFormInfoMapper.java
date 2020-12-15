@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
-import org.springblade.contract.vo.ContractTemplateResponseVO;
 
 import java.util.List;
 
@@ -152,6 +150,11 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	List<ContractFormInfoEntity> getNumList();
 
+	/**
+	 *
+	 * @return
+	 */
+	Double getNumAmount(String contractBigCategory);
 	/**
 	 * 获取合同金额sum
 	 * @return

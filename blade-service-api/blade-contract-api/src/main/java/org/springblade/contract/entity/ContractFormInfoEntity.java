@@ -321,6 +321,10 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private String dictValue;
 
 	/**
+	 * 占比金额比率
+	 */
+	private String amountRatio;
+	/**
 	 * 相对方名称字符串
 	 */
 	@TableField(exist = false)

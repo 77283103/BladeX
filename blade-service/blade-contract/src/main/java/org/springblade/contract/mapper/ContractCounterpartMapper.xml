@@ -86,7 +86,7 @@
             AND nature_category like concat('%', #{counterpart.natureCategory}, '%')
         </if>
         <if test="counterpart.firstCooperationDate != null and counterpart.firstCooperationDate != ''">
-            AND first_cooperation_date = #{counterpart.firstCooperationDate}
+            AND first_cooperation_date IN (#{counterpart.firstCooperationDate})
         </if>
         <if test="counterpart.idNumber != null and counterpart.idNumber != ''">
             AND id_number like concat('%', #{counterpart.idNumber}, '%')

@@ -216,13 +216,25 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         if (Func.isNotBlank(contractFormInfo.getColPayType()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
             page = contractFormInfoMapper.pageList(page, contractFormInfo);
         }
+        //金额查询
+        if (Func.isNotEmpty(contractFormInfo.getMinAmount()) || Func.isNotEmpty(contractFormInfo.getMaxAmount())) {
+            page = contractFormInfoMapper.pageList(page, contractFormInfo);
+        }
         if (!DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
-                && !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+                && !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())
+                || Func.isNotEmpty(contractFormInfo.getMaxAmount()) || Func.isNotEmpty(contractFormInfo.getMinAmount())) {
             List<ContractFormInfoEntity> records = page.getRecords();
             List<ContractFormInfoEntity> recordList = new ArrayList<>();
             for (ContractFormInfoEntity v : records) {
-                v.setContractBigCategory(bizClient.getValues("HTDL", Long.valueOf(v.getContractBigCategory())).getData());
-                v.setColPayType(bizClient.getValues("col_pay_term", Long.valueOf(v.getColPayTerm())).getData());
+                if (Func.isNotEmpty(v.getContractBigCategory())){
+                    v.setAmountRatio(String.valueOf(
+                            v.getContractAmount().divide(BigDecimal.valueOf(
+                                    contractFormInfoMapper.getNumAmount(v.getContractBigCategory())),2).multiply(BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%"));
+                    v.setContractBigCategory(bizClient.getValues("HTDL", Long.valueOf(v.getContractBigCategory())).getData());
+                    }
+                if(Func.isNotEmpty(v.getColPayTerm())){
+                    v.setColPayType(bizClient.getValues("col_pay_term", Long.valueOf(v.getColPayTerm())).getData());
+                }
                 //将签订信息存入合同分页 获取邮寄日期
                 ContractSigningEntity signingEntity = signingMapper.selectSigningById(v.getId());
                 if (Func.isNotEmpty(signingEntity)) {
