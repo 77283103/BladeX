@@ -220,7 +220,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         if (Func.isNotEmpty(contractFormInfo.getMinAmount()) || Func.isNotEmpty(contractFormInfo.getMaxAmount())) {
             page = contractFormInfoMapper.pageList(page, contractFormInfo);
         }
-        if (!DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
+        if (!DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())
+                && !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
                 && !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())
                 || Func.isNotEmpty(contractFormInfo.getMaxAmount()) || Func.isNotEmpty(contractFormInfo.getMinAmount())) {
             List<ContractFormInfoEntity> records = page.getRecords();
@@ -229,7 +230,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 if (Func.isNotEmpty(v.getContractBigCategory())){
                     v.setAmountRatio(String.valueOf(
                             v.getContractAmount().divide(BigDecimal.valueOf(
-                                    contractFormInfoMapper.getNumAmount(v.getContractBigCategory())),2).multiply(BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%"));
+                                    contractFormInfoMapper.getNumAmount(v.getContractBigCategory())),2,BigDecimal.ROUND_HALF_DOWN).multiply(
+                                            BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%"));
                     v.setContractBigCategory(bizClient.getValues("HTDL", Long.valueOf(v.getContractBigCategory())).getData());
                     }
                 if(Func.isNotEmpty(v.getColPayTerm())){
@@ -247,13 +249,14 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
             page.setRecords(recordList);
         }
         IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
-        if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory()) || DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
+        if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())
+                || DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
                 || DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
             List<ContractFormInfoResponseVO> records = pages.getRecords();
             List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
             for (ContractFormInfoResponseVO v : records) {
                 BigDecimal contractAmountSum = BigDecimal.valueOf(contractFormInfoMapper.selectAmountSum());
-                v.setAmountRatio(v.getContractAmount().divide(contractAmountSum, 2).multiply(BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%");
+                v.setAmountRatio(v.getContractAmount().divide(contractAmountSum, 2,BigDecimal.ROUND_HALF_EVEN).multiply(BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%");
                 if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())) {
                     v.setSigningCount(contractFormInfoMapper.selectSigningCount(v.getContractBigCategory()));
                     v.setContractBigCategory(v.getDictValue());
