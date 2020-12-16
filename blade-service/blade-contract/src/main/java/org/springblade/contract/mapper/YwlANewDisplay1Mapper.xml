@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.springblade.contract.mapper.YwlShopRecruitment1Mapper">
+<mapper namespace="org.springblade.contract.mapper.YwlANewDisplay1Mapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="ywlShopRecruitment1ResultMap" type="org.springblade.contract.entity.YwlShopRecruitment1Entity">
+    <resultMap id="ywlANewDisplay1ResultMap" type="org.springblade.contract.entity.YwlANewDisplay1Entity">
         <result column="id" property="id"/>
         <result column="ywl_number" property="ywlNumber"/>
         <result column="ywl_display_products" property="ywlDisplayProducts"/>
@@ -35,10 +35,10 @@
         is_deleted
     </sql>
     <!-- 分页 -->
-    <select id="pageList" resultMap="ywlShopRecruitment1ResultMap">
+    <select id="pageList" resultMap="ywlANewDisplay1ResultMap">
         SELECT
             <include refid="baseColumnList"></include>
-        FROM ywl_shop_recruitment1
+        FROM ywl_a_new_display1
         WHERE is_deleted = 0
     </select>
 </mapper>

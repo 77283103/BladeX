@@ -85,7 +85,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private ContractTemplateMapper contractTemplateMapper;
 
     private ContractChangeMapper changeMapper;
-	private IYwlShopRecruitment1Service ywlShopRecruitment1Service;
+	private IYwlANewDisplay1Service ywlANewDisplay1Service;
 	private ICglCategorySalesContracts1Service cglCategorySalesContracts1Service;
 	private ICglTheSalesContract1Service cglTheSalesContract1Service;
 	private ICglRawMaterials1Service cglRawMaterials1Service;
@@ -988,10 +988,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 									BeanUtil.copy(contractBondEntity, contractBondPlan);
 									if (Func.isEmpty(contractBondEntity.getId())) {
 										contractBondService.save(contractBondEntity);
-										bondList.add(contractBondEntity);
 									}
+									bondList.add(contractBondEntity);
 									//保存保证金履约计划
 									contractBondPlan.setContractId(contractFormInfo.getId());
+									contractBondPlan.setId(null);
 									contractBondPlanService.save(contractBondPlan);
 									list.add(contractBondEntity.getId());
 								}
@@ -1034,11 +1035,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                     }
                 }
 				//*新陈列协议书关联表
-				if (ContractFormInfoTemplateContract.CONTRACT_YWLSHOPRECRUITMENT1.equals(templateField.getRelationCode())) {
-					List<YwlShopRecruitment1ResponseVO> ywlShopRecruitment1List = JSON.parseArray(templateField.getTableData(), YwlShopRecruitment1ResponseVO.class);
-					if (CollectionUtil.isNotEmpty(ywlShopRecruitment1List)) {
-						ywlShopRecruitment1Service.saveBatchByRefId(contractFormInfo.getId(),ywlShopRecruitment1List);
-						List<YwlShopRecruitment1ResponseVO> list =ywlShopRecruitment1Service.selectRefList(contractFormInfo.getId());
+				if (ContractFormInfoTemplateContract.CONTRACT_YWLANEWDISPLAY1.equals(templateField.getRelationCode())) {
+					List<YwlANewDisplay1ResponseVO> ywlANewDisplay1List = JSON.parseArray(templateField.getTableData(), YwlANewDisplay1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(ywlANewDisplay1List)) {
+						ywlANewDisplay1Service.saveBatchByRefId(contractFormInfo.getId(),ywlANewDisplay1List);
+						List<YwlANewDisplay1ResponseVO> list =ywlANewDisplay1Service.selectRefList(contractFormInfo.getId());
 						templateField.setTableData(JSONObject.toJSONString(list));
 						templateField.setTableDataList(list);
 					}

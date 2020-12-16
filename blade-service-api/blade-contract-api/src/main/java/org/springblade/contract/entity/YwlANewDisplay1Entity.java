@@ -23,15 +23,15 @@ import java.util.Date;
 /**
  * 业务类：21.新陈列协议书关联表 实体类
  *
- * @author szw
- * @date : 2020-12-06 13:51:39
+ * @author kx
+ * @date : 2020-12-16 16:42:38
  */
 @Getter
 @Setter
-@TableName("ywl_shop_recruitment1")
+@TableName("ywl_a_new_display1")
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "YwlShopRecruitment1对象", description = "业务类：21.新陈列协议书关联表")
-public class YwlShopRecruitment1Entity extends BaseEntity {
+@ApiModel(value = "YwlANewDisplay1对象", description = "业务类：21.新陈列协议书关联表")
+public class YwlANewDisplay1Entity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 

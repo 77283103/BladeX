@@ -3,7 +3,6 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.vo.SclEquipmentMaintenance1RequestVO;
 import org.springblade.contract.vo.SclEquipmentMaintenance1ResponseVO;
-import org.springblade.contract.vo.YwlShopRecruitment1ResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.SclEquipmentMaintenance1Entity;
 

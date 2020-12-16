@@ -17,7 +17,7 @@ public interface ContractFormInfoTemplateContract {
 	//合同履行
 	String CONTRACT_PERFORMANCE = "ContractPerformance";
 	//新陈列协议书关联表
-	String CONTRACT_YWLSHOPRECRUITMENT1 = "YwlShopRecruitment1";
+	String CONTRACT_YWLANEWDISPLAY1 = "YwlANewDisplay1";
 	//买卖合同（行销品）
 	String CONTRACT_CGLCATEGORYSALESCONTRACTS1 = "CglCategorySalesContracts1";
 	//新增原物料补充协议--买卖合同

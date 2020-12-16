@@ -16,7 +16,6 @@
  */
 package org.springblade.contract.enums;
 
-import com.alibaba.druid.support.monitor.MonitorClient;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
@@ -26,8 +25,7 @@ import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.YwlANewDisplayEntity;
 import org.springblade.contract.entity.YwlShopRecruitmentEntity;
-import org.springblade.contract.vo.YwlShopRecruitment1ResponseVO;
-import org.springblade.core.tool.utils.CollectionUtil;
+import org.springblade.contract.vo.YwlANewDisplay1ResponseVO;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -56,8 +54,8 @@ public enum TemplateExporterEnum {
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//*新陈列协议书关联表
-				if (ContractFormInfoTemplateContract.CONTRACT_YWLSHOPRECRUITMENT1.equals(templateField.getRelationCode())) {
-					List<YwlShopRecruitment1ResponseVO> ywlShopRecruitment1List = JSON.parseArray(templateField.getTableData(), YwlShopRecruitment1ResponseVO.class);
+				if (ContractFormInfoTemplateContract.CONTRACT_YWLANEWDISPLAY1.equals(templateField.getRelationCode())) {
+					List<YwlANewDisplay1ResponseVO> ywlShopRecruitment1List = JSON.parseArray(templateField.getTableData(), YwlANewDisplay1ResponseVO.class);
 					for (int i=0;i<ywlShopRecruitment1List.size();i++) {
 						Map<String, Object> map=new HashMap();
 						map.put("ywlNumber",i+1);

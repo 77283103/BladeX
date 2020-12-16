@@ -2,6 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractPerformanceEntity;
@@ -164,4 +165,12 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	Integer selectSigningCount(String contractBigCategory);
+
+	/**
+	 * 根据保证金id查询合同id
+	 *
+	 * @param id
+	 * @return
+	 */
+	List<ContractFormInfoEntity> findContractList(Long id);
 }

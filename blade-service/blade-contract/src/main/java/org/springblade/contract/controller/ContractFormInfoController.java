@@ -246,6 +246,7 @@ public class ContractFormInfoController extends BladeController {
 				}
 				//保存保证金履约计划
 				contractBondPlan.setContractId(contractFormInfo.getId());
+				contractBondPlan.setId(null);
 				contractBondPlanService.save(contractBondPlan);
 				list.add(contractBondEntity.getId());
 			}
@@ -446,7 +447,7 @@ public class ContractFormInfoController extends BladeController {
 		ContractFormInfoEntity contractFormInfo = new ContractFormInfoEntity();
 		BeanUtil.copy(entity, contractFormInfo);
 		String json=contractFormInfo.getJson();
-		if(!"".equals(json)){
+		if (!Func.isEmpty(json)) {
 			com.alibaba.fastjson.JSONArray objects = new com.alibaba.fastjson.JSONArray();
 			try {
 				objects = JSONArray.parseArray(json);

@@ -7,9 +7,11 @@ import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractBondEntity;
 import io.swagger.annotations.ApiModel;
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 保证金 返回模型VO
@@ -37,4 +39,10 @@ public class ContractBondResponseVO extends ContractBondEntity {
 
 	@ApiModelProperty(value = "关联合同ID")
 	private Long contractId;
+
+	@ApiModelProperty(value = "关联合同信息集合")
+	private List<ContractFormInfoEntity> contractFormInfoList;
+
+	@ApiModelProperty(value = "关联相对方")
+	private ContractCounterpartEntity counterpart;
 }

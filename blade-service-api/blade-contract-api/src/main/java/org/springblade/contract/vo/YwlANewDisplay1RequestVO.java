@@ -23,14 +23,14 @@ import com.fasterxml.jackson.databind.ser.std.NullSerializer;
  * @NotBlank 检查约束 (字符串) 是不是Null还有被Trim的长度是否大于0,只对字符串,且会去掉前后空格.
  * @NotEmpty 检查(集合)约束元素是否为NULL或者是EMPTY.
  *
- * @author szw
- * @date : 2020-12-06 13:51:40
+ * @author kx
+ * @date : 2020-12-16 16:42:39
  */
 @Getter
 @Setter
 @ToString
 @ApiModel(description = "业务类：21.新陈列协议书关联表请求对象")
-public class YwlShopRecruitment1RequestVO extends BaseEntity{
+public class YwlANewDisplay1RequestVO extends BaseEntity{
 
 	private static final long serialVersionUID = 1L;
 

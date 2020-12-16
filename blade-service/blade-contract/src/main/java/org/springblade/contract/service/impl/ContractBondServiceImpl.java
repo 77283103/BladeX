@@ -34,6 +34,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper, ContractBondEntity> implements IContractBondService {
 	private ContractFormInfoMapper formInfoMapper;
+	private ContractCounterpartMapper counterpartMapper;
 	@Override
 	public IPage<ContractBondResponseVO> pageList(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
 		page=baseMapper.pageList(page, contractBond);
@@ -41,11 +42,15 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 		List<ContractBondResponseVO> records = pages.getRecords();
 		List<ContractBondResponseVO> recordList = new ArrayList<>();
 		for(ContractBondResponseVO v : records) {
-			ContractFormInfoEntity formInfoEntity = formInfoMapper.selectById(v.getContractId());
-			if (Func.isNotEmpty(formInfoEntity)) {
-				ContractFormInfoResponseVO formInfoResponseVO= ContractFormInfoWrapper.build().entityPV(formInfoEntity);
-				v.setContractFormInfoEntity(formInfoResponseVO);
+			List<ContractFormInfoEntity> contractFormInfoList=formInfoMapper.findContractList(v.getId());
+			for(ContractFormInfoEntity contractFormInfo : contractFormInfoList){
+				List<ContractCounterpartEntity> counterpartEntity = counterpartMapper.selectByIds(contractFormInfo.getId());
+				contractFormInfo.setCounterpart(counterpartEntity);
 			}
+			ContractCounterpartEntity counterpartEntity = counterpartMapper.selectById(v.getCounterpartId());
+			v.setContractNumber(contractFormInfoList.size());
+			v.setContractFormInfoList(contractFormInfoList);
+			v.setCounterpart(counterpartEntity);
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
@@ -72,10 +77,10 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 
 	@Override
 	public void deleteByContractId(Long id) {
-		List<ContractBondEntity> list=baseMapper.selectByIds(id);
 		baseMapper.deleteBond(id);
+		/*List<ContractBondEntity> list=baseMapper.selectByIds(id);
 		list.forEach(bond ->{
 			baseMapper.deleteById(bond.getId());
-		});
+		});*/
 	}
 }

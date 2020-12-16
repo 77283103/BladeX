@@ -77,7 +77,7 @@ public class TemplateController extends BladeController {
 	public R<TemplateEntity> findCode(@ApiParam(value = "code", required = true) @RequestParam String code) {
 		TemplateEntity templateEntity=new TemplateEntity();
 		QueryWrapper<TemplateEntity> queryWrapper = Condition.getQueryWrapper(templateEntity)
-			.eq("form_code",code);
+			.eq("template_code",code);
 		List<TemplateEntity> list = templateService.list(queryWrapper);
 		return R.data(list.get(0));
 	}

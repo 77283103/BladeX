@@ -71,5 +71,5 @@ public class YwlANewDisplayEntity extends BaseEntity {
 
 	@ApiModelProperty(value = "新陈列协议书集合")
 	@TableField(exist = false)
-	private List<YwlShopRecruitment1Entity> ywlShopRecruitment1List;
+	private List<YwlANewDisplay1Entity> ywlANewDisplay1List;
 }

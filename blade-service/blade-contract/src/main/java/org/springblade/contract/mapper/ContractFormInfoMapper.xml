@@ -452,4 +452,14 @@
         where info.contract_big_category = biz.id
         GROUP BY contract_big_category
     </select>
+
+    <!--根据保证金id查询合同id-->
+    <select id="findContractList" resultMap="formInfoResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_form_info
+        WHERE is_deleted = 0
+        AND
+        id IN (SELECT c.contract_id  FROM  contract_bond_setting c WHERE c.bond_id = #{id})
+    </select>
 </mapper>

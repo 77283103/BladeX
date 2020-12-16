@@ -61,7 +61,7 @@ public class ContractBondEntity extends BaseEntity {
 	 * 关联合同数量
 	 */
 	@ApiModelProperty(value = "关联合同数量")
-	private BigDecimal contractNumber;
+	private Integer contractNumber;
 	/**
 	 * 币种
 	 */
