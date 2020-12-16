@@ -181,6 +181,20 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 //							Integer.valueOf(bondPlanEntityList.size()+performanceEntityList.size()+performanceColPayEntityList.size());
 //					v.setPlanSchedule(planSchedule);
 //				}
+            //查询合同文本
+            if (Func.isNoneBlank(v.getTextFile())) {
+                R<List<FileVO>> result = fileClient.getByIds(v.getTextFile());
+                if (result.isSuccess()) {
+                    v.setTestFileVOList(result.getData());
+                }
+            }
+            //查询合同附件
+            if (Func.isNoneBlank(v.getAttachedFiles())) {
+                R<List<FileVO>> result = fileClient.getByIds(v.getAttachedFiles());
+                if (result.isSuccess()) {
+                    v.setAttachedFileVOList(result.getData());
+                }
+            }
             recordList.add(v);
         }
         pages.setRecords(recordList);
@@ -798,6 +812,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
             R<List<FileVO>> result = fileClient.getByIds(contractFormInfoResponseVO.getTextFile());
             if (result.isSuccess()) {
                 contractFormInfoResponseVO.setTestFileVOList(result.getData());
+            }
+        }
+        //查询合同文本PDF
+        if (Func.isNoneBlank(contractFormInfoResponseVO.getTextFilePdf())) {
+            R<List<FileVO>> result = fileClient.getByIds(contractFormInfoResponseVO.getTextFilePdf());
+            if (result.isSuccess()) {
+                contractFormInfoResponseVO.setTestFileVOListPDF(result.getData());
             }
         }
         //查询合同附件

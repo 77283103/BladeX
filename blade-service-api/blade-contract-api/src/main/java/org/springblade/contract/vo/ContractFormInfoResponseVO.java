@@ -40,6 +40,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	private List<FileVO> testFileVOList;
 
 	/**
+	 * 合同文本列表
+	 */
+	private List<FileVO> testFileVOListPDF;
+	/**
 	 * 合同附件列表
 	 */
 	private List<FileVO> attachedFileVOList;

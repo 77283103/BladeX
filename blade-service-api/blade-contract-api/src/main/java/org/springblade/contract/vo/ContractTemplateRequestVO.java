@@ -1,9 +1,9 @@
 package org.springblade.contract.vo;
 
-import lombok.*;
-import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.springblade.contract.entity.ContractTemplateEntity;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ import java.util.List;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "范本管理请求对象")
-public class ContractTemplateRequestVO extends BaseEntity {
+public class ContractTemplateRequestVO extends ContractTemplateEntity {
 
 	private static final long serialVersionUID = 1L;
 

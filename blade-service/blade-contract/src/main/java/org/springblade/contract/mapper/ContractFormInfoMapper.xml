@@ -65,7 +65,7 @@
         contract_name,
         contract_number,
         text_file,
-        text_file_pdf
+        text_file_pdf,
         attached_files,
         currency_category,
         contract_amount,
@@ -121,7 +121,7 @@
         a.contract_name,
         a.contract_number,
         a.text_file,
-        a.text_file_pdf
+        a.text_file_pdf,
         a.attached_files,
         a.currency_category,
         a.contract_amount,

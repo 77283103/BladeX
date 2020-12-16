@@ -142,9 +142,9 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同文本")
 	private String textFile;
 	/**
-	 * 合同文本
+	 * 合同文本PDF
 	 */
-	@ApiModelProperty(value = "合同文本")
+	@ApiModelProperty(value = "合同文本PDF")
 	private String textFilePdf;
 	/**
 	 * 合同附件

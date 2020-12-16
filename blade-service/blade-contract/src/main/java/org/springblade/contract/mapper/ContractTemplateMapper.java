@@ -49,4 +49,11 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 */
     List<ContractTemplateEntity> versionInfo(Long id);
 
+	/**
+	 * 根据范本id插叙最新范本信息
+	 * @param id
+	 * @return
+	 */
+	ContractTemplateEntity latestById(Long id);
+
 }
