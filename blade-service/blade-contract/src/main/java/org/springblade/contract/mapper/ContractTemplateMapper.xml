@@ -110,4 +110,12 @@
         WHERE is_deleted = 0
         AND id = #{id}
     </select>
+    <!--查询模板历史版本-->
+    <select id="latestById" resultMap="templateResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_template
+        WHERE is_deleted = 0
+        AND original_template_id = #{id}
+    </select>
 </mapper>

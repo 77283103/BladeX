@@ -181,6 +181,7 @@ public class ContractTemplateController extends BladeController {
 		}
 		ContractTemplateEntity entity = new ContractTemplateEntity();
 		BeanUtil.copy(template,entity);
+		entity.setTemplateCode(template.getTemplateCode());
 		entity.setTemplateStatus(TEMPLATE_REVISION_STATUS);
 		templateService.save(entity);
 		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD,entity.getOriginalTemplateId());

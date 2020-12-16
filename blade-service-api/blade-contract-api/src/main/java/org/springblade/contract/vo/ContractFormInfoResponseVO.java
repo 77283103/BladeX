@@ -2,14 +2,15 @@ package org.springblade.contract.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springblade.contract.entity.*;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.resource.vo.FileVO;
 import org.springframework.format.annotation.DateTimeFormat;
 
-import java.io.File;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -38,6 +39,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 */
 	private List<FileVO> testFileVOList;
 
+	/**
+	 * 合同文本列表
+	 */
+	private List<FileVO> testFileVOListPDF;
 	/**
 	 * 合同附件列表
 	 */
@@ -170,9 +175,6 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 签订数量
 	 */
 	private Integer signingCount;
-	/**
-	 * 占比金额比率
-	 */
-	private String amountRatio;
+
 
 }

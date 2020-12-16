@@ -65,7 +65,7 @@
         contract_name,
         contract_number,
         text_file,
-        text_file_pdf
+        text_file_pdf,
         attached_files,
         currency_category,
         contract_amount,
@@ -121,7 +121,7 @@
         a.contract_name,
         a.contract_number,
         a.text_file,
-        a.text_file_pdf
+        a.text_file_pdf,
         a.attached_files,
         a.currency_category,
         a.contract_amount,
@@ -200,10 +200,10 @@
             and contract_amount between #{maxAmount} and #{minAmount}
         </if>
         <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
-            AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
+            AND contract_amount &gt;= #{contractFormInfo.minContractAmount}
         </if>
         <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
-            AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+            AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
         </if>
     </select>
     <!--计算合同类型的签订合同数量-->
@@ -225,13 +225,13 @@
         GROUP BY contract_status
         <!--金额区间查询-->
         <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
-            and contract_amount between #{maxAmount} and #{minAmount}
+            and contract_amount between #{contractFormInfo.maxAmount} and #{contractFormInfo.minAmount}
         </if>
         <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
-            AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
+            AND contract_amount &gt;= #{contractFormInfo.minContractAmount}
         </if>
         <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
-            AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+            AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
         </if>
     </select>
     <!-- 分页 合同支付类型查找 合同分类总金额  合同分类签订数量-->
@@ -247,13 +247,13 @@
         GROUP BY col_pay_type
         <!--金额区间查询-->
         <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
-            and contract_amount between #{maxAmount} and #{minAmount}
+            and contract_amount between #{contractFormInfo.maxAmount} and #{contractFormInfo.minAmount}
         </if>
         <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
-            AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
+            AND contract_amount &gt;= #{contractFormInfo.minContractAmount}
         </if>
         <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
-            AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+            AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
         </if>
     </select>
     <!-- 分页 -->
@@ -261,7 +261,7 @@
         SELECT
         <include refid="baseColumnList"/>
         FROM contract_form_info
-                WHERE contract_form_info.is_deleted = 0
+                WHERE is_deleted = 0
         <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
             <foreach collection="contractFormInfo.code" item="contract_status" open="and contract_status in ("
                      separator="," close=")">
@@ -309,7 +309,7 @@
         </if>
         <!--金额区间查询-->
         <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
-            and contract_amount between #{maxAmount} and #{minAmount}
+            and contract_amount between #{contractFormInfo.minAmount} and #{contractFormInfo.maxAmount}
         </if>
         <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
             AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
@@ -451,6 +451,14 @@
              blade_dict_biz biz
         where info.contract_big_category = biz.id
         GROUP BY contract_big_category
+    </select>
+    <!--根据合同大类查询合同金额总和-->
+    <select id="getNumAmount" resultType="java.lang.Double">
+        SELECT
+            sum(contract_amount) AS contract_amount
+        FROM contract_form_info
+        WHERE
+            contract_big_category = #{contractBigCategory}
     </select>
 
     <!--根据保证金id查询合同id-->

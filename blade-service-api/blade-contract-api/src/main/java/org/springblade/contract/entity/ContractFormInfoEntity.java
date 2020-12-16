@@ -142,9 +142,9 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同文本")
 	private String textFile;
 	/**
-	 * 合同文本
+	 * 合同文本PDF
 	 */
-	@ApiModelProperty(value = "合同文本")
+	@ApiModelProperty(value = "合同文本PDF")
 	private String textFilePdf;
 	/**
 	 * 合同附件
@@ -320,6 +320,10 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private String dictValue;
 
+	/**
+	 * 占比金额比率
+	 */
+	private String amountRatio;
 	/**
 	 * 相对方名称字符串
 	 */

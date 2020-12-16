@@ -55,7 +55,10 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 			/*为每个对象，设置创建者名字和组织名字*/
 			v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
 			v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
-			recordList.add(v);
+			/*判断范本是否为最新范本*/
+			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
+				recordList.add(v);
+			}
 		}
 		pages.setRecords(recordList);
 		return pages;

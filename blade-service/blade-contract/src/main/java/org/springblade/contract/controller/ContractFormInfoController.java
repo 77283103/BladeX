@@ -746,6 +746,9 @@ public class ContractFormInfoController extends BladeController {
 		}else if(Long.valueOf(CHANGE_CONTRACT_ID).equals(contractFormInfo.getChangeContractId())){
 			entity.setId(null);
 			entity.setChangeContractId(contractFormInfo.getId());
+			//清空合同的文本导出次数记录
+			entity.setFileExportCount(0);
+			entity.setFileExportCategory(0);
 			contractFormInfoService.save(entity);
 		}else {
 			contractFormInfoService.updateById(entity);
@@ -836,6 +839,9 @@ public class ContractFormInfoController extends BladeController {
 		}else if(Long.valueOf(CHANGE_CONTRACT_ID).equals(contractFormInfo.getChangeContractId())) {
 			entity.setId(null);
 			entity.setChangeContractId(contractFormInfo.getId());
+			//清空合同的文本导出次数记录
+			entity.setFileExportCount(0);
+			entity.setFileExportCategory(0);
 			contractFormInfoService.save(entity);
 		}else {
 			contractFormInfoService.updateById(entity);
