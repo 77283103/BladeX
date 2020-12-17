@@ -38,10 +38,12 @@ public class ContractAccordingRequestVO extends BaseEntity {
 	private String fileId;
 
 	@ApiModelProperty(value = "同步时间")
-
 	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
 	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	private Date synchDate;
+
+	@ApiModelProperty(value = "同步时间搜索")
+	private String synchDateString;
 
 	@ApiModelProperty(value = "主题内容")
 	private String themeContext;

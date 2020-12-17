@@ -51,8 +51,8 @@
         <if test="according.accordingName != null and according.accordingName != ''">
             AND according_name like concat('%', #{according.accordingName}, '%')
         </if>
-        <if test="according.synchDate != null and according.synchDate != ''">
-            AND synch_date like concat('%', #{according.synchDate}, '%')
+        <if test="according.synchDateString != null and according.synchDateString != ''">
+            AND synch_date like concat('%', #{according.synchDateString}, '%')
         </if>
         <if test="according.useStatus != null and according.useStatus != ''">
             AND use_status = #{according.useStatus}

@@ -79,7 +79,7 @@
         FROM contract_archive
         WHERE is_deleted = 0
         AND
-        id =(SELECT c.contract_archive_id FROM  contract_archive_setting c WHERE c.contract_id = #{id})
+        id  = #{id})
     </select>
 
     <!--根据合同id查询归档信息-->

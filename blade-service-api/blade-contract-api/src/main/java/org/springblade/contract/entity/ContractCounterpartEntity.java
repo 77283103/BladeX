@@ -84,8 +84,7 @@ public class ContractCounterpartEntity extends BaseEntity {
 	 * 首次合作日期
 	 */
 	@ApiModelProperty(value = "首次合作日期")
-	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
 	private Date firstCooperationDate;
 	/**
 	 * 电子印章序列号
