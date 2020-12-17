@@ -6,7 +6,7 @@ oss:
   enable: true
   name: minio
   tenant-mode: true
-  endpoint: http://49.232.102.198:9000/
-  access-key: minioadmin
-  secret-key: minioadmin
+  endpoint: http://49.232.102.198:9000
+  access-key: admin
+  secret-key: admin123456
   bucket-name: bladex
