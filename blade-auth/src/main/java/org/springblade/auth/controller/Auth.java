@@ -22,7 +22,7 @@ public class Auth {
 
 	@GetMapping("/login")
 	@ApiOperation(value = "单点", notes = "传入ticket")
-	public R eipLogin(HttpServletResponse response,String id, String name, String accType, String templateType, String code) throws IOException {
+	public R eipLogin(HttpServletResponse response,String id, String name, String accType, String sourceOfContract, String code) throws IOException {
 		EKPSSOUserData userData = EKPSSOUserData.getInstance();
 		String username = userData.getCurrentUsername();
 		//id为空为单点登录
@@ -45,7 +45,7 @@ public class Auth {
 				object.put("fileId", id);
 				object.put("accordingName", name);
 				object.put("documentType", accType);
-				object.put("templateType", templateType);
+				object.put("sourceOfContract", sourceOfContract);
 				object.put("code", code);
 				String json = object.toString();
 				redisTemplate.opsForValue().set(id, json);
@@ -59,7 +59,7 @@ public class Auth {
 					object.put("fileId", id);
 					object.put("accordingName", name);
 					object.put("documentType", accType);
-					object.put("templateType", templateType);
+					object.put("sourceOfContract", sourceOfContract);
 					object.put("code", code);
 					String json = object.toString();
 					redisTemplate.opsForValue().set(id, json);

@@ -811,6 +811,10 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
+		//等于30合同为提交状态 这里去对接oa接口
+		if("30".equals(contractFormInfo.getContractStatus())){
+
+		}
 		//判断满足已变更新合同的条件 修改原合同状态
 		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory())&& APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())
 				&& CONTRACT_REVIEW_STATUS.equals(contractFormInfo.getContractStatus())) {

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
+import org.springblade.contract.mapper.ContractTemplateMapper;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.service.IContractTemplateService;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -12,6 +13,7 @@ import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.CollectionUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.TemplateEntity;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +37,7 @@ public class ContractClient implements IContractClient{
 
     private IContractFormInfoService formInfoService;
 	private IContractTemplateService templateService;
+	private ContractTemplateMapper templateMapper;
     @Override
     @GetMapping(CONTRACT)
     public R<ContractFormInfoResponseVO> getById(Long id) {
@@ -51,9 +54,11 @@ public class ContractClient implements IContractClient{
 			.eq("template_status","10")
 			.or().eq("template_status","40");
 		List<ContractTemplateEntity> list = templateService.list(queryWrapper);
-		if(CollectionUtil.isNotEmpty(list)){
-			list.get(0).setJson(entity.getJson());
-			templateService.updateById(list.get(0));
+		for (ContractTemplateEntity v : list) {
+			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
+				v.setJson(entity.getJson());
+				templateService.updateById(v);
+			}
 		}
 		return null;
 	}
