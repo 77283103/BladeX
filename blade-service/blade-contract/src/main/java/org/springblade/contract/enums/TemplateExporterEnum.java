@@ -426,6 +426,44 @@ public enum TemplateExporterEnum {
             dataModel.put("list1",list1);
             return dataModel;
         }
+    },
+    //活动执行合同
+    HDZX_05("HDZX_05"){
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+            Map dataModel = new HashMap();
+            CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
+            dataModel.put("cglPartyA",j.get("cglPartyA"));
+            dataModel.put("cglPartyB",j.get("cglPartyB"));
+            dataModel.put("cglActivity",j.get("cglActivity"));
+            dataModel.put("cglArea",j.get("cglArea"));
+            dataModel.put("cglByTheTime",j.get("cglByTheTime"));
+            dataModel.put("cglAsOfTime",j.get("cglAsOfTime"));
+            dataModel.put("cglAttachmentTwo",j.get("cglAttachmentTwo"));
+            dataModel.put("cglAttachmentThree",j.get("cglAttachmentThree"));
+            dataModel.put("cglAttachmentOne",j.get("cglAttachmentOne"));
+            dataModel.put("cglTotalCost",j.get("cglTotalCost"));
+            dataModel.put("cglAmoutActivity",j.get("cglAmoutActivity"));
+            dataModel.put("cglSession",j.get("cglSession"));
+            dataModel.put("cglPayment",j.get("cglPayment"));
+            dataModel.put("cglNumberOfDays",j.get("cglNumberOfDays"));
+            dataModel.put("cglTAmount",j.get("cglTAmount"));
+            dataModel.put("cglAmountWords",j.get("cglAmountWords"));
+            dataModel.put("cglProportion",j.get("cglProportion"));
+            dataModel.put("cglLumpSum",j.get("cglLumpSum"));
+            dataModel.put("cglCapitalize",j.get("cglCapitalize"));
+            dataModel.put("cglOtherWay",j.get("cglOtherWay"));
+            dataModel.put("cglBankOf",j.get("cglBankOf"));
+            dataModel.put("cglAccountName",j.get("cglAccountName"));
+            dataModel.put("cglAccount",j.get("cglAccount"));
+            dataModel.put("cglInvoice",j.get("cglInvoice"));
+            dataModel.put("cglBreachOfContract",j.get("cglBreachOfContract"));
+            dataModel.put("cglPlanningScheme",j.get("cglPlanningScheme"));
+            dataModel.put("cglScheduling",j.get("cglScheduling"));
+            dataModel.put("cglThePrice",j.get("cglThePrice"));
+            dataModel.put("cglInspectionStandard",j.get("cglInspectionStandard"));
+            return dataModel;
+        }
     };
 
 
