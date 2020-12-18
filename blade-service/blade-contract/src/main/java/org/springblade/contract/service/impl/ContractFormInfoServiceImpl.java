@@ -104,6 +104,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private ISclConstructionProject1Service sclConstructionProject1Service;
     private ISclConstructionProject2Service sclConstructionProject2Service;
     private ISclConstructionProject3Service sclConstructionProject3Service;
+    private ICglSalesContract1Service cglSalesContract1Service;
     private IContractBondPlanService contractBondPlanService;
     private IContractBondService contractBondService;
     private ContractPerformanceMapper performanceMapper;
@@ -1246,6 +1247,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                     if (CollectionUtil.isNotEmpty(mtlVideoProductionContract2List)) {
                         mtlVideoProductionContract2Service.saveBatchByRefId(contractFormInfo.getId(), mtlVideoProductionContract2List);
                         List<MtlVideoProductionContract2ResponseVO> list = mtlVideoProductionContract2Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*买卖合同（国内设备购买）关联表1
+                if (ContractFormInfoTemplateContract.CONTRACT_CGLSALESCONTRACT1ENTITY.equals(templateField.getRelationCode())) {
+                    List<CglSalesContract1ResponseVO> cglSalesContract1List = JSON.parseArray(templateField.getTableData(), CglSalesContract1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(cglSalesContract1List)) {
+                        cglSalesContract1Service.saveBatchByRefId(contractFormInfo.getId(), cglSalesContract1List);
+                        List<CglSalesContract1ResponseVO> list = cglSalesContract1Service.selectRefList(contractFormInfo.getId());
                         templateField.setTableData(JSONObject.toJSONString(list));
                         templateField.setTableDataList(list);
                     }

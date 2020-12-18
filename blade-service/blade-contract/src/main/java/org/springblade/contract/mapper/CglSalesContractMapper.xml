@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglSalesContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglSalesContractResultMap" type="org.springblade.contract.entity.CglSalesContractEntity">
+        <result column="id" property="id"/>
+        <result column="cgl_buyer" property="cglBuyer"/>
+        <result column="cgl_domicile" property="cglDomicile"/>
+        <result column="cgl_the_seller" property="cglTheSeller"/>
+        <result column="cgl_residence" property="cglResidence"/>
+        <result column="cgl_serial_number" property="cglSerialNumber"/>
+        <result column="cgl_device_name" property="cglDeviceName"/>
+        <result column="cgl_model" property="cglModel"/>
+        <result column="cgl_ number_of" property="cgl numberOf"/>
+        <result column="cgl_unit_price" property="cglUnitPrice"/>
+        <result column="cgl_tax_price" property="cglTaxPrice"/>
+        <result column="cgl_note" property="cglNote"/>
+        <result column="cgl_total_rmb" property="cglTotalRmb"/>
+        <result column="cgl_capital_rmb" property="cglCapitalRmb"/>
+        <result column="cgl_packaging" property="cglPackaging"/>
+        <result column="cgl_delivery" property="cglDelivery"/>
+        <result column="cgl_delivery_address" property="cglDeliveryAddress"/>
+        <result column="cgl_of_transportation" property="cglOfTransportation"/>
+        <result column="cgl_undertaking_party" property="cglUndertakingParty"/>
+        <result column="cgl_discharging_party" property="cglDischargingParty"/>
+        <result column="cgl_discharging" property="cglDischarging"/>
+        <result column="cgl_specifically_agreed" property="cglSpecificallyAgreed"/>
+        <result column="cgl_files" property="cglFiles"/>
+        <result column="cgl_dischargings" property="cglDischargings"/>
+        <result column="cgl_date_of_request" property="cglDateOfRequest"/>
+        <result column="cgl_date_of_requests" property="cglDateOfRequests"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cgl_buyer,
+        cgl_domicile,
+        cgl_the_seller,
+        cgl_residence,
+        cgl_serial_number,
+        cgl_device_name,
+        cgl_model,
+        cgl_ number_of,
+        cgl_unit_price,
+        cgl_tax_price,
+        cgl_note,
+        cgl_total_rmb,
+        cgl_capital_rmb,
+        cgl_packaging,
+        cgl_delivery,
+        cgl_delivery_address,
+        cgl_of_transportation,
+        cgl_undertaking_party,
+        cgl_discharging_party,
+        cgl_discharging,
+        cgl_specifically_agreed,
+        cgl_files,
+        cgl_dischargings,
+        cgl_date_of_request,
+        cgl_date_of_requests,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglSalesContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_sales_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

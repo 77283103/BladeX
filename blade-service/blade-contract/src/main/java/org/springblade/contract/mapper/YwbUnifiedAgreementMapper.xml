@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.YwbUnifiedAgreementMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ywbUnifiedAgreementResultMap" type="org.springblade.contract.entity.YwbUnifiedAgreementEntity">
+        <result column="id" property="id"/>
+        <result column="first_party" property="firstParty"/>
+        <result column="party_b" property="partyB"/>
+        <result column="address_b" property="addressB"/>
+        <result column="corporate_name" property="corporateName"/>
+        <result column="enterprise_code" property="enterpriseCode"/>
+        <result column="address_telephone" property="addressTelephone"/>
+        <result column="bank_ number" property="bank number"/>
+        <result column="Invoice_type" property="invoiceType"/>
+        <result column="delivery_method" property="deliveryMethod"/>
+        <result column="mobile_push" property="mobilePush"/>
+        <result column="store_operation" property="storeOperation"/>
+        <result column="service_rate" property="serviceRate"/>
+        <result column="period_shop" property="periodShop"/>
+        <result column="start_time" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="remarks" property="remarks"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        first_party,
+        party_b,
+        address_b,
+        corporate_name,
+        enterprise_code,
+        address_telephone,
+        bank_ number,
+        Invoice_type,
+        delivery_method,
+        mobile_push,
+        store_operation,
+        service_rate,
+        period_shop,
+        start_time,
+        end_time,
+        remarks,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="ywbUnifiedAgreementResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM ywb_unified_agreement
+        WHERE is_deleted = 0
+    </select>
+</mapper>

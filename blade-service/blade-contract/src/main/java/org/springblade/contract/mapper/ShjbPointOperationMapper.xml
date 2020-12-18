@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ShjbPointOperationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="shjbPointOperationResultMap" type="org.springblade.contract.entity.ShjbPointOperationEntity">
+        <result column="id" property="id"/>
+        <result column="address_party_a" property="addressPartyA"/>
+        <result column="party_b" property="partyB"/>
+        <result column="address_party_b" property="addressPartyB"/>
+        <result column="party_b_voluntarily" property="partyBVoluntarily"/>
+        <result column="point_divided" property="pointDivided"/>
+        <result column="authorized_party" property="authorizedParty"/>
+        <result column="vending_machines" property="vendingMachines"/>
+        <result column="spot_fee" property="spotFee"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="name" property="name"/>
+        <result column="duty_paragraph1" property="dutyParagraph1"/>
+        <result column="address_telephone" property="addressTelephone"/>
+        <result column="bank_account" property="bankAccount"/>
+        <result column="account_name" property="accountName"/>
+        <result column="account_number" property="accountNumber"/>
+        <result column="full_name_opening" property="fullNameOpening"/>
+        <result column="name1" property="name1"/>
+        <result column="duty_paragraph" property="dutyParagraph"/>
+        <result column="address_telephone1" property="addressTelephone1"/>
+        <result column="account_bank_account" property="accountBankAccount"/>
+        <result column="account_name1" property="accountName1"/>
+        <result column="account_number1" property="accountNumber1"/>
+        <result column="full_opening_bank" property="fullOpeningBank"/>
+        <result column="frequency_requirement" property="frequencyRequirement"/>
+        <result column="including" property="including"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        address_party_a,
+        party_b,
+        address_party_b,
+        party_b_voluntarily,
+        point_divided,
+        authorized_party,
+        vending_machines,
+        spot_fee,
+        payment_method,
+        name,
+        duty_paragraph1,
+        address_telephone,
+        bank_account,
+        account_name,
+        account_number,
+        full_name_opening,
+        name1,
+        duty_paragraph,
+        address_telephone1,
+        account_bank_account,
+        account_name1,
+        account_number1,
+        full_opening_bank,
+        frequency_requirement,
+        including,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="shjbPointOperationResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM shjb_point_operation
+        WHERE is_deleted = 0
+    </select>
+</mapper>

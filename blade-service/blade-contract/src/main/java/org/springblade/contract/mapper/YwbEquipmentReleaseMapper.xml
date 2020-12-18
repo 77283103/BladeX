@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.YwbEquipmentReleaseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ywbEquipmentReleaseResultMap" type="org.springblade.contract.entity.YwbEquipmentReleaseEntity">
+        <result column="id" property="id"/>
+        <result column="first_party" property="firstParty"/>
+        <result column="address_party_a" property="addressPartyA"/>
+        <result column="party_b" property="partyB"/>
+        <result column="address_party_b" property="addressPartyB"/>
+        <result column="customer_code" property="customerCode"/>
+        <result column="equipment_borrowed" property="equipmentBorrowed"/>
+        <result column="in_words" property="inWords"/>
+        <result column="equipment_brand" property="equipmentBrand"/>
+        <result column="equipment_model" property="equipmentModel"/>
+        <result column="price_equipment" property="priceEquipment"/>
+        <result column="equipment_shoul" property="equipmentShoul"/>
+        <result column="equipment_location" property="equipmentLocation"/>
+        <result column="year" property="year"/>
+        <result column="month" property="month"/>
+        <result column="day" property="day"/>
+        <result column="year1" property="year1"/>
+        <result column="month1" property="month1"/>
+        <result column="day1" property="day1"/>
+        <result column="signing_agreement" property="signingAgreement"/>
+        <result column="party_official_seal" property="partyOfficialSeal"/>
+        <result column="other_agreements" property="otherAgreements"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        first_party,
+        address_party_a,
+        party_b,
+        address_party_b,
+        customer_code,
+        equipment_borrowed,
+        in_words,
+        equipment_brand,
+        equipment_model,
+        price_equipment,
+        equipment_shoul,
+        equipment_location,
+        year,
+        month,
+        day,
+        year1,
+        month1,
+        day1,
+        signing_agreement,
+        party_official_seal,
+        other_agreements,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="ywbEquipmentReleaseResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM ywb_equipment_release
+        WHERE is_deleted = 0
+    </select>
+</mapper>
