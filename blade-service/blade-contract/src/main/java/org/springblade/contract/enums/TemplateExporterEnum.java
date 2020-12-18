@@ -406,7 +406,7 @@ public enum TemplateExporterEnum {
                 }
             }
             //主表
-            MtlShootingAndProductionContractEntity mtlVideoProductionContract = JSONObject.toJavaObject(j, MtlShootingAndProductionContractEntity.class);
+            MtlShootingAndProductionContractEntity mtlShootingAndProductionContract = JSONObject.toJavaObject(j, MtlShootingAndProductionContractEntity.class);
             dataModel.put("mtlPatyA",j.get("mtlPatyA"));
             dataModel.put("mtlPatyAEmail",j.get("mtlPatyAEmail"));
             dataModel.put("mtlContactEmail",j.get("mtlContactEmail"));
