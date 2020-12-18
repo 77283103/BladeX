@@ -1,23 +1,14 @@
 package org.springblade.contract.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Date;
+import org.springblade.core.mp.base.BaseEntity;
+
+import java.math.BigDecimal;
 
 
 /**
@@ -39,7 +30,7 @@ public class ShjbNonSaleableOptionalEntity extends BaseEntity {
 	 * 甲方联系地址
 	 */
     @ApiModelProperty(value="甲方联系地址")
-	private String contact addressA;
+	private String contactAddressA;
 	/**
 	 * 乙方法定代表人/经营者
 	 */
@@ -84,7 +75,7 @@ public class ShjbNonSaleableOptionalEntity extends BaseEntity {
 	 * 租赁单价（元/台）
 	 */
     @ApiModelProperty(value="租赁单价（元/台）")
-	private BigDecimal rental Price;
+	private BigDecimal rentalPrice;
 	/**
 	 * 户名
 	 */

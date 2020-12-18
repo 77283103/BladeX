@@ -1,22 +1,19 @@
 package org.springblade.contract.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
-import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
-import java.time.LocalDateTime;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -64,12 +61,14 @@ public class SclOutsourcingAgreementEntity extends BaseEntity {
 	 * 承包开始时间
 	 */
     @ApiModelProperty(value="承包开始时间")
-	private LocalTime sclSite;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	private Date sclSite;
 	/**
 	 * 承包开始时间
 	 */
     @ApiModelProperty(value="承包开始时间")
-	private LocalTime sclStorage;
+	private Date sclStorage;
 	/**
 	 * 上述方法计算的赔偿金额小于【？】元或无法查明具体偷盗、偷食产品的价值
 	 */
