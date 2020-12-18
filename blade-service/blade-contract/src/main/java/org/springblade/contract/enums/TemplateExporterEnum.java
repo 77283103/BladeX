@@ -17,16 +17,13 @@
 package org.springblade.contract.enums;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.YwlANewDisplayEntity;
-import org.springblade.contract.entity.YwlShopRecruitmentEntity;
-import org.springblade.contract.vo.YwlANewDisplay1ResponseVO;
-import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
 
@@ -53,26 +50,24 @@ public enum TemplateExporterEnum {
 			List<Map<String, Object>> list=new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
-				//*新陈列协议书关联表
 				if (ContractFormInfoTemplateContract.CONTRACT_YWLANEWDISPLAY1.equals(templateField.getRelationCode())) {
-					List<YwlANewDisplay1ResponseVO> ywlShopRecruitment1List = JSON.parseArray(templateField.getTableData(), YwlANewDisplay1ResponseVO.class);
-					for (int i=0;i<ywlShopRecruitment1List.size();i++) {
+					JSONArray jsonArr = JSON.parseArray(templateField.getTableData());
+					for(int i=0;i<jsonArr.size();i++) {
 						Map<String, Object> map=new HashMap();
 						map.put("ywlNumber",i+1);
-						map.put("ywlDisplayProducts",ywlShopRecruitment1List.get(i).getYwlDisplayProducts());
-						map.put("ywlDisplayMode",ywlShopRecruitment1List.get(i).getYwlDisplayMode());
-						map.put("ywlMerchandisingStandards",ywlShopRecruitment1List.get(i).getYwlMerchandisingStandards());
+						map.put("ywlDisplayProducts",jsonArr.getJSONObject(i).get("ywlDisplayProducts"));
+						map.put("ywlDisplayMode",jsonArr.getJSONObject(i).get("ywlDisplayMode"));
+						map.put("ywlMerchandisingStandards",jsonArr.getJSONObject(i).get("ywlMerchandisingStandards"));
 						list.add(map);
 					}
 				}
 			}
-			YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
-			dataModel.put("ywlCooperationContent",ywlANewDisplay.getYwlCooperationContent());
-			dataModel.put("ywlTheStartTime",ywlANewDisplay.getYwlTheStartTime());
-			dataModel.put("ywlEndOfTime",ywlANewDisplay.getYwlEndOfTime());
-			dataModel.put("ywlDisplayFee",ywlANewDisplay.getYwlDisplayFee());
-			dataModel.put("ywlDisplayDfee",ywlANewDisplay.getYwlDisplayFee());
-			dataModel.put("ywlOther",ywlANewDisplay.getYwlOther());
+			dataModel.put("ywlCooperationContent",j.get("ywlCooperationContent"));
+			dataModel.put("ywlTheStartTime",j.get("ywlTheStartTime"));
+			dataModel.put("ywlEndOfTime",j.get("ywlEndOfTime"));
+			dataModel.put("ywlDisplayFee",j.get("ywlDisplayFee"));
+			dataModel.put("ywlDisplayDfee","");
+			dataModel.put("ywlOther",j.get("ywlOther"));
 			dataModel.put("list",list);
 			return dataModel;
 		}
@@ -82,37 +77,68 @@ public enum TemplateExporterEnum {
 		@Override
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
-			YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
-			if (!Func.isEmpty(ywlShopRecruitment.getYwlPatyA())){
-				dataModel.put("ywlPatyA",ywlShopRecruitment.getYwlPatyA());
-			}else{
-				dataModel.put("ywlPatyA","");
+				dataModel.put("ywlPatyA",j.get("ywlPatyA"));
+				dataModel.put("ywlPatyB",j.get("ywlPatyB"));
+				dataModel.put("ywlLocation",j.get("ywlLocation"));
+				dataModel.put("ywlProductionCosts",j.get("ywlProductionCosts"));
+				dataModel.put("ywlAmountOf",j.get("ywlAmountOf"));
+				dataModel.put("ywlOtherConventions",j.get("ywlOtherConventions"));
+			return dataModel;
+		}
+	},
+	//媒体类：视频广告改编合同
+	GBHT_14("GBHT_14"){
+		@Override
+		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+			Map dataModel = new HashMap();
+			List<Map<String, Object>> list=new ArrayList();
+			List<Map<String, Object>> list1=new ArrayList();
+			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+			for (TemplateFieldJsonEntity templateField : templateFieldList) {
+				//*视频广告改编合同关联表
+				if (ContractFormInfoTemplateContract.CONTRACT_MTADAPTATIONCONTRACT1.equals(templateField.getRelationCode())) {
+					JSONArray jsonArr = JSON.parseArray(templateField.getTableData());
+					for(int i=0;i<jsonArr.size();i++) {
+						Map<String, Object> map=new HashMap();
+						map.put("formDelivery",jsonArr.getJSONObject(i).get("formDelivery"));
+						map.put("number",jsonArr.getJSONObject(i).get("number"));
+						map.put("contentTheme",jsonArr.getJSONObject(i).get("contentTheme"));
+						map.put("requirements",jsonArr.getJSONObject(i).get("requirements"));
+						map.put("expenses",jsonArr.getJSONObject(i).get("expenses"));
+						list.add(map);
+					}
+				}
+				if (ContractFormInfoTemplateContract.CONTRACT_MTADAPTATIONCONTRACT2.equals(templateField.getRelationCode())) {
+					JSONArray jsonArr = JSON.parseArray(templateField.getTableData());
+					for(int i=0;i<jsonArr.size();i++) {
+						Map<String, Object> map=new HashMap();
+						map.put("intellectualProperty",jsonArr.getJSONObject(i).get("intellectualProperty"));
+						map.put("sample",jsonArr.getJSONObject(i).get("sample"));
+						map.put("serviceLife",jsonArr.getJSONObject(i).get("serviceLife"));
+						map.put("useArea",jsonArr.getJSONObject(i).get("useArea"));
+						list1.add(map);
+					}
+				}
 			}
-			if (!Func.isEmpty(ywlShopRecruitment.getYwlPatyB())){
-				dataModel.put("ywlPatyB",ywlShopRecruitment.getYwlPatyB());
-			}else{
-				dataModel.put("ywlPatyB","");
-			}
-			if (!Func.isEmpty(ywlShopRecruitment.getYwlLocation())){
-				dataModel.put("ywlLocation",ywlShopRecruitment.getYwlLocation());
-			}else{
-				dataModel.put("ywlLocation","");
-			}
-			if (!Func.isEmpty(ywlShopRecruitment.getYwlProductionCosts())){
-				dataModel.put("ywlProductionCosts",ywlShopRecruitment.getYwlProductionCosts());
-			}else{
-				dataModel.put("ywlProductionCosts","");
-			}
-			if (!Func.isEmpty(ywlShopRecruitment.getYwlAmountOf())){
-				dataModel.put("ywlAmountOf",ywlShopRecruitment.getYwlAmountOf());
-			}else{
-				dataModel.put("ywlAmountOf","");
-			}
-			if (!Func.isEmpty(ywlShopRecruitment.getYwlProductionCosts())){
-				dataModel.put("ywlOtherConventions",ywlShopRecruitment.getYwlProductionCosts());
-			}else{
-				dataModel.put("ywlOtherConventions","");
-			}
+			dataModel.put("mtlPatyA",j.get("mtlPatyA"));
+			dataModel.put("mtlPatyAEmail",j.get("mtlPatyAEmail"));
+			dataModel.put("mtlContactEmail",j.get("mtlContactEmail"));
+			dataModel.put("mtlPatyB",j.get("mtlPatyB"));
+			dataModel.put("mtlPatyBEmail",j.get("mtlPatyBEmail"));
+			dataModel.put("mtlPatyBHome",j.get("mtlPatyBHome"));
+			dataModel.put("mtlAdaptationIssues",j.get("mtlAdaptationIssues"));
+			dataModel.put("mtlNameOfAdvertising",j.get("mtlNameOfAdvertising"));
+			dataModel.put("mtlBasedOnTheContent",j.get("mtlBasedOnTheContent"));
+			dataModel.put("mtlProductionStartTime",j.get("mtlProductionStartTime"));
+			dataModel.put("mtlProductionCompletionTime",j.get("mtlProductionCompletionTime"));
+			dataModel.put("mtlUnpaidTaxRmb",j.get("mtlUnpaidTaxRmb"));
+			dataModel.put("mtlRate",j.get("mtlRate"));
+			dataModel.put("mtlTaxAmountIsRmb",j.get("mtlTaxAmountIsRmb"));
+			dataModel.put("mtlCompanyName",j.get("mtlCompanyName"));
+			dataModel.put("mtlWhereItIs",j.get("mtlWhereItIs"));
+			dataModel.put("mtlAccount",j.get("mtlAccount"));
+			dataModel.put("list",list);
+			dataModel.put("list1",list1);
 			return dataModel;
 		}
 	};

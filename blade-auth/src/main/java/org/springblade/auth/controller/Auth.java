@@ -75,7 +75,9 @@ public class Auth {
 					cookie.setMaxAge(0);
 					cookie.setPath("/");
 					response.addCookie(cookie); //重新写入，将覆盖之前的
-					response.sendRedirect("http://upht.pec.com.cn/#/login?username=" + username + "&type=1&draftType=1&fileId=" + id);
+					JSONObject jsonObject1 =JSONObject.parseObject(j);
+					String source= (String) jsonObject1.get("sourceOfContract");
+					response.sendRedirect("http://upht.pec.com.cn/#/login?username="+ username +"&type=1&draftType=1&source="+source+"&fileId=" + id);
 				}
 			}
 			return R.success("false");

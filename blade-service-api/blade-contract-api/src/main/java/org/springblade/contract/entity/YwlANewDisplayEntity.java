@@ -63,6 +63,12 @@ public class YwlANewDisplayEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="陈列费用")
 	private BigDecimal ywlDisplayFee;
+
+	/**
+	 * 人民币大写
+	 */
+	@ApiModelProperty(value="人民币大写")
+	private String ywlDisplayDfee;
 	/**
 	 * 其他
 	 */
