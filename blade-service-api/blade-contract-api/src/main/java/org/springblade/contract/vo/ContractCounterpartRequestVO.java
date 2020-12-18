@@ -63,9 +63,13 @@ public class ContractCounterpartRequestVO extends ContractCounterpartEntity {
 	private String passportId;
 
 	@ApiModelProperty(value = "首次合作日期")
-	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
 	private Date firstCooperationDate;
+	/**
+	 * 时间查询所需
+	 */
+	@ApiModelProperty(value = "时间查询所需")
+	private String firstCooperationDateString;
 
 	@ApiModelProperty(value = "电子印章序列号")
 	private String electronicSealSerialId;

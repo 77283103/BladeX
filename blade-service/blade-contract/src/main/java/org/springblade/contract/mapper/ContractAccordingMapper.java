@@ -3,8 +3,8 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractAccordingEntity;
+import org.springblade.contract.vo.ContractAccordingRequestVO;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 	 * @param according
 	 * @return
 	 */
-	IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingEntity according);
+	IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingRequestVO according);
 
 	/**
 	 * 根据合同id查询查询相关依据信息

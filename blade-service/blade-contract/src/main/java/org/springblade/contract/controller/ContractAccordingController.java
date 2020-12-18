@@ -1,30 +1,28 @@
 package org.springblade.contract.controller;
 
-import io.swagger.annotations.Api;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import javax.validation.Valid;
-
+import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.service.IContractAccordingService;
-import org.springblade.core.log.exception.ServiceException;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractAccordingResponseVO;
-import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.contract.wrapper.ContractAccordingWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
-
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.contract.entity.ContractAccordingEntity;
-import org.springblade.contract.wrapper.ContractAccordingWrapper;
+import javax.validation.Valid;
 
 
 /**
@@ -60,7 +58,7 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入according")
 	@PreAuth("hasPermission('contract:according:list')")
-	public R<IPage<ContractAccordingResponseVO>> list(ContractAccordingEntity according, Query query) {
+	public R<IPage<ContractAccordingResponseVO>> list(ContractAccordingRequestVO according, Query query) {
 		IPage<ContractAccordingEntity> pages = accordingService.pageList(Condition.getPage(query), according);
 		return R.data(ContractAccordingWrapper.build().pageVO(pages));
 	}

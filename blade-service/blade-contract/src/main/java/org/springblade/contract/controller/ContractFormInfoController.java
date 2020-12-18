@@ -502,16 +502,14 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateExport')")
 	public R updateExport(@RequestParam Long id) {
-		String contractStatus = CONTRACT_EXPORT_STATUS;
-		String fileExportCategory = FILE_EXPORT_CATEGORY;
 		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 		Integer fileExportCount = infoEntity.getFileExportCount();
 		fileExportCount += 1;
-		contractFormInfoService.textExportCount(id, fileExportCount, fileExportCategory);
+		contractFormInfoService.textExportCount(id, fileExportCount, FILE_EXPORT_CATEGORY);
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		return R.status(contractFormInfoService.updateExportStatus(contractStatus, id));
+		return R.status(contractFormInfoService.updateExportStatus(CONTRACT_EXPORT_STATUS, id));
 	}
 
 	/**
@@ -521,15 +519,17 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 6)
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:repeatExport')")
-	public R repeatExport(@RequestParam Long id) {
-		String fileExportCategory = FILE_EXPORT_CATEGORY;
+	public R<ContractFormInfoResponseVO> repeatExport(@RequestParam Long id) {
 		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 		Integer fileExportCount = infoEntity.getFileExportCount();
 		fileExportCount += 1;
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		return R.status(contractFormInfoService.textExportCount(id, fileExportCount, fileExportCategory));
+		contractFormInfoService.textExportCount(id, fileExportCount, FILE_EXPORT_CATEGORY);
+		infoEntity.setFileExportCount(fileExportCount);
+		ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(infoEntity);
+		return R.data(formInfoResponseVO);
 	}
 
 
