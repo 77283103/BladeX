@@ -203,7 +203,7 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
-		return R.data(contractFormInfo);
+		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
 
 
@@ -394,7 +394,7 @@ public class ContractFormInfoController extends BladeController {
 				}
 			});
 		});
-		contractFormInfoService.importContractFormInfo(read,read2,json,contractTemplateId,contractBigCategory,contractSmallCategory);
+		contractFormInfoService.importContractFormInfo(read,file,json,contractTemplateId,contractBigCategory,contractSmallCategory);
 		return R.success("操作成功");
 	}
 

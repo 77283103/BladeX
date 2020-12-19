@@ -7,6 +7,7 @@ import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.vo.*;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.vo.TemplateRequestVO;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -131,7 +132,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * 导入合同数据
 	 * @param data
 	 */
-	void importContractFormInfo(List<ContractFormInfoImporter> data, List<ContractFormInfoImporterEx> read2,String json, String contractTemplateId,String contractBigCategory,String contractSmallCategory);
+	void importContractFormInfo(List<ContractFormInfoImporter> data, MultipartFile file, String json, String contractTemplateId, String contractBigCategory, String contractSmallCategory);
 
 	/**
 	 * 根据合同类型查询已签订合同数量

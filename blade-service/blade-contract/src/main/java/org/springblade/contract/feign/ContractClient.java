@@ -50,9 +50,9 @@ public class ContractClient implements IContractClient{
 		ContractTemplateEntity templateFieldEntity=new ContractTemplateEntity();
 		QueryWrapper<ContractTemplateEntity> queryWrapper = Condition.getQueryWrapper(templateFieldEntity)
 			.eq("template_code",entity.getTemplateCode())
-			.eq("is_deleted",0)
-			.eq("template_status","10")
-			.or().eq("template_status","40");
+			.eq("is_deleted",0);
+			/*.eq("template_status","10")
+			.or().eq("template_status","40");*/
 		List<ContractTemplateEntity> list = templateService.list(queryWrapper);
 		for (ContractTemplateEntity v : list) {
 			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {

@@ -25,7 +25,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
-import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.vo.*;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
@@ -44,7 +43,7 @@ import java.util.stream.Stream;
  */
 @Getter
 @AllArgsConstructor
-public enum TemplateExporterEnum {
+public enum ExcleExporterEnum {
 
 	//新陈列协议书
 	CLXY_42("CLXY_42"){
@@ -503,8 +502,8 @@ public enum TemplateExporterEnum {
 	public String type;
 
 	/**通过轮询来获得相应的方法*/
-	public static TemplateExporterEnum fromValue(String type) {
-		return Stream.of(TemplateExporterEnum.values()).filter(fileType ->
+	public static ExcleExporterEnum fromValue(String type) {
+		return Stream.of(ExcleExporterEnum.values()).filter(fileType ->
 			StringUtils.equals(fileType.getType(), type)
 		).findFirst().get();
 	}

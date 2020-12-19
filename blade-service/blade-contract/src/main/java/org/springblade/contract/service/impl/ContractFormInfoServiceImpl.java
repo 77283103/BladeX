@@ -11,6 +11,7 @@ import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
+import org.springblade.contract.util.ExcelSaveUntil;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -31,6 +32,7 @@ import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -294,10 +296,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
      * @return list
      */
     @Override
-    public void importContractFormInfo(List<ContractFormInfoImporter> data, List<ContractFormInfoImporterEx> read2, String json, String contractTemplateId, String contractBigCategory, String contractSmallCategory) {
+    public void importContractFormInfo(List<ContractFormInfoImporter> data, MultipartFile file, String json, String contractTemplateId, String contractBigCategory, String contractSmallCategory) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");
         data.forEach(contractFormInfoExcel -> {
             //保存合同数据
+			List<ContractFormInfoImporterEx> read2;
             ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
             contractFormInfoEntity.setContractTemplateId(Long.valueOf(contractTemplateId));
             contractFormInfoEntity.setContractBigCategory(contractBigCategory);
@@ -361,7 +364,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
             if (!"无".equals(contractFormInfoExcel.getAddressPerson()) && !"".equals(contractFormInfoExcel.getAddressPerson()) && contractFormInfoExcel.getAddressPerson() != null) {
                 contractFormInfoEntity.setAddressPerson(contractFormInfoExcel.getAddressPerson());
             }
-            if (!"无".equals(contractFormInfoExcel.getYwlMinimum()) && !"".equals(contractFormInfoExcel.getYwlMinimum()) && contractFormInfoExcel.getYwlMinimum() != null) {
+
+            /*if (!"无".equals(contractFormInfoExcel.getYwlMinimum()) && !"".equals(contractFormInfoExcel.getYwlMinimum()) && contractFormInfoExcel.getYwlMinimum() != null) {
                 contractFormInfoEntity.setYwlMinimum(contractFormInfoExcel.getYwlMinimum());
             }
             if (!"无".equals(contractFormInfoExcel.getYwlMailbox()) && !"".equals(contractFormInfoExcel.getYwlMailbox()) && contractFormInfoExcel.getYwlMailbox() != null) {
@@ -396,7 +400,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
             }
             if (!"无".equals(contractFormInfoExcel.getYwlBreachOfContract()) && !"".equals(contractFormInfoExcel.getYwlBreachOfContract()) && contractFormInfoExcel.getYwlBreachOfContract() != null) {
                 contractFormInfoEntity.setYwlBreachOfContract(contractFormInfoExcel.getYwlBreachOfContract());
-            }
+            }*/
             /*String jsonEx = this.templateDraft(contractFormInfoEntity,json);*/
             /*ContractFormInfoImporter contractFormInfoImporterEx = new ContractFormInfoImporter();*/
             this.save(contractFormInfoEntity);
@@ -446,8 +450,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         }
                     }
                 }
+                //处理关联表的数据
+				ContractTemplateEntity contractTemplate = contractTemplateMapper.selectById(contractTemplateId);
+				ExcelSaveUntil excelSaveUntil =new ExcelSaveUntil();
+				excelSaveUntil.excelSave(contractFormInfoEntity,contractTemplate,file);
                 //原物料一对多的列表保存到contract_raw_materials表中    这个表中需要保存合同的id
-                List<ContractRawMaterialsEntity> contractRawMaterialsList = new ArrayList<ContractRawMaterialsEntity>();
+                /*List<ContractRawMaterialsEntity> contractRawMaterialsList = new ArrayList<ContractRawMaterialsEntity>();
                 for (ContractFormInfoImporterEx read2Ex : read2) {
                     if (contractFormInfoExcel.getSealName().equals(read2Ex.getYwlFullName()) && contractFormInfoExcel.getCounterpartName().equals(read2Ex.getYwlNameOfOpposite())) {
                         ContractRawMaterialsEntity contractRawMaterialsEntity = new ContractRawMaterialsEntity();
@@ -483,7 +491,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         contractRawMaterialsList.add(contractRawMaterialsEntity);
                     }
                 }
-                contractFormInfoEntity.setRawMaterialsList(contractRawMaterialsList);
+                contractFormInfoEntity.setRawMaterialsList(contractRawMaterialsList);*/
             }
             String jsonEx = this.getjson(json, contractFormInfoEntity);
             contractFormInfoEntity.setJson(jsonEx);
