@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ShjlVendingMachineMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="shjlVendingMachineResultMap" type="org.springblade.contract.entity.ShjlVendingMachineEntity">
+        <result column="id" property="id"/>
+        <result column="party_b" property="partyB"/>
+        <result column="contact_b" property="contactB"/>
+        <result column="b_voluntarily" property="bVoluntarily"/>
+        <result column="of" property="of"/>
+        <result column="each_parts" property="eachParts"/>
+        <result column="party_use" property="partyUse"/>
+        <result column="party_contract" property="partyContract"/>
+        <result column="optional_products" property="optionalProducts"/>
+        <result column="time_requirement" property="timeRequirement"/>
+        <result column="name" property="name"/>
+        <result column="duty_paragraph" property="dutyParagraph"/>
+        <result column="address_telephone" property="addressTelephone"/>
+        <result column="bank_number" property="bankNumber"/>
+        <result column="account_name" property="accountName"/>
+        <result column="account_number" property="accountNumber"/>
+        <result column="full_bank" property="fullBank"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        party_b,
+        contact_b,
+        b_voluntarily,
+        of,
+        each_parts,
+        party_use,
+        party_contract,
+        optional_products,
+        time_requirement,
+        name,
+        duty_paragraph,
+        address_telephone,
+        bank_number,
+        account_name,
+        account_number,
+        full_bank,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="shjlVendingMachineResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM shjl_vending_machine
+        WHERE is_deleted = 0
+    </select>
+</mapper>

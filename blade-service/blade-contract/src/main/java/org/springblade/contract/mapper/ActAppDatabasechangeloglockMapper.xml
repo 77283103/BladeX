@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ActAppDatabasechangeloglockMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="actAppDatabasechangeloglockResultMap" type="org.springblade.contract.entity.ActAppDatabasechangeloglockEntity">
+        <result column="id" property="id"/>
+        <result column="party_b" property="partyB"/>
+        <result column="signed_party" property="signedParty"/>
+        <result column="account_name" property="accountName"/>
+        <result column="account_number" property="accountNumber"/>
+        <result column="opening_bank" property="openingBank"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        party_b,
+        signed_party,
+        account_name,
+        account_number,
+        opening_bank,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="actAppDatabasechangeloglockResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM shjb_non_supplementary_agreement
+        WHERE is_deleted = 0
+    </select>
+</mapper>

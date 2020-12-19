@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ShjbNonSaleableOptionalMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="shjbNonSaleableOptionalResultMap" type="org.springblade.contract.entity.ShjbNonSaleableOptionalEntity">
+        <result column="id" property="id"/>
+        <result column="contact_ address_a" property="contact addressA"/>
+        <result column="operator_b" property="operatorB"/>
+        <result column="address_b" property="addressB"/>
+        <result column="element" property="element"/>
+        <result column="platform" property="platform"/>
+        <result column="in_words" property="inWords"/>
+        <result column="serial_number" property="serialNumber"/>
+        <result column="vending_machine" property="vendingMachine"/>
+        <result column="number_sets" property="numberSets"/>
+        <result column="rental _price" property="rental Price"/>
+        <result column="account_name" property="accountName"/>
+        <result column="account_number" property="accountNumber"/>
+        <result column="opening_bank" property="openingBank"/>
+        <result column="year" property="year"/>
+        <result column="month" property="month"/>
+        <result column="day" property="day"/>
+        <result column="year1" property="year1"/>
+        <result column="month1" property="month1"/>
+        <result column="day1" property="day1"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        contact_ address_a,
+        operator_b,
+        address_b,
+        element,
+        platform,
+        in_words,
+        serial_number,
+        vending_machine,
+        number_sets,
+        rental _price,
+        account_name,
+        account_number,
+        opening_bank,
+        year,
+        month,
+        day,
+        year1,
+        month1,
+        day1,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="shjbNonSaleableOptionalResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM shjb_non_saleable_optional
+        WHERE is_deleted = 0
+    </select>
+</mapper>

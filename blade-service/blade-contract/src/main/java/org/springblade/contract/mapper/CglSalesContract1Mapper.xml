@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglSalesContract1Mapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglSalesContract1ResultMap" type="org.springblade.contract.entity.CglSalesContract1Entity">
+        <result column="id" property="id"/>
+        <result column="cql_s_number" property="cqlSNumber"/>
+        <result column="cql_equipment_name" property="cqlEquipmentName"/>
+        <result column="cql_model_s" property="cqlModelS"/>
+        <result column="cql_number" property="cqlNumber"/>
+        <result column="cql_without_tax" property="cqlWithoutTax"/>
+        <result column="cql_free_price" property="cqlFreePrice"/>
+        <result column="cql_remarks" property="cqlRemarks"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="ref_contract_id" property="refContractId"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cql_s_number,
+        cql_equipment_name,
+        cql_model_s,
+        cql_number,
+        cql_without_tax,
+        cql_free_price,
+        cql_remarks,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted,
+        ref_contract_id
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglSalesContract1ResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_sales_contract1
+        WHERE is_deleted = 0
+    </select>
+</mapper>

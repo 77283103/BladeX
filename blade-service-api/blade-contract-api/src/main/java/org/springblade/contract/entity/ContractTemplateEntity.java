@@ -1,10 +1,12 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
-import org.springblade.core.mp.base.BaseEntity;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
 
 
 /**
@@ -53,6 +55,7 @@ public class ContractTemplateEntity extends BaseEntity {
 	 * 创建单位标识
 	 */
 	@ApiModelProperty(value = "创建单位标识")
+	@JsonSerialize(using = ToStringSerializer.class)
 	private Long createUnit;
 	/**
 	 * 使用范围
@@ -79,6 +82,7 @@ public class ContractTemplateEntity extends BaseEntity {
 	 * 上级版本id
 	 */
 	@ApiModelProperty(value = "上级版本id")
+	@JsonSerialize(using = ToStringSerializer.class)
 	private Long originalTemplateId;
 	/**
 	 * 关联合同

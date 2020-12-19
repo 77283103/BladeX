@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.YwbSurveyProjectContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ywbSurveyProjectContractResultMap" type="org.springblade.contract.entity.YwbSurveyProjectContractEntity">
+        <result column="id" property="id"/>
+        <result column="first_party" property="firstParty"/>
+        <result column="address_Party_a" property="addressPartyA"/>
+        <result column="party_b" property="partyB"/>
+        <result column="address_party_b" property="addressPartyB"/>
+        <result column="party_performance" property="partyPerformance"/>
+        <result column="address_Party_a1" property="addressPartyA1"/>
+        <result column="primary_contact" property="primaryContact"/>
+        <result column="mail_box" property="mailBox"/>
+        <result column="postcode" property="postcode"/>
+        <result column="telephone_number" property="telephoneNumber"/>
+        <result column="fax_number" property="faxNumber"/>
+        <result column="address_party_b1" property="addressPartyB1"/>
+        <result column="primary_contact1" property="primaryContact1"/>
+        <result column="mail_box1" property="mailBox1"/>
+        <result column="postcode1" property="postcode1"/>
+        <result column="telephone_number1" property="telephoneNumber1"/>
+        <result column="fax_number1" property="faxNumber1"/>
+        <result column="year" property="year"/>
+        <result column="month" property="month"/>
+        <result column="day" property="day"/>
+        <result column="year1" property="year1"/>
+        <result column="month1" property="month1"/>
+        <result column="day1" property="day1"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        first_party,
+        address_Party_a,
+        party_b,
+        address_party_b,
+        party_performance,
+        address_Party_a1,
+        primary_contact,
+        mail_box,
+        postcode,
+        telephone_number,
+        fax_number,
+        address_party_b1,
+        primary_contact1,
+        mail_box1,
+        postcode1,
+        telephone_number1,
+        fax_number1,
+        year,
+        month,
+        day,
+        year1,
+        month1,
+        day1,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="ywbSurveyProjectContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM ywb_survey_project_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>
