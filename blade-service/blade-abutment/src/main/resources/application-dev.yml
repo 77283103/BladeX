@@ -3,6 +3,10 @@ server:
 spring:
   aop:
     auto: true
+  datasource:
+    url: ${blade.datasource.dev.url}
+    username: ${blade.datasource.dev.username}
+    password: ${blade.datasource.dev.password}
 api:
   doc:
     tokenUrl: http://oatest.pec.com.cn:9080/query/openapi/getToken

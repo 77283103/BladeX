@@ -23,7 +23,7 @@ public class LogAspect {
     /**
      * 定义切入点，controller下面的所有类的所有公有方法，这里需要更改成自己项目的
      */
-    @Pointcut("@annotation(com.service.api.common.annotation.AutoLog)")
+    @Pointcut("@annotation(org.springblade.abutment.common.annotation.AutoLog)")
     public void requestLog(){};
 
     /**
