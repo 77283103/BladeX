@@ -291,7 +291,7 @@ public class ContractFormInfoController extends BladeController {
 		//等于30合同为提交状态 这里去对接oa接口
 		if("30".equals(contractFormInfo.getContractStatus())){
 			// 查查公司有没有申请电子章
-			CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
+			/*CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
 			companyInfoEntity.setQueryType("1");
 			// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
 			companyInfoEntity.setOrganCode("");
@@ -385,7 +385,7 @@ public class ContractFormInfoController extends BladeController {
 					// 返回的是个完整路径,直接通过response.getWriter().write()返回到前台就可以
 					urls.add(abutmentClient.readSigned(readSignedEntity).getData());
 				});
-			}
+			}*/
 
 			// 推送EKP 开始
 			//发起流程的员工编号   问题:到底用哪个？ id还是code？？
