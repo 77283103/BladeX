@@ -47,6 +47,12 @@
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
+            <artifactId>blade-abutment-api</artifactId>
+            <version>2.5.0.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
             <artifactId>blade-user-api</artifactId>
             <version>2.5.0.RELEASE</version>
             <scope>compile</scope>

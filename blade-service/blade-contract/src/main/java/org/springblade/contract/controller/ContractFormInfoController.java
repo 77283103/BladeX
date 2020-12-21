@@ -12,6 +12,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.springblade.abutment.entity.*;
+import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.CompanyInfoVo;
+import org.springblade.abutment.vo.SingleSignVo;
+import org.springblade.abutment.vo.UploadFileVo;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
@@ -33,14 +38,15 @@ import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.BeanUtil;
-import org.springblade.core.tool.utils.Charsets;
-import org.springblade.core.tool.utils.CollectionUtil;
-import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.*;
+import org.springblade.resource.feign.IFileClient;
+import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
+import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -49,8 +55,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.text.DateFormat;
 import java.util.*;
 
 
@@ -74,6 +82,8 @@ public class ContractFormInfoController extends BladeController {
 	private IContractBondPlanService contractBondPlanService;
 	private ContractFormInfoMapper formInfoMapper;
 	private IDictBizClient bizClient;
+	private IAbutmentClient abutmentClient;
+	private IFileClient fileClient;
 	private static final Integer CHANGE_CONTRACT_ID = -1;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
@@ -216,6 +226,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		EkpEntity ekpEntity = new EkpEntity();
 		contractFormInfo.setContractSoure("10");
 		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
 		//contractFormInfo.setSealName(sealName);
@@ -279,7 +290,205 @@ public class ContractFormInfoController extends BladeController {
 		}
 		//等于30合同为提交状态 这里去对接oa接口
 		if("30".equals(contractFormInfo.getContractStatus())){
+			// 查查公司有没有申请电子章
+			CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
+			companyInfoEntity.setQueryType("1");
+			// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
+			companyInfoEntity.setOrganCode("");
+			// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
+			CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+			// 有章才操作
+			if (companyInfoVo.getAvailable().equals("1")) {
+				// 上传合同文件 开始  问题:不知道怎么生成pdf,所以就直接从entity里拿了,没有的话是不是需要生成一下?
+				// 接口是支持批量上传的
+				UploadFileEntity uploadFileEntity = new UploadFileEntity();
+				// 入参是个file文件,怎么获取这个file文件? 这样获取对不对?
+				List<File> files = new ArrayList<File>();
+				fileClient.getByIds(entity.getTextFilePdf()).getData().forEach(fileVO -> {
+					files.add(new File(fileVO.getLink()));
+				});
+				uploadFileEntity.setFile(files);
+				// 默认是不合并,该上传几个文件就几个文件
+				uploadFileEntity.setIsMerge("0");
+				// 调用上传方法 另外需要注意 接口里自动进行了获取token的动作, 现在的获取地址和账号密码都是测试的,正式使用需要修改这些内容,修改位置在blade-abutment的resources.application里
+				List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
+				// 上传合同文件 结束
 
+				// 盖章方法  开始 问题:这里直接盖章吗?????????? 如果不在这里的话, 把它挪到对应地方
+				// 这里用的是单个盖章, 批量盖章需要短信验证
+				List<SingleSignVo> singleSignVoList = new ArrayList<SingleSignVo>();
+				uploadFileVoList.forEach(uploadFileVo -> {
+					SingleSignEntity singleSignEntity = new SingleSignEntity();
+					// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
+					singleSignEntity.setIdno("");
+					// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
+					singleSignEntity.setIdno("Key");
+					// 文档信息
+					FileInfoEntity fileInfoEntity = new FileInfoEntity();
+					// 给哪个文档盖章(上传后返回的文档id)
+					fileInfoEntity.setId(uploadFileVo.getId());
+					// 显不显示E签宝logo,false是不显示
+					fileInfoEntity.setShowImage(false);
+					// 盖完章之后文件叫什么名字 可以不填
+					//fileInfoEntity.setFileName(null);
+					// 如果是加密文档的话,需要输入密码, 没有的话不填
+					//fileInfoEntity.setOwnerPassword(null);
+					singleSignEntity.setFileBean(fileInfoEntity);
+					// 签章位置信息,除骑缝签章外必填
+					SignPosEntity signPosEntity = new SignPosEntity();
+					// 给哪页盖章 用逗号间隔页码 如 1,2,3 当前是关键字签章,所以不用填
+					//signPosEntity.setPosPage(null);
+					// 盖章坐标x 不填就是0 关键字的话坐标中心点是关键字
+					//signPosEntity.setPosX(0f);
+					// 盖章坐标y 不填就是0 关键字的话坐标中心点是关键字
+					//signPosEntity.setPosY(0f);
+					// 只有关键字签章的时候采用,输入关键字
+					signPosEntity.setKey("盖章");
+					// 章大小 可以不填,不填最大显示159,小于159按实际大小走,大于159只显示159大小
+					//signPosEntity.setWidth(0f);
+					// 是否二维码签署 骑缝和多页不生效
+					//signPosEntity.setQrcodeSign(false);
+					// 是不是作废,如果需要签作废章就选true
+					//signPosEntity.setCacellingSign(false);
+					// 显示签署时间,印章大于92才能显示
+					//signPosEntity.setAddSignTime(false);
+					singleSignEntity.setSignPos(signPosEntity);
+					// 如果签完一种章需要签另一种的话,就可以天
+					AutoSignEntity autoSignEntity = new AutoSignEntity();
+					// 企业信用代码 这个代码是为了定位章  如果要盖别单位的章就得填别单位的,不然就和上面填一样
+					autoSignEntity.setIdno(singleSignEntity.getIdno());
+					// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
+					autoSignEntity.setIdno("Edges");
+					// 和上面那个一样,设定盖章位置
+					//SignPosEntity autoSignPosEntity = new SignPosEntity();
+					//autoSignEntity.setSignPos(autoSignPosEntity);
+					singleSignEntity.setAutoSign(autoSignEntity);
+
+					// 返回的内容里有个filePath,是个ID,这个id可以用来下载或者在线查看盖完章的文件
+					singleSignVoList.add(abutmentClient.singleSign(singleSignEntity).getData());
+				});
+				// 盖章方法  结束
+
+				// 获取文件 下载或者在线查看
+				List<String> urls = new ArrayList<String>();
+				singleSignVoList.forEach(singleSignVo -> {
+					ReadSignedEntity readSignedEntity = new ReadSignedEntity();
+					readSignedEntity.setId(singleSignVo.getFilePath());
+					// pdf的ID
+					if (ekpEntity.getFd_file_id() == null || ekpEntity.getFd_file_id().equals("")) {
+						ekpEntity.setFd_file_id(singleSignVo.getFilePath());
+					} else {
+						ekpEntity.setFd_file_id(ekpEntity.getFd_file_id() + "," + singleSignVo.getFilePath());
+					}
+					// 1在线预览  2下载
+					readSignedEntity.setType("1");
+					// 返回的是个完整路径,直接通过response.getWriter().write()返回到前台就可以
+					urls.add(abutmentClient.readSigned(readSignedEntity).getData());
+				});
+			}
+
+			// 推送EKP 开始
+			//发起流程的员工编号   问题:到底用哪个？ id还是code？？
+			ekpEntity.setEmplno(UserCache.getUser(AuthUtil.getUserId()).getCode());
+			//单据主题   问题:是不是用合同名称？
+			ekpEntity.setDocSubject(contractFormInfo.getContractName());
+			//依据文档id(必填,ekp跳转到合同平台传递的依据文档id)   问题:看字面意思应该就是一个类似工单号?应该取哪个值?
+			ekpEntity.setFd_parent_id(contractFormInfo.getId() + "");
+			//对方名称
+			ekpEntity.setFd_name(contractFormInfo.getCounterpartName());
+			//合同份数
+			ekpEntity.setFd_totle(contractFormInfo.getShare());
+			//合同期限
+			switch (contractFormInfo.getContractPeriod()) {
+				case "xysn":
+					ekpEntity.setFd_cont_scop("sx");
+					break;
+				case "dysn":
+					ekpEntity.setFd_cont_scop("dx");
+					break;
+				case "wzzqx":
+					ekpEntity.setFd_cont_scop("wx");
+					break;
+			}
+			//付款期限  根据字典表拆分出来的,不确定是否对,需要确认!
+			switch (contractFormInfo.getColPayTerm()) {
+				case "f1":
+					ekpEntity.setFd_paydate("1");
+					break;
+				case "f2":
+					ekpEntity.setFd_paydate("2");
+					break;
+				case "f3":
+					ekpEntity.setFd_paydate("3");
+					break;
+				case "f4":
+					ekpEntity.setFd_paydate("4");
+					break;
+				case "f5":
+					ekpEntity.setFd_paydate("6");
+					ekpEntity.setFd_tiaokuan("4");
+					break;
+				case "f6":
+					ekpEntity.setFd_paydate("6");
+					ekpEntity.setFd_tiaokuan("5");
+					break;
+				case "f7":
+					ekpEntity.setFd_paydate("6");
+					ekpEntity.setFd_tiaokuan("6");
+					break;
+				case "priceless_money":
+					ekpEntity.setFd_paydate("6");
+					break;
+				case "s1":
+					ekpEntity.setFd_paydate("5");
+					ekpEntity.setFd_shouktk("KDFH");
+					break;
+				case "s2":
+					ekpEntity.setFd_paydate("5");
+					ekpEntity.setFd_shouktk("SX");
+					break;
+				case "s3":
+					ekpEntity.setFd_paydate("5");
+					ekpEntity.setFd_shouktk("SHHK");
+					break;
+
+			}
+			// 合同开始时间
+			ekpEntity.setFd_starttime(DateUtil.format(contractFormInfo.getStartingTime(), "yyyy-MM-dd"));
+			// 合同结束时间
+			ekpEntity.setFd_lasttime(DateUtil.format(contractFormInfo.getEndTime(), "yyyy-MM-dd"));
+			// 合同金额
+			ekpEntity.setFd_dollar(contractFormInfo.getContractAmount().toString());
+			// 合同标的 交易的商品或服务标题 这个值不知道去哪取
+			ekpEntity.setFd_biaodi("");
+			// 付款条款 (1:一次性付款 2:分期付款 3:预付货款 4:账扣 5:票折 6:补货) 一次性付款和分期付款怎么区分? 怎么取值?
+			//ekpEntity.setFd_tiaokuan("");
+			if (ekpEntity.getFd_tiaokuan().equals("1")) {
+				// 付款天数
+				ekpEntity.setFd_days(contractFormInfo.getDays() + "");
+			}
+			if (ekpEntity.getFd_tiaokuan().equals("2")) {
+				// 进度1  第一个是进度% 第二个是在多少天内付款 第三个是付款比例%  这些值从哪取???????
+				ekpEntity.setFd_percent1("");ekpEntity.setFd_billday1("");ekpEntity.setFd_percent2("");
+				// 进度2  第一个是进度% 第二个是在多少天内付款 第三个是付款比例%  这些值从哪取???????
+				ekpEntity.setFd_percent3("");ekpEntity.setFd_billday2("");ekpEntity.setFd_percent4("");
+				// 进度3  第一个是进度% 第二个是在多少天内付款 第三个是付款比例%  这些值从哪取???????
+				ekpEntity.setFd_percent5("");ekpEntity.setFd_billday3("");ekpEntity.setFd_percent6("");
+				// 进度4  第一个是在多少天内付款 第二个是付款比例%  这些值从哪取???????
+				ekpEntity.setFd_percent7("");ekpEntity.setFd_billday4("");
+				// 进度5  第一个是在多少天内付款 第二个是付款比例%  这些值从哪取???????
+				ekpEntity.setFd_percent8("");ekpEntity.setFd_billday5("");
+			}
+			if (ekpEntity.getFd_tiaokuan().equals("3")) {
+				// 预付货款 发票天数 这些值从哪取???????
+				ekpEntity.setFd_billday6("");
+				// 预付货款 预付款 这些值从哪取???????
+				ekpEntity.setFd_pay("");
+			}
+			// 违约责任 怎么取????
+			ekpEntity.setFd_duty("");
+			abutmentClient.sendEkpForm(ekpEntity);
+			// 推送EKP 结束
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}

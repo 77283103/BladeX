@@ -23,6 +23,7 @@
         <module>blade-user-api</module>
         <module>blade-contract-api</module>
         <module>blade-cases-api</module>
+        <module>blade-abutment-api</module>
     </modules>
 
     <dependencies>

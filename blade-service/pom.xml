@@ -23,6 +23,7 @@
         <module>blade-user</module>
         <module>blade-contract</module>
         <module>blade-cases</module>
+        <module>blade-abutment</module>
     </modules>
 
     <dependencies>
