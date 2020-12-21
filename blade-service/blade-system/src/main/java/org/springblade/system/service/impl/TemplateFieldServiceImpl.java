@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import org.json.simple.JSONArray;
-import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.utils.BeanUtil;
@@ -16,7 +15,6 @@ import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.mapper.TemplateFieldMapper;
 import org.springblade.system.service.IDictBizService;
-import org.springblade.system.service.ITemplateFieldRelationService;
 import org.springblade.system.service.ITemplateFieldService;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
@@ -59,6 +57,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 			jo.put("fieldValue", templateField.getFieldValue());
 			jo.put("fieldTitle", templateField.getFieldTitle());
 			jo.put("componentType", templateField.getComponentType());
+			jo.put("tips", templateField.getTips());
 			//判断字典code是否为空
 			if("select".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())){
 				tree = dictBizService.getList(templateField.getDicCode());

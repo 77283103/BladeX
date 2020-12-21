@@ -17,9 +17,17 @@
 package org.springblade.contract.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  *
@@ -32,20 +40,12 @@ public class ContractFormInfoImporterEx implements Serializable {
 	@ExcelProperty("申请用章全称")private String ywlFullName;
 	@ExcelProperty("相对方全称")private String ywlNameOfOpposite;
 	@ExcelProperty("序号")private String ywlSerialNumber;
-	@ExcelProperty("料号")private String ywlItemNo;
-	@ExcelProperty("品名")private String ywlProductName;
-	@ExcelProperty("规格")private String ywlSpecifications;
+	@ExcelProperty("料号")private String cglMaterial;
+	@ExcelProperty("品名")private String cglOfTheGoods;
+	@ExcelProperty("规格")private String cglSpecifications;
 	@ExcelProperty("单位")private String ywlCompany;
-	@ExcelProperty("未税单价（元/单位)")private String ywlPrice;
-	@ExcelProperty("备注")private String ywlRemarks;
-
-
-
-
-
-
-
-
+	@ExcelProperty("未税单价（元/单位)")private String cglUnitPrice;
+	@ExcelProperty("备注")private String cglNote;
 
 
 }

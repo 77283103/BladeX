@@ -70,10 +70,10 @@ public class TemplateFieldController extends BladeController {
 		TemplateEntity detail = templateService.getById(template.getId());
 		TemplateFieldEntity templateFieldEntity=new TemplateFieldEntity();
 		QueryWrapper<TemplateFieldEntity> queryWrapper = Condition.getQueryWrapper(templateFieldEntity)
-														.eq("code",template.getFormCode())
-														.eq("is_show","true")
-														//.ne("field_title","")
-														.orderByAsc("sort");
+			.eq("code",template.getFormCode())
+			.eq("is_show","true")
+			//.ne("field_title","")
+			.orderByAsc("sort");
 		List<TemplateFieldEntity> list = templateFieldService.list(queryWrapper);
 		list=templateFieldService.selectField(list,detail);
 		return R.data(list);
@@ -96,7 +96,7 @@ public class TemplateFieldController extends BladeController {
 		TemplateEntity entity = new TemplateEntity();
 		BeanUtil.copy(template,entity);
 		entity.setJson(templateFieldService.json(listT));
-		contractClient.templateUpdate(entity);
+		contractClient.templateUpdate(entity.getTemplateCode(),entity.getJson());
 		return R.status(templateService.updateById(entity));
 
 	}
@@ -120,8 +120,8 @@ public class TemplateFieldController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入TemplateField")
 	@PreAuth("hasPermission('templateField:TemplateField:add')")
 	public R save(@Valid @RequestBody TemplateFieldRequestVO TemplateField) {
-        TemplateFieldEntity entity = new TemplateFieldEntity();
-        BeanUtil.copy(TemplateField,entity);
+		TemplateFieldEntity entity = new TemplateFieldEntity();
+		BeanUtil.copy(TemplateField,entity);
 		return R.status(templateFieldService.save(entity));
 	}
 
