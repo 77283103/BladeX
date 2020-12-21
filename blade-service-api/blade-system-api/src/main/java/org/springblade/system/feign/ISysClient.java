@@ -33,8 +33,8 @@ import java.util.List;
  * @author Chill
  */
 @FeignClient(
-	value = AppConstant.APPLICATION_SYSTEM_NAME,
-	fallback = ISysClientFallback.class
+	value = AppConstant.APPLICATION_SYSTEM_NAME
+	/*fallback = ISysClientFallback.class*/
 )
 public interface ISysClient {
 

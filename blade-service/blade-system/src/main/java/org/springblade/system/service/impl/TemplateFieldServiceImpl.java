@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.json.simple.JSONArray;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.system.constant.ContractFormInfoTemplateContract;
 import org.springblade.system.entity.DictBiz;
@@ -72,8 +73,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 				jo.put("dicData", array);
 				//组装可编辑列表data
 			}else if("cascader".equals(templateField.getComponentType())){
-				BladeUser bladeUser=new BladeUser() ;
-				sysClient.getDeptTree("000000", bladeUser);
+				sysClient.getDeptTree("000000", AuthUtil.getUser());
 			}else if("editList".equals(templateField.getComponentType())||"relationList".equals(templateField.getComponentType())||"formList".equals(templateField.getComponentType())){
 				if("ContractCounterpart".equals(templateField.getRelationCode())){
 					JSONArray datas = new JSONArray();
