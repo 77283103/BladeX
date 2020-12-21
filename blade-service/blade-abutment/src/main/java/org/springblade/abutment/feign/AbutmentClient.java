@@ -24,7 +24,6 @@ import java.util.List;
  */
 @ApiIgnore
 @Slf4j
-@AllArgsConstructor
 @RestController
 public class AbutmentClient implements IAbutmentClient {
 

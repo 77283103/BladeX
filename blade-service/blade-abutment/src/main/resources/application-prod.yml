@@ -1,0 +1,40 @@
+server:
+  port: 18080
+spring:
+  aop:
+    auto: true
+  datasource:
+    url: ${blade.datasource.dev.url}
+    username: ${blade.datasource.dev.username}
+    password: ${blade.datasource.dev.password}
+api:
+  doc:
+    tokenUrl: http://oatest.pec.com.cn:9080/query/openapi/getToken
+    docInfoUrl: http://oatest.pec.com.cn:9080/query/openapi/queryDocInfo
+    SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
+  ekp:
+    tokenUrl: http://oatest.pec.com.cn:9080/restful/ekp/getToken
+    ekpUrl: http://oatest.pec.com.cn:9080/restful/ekp/genhrbill
+    account: iHR
+    password: oaekp
+    fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
+  organization:
+    wsdl: http://oatest.pec.com.cn:8080/sys/webservice/organizationWebService?wsdl
+    namespace: http://sys.webservice.client
+    method: updateOrganization
+    account: shebake_test
+    password: d65937df2000cc755253956bd1403aa5
+  eSeal:
+    tokenUrl: http://sa.pec.com.cn:9080/common/user/access
+    orgInfoByCodeUrl: http://sa.pec.com.cn:9080/common/apply/company/getByOrganCode
+    orgInfoBySysUidUrl: http://sa.pec.com.cn:9080/common/apply/company/getBySysUid
+    uploadFileDivideUrl: http://sa.pec.com.cn:9080/common/file/upload/divide
+    uploadFileMergeUrl: http://sa.pec.com.cn:9080/common/file/upload/merge
+    viewUrl: http://sa.pec.com.cn:9080/common/file/contract/view
+    downloadUrl: http://sa.pec.com.cn:9080/common/file/downloadSinged
+    singleSignUrl: http://sa.pec.com.cn:9080/common/run/esign/singleSign
+    sendSmsUrl: http://sa.pec.com.cn:9080/common/run/esign/sendSms
+    multiSignUrl: http://sa.pec.com.cn:9080/common/run/esign/multiSign
+    username: 1111
+    password: 1111
+

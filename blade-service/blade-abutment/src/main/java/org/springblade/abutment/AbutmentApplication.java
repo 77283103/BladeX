@@ -1,16 +1,15 @@
 package org.springblade.abutment;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springblade.core.cloud.feign.EnableBladeFeign;
+import org.springblade.core.launch.BladeApplication;
+import org.springframework.cloud.client.SpringCloudApplication;
 
-@Slf4j
-@SpringBootApplication
+@EnableBladeFeign
+@SpringCloudApplication
 public class AbutmentApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(AbutmentApplication.class, args);
-		log.info("===================================run success===================================");
+		BladeApplication.run("blade-abutment", AbutmentApplication.class, args);
 	}
 
 }
