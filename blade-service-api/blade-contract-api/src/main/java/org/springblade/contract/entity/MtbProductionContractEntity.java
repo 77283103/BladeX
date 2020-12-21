@@ -1,5 +1,6 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springblade.core.tool.utils.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -20,6 +21,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -180,4 +182,11 @@ public class MtbProductionContractEntity extends BaseEntity {
     @ApiModelProperty(value="乙方账号")
 	private String mtbPartyAccount;
 
+	@ApiModelProperty(value = "平面广告拍摄制作合同1(关联表）")
+	@TableField(exist = false)
+	private List<MtlAdaptationContract1Entity> mtlAdaptationContract1EntityList;
+
+	@ApiModelProperty(value = "平面广告拍摄制作合同2(关联表）")
+	@TableField(exist = false)
+	private List<MtlAdaptationContract2Entity> mtlAdaptationContract2EntityList;
 }
