@@ -41,7 +41,7 @@ public class ContractBorrowApplicationServiceImpl extends BaseServiceImpl<Contra
     private ContractBorrowApplicationMapper applicationMapper;
 
     @Override
-    public IPage<ContractBorrowApplicationEntity> pageList(IPage<ContractBorrowApplicationEntity> page, ContractBorrowApplicationRequestVO contractBorrowApplication) {
+    public IPage<ContractBorrowApplicationResponseVO> pageList(IPage<ContractBorrowApplicationEntity> page, ContractBorrowApplicationRequestVO contractBorrowApplication) {
         return baseMapper.pageList(page, contractBorrowApplication);
     }
 

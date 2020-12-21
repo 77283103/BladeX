@@ -1,14 +1,10 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.ehcache.xml.model.ListenersType;
+import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.contract.entity.ContractTemplateEntity;
-import org.springblade.system.vo.TemplateResponseVO;
-
-import java.util.List;
 
 /**
  * 范本管理 服务类
@@ -46,4 +42,12 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @return
 	 */
 	ContractTemplateResponseVO getByNewId(Long id);
+
+	/**
+	 * 新增範本
+	 * @param templateEntity
+	 * @return
+	 */
+	@Override
+	boolean save(ContractTemplateEntity templateEntity);
 }

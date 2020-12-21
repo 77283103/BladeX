@@ -2,43 +2,35 @@ package org.springblade.contract.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.metadata.WriteSheet;
-import io.swagger.annotations.Api;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import org.springblade.core.log.exception.ServiceException;
-import org.springblade.core.secure.BladeUser;
-import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.contract.entity.ContractBorrowApplicationEntity;
+import org.springblade.contract.service.IContractBorrowApplicationService;
+import org.springblade.contract.vo.ContractBorrowApplicationRequestVO;
+import org.springblade.contract.vo.ContractBorrowApplicationResponseVO;
+import org.springblade.contract.wrapper.ContractBorrowApplicationWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
-
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
-import org.springblade.system.entity.Dept;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
-import org.springblade.system.user.entity.User;
-import org.springblade.system.user.entity.UserDepart;
 import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.contract.entity.ContractBorrowApplicationEntity;
-import org.springblade.contract.wrapper.ContractBorrowApplicationWrapper;
-import org.springblade.contract.service.IContractBorrowApplicationService;
-import org.springblade.contract.vo.ContractBorrowApplicationRequestVO;
-import org.springblade.contract.vo.ContractBorrowApplicationResponseVO;
-
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -83,8 +75,8 @@ public class ContractBorrowApplicationController extends BladeController {
     @ApiOperation(value = "分页", notes = "传入contractBorrowApplication")
     @PreAuth("hasPermission('application:contractBorrowApplication:page')")
     public R<IPage<ContractBorrowApplicationResponseVO>> list(ContractBorrowApplicationRequestVO contractBorrowApplication, Query query) {
-        IPage<ContractBorrowApplicationEntity> pages = contractBorrowApplicationService.pageList(Condition.getPage(query), contractBorrowApplication);
-        return R.data(ContractBorrowApplicationWrapper.build().entityPVPage(pages));
+        IPage<ContractBorrowApplicationResponseVO> pages = contractBorrowApplicationService.pageList(Condition.getPage(query), contractBorrowApplication);
+        return R.data(pages);
     }
 
     /**

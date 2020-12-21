@@ -13,10 +13,12 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +41,8 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	private IUserClient userClient;
 
 	private ISysClient sysClient;
+
+	private IDictBizClient bizClient;
 
 	@Override
 	public IPage<ContractTemplateResponseVO> pageList(IPage<ContractTemplateEntity> page, ContractTemplateRequestVO template) {
@@ -119,7 +123,7 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 		List<ContractTemplateEntity> templateEntityList=new ArrayList<>();
 		//根据最新版本id查询最新范本数据
 		ContractTemplateEntity templateEntity = baseMapper.selectById(id);
-		while (templateEntity.getOriginalTemplateId()!=null) {
+		while (templateEntity.getOriginalTemplateId()!=null && templateEntity.getOriginalTemplateId()!=-1) {
 			templateEntity = baseMapper.selectById(templateEntity.getOriginalTemplateId());
 			templateEntityList.add(templateEntity);
 		}
@@ -130,14 +134,32 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	}
 
 
+	private static final Integer TEMPLATE_NUMBER_DIGITS=9;
+	private static final Integer TEMPLATE_NUMBER_TENSE=99;
 	/**
 	 * 新增范本，规范生成范本编号
 	 * @param entity
 	 * @return
 	 */
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public boolean save(ContractTemplateEntity entity) {
-
+		String templateType=bizClient.getById(Long.valueOf(entity.getContractBigCategory())).getData().getDictKey()+
+				"-"+bizClient.getById(Long.valueOf(entity.getContractSmallCategory())).getData().getDictKey();
+		Integer number=templateMapper.selectByIdTemplateNumber(templateType);
+		if (Func.isEmpty(number)){
+			entity.setTemplateNumber(templateType+"-00"+1);
+			templateMapper.instertTemplateNumbered(templateType,1);
+		}else {
+			templateMapper.updateTemplateNumbered(templateType, number += 1);
+			if (number <= TEMPLATE_NUMBER_DIGITS) {
+				entity.setTemplateNumber(templateType + "-00" + number);
+			} else if (number > TEMPLATE_NUMBER_DIGITS) {
+				entity.setTemplateNumber(templateType + "-0" + number);
+			} else if (number >= TEMPLATE_NUMBER_TENSE) {
+				entity.setTemplateNumber(templateType + "-" + number);
+			}
+		}
 		return super.save(entity);
 	}
 
