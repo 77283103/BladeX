@@ -1,23 +1,13 @@
 package org.springblade.contract.vo;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.deser.std.DateDeserializers;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 
-import java.time.LocalDate;
 import java.util.Date;
-import org.springframework.format.annotation.DateTimeFormat;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
-
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * 借阅申请 请求模型VO
@@ -55,6 +45,12 @@ public class ContractBorrowApplicationRequestVO extends BaseEntity {
 	@JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
 	@ApiModelProperty(value="借阅周期（结束时间）")
 	private Date borrowCycleEnd;
+
+	@ApiModelProperty(value="借阅周期（起始时间）vo")
+	private String borrowCycleStartString;
+
+	@ApiModelProperty(value="借阅周期（结束时间）vo")
+	private String borrowCycleEndString;
 
     @ApiModelProperty(value="借阅方式")
 	private String borrowMode;

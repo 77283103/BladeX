@@ -118,4 +118,26 @@
         WHERE is_deleted = 0
         AND original_template_id = #{id}
     </select>
+
+    <!--根據範本編號類型查詢範本編號-->
+    <select id="selectByIdTemplateNumber" resultType="Integer">
+        SELECT
+        number
+        FROM contract_template_number
+        WHERE type = #{type}
+    </select>
+     <!-- 新增範本編號   -->
+    <insert id="instertTemplateNumbered">
+        INSERT INTO contract_template_number
+            (type,
+             number)
+        VALUES(#{type},
+               #{number})
+    </insert>
+    <!--  修改範本類型的編號存入庫内  -->
+    <update id="updateTemplateNumbered">
+        UPDATE contract_template_number
+        SET number=#{number}
+        WHERE type=#{type}
+    </update>
 </mapper>

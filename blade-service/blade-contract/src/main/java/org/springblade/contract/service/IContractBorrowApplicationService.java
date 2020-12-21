@@ -21,7 +21,7 @@ public interface IContractBorrowApplicationService extends BaseService<ContractB
      * @param contractBorrowApplication
      * @return
      */
-    IPage<ContractBorrowApplicationEntity> pageList(IPage<ContractBorrowApplicationEntity> page, ContractBorrowApplicationRequestVO contractBorrowApplication);
+    IPage<ContractBorrowApplicationResponseVO> pageList(IPage<ContractBorrowApplicationEntity> page, ContractBorrowApplicationRequestVO contractBorrowApplication);
 
     /**
      * 借阅信息

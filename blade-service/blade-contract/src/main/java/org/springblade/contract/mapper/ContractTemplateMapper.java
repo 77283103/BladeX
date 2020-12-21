@@ -2,6 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
 
@@ -56,4 +57,25 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 */
 	ContractTemplateEntity latestById(Long id);
 
+	/**
+	 * 新增範本編號
+	 * @param type
+	 * @param number
+	 * @return
+	 */
+	boolean instertTemplateNumbered(@Param("type") String type, @Param("number") Integer number);
+
+	/**
+	 * 修改範本類型的編號存入庫内
+	 * @param type
+	 * @param number
+	 * @return
+	 */
+	boolean updateTemplateNumbered(@Param("type") String type, @Param("number") Integer number);
+	/**
+	 * 根據範本編號類型查詢範本編號
+	 * @param type
+	 * @return
+	 */
+	Integer selectByIdTemplateNumber(@Param("type") String type);
 }

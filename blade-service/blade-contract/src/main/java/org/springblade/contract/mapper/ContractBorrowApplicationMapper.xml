@@ -54,25 +54,25 @@
         FROM contract_borrow_application
         WHERE is_deleted = 0
         <if test="contractBorrowApplication.applicant != null and contractBorrowApplication.applicant != ''">
-            AND applicant = #{contractBorrowApplication.applicant}
+            AND applicant like concat('%',#{contractBorrowApplication.applicant},'%')
         </if>
         <if test="contractBorrowApplication.borrowStatus != null and contractBorrowApplication.borrowStatus != ''">
-            AND borrow_status = #{contractBorrowApplication.borrowStatus}
+            AND borrow_status like concat('%', #{contractBorrowApplication.borrowStatus},'%')
         </if>
         <if test="contractBorrowApplication.createDept != null and contractBorrowApplication.createDept != ''">
-            AND create_dept = #{contractBorrowApplication.createDept}
+            AND create_dept like concat('%', #{contractBorrowApplication.createDept},'%')
         </if>
         <if test="contractBorrowApplication.dataType != null and contractBorrowApplication.dataType != ''">
-            AND data_type = #{contractBorrowApplication.dataType}
+            AND data_type like concat('%', #{contractBorrowApplication.dataType},'%')
         </if>
         <if test="contractBorrowApplication.borrowMode != null and contractBorrowApplication.borrowMode != ''">
             AND borrow_mode = #{contractBorrowApplication.borrowMode}
         </if>
-        <if test="contractBorrowApplication.borrowCycleStart != null">
-            AND borrow_cycle_start &gt; concat(#{contractBorrowApplication.borrowCycleStart})
+        <if test="contractBorrowApplication.borrowCycleStartString != null">
+           AND borrow_cycle_start <![CDATA[>=]]> #{contractBorrowApplication.borrowCycleStartString}
         </if>
-        <if test="contractBorrowApplication.borrowCycleEnd != null">
-            AND borrow_cycle_end &lt; concat(#{contractBorrowApplication.borrowCycleEnd})
+        <if test="contractBorrowApplication.borrowCycleEndString != null">
+           AND borrow_cycle_end  <![CDATA[<=]]> #{contractBorrowApplication.borrowCycleEndString}
         </if>
     </select>
 

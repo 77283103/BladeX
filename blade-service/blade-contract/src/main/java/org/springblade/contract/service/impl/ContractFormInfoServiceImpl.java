@@ -48,45 +48,45 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInfoMapper, ContractFormInfoEntity> implements IContractFormInfoService {
-	private IFileClient fileClient;
+    private IFileClient fileClient;
 
-	private ISysClient sysClient;
+    private ISysClient sysClient;
 
-	private IUserClient userClient;
+    private IUserClient userClient;
 
-	private IDictBizClient bizClient;
+    private IDictBizClient bizClient;
 
-	private ContractFormInfoMapper contractFormInfoMapper;
+    private ContractFormInfoMapper contractFormInfoMapper;
 
-	private ContractCounterpartMapper contractCounterpartMapper;
+    private ContractCounterpartMapper contractCounterpartMapper;
 
-	private ContractBondMapper contractBondMapper;
+    private ContractBondMapper contractBondMapper;
 
-	private ContractAccordingMapper contractAccordingMapper;
+    private ContractAccordingMapper contractAccordingMapper;
 
-	private ContractPerformanceMapper contractPerformanceMapper;
+    private ContractPerformanceMapper contractPerformanceMapper;
 
-	private ContractPerformanceColPayMapper contractPerformanceColPayMapper;
+    private ContractPerformanceColPayMapper contractPerformanceColPayMapper;
 
-	private ContractAssessmentMapper contractAssessmentMapper;
+    private ContractAssessmentMapper contractAssessmentMapper;
 
-	private ContractArchiveMapper contractArchiveMapper;
+    private ContractArchiveMapper contractArchiveMapper;
 
-	private ContractArchiveNotMapper contractArchiveNotMapper;
+    private ContractArchiveNotMapper contractArchiveNotMapper;
 
-	private ContractSealUsingInfoMapper sealUsingInfoMapper;
+    private ContractSealUsingInfoMapper sealUsingInfoMapper;
 
-	private ContractSigningMapper signingMapper;
+    private ContractSigningMapper signingMapper;
 
-	private ContractArchiveNotMapper archiveNotMapper;
+    private ContractArchiveNotMapper archiveNotMapper;
 
-	private ContractRelieveMapper relieveMapper;
+    private ContractRelieveMapper relieveMapper;
 
-	private ContractRawMaterialsMapper contractRawMaterialsMapper;
+    private ContractRawMaterialsMapper contractRawMaterialsMapper;
 
-	private ContractTemplateMapper contractTemplateMapper;
+    private ContractTemplateMapper contractTemplateMapper;
 
-	private ContractChangeMapper changeMapper;
+    private ContractChangeMapper changeMapper;
 	private IYwlANewDisplay1Service ywlANewDisplay1Service;
 	private ICglCategorySalesContracts1Service cglCategorySalesContracts1Service;
 	private ICglTheSalesContract1Service cglTheSalesContract1Service;
@@ -96,26 +96,26 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IMtlAdaptationContract2Service mtlAdaptationContract2Service;
 	private IMtlShootingAndProductionContract1Service mtlShootingAndProductionContract1Service;
 	private IMtlShootingAndProductionContract2Service mtlShootingAndProductionContract2Service;
-	private ISclProjectOutsourcing1Service sclProjectOutsourcing1Service;
+    private ISclProjectOutsourcing1Service sclProjectOutsourcing1Service;
 
-	private IMtlVideoProductionContract1Service mtlVideoProductionContract1Service;
-	private IMtlVideoProductionContract2Service mtlVideoProductionContract2Service;
-	private IMtlEditedTheContract1Service mtlEditedTheContract1Service;
-	private IMtlAudioProductionContract1Service mtlAudioProductionContract1Service;
-	private IMtlAudioProductionContract2Service mtlAudioProductionContract2Service;
-	private ISclConstructionProject1Service sclConstructionProject1Service;
-	private ISclConstructionProject2Service sclConstructionProject2Service;
-	private ISclConstructionProject3Service sclConstructionProject3Service;
-	private ICglSalesContract1Service cglSalesContract1Service;
-	private IContractBondPlanService contractBondPlanService;
-	private IContractBondService contractBondService;
-	private ContractPerformanceMapper performanceMapper;
-	private ContractPerformanceColPayMapper performanceColPayMapper;
-	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
-	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
-	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
-	private static final Integer AMOUNT_RATIO_VALUE = 100;
-	private static final String CONTRACT_CHANGE_REVIEW = "10";
+    private IMtlVideoProductionContract1Service mtlVideoProductionContract1Service;
+    private IMtlVideoProductionContract2Service mtlVideoProductionContract2Service;
+    private IMtlEditedTheContract1Service mtlEditedTheContract1Service;
+    private IMtlAudioProductionContract1Service mtlAudioProductionContract1Service;
+    private IMtlAudioProductionContract2Service mtlAudioProductionContract2Service;
+    private ISclConstructionProject1Service sclConstructionProject1Service;
+    private ISclConstructionProject2Service sclConstructionProject2Service;
+    private ISclConstructionProject3Service sclConstructionProject3Service;
+    private ICglSalesContract1Service cglSalesContract1Service;
+    private IContractBondPlanService contractBondPlanService;
+    private IContractBondService contractBondService;
+    private ContractPerformanceMapper performanceMapper;
+    private ContractPerformanceColPayMapper performanceColPayMapper;
+    private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
+    private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
+    private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
+    private static final Integer AMOUNT_RATIO_VALUE = 100;
+    private static final String CONTRACT_CHANGE_REVIEW = "10";
 
 	@Override
 	public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
@@ -206,92 +206,92 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return pages;
 	}
 
-	/**
-	 * 统计分析分页查询
-	 *
-	 * @param page
-	 * @param contractFormInfo
-	 * @return
-	 */
-	@Override
-	public IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
-		if (Func.isNotBlank(contractFormInfo.getContractBigCategory()) && DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())) {
-			page = contractFormInfoMapper.pageListStatisticsType(page, contractFormInfo);
-		}
-		if (Func.isNotBlank(contractFormInfo.getContractStatus()) && DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())) {
-			page = contractFormInfoMapper.pageListStatisticsStatus(page, contractFormInfo);
-		}
-		if (Func.isNotBlank(contractFormInfo.getColPayType()) && DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
-			page = contractFormInfoMapper.pageListStatisticsColPayType(page, contractFormInfo);
-		}
-		if (Func.isNotBlank(contractFormInfo.getContractBigCategory()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())) {
-			page = contractFormInfoMapper.pageList(page, contractFormInfo);
-		}
-		if (Func.isNotBlank(contractFormInfo.getContractStatus()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())) {
-			String[] code = contractFormInfo.getContractStatus().split(",");
-			contractFormInfo.setCode(Arrays.asList(code));
-			page = contractFormInfoMapper.pageList(page, contractFormInfo);
-		}
-		if (Func.isNotBlank(contractFormInfo.getColPayType()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
-			page = contractFormInfoMapper.pageList(page, contractFormInfo);
-		}
-		//金额查询
-		if (Func.isNotEmpty(contractFormInfo.getMinAmount()) || Func.isNotEmpty(contractFormInfo.getMaxAmount())) {
-			page = contractFormInfoMapper.pageList(page, contractFormInfo);
-		}
-		if (!DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())
-			&& !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
-			&& !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())
-			|| Func.isNotEmpty(contractFormInfo.getMaxAmount()) || Func.isNotEmpty(contractFormInfo.getMinAmount())) {
-			List<ContractFormInfoEntity> records = page.getRecords();
-			List<ContractFormInfoEntity> recordList = new ArrayList<>();
-			for (ContractFormInfoEntity v : records) {
-				if (Func.isNotEmpty(v.getContractBigCategory())) {
-					v.setAmountRatio(String.valueOf(
-						v.getContractAmount().divide(BigDecimal.valueOf(
-							contractFormInfoMapper.getNumAmount(v.getContractBigCategory())), 2, BigDecimal.ROUND_HALF_DOWN).multiply(
-							BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%"));
-					v.setContractBigCategory(bizClient.getValues("HTDL", Long.valueOf(v.getContractBigCategory())).getData());
-				}
-				if (Func.isNotEmpty(v.getColPayTerm())) {
-					v.setColPayType(bizClient.getValues("col_pay_term", Long.valueOf(v.getColPayTerm())).getData());
-				}
-				//将签订信息存入合同分页 获取邮寄日期
-				ContractSigningEntity signingEntity = signingMapper.selectSigningById(v.getId());
-				if (Func.isNotEmpty(signingEntity)) {
-					v.setSigningEntity(signingEntity);
-				}
-				String contractAmount = v.getContractAmount() + "元";
-				v.setAmountVoidData(contractAmount);
-				recordList.add(v);
-			}
-			page.setRecords(recordList);
-		}
-		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
-		if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())
-			|| DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
-			|| DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
-			List<ContractFormInfoResponseVO> records = pages.getRecords();
-			List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
-			for (ContractFormInfoResponseVO v : records) {
-				BigDecimal contractAmountSum = BigDecimal.valueOf(contractFormInfoMapper.selectAmountSum());
-				v.setAmountRatio(v.getContractAmount().divide(contractAmountSum, 2, BigDecimal.ROUND_HALF_EVEN).multiply(BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%");
-				if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())) {
-					v.setSigningCount(contractFormInfoMapper.selectSigningCount(v.getContractBigCategory()));
-					v.setContractBigCategory(v.getDictValue());
-				}
-				if (DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
-					v.setColPayType(v.getDictValue());
-				}
-				//TODO 金额计算在合同起草时选择币种之后根据币种转换成人民币计算存入数据库
-				String contractAmount = v.getContractAmount() + "元";
-				v.setAmountVoidData(contractAmount);
-				recordList.add(v);
-			}
-			pages.setRecords(recordList);
-		}
-		return pages;
-	}
+    /**
+     * 统计分析分页查询
+     *
+     * @param page
+     * @param contractFormInfo
+     * @return
+     */
+    @Override
+    public IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
+        if (Func.isNotBlank(contractFormInfo.getContractBigCategory()) && DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())) {
+            page = contractFormInfoMapper.pageListStatisticsType(page, contractFormInfo);
+        }
+        if (Func.isNotBlank(contractFormInfo.getContractStatus()) && DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())) {
+            page = contractFormInfoMapper.pageListStatisticsStatus(page, contractFormInfo);
+        }
+        if (Func.isNotBlank(contractFormInfo.getColPayType()) && DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+            page = contractFormInfoMapper.pageListStatisticsColPayType(page, contractFormInfo);
+        }
+        if (Func.isNotBlank(contractFormInfo.getContractBigCategory()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())) {
+            page = contractFormInfoMapper.pageList(page, contractFormInfo);
+        }
+        if (Func.isNotBlank(contractFormInfo.getContractStatus()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())) {
+            String[] code = contractFormInfo.getContractStatus().split(",");
+            contractFormInfo.setCode(Arrays.asList(code));
+            page = contractFormInfoMapper.pageList(page, contractFormInfo);
+        }
+        if (Func.isNotBlank(contractFormInfo.getColPayType()) && !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+            page = contractFormInfoMapper.pageList(page, contractFormInfo);
+        }
+        //金额查询
+        if (Func.isNotEmpty(contractFormInfo.getMinAmount()) || Func.isNotEmpty(contractFormInfo.getMaxAmount())) {
+            page = contractFormInfoMapper.pageList(page, contractFormInfo);
+        }
+        if (!DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())
+                && !DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
+                && !DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())
+                || Func.isNotEmpty(contractFormInfo.getMaxAmount()) || Func.isNotEmpty(contractFormInfo.getMinAmount())) {
+            List<ContractFormInfoEntity> records = page.getRecords();
+            List<ContractFormInfoEntity> recordList = new ArrayList<>();
+            for (ContractFormInfoEntity v : records) {
+                if (Func.isNotEmpty(v.getContractBigCategory())) {
+                    v.setAmountRatio(String.valueOf(
+                            v.getContractAmount().divide(BigDecimal.valueOf(
+                                    contractFormInfoMapper.getNumAmount(v.getContractBigCategory())), 2, BigDecimal.ROUND_HALF_DOWN).multiply(
+                                    BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%"));
+                    v.setContractBigCategory(bizClient.getValues("HTDL", Long.valueOf(v.getContractBigCategory())).getData());
+                }
+                if (Func.isNotEmpty(v.getColPayTerm())) {
+                    v.setColPayType(bizClient.getValues("col_pay_term", Long.valueOf(v.getColPayTerm())).getData());
+                }
+                //将签订信息存入合同分页 获取邮寄日期
+                ContractSigningEntity signingEntity = signingMapper.selectSigningById(v.getId());
+                if (Func.isNotEmpty(signingEntity)) {
+                    v.setSigningEntity(signingEntity);
+                }
+                String contractAmount = v.getContractAmount() + "元";
+                v.setAmountVoidData(contractAmount);
+                recordList.add(v);
+            }
+            page.setRecords(recordList);
+        }
+        IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
+        if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())
+                || DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS.equals(contractFormInfo.getContractStatus())
+                || DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+            List<ContractFormInfoResponseVO> records = pages.getRecords();
+            List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
+            for (ContractFormInfoResponseVO v : records) {
+                BigDecimal contractAmountSum = BigDecimal.valueOf(contractFormInfoMapper.selectAmountSum());
+                v.setAmountRatio(v.getContractAmount().divide(contractAmountSum, 2, BigDecimal.ROUND_HALF_EVEN).multiply(BigDecimal.valueOf(AMOUNT_RATIO_VALUE)) + "%");
+                if (DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY.equals(contractFormInfo.getContractBigCategory())) {
+                    v.setSigningCount(contractFormInfoMapper.selectSigningCount(v.getContractBigCategory()));
+                    v.setContractBigCategory(v.getDictValue());
+                }
+                if (DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE.equals(contractFormInfo.getColPayType())) {
+                    v.setColPayType(v.getDictValue());
+                }
+                //TODO 金额计算在合同起草时选择币种之后根据币种转换成人民币计算存入数据库
+                String contractAmount = v.getContractAmount() + "元";
+                v.setAmountVoidData(contractAmount);
+                recordList.add(v);
+            }
+            pages.setRecords(recordList);
+        }
+        return pages;
+    }
 
 	/**
 	 * 合同数据导入
@@ -469,7 +469,129 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return contractFormInfoMapper.selectSigningCount(contractBigCategory);
 	}
 
-
+    //json数据拼接
+    public String getjson(String json, ContractFormInfoEntity contractFormInfo) {
+        JSONArray objects = new JSONArray();
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.US);
+        try {
+            objects = JSONArray.parseArray(json);
+            JSONObject db = (JSONObject) JSONObject.toJSON(contractFormInfo);
+            for (int i = 0; i < objects.size(); i++) {
+                JSONObject temp = objects.getJSONObject(i);
+                String fieldName = temp.getString("fieldName");
+                String componentType = temp.getString("componentType");
+                if ("datePicker".equals(componentType)) {
+                    if (fieldName != null) {
+                        String dbColum = db.getString(fieldName);
+                        if (dbColum != null) {
+                            Date d = sdf.parse(dbColum);
+                            temp.put("fieldValue", sd.format(d));
+                        }
+                    }
+                } else if ("relationList".equals(componentType)) {
+                    System.out.println("是的");
+                } else {
+                    if (fieldName != null) {
+                        String dbColum = db.getString(fieldName);
+                        if (dbColum != null) {
+                            temp.put("fieldValue", dbColum);
+                        }
+                    }
+                }
+                objects.set(i, temp);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        json = objects.toJSONString();
+        List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+        ContractTemplateEntity contractTemplate = contractTemplateMapper.selectById(contractFormInfo.getContractTemplateId());
+        for (TemplateFieldJsonEntity templateField : templateFieldList) {
+            if (ContractFormInfoTemplateContract.CONTRACT_ID.equals(templateField.getComponentType())) {
+                templateField.setFieldValue(contractFormInfo.getId().toString());
+            }
+            //合同分类
+            if (ContractFormInfoTemplateContract.CONTRACT_BIG_CATEGORY.equals(templateField.getRelationCode())) {
+                JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
+                if (null != jsonObj) {
+                    jsonObj.put("template", contractTemplate);
+                    jsonObj.put("first", contractFormInfo.getContractBigCategory());
+                    jsonObj.put("second", contractFormInfo.getContractSmallCategory());
+                    templateField.setSecondSelectDataObject(jsonObj);
+                }
+            }
+            //合同分类
+            if (ContractFormInfoTemplateContract.CONTRACT_COL_PAY.equals(templateField.getRelationCode())) {
+                JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
+                if (null != jsonObj) {
+                    jsonObj.put("first", contractFormInfo.getColPayType());
+                    jsonObj.put("second", contractFormInfo.getColPayTerm());
+                    jsonObj.put("days", contractFormInfo.getDays());
+                    templateField.setSecondSelectDataObject(jsonObj);
+                }
+            }
+            //处理有字段验证规则数据
+            if (ContractFormInfoTemplateContract.COMPONENT_TYPE_REQUORED.equals(templateField.getRequired())) {
+                List<Object> objectList = JSON.parseArray(templateField.getRequiredData(), Object.class);
+                if (CollectionUtil.isNotEmpty(objectList)) {
+                    templateField.setRequiredDataList(objectList);
+                }
+            }
+            //处理小类型组件数据
+            if (ContractFormInfoTemplateContract.COMPONENT_TYPE_SMALL.contains(templateField.getComponentType())) {
+                List<Object> objectList = JSON.parseArray(templateField.getDicData(), Object.class);
+                if (CollectionUtil.isNotEmpty(objectList)) {
+                    templateField.setDicDataList(objectList);
+                }
+            }
+            if (ContractFormInfoTemplateContract.COMPONENT_TYPE.contains(templateField.getComponentType())) {
+                if (ContractFormInfoTemplateContract.CONTRACT_ACCORDING.equals(templateField.getRelationCode())) {
+                    /*保存依据信息*/
+                    if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
+                        templateField.setTableData(JSONObject.toJSONString(contractFormInfo.getAccording()));
+                        templateField.setTableDataList(contractFormInfo.getAccording());
+                    }
+                }
+                //是关联列表的组件都在这里处理
+                if (ContractFormInfoTemplateContract.CONTRACT_COUNTERPART.equals(templateField.getRelationCode())) {
+                    //字符串对象转成JSONObject
+                    JSONObject obj = JSON.parseObject(templateField.getTableDataObject());
+                    //判断相对方是否为空
+                    if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
+                        obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_COUNTERPART, contractFormInfo.getCounterpart());
+                    }
+                    if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
+                        obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_COUNTERPART, contractFormInfo.getContractBond());
+                    }
+                    templateField.setTableDataObject(JSONObject.toJSONString(obj));
+                    templateField.setTableDataObjectList(obj);
+                }
+                //*保存履约信息
+                if (ContractFormInfoTemplateContract.CONTRACT_PERFORMANCE.equals(templateField.getRelationCode())) {
+                    if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
+                        templateField.setTableData(JSONObject.toJSONString(contractFormInfo.getPerformanceList()));
+                        templateField.setTableDataList(contractFormInfo.getPerformanceList());
+                    }
+                }
+                //*保存履约计划收付款
+                if (ContractFormInfoTemplateContract.CONTRACT_PERFORMANCE_COLPAY.equals(templateField.getRelationCode())) {
+                    if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
+                        templateField.setTableData(JSONObject.toJSONString(contractFormInfo.getPerformanceColPayList()));
+                        templateField.setTableDataList(contractFormInfo.getPerformanceColPayList());
+                    }
+                }
+                //*保存履约计划收付款
+                if (ContractFormInfoTemplateContract.CONTRACT_RAW_MATERIALS.equals(templateField.getRelationCode())) {
+                    if (CollectionUtil.isNotEmpty(contractFormInfo.getRawMaterialsList())) {
+                        templateField.setTableData(JSONObject.toJSONString(contractFormInfo.getRawMaterialsList()));
+                        templateField.setTableDataList(contractFormInfo.getRawMaterialsList());
+                    }
+                }
+            }
+        }
+        return toJSONString(templateFieldList);
+    }
 
 
 	/**

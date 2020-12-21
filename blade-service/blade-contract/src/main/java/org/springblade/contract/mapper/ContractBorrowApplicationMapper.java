@@ -21,7 +21,7 @@ public interface ContractBorrowApplicationMapper extends BaseMapper<ContractBorr
      * @param contractBorrowApplication
      * @return
      */
-    IPage<ContractBorrowApplicationEntity> pageList(IPage<ContractBorrowApplicationEntity> page, ContractBorrowApplicationRequestVO contractBorrowApplication);
+    IPage<ContractBorrowApplicationResponseVO> pageList(IPage<ContractBorrowApplicationEntity> page, ContractBorrowApplicationRequestVO contractBorrowApplication);
 
     /**
      * 申请详情
