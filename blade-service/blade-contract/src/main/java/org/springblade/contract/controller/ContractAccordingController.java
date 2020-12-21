@@ -1,11 +1,15 @@
 package org.springblade.contract.controller;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.springblade.abutment.entity.DocEntity;
+import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.DocVo;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.service.IContractAccordingService;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
@@ -16,13 +20,17 @@ import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.user.cache.UserCache;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -38,6 +46,7 @@ import javax.validation.Valid;
 public class ContractAccordingController extends BladeController {
 	private RedisTemplate redisTemplate;
 	private IContractAccordingService accordingService;
+	private IAbutmentClient abutmentClient;
 
 	/**
 	 * 详情
@@ -59,7 +68,47 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入according")
 	@PreAuth("hasPermission('contract:according:list')")
 	public R<IPage<ContractAccordingResponseVO>> list(ContractAccordingRequestVO according, Query query) {
-		IPage<ContractAccordingEntity> pages = accordingService.pageList(Condition.getPage(query), according);
+		//IPage<ContractAccordingEntity> pages = accordingService.pageList(Condition.getPage(query), according);
+		IPage<ContractAccordingEntity> pages = new Page<ContractAccordingEntity>();
+
+		// 查询依据 开始  cc 20201218
+		DocEntity docEntity = new DocEntity();
+		// 员工编号   问题:到底是用id还是code
+		docEntity.setEmplno(UserCache.getUser(AuthUtil.getUserId()).getCode());
+		// 依据编号
+		docEntity.setDocNumber(according.getFileId());
+		// 先默认查所有获取依据总数给分页用，因为oa接口的结果集是没有数据总数的
+		List<DocVo> docVos = abutmentClient.queryDocInfo(docEntity).getData();
+		// 有数据才进行一系列操作
+		if (docVos != null && docVos.size() > 0) {
+			// 不从数据库查, 只能手动往里放
+			pages.setTotal(docVos.size());
+			pages.setSize(query.getSize());
+			pages.setCurrent(query.getCurrent());
+			// 返回的数据列表, 因为对接程序里的属性字段和需返回的有差异, 需要在这里处理
+			List<ContractAccordingEntity> contractAccordingEntityList = new ArrayList<ContractAccordingEntity>();
+			// 模拟分页,从所有依据里截取需要的部分
+			Integer fromIndex = Integer.parseInt((pages.getSize() * pages.getCurrent()) + "");
+			Integer toIndex = Integer.parseInt((pages.getSize() * (pages.getCurrent() + 1)) + "");
+			if (fromIndex < docVos.size()) {
+				// oa返回的字段只有4个, 其他字段需要根据情况再定
+				docVos.subList(fromIndex, toIndex > docVos.size() - 1 ? docVos.size() - 1 : toIndex).forEach(docVo -> {
+					ContractAccordingEntity contractAccordingEntity = new ContractAccordingEntity();
+					// 文档名称
+					contractAccordingEntity.setAccordingName(docVo.getDoc_name());
+					// 文档id
+					contractAccordingEntity.setFileId(docVo.getDoc_id());
+					// 文档编号
+					contractAccordingEntity.setCode(docVo.getDoc_number());
+					// 文档类型
+					contractAccordingEntity.setDocumentType(docVo.getDoc_type());
+					contractAccordingEntityList.add(contractAccordingEntity);
+				});
+				pages.setRecords(contractAccordingEntityList);
+			}
+		}
+		// 查询依据 结束
+
 		return R.data(ContractAccordingWrapper.build().pageVO(pages));
 	}
 
