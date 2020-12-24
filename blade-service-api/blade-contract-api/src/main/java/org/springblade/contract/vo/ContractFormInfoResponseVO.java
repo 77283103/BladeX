@@ -175,6 +175,8 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 签订数量
 	 */
 	private Integer signingCount;
-
-
+	/**
+	 * 統計查詢類型
+	 */
+	private String statisticsType;
 }

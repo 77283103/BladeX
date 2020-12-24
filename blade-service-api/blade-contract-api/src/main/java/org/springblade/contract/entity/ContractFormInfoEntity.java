@@ -323,13 +323,29 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 占比金额比率
 	 */
+	@TableField(exist = false)
 	private String amountRatio;
 	/**
 	 * 相对方名称字符串
 	 */
 	@TableField(exist = false)
 	private String counterpartName;
-
+	/**
+	 * 月份
+	 */
+	@TableField(exist = false)
+	private String mouth;
+	/**
+	 * 一年内每月合同數量信息
+	 */
+	@TableField(exist = false)
+	private List<MonthTypeSelect> monthTypeSelects;
+	/**
+	 * 統計查詢類型(公司)
+	 */
+	@ApiModelProperty(value="統計查詢類型(公司)")
+	@TableField(exist = false)
+	private String company;
 	/**
 	 * 分类合同数量
 	 */

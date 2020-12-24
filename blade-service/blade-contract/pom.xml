@@ -96,6 +96,12 @@
             <artifactId>aspose-words</artifactId>
             <version>18.8</version>
         </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-system</artifactId>
+            <version>2.5.0.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
         <!--excel导出-->
     </dependencies>
     <build>

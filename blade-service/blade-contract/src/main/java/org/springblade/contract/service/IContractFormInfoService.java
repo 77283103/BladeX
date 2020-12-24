@@ -3,10 +3,9 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
-import org.springblade.contract.excel.ContractFormInfoImporterEx;
-import org.springblade.contract.vo.*;
+import org.springblade.contract.vo.ContractFormInfoRequestVO;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -26,6 +25,14 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo);
+	/**
+	 * 統計分析查詢列表
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> statisticsList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo);
+
 	/**
 	 * 统计分析分页查询
 	 * @param page
@@ -128,6 +135,11 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	List<ContractFormInfoEntity> getNumList();
 
+	/**
+	 * 動態返回合同選擇的下拉選
+	 * @return list
+	 */
+	List<ContractFormInfoEntity> getChooseList();
 	/**
 	 * 导入合同数据
 	 * @param data

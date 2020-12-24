@@ -2,9 +2,9 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.MonthTypeSelect;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 
 import java.util.List;
@@ -24,6 +24,31 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+
+	/**
+	 * 部门合同数量、金额统计表
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> deptType(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+
+	/**
+	 * 月度合同数量统计表
+	 * @param
+	 * @return
+	 */
+	List<MonthTypeSelect> monthType(Long createDept, String yearStart);
+
+	IPage<ContractFormInfoEntity> monthTypeFirm(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
+
+	/**
+	 * 各类型合同统计表
+	 * @param page
+	 * @param contractFormInfo
+	 * @return
+	 */
+	IPage<ContractFormInfoEntity> eachType(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
 	/**
 	 * 合同类型统计分析分页查询
@@ -150,6 +175,12 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return list
 	 */
 	List<ContractFormInfoEntity> getNumList();
+
+	/**
+	 * 動態返回合同選擇的下拉選
+	 * @return list
+	 */
+	List<ContractFormInfoEntity> getChooseList();
 
 	/**
 	 *

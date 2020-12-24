@@ -12,11 +12,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.abutment.entity.*;
+import org.springblade.abutment.entity.EkpEntity;
 import org.springblade.abutment.feign.IAbutmentClient;
-import org.springblade.abutment.vo.CompanyInfoVo;
-import org.springblade.abutment.vo.SingleSignVo;
-import org.springblade.abutment.vo.UploadFileVo;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
@@ -42,7 +39,6 @@ import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.*;
 import org.springblade.resource.feign.IFileClient;
-import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
@@ -55,10 +51,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.text.DateFormat;
 import java.util.*;
 
 
@@ -131,7 +125,17 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(pages);
 	}
 
-
+	/**
+	 * 統計分析查詢列表
+	 */
+	@GetMapping("/statistics")
+	@ApiOperationSupport(order = 2)
+	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:statistics')")
+	public R<IPage<ContractFormInfoEntity>>statistics(ContractFormInfoRequestVO contractFormInfo, Query query) {
+		IPage<ContractFormInfoEntity> pages = contractFormInfoService.statisticsList(Condition.getPage(query), contractFormInfo);
+		return R.data(pages);
+	}
 	/**
 	 * 用印分页
 	 */

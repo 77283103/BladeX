@@ -1,30 +1,28 @@
 package org.springblade.cases.controller;
 
-import io.swagger.annotations.Api;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import javax.validation.Valid;
-
+import org.springblade.cases.entity.ContractCaseClosedEntity;
+import org.springblade.cases.service.IContractCaseClosedService;
 import org.springblade.cases.service.IContractCaseRegistrationService;
-import org.springblade.core.log.exception.ServiceException;
-import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.cases.vo.ContractCaseClosedRequestVO;
+import org.springblade.cases.vo.ContractCaseClosedResponseVO;
+import org.springblade.cases.wrapper.ContractCaseClosedWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
-
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.feign.ISysClient;
 import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.cases.entity.ContractCaseClosedEntity;
-import org.springblade.cases.wrapper.ContractCaseClosedWrapper;
-import org.springblade.cases.service.IContractCaseClosedService;
-import org.springblade.cases.vo.ContractCaseClosedRequestVO;
-import org.springblade.cases.vo.ContractCaseClosedResponseVO;
+import javax.validation.Valid;
 
 
 /**
@@ -39,6 +37,7 @@ import org.springblade.cases.vo.ContractCaseClosedResponseVO;
 @Api(value = "案件结案", tags = "案件结案")
 public class ContractCaseClosedController extends BladeController {
 
+	private ISysClient sysClient;
 	private IContractCaseClosedService contractCaseClosedService;
 	private IContractCaseRegistrationService registrationService;
 	private static final String CONTRACT_CASE_CLOSED_SAVE="60";

@@ -2,6 +2,7 @@ package org.springblade.contract.feign;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.mapper.ContractTemplateMapper;
 import org.springblade.contract.service.IContractFormInfoService;
@@ -11,11 +12,11 @@ import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.system.entity.TemplateEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
+
 import java.util.List;
 
 /**
@@ -36,6 +37,12 @@ public class ContractClient implements IContractClient{
     public R<ContractFormInfoResponseVO> getById(Long id) {
         return R.data(formInfoService.getById(id));
     }
+
+	@Override
+	@GetMapping(CHOOSE)
+	public R<List<ContractFormInfoEntity>> getChooseList() {
+		return R.data(formInfoService.getChooseList());
+	}
 
 	@Override
 	@PostMapping(TEMPLATE_UPDATE)

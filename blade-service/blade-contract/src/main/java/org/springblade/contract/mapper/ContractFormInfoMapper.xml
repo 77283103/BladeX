@@ -187,11 +187,11 @@
     <!-- 分页 合同大类分组类型  合同分类总金额  合同分类签订数量-->
     <select id="pageListStatisticsType" resultMap="formInfoResultMap">
         SELECT contract_big_category,
-               sum(contract_amount)         AS contract_amount,
-               count(contract_big_category) AS count,
-               dict_value
+        sum(contract_amount)         AS contract_amount,
+        count(contract_big_category) AS count,
+        dict_value
         FROM `contract_form_info` info,
-             blade_dict_biz biz
+        blade_dict_biz biz
         WHERE info.is_deleted = 0
         AND info.contract_big_category = biz.id
         GROUP BY contract_big_category
@@ -309,13 +309,13 @@
         </if>
         <!--金额区间查询-->
         <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
-            and contract_amount between #{contractFormInfo.minAmount} and #{contractFormInfo.maxAmount}
+            AND contract_amount between #{contractFormInfo.minAmount} and #{contractFormInfo.maxAmount}
         </if>
         <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
-            AND a.contract_amount &gt;= #{contractFormInfo.minContractAmount}
+            AND contract_amount &gt;= #{contractFormInfo.minContractAmount}
         </if>
         <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
-            AND a.contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+            AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
         </if>
     </select>
     <!--修改合同状态-->
@@ -460,7 +460,14 @@
         WHERE
             contract_big_category = #{contractBigCategory}
     </select>
-
+    <!--動態返回合同選擇的下拉選-->
+    <select id="getChooseList" resultMap="formInfoResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_form_info
+        WHERE is_deleted=0
+        AND contract_status='110'
+    </select>
     <!--根据保证金id查询合同id-->
     <select id="findContractList" resultMap="formInfoResultMap">
         SELECT
@@ -469,5 +476,75 @@
         WHERE is_deleted = 0
         AND
         id IN (SELECT c.contract_id  FROM  contract_bond_setting c WHERE c.bond_id = #{id})
+    </select>
+
+    <!-- 分页 部门合同数量、金额统计表-->
+    <select id="deptType" resultMap="formInfoResultMap">
+        SELECT contract_big_category,
+        sum(contract_amount)         AS contract_amount,
+        count(contract_big_category) AS count,
+        dict_value
+        FROM `contract_form_info` info,
+        blade_dict_biz biz
+        WHERE info.is_deleted = 0
+        AND info.contract_big_category = biz.id
+        GROUP BY contract_big_category
+        <!--金额区间查询-->
+        <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
+            and contract_amount between #{maxAmount} and #{minAmount}
+        </if>
+        <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
+            AND contract_amount &gt;= #{contractFormInfo.minContractAmount}
+        </if>
+        <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
+            AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+        </if>
+    </select>
+    <!-- 分页 月度合同数量统计表-->
+    <select id="monthType" resultType="org.springblade.contract.entity.MonthTypeSelect">
+        SELECT
+        DATE_FORMAT(info.create_time,'%c') mouth,
+        COUNT(DATE_FORMAT(info.create_time,'%c')) count
+        FROM `contract_form_info` info
+        WHERE info.is_deleted = 0
+        AND DATE_FORMAT(info.create_time,'%Y')=#{yearStart}
+        AND create_dept=#{createDept}
+        GROUP BY DATE_FORMAT(info.create_time,'%c')
+    </select>
+    <!-- 分页公司類型分頁 -->
+    <select id="monthTypeFirm" resultMap="formInfoResultMap">
+    SELECT
+        DISTINCT
+        create_dept
+    FROM contract_form_info
+    WHERE is_deleted = 0
+    AND create_dept in ( SELECT create_dept
+        FROM `contract_form_info` info
+        WHERE info.is_deleted = 0)
+        <if test="contractFormInfo.createDept != null and contractFormInfo.createDept != ''">
+            AND create_dept &lt;= #{contractFormInfo.createDept}
+        </if>
+    </select>
+    <!-- 分页 类型合同统计表-->
+    <select id="eachType" resultMap="formInfoResultMap">
+        SELECT contract_big_category,
+        sum(contract_amount)         AS contract_amount,
+        count(contract_big_category) AS count,
+        dict_value
+        FROM `contract_form_info` info,
+        blade_dict_biz biz
+        WHERE info.is_deleted = 0
+        AND info.contract_big_category = biz.id
+        GROUP BY contract_big_category
+        <!--金额区间查询-->
+        <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
+            and contract_amount between #{maxAmount} and #{minAmount}
+        </if>
+        <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
+            AND contract_amount &gt;= #{contractFormInfo.minContractAmount}
+        </if>
+        <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
+            AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+        </if>
     </select>
 </mapper>

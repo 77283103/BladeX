@@ -2,12 +2,11 @@ package org.springblade.contract.vo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.springblade.contract.entity.*;
 
-import javax.validation.constraints.NotBlank;
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -76,5 +75,25 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 
 	@ApiModelProperty(value="合同金额")
 	private Double minAmount;
+	/**
+	 * 統計查詢類型
+	 */
+	@ApiModelProperty(value="統計查詢類型")
+	private String statisticsType;
+	/**
+	 * 統計查詢類型(公司)
+	 */
+	@ApiModelProperty(value="統計查詢類型(公司)")
+	private String company;
 
+	/**
+	 * 統計查詢類型(年份起始)
+	 */
+	@ApiModelProperty(value="統計查詢類型(年份起始)")
+	private String yearStart;
+	/**
+	 * 統計查詢類型(年份結束)
+	 */
+	@ApiModelProperty(value="統計查詢類型(年份結束)")
+	private String yearEnd;
 }
