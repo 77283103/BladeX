@@ -5,6 +5,7 @@ import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tool.api.R;
+import org.springblade.system.entity.TemplateEntity;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
