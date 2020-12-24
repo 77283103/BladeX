@@ -165,7 +165,7 @@ public class ESealServiceImpl implements IESealService {
 				singleSignEntity.getSignPos().setPosType(0);
             }
         }
-        JSONObject singleSignJson = JSONUtil.parseObj(HttpUtil.createPost(this.singleSignUrl).body(JSONUtil.toJsonStr(singleSignVo), "application/json").header("token", token).execute().body());
+        JSONObject singleSignJson = JSONUtil.parseObj(HttpUtil.createPost(this.singleSignUrl).body(JSONUtil.toJsonStr(singleSignEntity), "application/json").header("token", token).execute().body());
         if(singleSignJson != null) {
             if(singleSignJson.getJSONObject("signResult") != null) {
                 if(singleSignJson.getJSONObject("signResult").getStr("errCode").equals("0")) {

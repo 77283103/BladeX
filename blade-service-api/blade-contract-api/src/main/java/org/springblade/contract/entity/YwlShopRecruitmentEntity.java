@@ -48,28 +48,42 @@ public class YwlShopRecruitmentEntity extends BaseEntity {
     @ApiModelProperty(value="乙方店招宣传牌规格及位置")
 	private String ywlLocation;
 	/**
-	 * 乙方店招宣传牌悬挂时间
+	 * 乙方店招宣传牌悬挂开始时间
+	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value="乙方店招宣传牌悬挂开始时间")
+	private Date ywlSuspensionStart;
+	/**
+	 * 乙方店招宣传牌悬挂结束时间
+	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value="乙方店招宣传牌悬挂结束时间")
+	private Date ywlSuspensionEnd;
+	/**
+	 * 本协议起始时间
 	 */
     @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
     @JsonFormat(pattern = DateUtil.PATTERN_DATE)
-    @ApiModelProperty(value="乙方店招宣传牌悬挂时间")
-	private Date ywlSuspension;
+    @ApiModelProperty(value="本协议起始时间")
+	private Date ywlAgreementPeriodStart;
 	/**
-	 * 本协议期限
+	 * 本协议终止时间
 	 */
-    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
-    @ApiModelProperty(value="本协议期限")
-	private Date ywlAgreementPeriod;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value="本协议终止时间")
+	private Date ywlAgreementPeriodEnd;
 	/**
-	 * 宣传牌制作费（人民币小写
+	 * 宣传牌制作费(人民币小写)
 	 */
-    @ApiModelProperty(value="宣传牌制作费（人民币小写")
+    @ApiModelProperty(value="宣传牌制作费(人民币小写)")
 	private BigDecimal ywlProductionCosts;
 	/**
-	 * 金额大写:
+	 * 金额大写
 	 */
-    @ApiModelProperty(value="金额大写:")
+    @ApiModelProperty(value="金额大写")
 	private String ywlAmountOf;
 	/**
 	 * 其他约定

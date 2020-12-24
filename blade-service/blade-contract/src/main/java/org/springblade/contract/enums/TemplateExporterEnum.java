@@ -27,14 +27,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.util.DataFormatUtils;
 import org.springblade.contract.vo.*;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -67,10 +67,15 @@ public enum TemplateExporterEnum {
 				}
 			}
 			dataModel.put("ywlCooperationContent",j.get("ywlCooperationContent"));
-			dataModel.put("ywlTheStartTime",j.get("ywlTheStartTime"));
-			dataModel.put("ywlEndOfTime",j.get("ywlEndOfTime"));
+			dataModel.put("ywlTheStartTime",DataFormatUtils.systemTimeFormat(j.get("ywlTheStartTime").toString()));
+			dataModel.put("ywlEndOfTime",DataFormatUtils.systemTimeFormat(j.get("ywlTheStartTime").toString()));
 			dataModel.put("ywlDisplayFee",j.get("ywlDisplayFee"));
-			dataModel.put("ywlDisplayDfee","");
+			dataModel.put("ywlDisplayDfee",j.get("ywlDisplayDfee"));
+			if("1".equals(j.get("ywlDisplayType"))){
+				dataModel.put("ywlDisplayType","货物");
+			}else{
+				dataModel.put("ywlDisplayType","款项");
+			}
 			dataModel.put("ywlOther",j.get("ywlOther"));
 			dataModel.put("list",list);
 			return dataModel;
@@ -84,6 +89,10 @@ public enum TemplateExporterEnum {
 				dataModel.put("ywlPatyA",j.get("ywlPatyA"));
 				dataModel.put("ywlPatyB",j.get("ywlPatyB"));
 				dataModel.put("ywlLocation",j.get("ywlLocation"));
+				dataModel.put("ywlSuspensionStart",DataFormatUtils.systemTimeFormat(j.get("ywlSuspensionStart").toString()));
+				dataModel.put("ywlSuspensionEnd",DataFormatUtils.systemTimeFormat(j.get("ywlSuspensionEnd").toString()));
+				dataModel.put("ywlAgreementPeriodStart",DataFormatUtils.systemTimeFormat(j.get("ywlAgreementPeriodStart").toString()));
+				dataModel.put("ywlAgreementPeriodEnd",DataFormatUtils.systemTimeFormat(j.get("ywlAgreementPeriodEnd").toString()));
 				dataModel.put("ywlProductionCosts",j.get("ywlProductionCosts"));
 				dataModel.put("ywlAmountOf",j.get("ywlAmountOf"));
 				dataModel.put("ywlOtherConventions",j.get("ywlOtherConventions"));
@@ -135,6 +144,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("mtlBasedOnTheContent",j.get("mtlBasedOnTheContent"));
 			dataModel.put("mtlProductionStartTime",j.get("mtlProductionStartTime"));
 			dataModel.put("mtlProductionCompletionTime",j.get("mtlProductionCompletionTime"));
+			dataModel.put("mtlHaveHasNot",j.get("mtlHaveHasNot"));
 			dataModel.put("mtlUnpaidTaxRmb",j.get("mtlUnpaidTaxRmb"));
 			dataModel.put("mtlRate",j.get("mtlRate"));
 			dataModel.put("mtlTaxAmountIsRmb",j.get("mtlTaxAmountIsRmb"));

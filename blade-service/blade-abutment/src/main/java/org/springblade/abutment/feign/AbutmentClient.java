@@ -10,8 +10,10 @@ import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.service.IEkpService;
 import org.springblade.abutment.vo.*;
 import org.springblade.core.tool.api.R;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -27,8 +29,11 @@ import java.util.List;
 @RestController
 public class AbutmentClient implements IAbutmentClient {
 
+	@Autowired
 	private IEkpService ekpService;
+	@Autowired
 	private IDocService docService;
+	@Autowired
 	private IESealService eSealService;
 
 	@Value("${api.ekp.fdTemplateId}")
@@ -125,8 +130,23 @@ public class AbutmentClient implements IAbutmentClient {
 	}
 
 	@Override
-	@GetMapping(E_SEAL_SINGLE_SIGN)
+	@PostMapping(E_SEAL_SINGLE_SIGN)
 	public R<SingleSignVo> singleSign(SingleSignEntity entity) {
+		SingleSignVo singleSignVo = null;
+		try {
+			String token = eSealService.getToken();
+			if(StrUtil.isNotEmpty(token)) {
+				singleSignVo = eSealService.singleSign(token, entity);
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return R.data(singleSignVo);
+	}
+
+	@Override
+	@PostMapping(E_SEAL_SINGLE_SIGN_POST)
+	public R<SingleSignVo> singleSignPost(SingleSignEntity entity) {
 		SingleSignVo singleSignVo = null;
 		try {
 			String token = eSealService.getToken();

@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import feign.form.ContentType;
 import freemarker.template.TemplateException;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,6 +27,7 @@ import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.*;
+import org.springblade.contract.util.AsposeWordToPdfUtils;
 import org.springblade.contract.util.TemplateExportUntil;
 import org.springblade.contract.util.TemplateSaveUntil;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
@@ -48,6 +50,7 @@ import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.vo.TemplateRequestVO;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,6 +59,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.text.DateFormat;
@@ -288,10 +292,131 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
-		//等于30合同为提交状态 这里去对接oa接口
-		if("30".equals(contractFormInfo.getContractStatus())){
+		//开始接口处理
+		if("30".equals(entity.getContractStatus())){
 			// 查查公司有没有申请电子章
-			/*CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
+			CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
+			companyInfoEntity.setQueryType("1");
+			// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
+			companyInfoEntity.setOrganCode("91360823092907952B");//这个统一用相对方里的企业信用代码
+			// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
+			CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData(); //这块通了
+			// 有章才操作
+			if (companyInfoVo.getAvailable().equals("1")) {
+				// 上传合同文件 开始  问题:不知道怎么生成pdf,所以就直接从entity里拿了,没有的话是不是需要生成一下?
+				// 接口是支持批量上传的
+				UploadFileEntity uploadFileEntity = new UploadFileEntity();
+				//查询合同正文
+				List<FileVO> fileVO=fileClient.getByIds(entity.getTextFile()).getData();
+				String newFileDoc="";
+				String newFilePdf="";
+				//doc转为pdf
+				if(CollectionUtil.isNotEmpty(fileVO)){
+					newFileDoc=fileVO.get(0).getLink();
+					int index = fileVO.get(0).getName().lastIndexOf(".");
+					newFilePdf="D:/ftl/"+fileVO.get(0).getName().substring(0,index)+".pdf";
+					AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
+				}
+				File filePDF = new File(newFilePdf);
+				R<FileVO> filePDFVO = null;
+				try {
+					MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
+					ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
+					filePDFVO=fileClient.save(multipartFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				/* 上传文件 */
+				assert filePDFVO != null;
+				entity.setTextFilePdf(filePDFVO.getData().getId()+",");
+				// 入参是个file文件,怎么获取这个file文件? 这样获取对不对?
+				List<File> files = new ArrayList<File>();
+				files.add(filePDF);
+				uploadFileEntity.setFile(files);
+				// 默认是不合并,该上传几个文件就几个文件
+				uploadFileEntity.setIsMerge("0");
+				// 调用上传方法 另外需要注意 接口里自动进行了获取token的动作, 现在的获取地址和账号密码都是测试的,正式使用需要修改这些内容,修改位置在blade-abutment的resources.application里
+				List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
+				// 上传合同文件 结束
+
+				// 盖章方法  开始 问题:这里直接盖章吗?????????? 如果不在这里的话, 把它挪到对应地方
+				// 这里用的是单个盖章, 批量盖章需要短信验证
+				List<SingleSignVo> singleSignVoList = new ArrayList<SingleSignVo>();
+				for(UploadFileVo uploadFileVo:uploadFileVoList){
+					SingleSignEntity singleSignEntity = new SingleSignEntity();
+					// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
+					singleSignEntity.setIdno("91360823092907952B");
+					// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
+					singleSignEntity.setSignType("Key");
+					// 文档信息
+					FileInfoEntity fileInfoEntity = new FileInfoEntity();
+					// 给哪个文档盖章(上传后返回的文档id)
+					fileInfoEntity.setId(uploadFileVo.getId());
+					// 显不显示E签宝logo,false是不显示
+					fileInfoEntity.setShowImage(false);
+					// 盖完章之后文件叫什么名字 可以不填
+					//fileInfoEntity.setFileName(null);
+					// 如果是加密文档的话,需要输入密码, 没有的话不填
+					//fileInfoEntity.setOwnerPassword(null);
+					singleSignEntity.setFileBean(fileInfoEntity);
+					// 签章位置信息,除骑缝签章外必填
+					SignPosEntity signPosEntity = new SignPosEntity();
+					// 给哪页盖章 用逗号间隔页码 如 1,2,3 当前是关键字签章,所以不用填
+					//signPosEntity.setPosPage(null);
+					// 盖章坐标x 不填就是0 关键字的话坐标中心点是关键字
+					//signPosEntity.setPosX(0f);
+					// 盖章坐标y 不填就是0 关键字的话坐标中心点是关键字
+					//signPosEntity.setPosY(0f);
+					// 只有关键字签章的时候采用,输入关键字
+					signPosEntity.setKey("盖章");
+					// 章大小 可以不填,不填最大显示159,小于159按实际大小走,大于159只显示159大小
+					//signPosEntity.setWidth(0f);
+					// 是否二维码签署 骑缝和多页不生效
+					//signPosEntity.setQrcodeSign(false);
+					// 是不是作废,如果需要签作废章就选true
+					//signPosEntity.setCacellingSign(false);
+					// 显示签署时间,印章大于92才能显示
+					//signPosEntity.setAddSignTime(false);
+					singleSignEntity.setSignPos(signPosEntity);
+					// 如果签完一种章需要签另一种的话,就可以天
+					AutoSignEntity autoSignEntity = new AutoSignEntity();
+					// 企业信用代码 这个代码是为了定位章  如果要盖别单位的章就得填别单位的,不然就和上面填一样
+					autoSignEntity.setIdno(singleSignEntity.getIdno());
+					// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
+					autoSignEntity.setIdno("Edges");
+					// 和上面那个一样,设定盖章位置
+					//SignPosEntity autoSignPosEntity = new SignPosEntity();
+					//autoSignEntity.setSignPos(autoSignPosEntity);
+					singleSignEntity.setAutoSign(autoSignEntity);
+
+					// 返回的内容里有个filePath,是个ID,这个id可以用来下载或者在线查看盖完章的文件
+					singleSignVoList.add(abutmentClient.singleSignPost(singleSignEntity).getData()); //接口通了
+				}
+				// 盖章方法  结束
+
+				// 获取文件 下载或者在线查看
+				List<String> urls = new ArrayList<String>();
+				for(SingleSignVo singleSignVo :singleSignVoList){
+					ReadSignedEntity readSignedEntity = new ReadSignedEntity();
+					readSignedEntity.setId(singleSignVo.getFilePath());
+					// pdf的ID
+					if (ekpEntity.getFd_file_id() == null || ekpEntity.getFd_file_id().equals("")) {
+						ekpEntity.setFd_file_id(singleSignVo.getFilePath());
+					} else {
+						ekpEntity.setFd_file_id(ekpEntity.getFd_file_id() + "," + singleSignVo.getFilePath());
+					}
+					// 1在线预览  2下载
+					readSignedEntity.setType("1");
+					// 返回的是个完整路径,直接通过response.getWriter().write()返回到前台就可以
+					urls.add(abutmentClient.readSigned(readSignedEntity).getData()); //接口通了
+				}
+			}
+			contractFormInfoService.updateById(entity);
+		}
+		//等于30合同为提交状态 这里去对接oa接口
+		/*if("30".equals(contractFormInfo.getContractStatus())){
+			// 查查公司有没有申请电子章
+			*//*CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
 			companyInfoEntity.setQueryType("1");
 			// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
 			companyInfoEntity.setOrganCode("");
@@ -385,7 +510,7 @@ public class ContractFormInfoController extends BladeController {
 					// 返回的是个完整路径,直接通过response.getWriter().write()返回到前台就可以
 					urls.add(abutmentClient.readSigned(readSignedEntity).getData());
 				});
-			}*/
+			}*//*
 
 			// 推送EKP 开始
 			//发起流程的员工编号   问题:到底用哪个？ id还是code？？
@@ -489,7 +614,7 @@ public class ContractFormInfoController extends BladeController {
 			ekpEntity.setFd_duty("");
 			abutmentClient.sendEkpForm(ekpEntity);
 			// 推送EKP 结束
-		}
+		}*/
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
 
@@ -502,7 +627,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateSave')")
 	@Transactional(rollbackFor = Exception.class)
-	public R<String> templateSave(@Valid @RequestBody TemplateRequestVO template,HttpServletRequest request) throws IOException, TemplateException {
+	public R<String> templateSave(@Valid @RequestBody TemplateRequestVO template) {
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
 		//处理合同的二级联动保存
@@ -531,6 +656,7 @@ public class ContractFormInfoController extends BladeController {
 		TemplateSaveUntil templateSaveUntil =new TemplateSaveUntil();
 		//把json串转换成一个对象
 		ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
+		//保存合同和关联表
 		templateSaveUntil.templateSave(contractFormInfoEntity,template,j);
 		/*if (Func.isEmpty(contractFormInfoEntity.getId())) {
 			contractFormInfoEntity.setContractSoure("30");
@@ -545,12 +671,54 @@ public class ContractFormInfoController extends BladeController {
 		if("30".equals(template.getBean())){
 			//导出pdf文件
 			TemplateExportUntil templateExportUntil=new TemplateExportUntil();
-			contractFormInfoEntity.setTextFilePdf(templateExportUntil.templateSave(contractFormInfoEntity,template,json,j));
+			contractFormInfoEntity.setTextFilePdf(templateExportUntil.templateSave(contractFormInfoEntity,template,json,j).getId()+",");
 			contractFormInfoEntity.setContractStatus("30");
 		}
 		contractFormInfoService.updateById(contractFormInfoEntity);
 		return R.data(json);
 	}
+
+	/**
+	 * 合同预览
+	 */
+	@PostMapping("/contractBrowse")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "合同预览", notes = "template")
+	@Transactional(rollbackFor = Exception.class)
+	public R<String> contractBrowse(@Valid @RequestBody TemplateRequestVO template){
+		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+		JSONObject j = new JSONObject();
+		//处理合同的二级联动保存
+		for (TemplateFieldEntity templateField : templateFieldList) {
+			if (ContractFormInfoTemplateContract.CONTRACT_BIG_CATEGORY.equals(templateField.getRelationCode())) {
+				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
+				JSONObject json = JSON.parseObject(jsonObj.get("template").toString());
+				j.put("contractBigCategory", jsonObj.get("first"));
+				j.put("contractSmallCategory", jsonObj.get("second"));
+				if(null!=json){
+					j.put("contractTemplateId", json.get("id"));
+				}
+			} else if (ContractFormInfoTemplateContract.CONTRACT_COL_PAY.equals(templateField.getRelationCode())) {
+				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
+				j.put("colPayType", jsonObj.get("first"));
+				j.put("colPayTerm", jsonObj.get("second"));
+				j.put("days", jsonObj.get("days"));
+			} else if ("id".equals(templateField.getComponentType())) {
+				j.put("id", templateField.getFieldValue());
+			} else if ("upload".equals(templateField.getComponentType())) {
+			} else {
+				j.put(templateField.getFieldName(), templateField.getFieldValue());
+			}
+		}
+		//把json串转换成一个对象
+		ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
+		//String json = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
+		//导出pdf文件
+		TemplateExportUntil templateExportUntil=new TemplateExportUntil();
+		FileVO files=templateExportUntil.templateSave(contractFormInfoEntity,template,template.getJson(),j);
+		return R.data(files.getLink());
+	}
+
 
 	/**
 	 * 批量导入

@@ -39,17 +39,17 @@ public class ContractClient implements IContractClient{
 
 	@Override
 	@PostMapping(TEMPLATE_UPDATE)
-	public R<ContractTemplateResponseVO> templateUpdate(String templateCode, String json) {
+	public R<ContractTemplateResponseVO> templateUpdate(TemplateEntity entity) {
 		ContractTemplateEntity templateFieldEntity=new ContractTemplateEntity();
 		QueryWrapper<ContractTemplateEntity> queryWrapper = Condition.getQueryWrapper(templateFieldEntity)
-			.eq("template_code",templateCode)
+			.eq("template_code",entity.getTemplateCode())
 			.eq("is_deleted",0);
 			/*.eq("template_status","10")
 			.or().eq("template_status","40");*/
 		List<ContractTemplateEntity> list = templateService.list(queryWrapper);
 		for (ContractTemplateEntity v : list) {
 			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
-				v.setJson(json);
+				v.setJson(entity.getJson());
 				templateService.updateById(v);
 			}
 		}

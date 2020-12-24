@@ -10,6 +10,7 @@ import org.springblade.system.feign.ISysClientFallback;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
@@ -40,5 +41,5 @@ public interface IContractClient {
 	 * @para @return
 	 */
 	@PostMapping(TEMPLATE_UPDATE)
-	R<ContractTemplateResponseVO> templateUpdate(@RequestParam("templateCode")String templateCode, @RequestParam("json")String json);
+	R<ContractTemplateResponseVO> templateUpdate(@RequestBody TemplateEntity entity);
 }

@@ -5,6 +5,8 @@ import org.springblade.abutment.vo.*;
 import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ public interface IAbutmentClient {
 	String DOC_QUERY_INFO = API_PREFIX + DOC + "/queryInfo";
 	String E_SEAL_UPLOAD_FILE = API_PREFIX + E_SEAL + "/uploadFiles";
 	String E_SEAL_SINGLE_SIGN = API_PREFIX + E_SEAL + "/singleSign";
+	String E_SEAL_SINGLE_SIGN_POST= API_PREFIX + E_SEAL + "/singleSignPost";
 	String E_SEAL_SEND_SMS = API_PREFIX + E_SEAL + "/sendSms";
 	String E_SEAL_SINGLE_SIGN_MULTI = API_PREFIX + E_SEAL + "/multiSign";
 	String E_SEAL_READ_SIGNED = API_PREFIX + E_SEAL + "/readSigned";
@@ -60,8 +63,16 @@ public interface IAbutmentClient {
 	 * @param entity
 	 * @return
 	 */
-	@GetMapping(E_SEAL_SINGLE_SIGN)
-	R<SingleSignVo> singleSign(SingleSignEntity entity);
+	@PostMapping(E_SEAL_SINGLE_SIGN)
+	R<SingleSignVo> singleSign(@RequestBody SingleSignEntity entity);
+
+	/**
+	 * 合同盖章 单个的Post
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(E_SEAL_SINGLE_SIGN_POST)
+	R<SingleSignVo> singleSignPost(@RequestBody SingleSignEntity entity);
 
 	/**
 	 * 发验证码短信

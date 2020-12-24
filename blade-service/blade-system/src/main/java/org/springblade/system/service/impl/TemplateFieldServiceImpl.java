@@ -123,6 +123,13 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					required.put("trigger", "blur");
 					requiredArray.add(required);
 				}
+				if("textarea".equals(templateField.getComponentType())){
+					JSONObject required = new JSONObject();
+					required.put("required", true);
+					required.put("message", templateField.getTips());
+					required.put("trigger", "blur");
+					requiredArray.add(required);
+				}
 				if("datePicker".equals(templateField.getComponentType())){
 					JSONObject required = new JSONObject();
 					required.put("type", "date");

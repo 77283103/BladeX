@@ -323,6 +323,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 占比金额比率
 	 */
+	@TableField(exist = false)
 	private String amountRatio;
 	/**
 	 * 相对方名称字符串

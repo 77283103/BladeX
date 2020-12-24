@@ -58,6 +58,13 @@ public class YwlANewDisplayEntity extends BaseEntity {
     @JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value="陈列结束时间")
 	private Date ywlEndOfTime;
+
+	/**
+	 * 支付形式
+	 */
+	@ApiModelProperty(value="支付形式")
+	private String ywlDisplayType;
+
 	/**
 	 * 陈列费用
 	 */
