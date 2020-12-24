@@ -352,10 +352,20 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@TableField(exist = false)
 	private Integer count;
 	/**
+	 * 返回页面的付款金额数据
+	 */
+	@TableField(exist = false)
+	private String payAmountVoidData;
+	/**
 	 * 返回页面的金额数据
 	 */
 	@TableField(exist = false)
 	private String amountVoidData;
+	/**
+	 * 返回页面的收款金额数据
+	 */
+	@TableField(exist = false)
+	private String receiveAmountVoidData;
 	/**
 	 * 归档日期
 	 */

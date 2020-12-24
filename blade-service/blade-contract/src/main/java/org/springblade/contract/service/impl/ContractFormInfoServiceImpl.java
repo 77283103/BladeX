@@ -115,6 +115,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
+    private static final Long DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE = 1323239541401841666L;
+    private static final Long DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE = 1323239469884764161L;
     private static final Integer AMOUNT_RATIO_VALUE = 100;
     private static final String CONTRACT_CHANGE_REVIEW = "10";
 
@@ -250,7 +252,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         }
         //各类型合同统计表
         if ("eachType".equals(contractFormInfo.getStatisticsType())) {
-            page = baseMapper.pageList(page, contractFormInfo);
+            page = baseMapper.eachType(page,contractFormInfo);
+            List<ContractFormInfoEntity> records = page.getRecords();
+            List<ContractFormInfoEntity> recordList = new ArrayList<>();
+            for (ContractFormInfoEntity v : records) {
+                Double payAmountVoidData=contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()),DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE);
+                Double receiveAmountVoidData=contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()),DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE);
+            }
         }
         return page;
     }

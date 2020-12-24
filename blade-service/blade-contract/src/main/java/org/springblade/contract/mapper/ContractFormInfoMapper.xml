@@ -532,19 +532,31 @@
         count(contract_big_category) AS count,
         dict_value
         FROM `contract_form_info` info,
-        blade_dict_biz biz
+        blade_dict_biz biz,
+        blade_dept dept
         WHERE info.is_deleted = 0
         AND info.contract_big_category = biz.id
+        AND info.create_dept = dept.id
+        <if test="contractFormInfo.createDept != null and contractFormInfo.createDept != ''">
+            AND info.create_dept=#{contractFormInfo.createDept}
+        </if>
+        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd = null or contractFormInfo.yearEnd = ''">
+            AND DATE_FORMAT(info.create_time,'%Y') = #{contractFormInfo.yearStart}
+        </if>
+        <if test="contractFormInfo.yearStart = null or contractFormInfo.yearStart != '' and contractFormInfo.yearEnd != null or contractFormInfo.yearEnd != ''">
+            AND DATE_FORMAT(info.create_time,'%Y') = #{contractFormInfo.yearEnd}
+        </if>
+        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
+            AND DATE_FORMAT(info.create_time,'%Y') BETWEEN #{contractFormInfo.yearStart} and #{param2.contractForm.yearEnd}
+        </if>
         GROUP BY contract_big_category
-        <!--金额区间查询-->
-        <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
-            and contract_amount between #{maxAmount} and #{minAmount}
-        </if>
-        <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
-            AND contract_amount &gt;= #{contractFormInfo.minContractAmount}
-        </if>
-        <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
-            AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
-        </if>
+    </select>
+    <!--根據支付類型計算合同金額-->
+    <select id="payTypeAmount" resultType="Double">
+        SELECT sum(contract_amount)  AS contract_amount
+        FROM `contract_form_info` info
+        WHERE info.is_deleted = 0
+        AND info.contract_big_category=#{contractFormInfo.contractBigCategoryig}
+        AND info.col_pay_type=#{contractFormInfo.colPayType}
     </select>
 </mapper>
