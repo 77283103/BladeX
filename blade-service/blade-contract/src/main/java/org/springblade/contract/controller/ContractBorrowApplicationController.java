@@ -9,7 +9,9 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractBorrowApplicationEntity;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.service.IContractBorrowApplicationService;
+import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.vo.ContractBorrowApplicationRequestVO;
 import org.springblade.contract.vo.ContractBorrowApplicationResponseVO;
 import org.springblade.contract.wrapper.ContractBorrowApplicationWrapper;
@@ -52,6 +54,7 @@ import java.util.List;
 public class ContractBorrowApplicationController extends BladeController {
 
     private IDictBizClient dictBizClient;
+    private IContractFormInfoService formInfoService;
     private IContractBorrowApplicationService contractBorrowApplicationService;
     private static final String BORROW_APPLICATION_STATUS = "10";
 
@@ -209,6 +212,18 @@ public class ContractBorrowApplicationController extends BladeController {
                 e.printStackTrace();
             }
         }
-
+    }
+    /**
+     * 查询全部数据返回list
+     *
+     * @param
+     * @return list
+     * @author wang
+     */
+    @GetMapping("/getChooseList")
+    @ApiOperation(value = "查询全部数据")
+    public R<List<ContractFormInfoEntity>> getChooseList(){
+        List<ContractFormInfoEntity> list =formInfoService.getChooseList();
+        return R.data(list);
     }
 }

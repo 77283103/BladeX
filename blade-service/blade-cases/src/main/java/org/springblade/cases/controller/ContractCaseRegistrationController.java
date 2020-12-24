@@ -11,6 +11,8 @@ import org.springblade.cases.service.IContractCaseRegistrationService;
 import org.springblade.cases.vo.ContractCaseRegistrationRequestVO;
 import org.springblade.cases.vo.ContractCaseRegistrationResponseVO;
 import org.springblade.cases.wrapper.ContractCaseRegistrationWrapper;
+import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.feign.IContractClient;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -39,7 +42,7 @@ import java.util.Date;
 @RequestMapping("/contractCaseRegistration")
 @Api(value = "案件登记表", tags = "案件登记表")
 public class ContractCaseRegistrationController extends BladeController {
-
+	private IContractClient contractClient;
 	private IContractCaseRegistrationService contractCaseRegistrationService;
 	private static final String CONTRACT_CASE_REGISTRATION_SAVE="10";
 	private static final String CONTRACT_CASE_REGISTRATINO_REVIEW="20";
@@ -140,5 +143,17 @@ public class ContractCaseRegistrationController extends BladeController {
 		responseVO.setCreateDeptName(SysCache.getDeptName(deptId));
 		return R.data(responseVO);
 	}
-
+	/**
+	 * 查询全部数据返回list
+	 *
+	 * @param
+	 * @return list
+	 * @author wang
+	 */
+	@GetMapping("/getChooseList")
+	@ApiOperation(value = "查询全部数据")
+	public R<List<ContractFormInfoEntity>> getChooseList(){
+		List<ContractFormInfoEntity> list = contractClient.getChooseList().getData();
+		return R.data(list);
+	}
 }

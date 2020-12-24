@@ -330,17 +330,42 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@TableField(exist = false)
 	private String counterpartName;
-
+	/**
+	 * 月份
+	 */
+	@TableField(exist = false)
+	private String mouth;
+	/**
+	 * 一年内每月合同數量信息
+	 */
+	@TableField(exist = false)
+	private List<MonthTypeSelect> monthTypeSelects;
+	/**
+	 * 統計查詢類型(公司)
+	 */
+	@ApiModelProperty(value="統計查詢類型(公司)")
+	@TableField(exist = false)
+	private String company;
 	/**
 	 * 分类合同数量
 	 */
 	@TableField(exist = false)
 	private Integer count;
 	/**
+	 * 返回页面的付款金额数据
+	 */
+	@TableField(exist = false)
+	private String payAmountVoidData;
+	/**
 	 * 返回页面的金额数据
 	 */
 	@TableField(exist = false)
 	private String amountVoidData;
+	/**
+	 * 返回页面的收款金额数据
+	 */
+	@TableField(exist = false)
+	private String receiveAmountVoidData;
 	/**
 	 * 归档日期
 	 */

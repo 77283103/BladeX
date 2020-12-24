@@ -8,6 +8,8 @@ import org.springblade.system.entity.TemplateEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.List;
+
 /**
  * @author xhbbo
  */
@@ -16,6 +18,11 @@ public class IContractFallback implements IContractClient {
 	@Override
 	public R<ContractFormInfoResponseVO> getById(Long id) {
 		return R.fail("获取合同信息失败！");
+	}
+
+	@Override
+	public R<List<ContractFormInfoEntity>> getChooseList() {
+		return R.fail("获取数据失败");
 	}
 
 	@Override

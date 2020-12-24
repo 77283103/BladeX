@@ -154,17 +154,23 @@ public class ContractTemplateController extends BladeController {
 
 	/**
 	 * 恢复
+	 * 修訂後的範本恢復成20
+	 * 為修訂的範本回復成10
 	 */
 	@PostMapping("/restore")
 	@ApiOperationSupport(order = 8)
 	@ApiOperation(value = "修改状态", notes = "传入id")
 	@PreAuth("hasPermission('contract:template:restore')")
 	public R restore(@RequestParam Long id) {
-		String  templateStatus = TEMPLATE_STATUS;
 		if (Func.isEmpty(id)){
 			throw new ServiceException("id不能为空");
 		}
-		return R.status(templateService.updateTemplateStatus(templateStatus,id));
+		if(Func.isNotEmpty(templateService.getById(id).getOriginalTemplateId())){
+			templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS,id);
+		}else{
+			templateService.updateTemplateStatus( TEMPLATE_STATUS,id);
+		}
+		return R.data(true);
 	}
 
 	/**
@@ -216,16 +222,10 @@ public class ContractTemplateController extends BladeController {
 				List<Object> cloumns = new ArrayList<Object>();
 				/*范本名称*/
 				cloumns.add(templateEntity.getName());
-				/*范本编号*/
-				cloumns.add(templateEntity.getTemplateNumber());
-				/*所属合同一级分类*/
-				cloumns.add(dictBizClient.getValues("HTDL",Long.valueOf(templateEntity.getContractBigCategory())).getData());
-				/*所属合同二级分类*/
-				cloumns.add(dictBizClient.getValues("HTDL",Long.valueOf(templateEntity.getContractSmallCategory())).getData());
-				/*范本来源*/
-				cloumns.add(templateEntity.getTemplateCategory());
 				/*使用范围*/
 				cloumns.add(dictBizClient.getValue("use_range",templateEntity.getUseRange()).getData());
+				/*所属合同一级分类*/
+				cloumns.add(dictBizClient.getValues("HTDL",Long.valueOf(templateEntity.getContractBigCategory())).getData());
 				/*承办单位*/
 				cloumns.add(sysClient.getDept(templateEntity.getCreateDept()).getData().getDeptName());
 				/*使用记录*/
@@ -241,7 +241,7 @@ public class ContractTemplateController extends BladeController {
 			/* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
 			List<List<String>> headList = new ArrayList<List<String>>();
 			/* 此处表头为一行要显示的所有表头，要和数据的顺序对应上  需要转换为list */
-			List<String> head = Arrays.asList("范本名称", "范本编号", "所属合同一级分类","所属合同二级分类", "范本来源", "使用范围","承办单位","使用记录",
+			List<String> head = Arrays.asList("范本名称","所属合同一级分类","使用范围","承办单位","使用记录",
 					"使用率","版本","创建时间");
 			/* 为了生成一个独立的list对象，所进行的初始化 */
 			List<String>  head2 =null;

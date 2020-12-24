@@ -71,13 +71,13 @@
         FROM contract_case_registration
         WHERE is_deleted = 0
         <if test="contractCaseRegistration.caseName != null and contractCaseRegistration.caseName != ''">
-            AND case_name = #{contractCaseRegistration.caseName}
+            AND case_name like concat('%',#{contractCaseRegistration.caseName},'%')
         </if>
         <if test="contractCaseRegistration.caseId != null and contractCaseRegistration.caseId != ''">
-            AND case_id = #{contractCaseRegistration.caseId}
+            AND case_id like concat('%',#{contractCaseRegistration.caseId},'%')
         </if>
         <if test="contractCaseRegistration.caseRelatedUnit != null and contractCaseRegistration.caseRelatedUnit != ''">
-            AND case_related_unit = #{contractCaseRegistration.caseRelatedUnit}
+            AND case_related_unit like concat('%',#{contractCaseRegistration.caseRelatedUnit},'%')
         </if>
         <if test="contractCaseRegistration.caseType != null and contractCaseRegistration.caseType != ''">
             AND case_type = #{contractCaseRegistration.caseType}
