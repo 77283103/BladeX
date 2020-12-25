@@ -50,7 +50,7 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	IPage<ContractFormInfoEntity> eachType(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
-	Double payTypeAmount(Long contractBigCategory,Long cayPayType);
+	Double payTypeAmount(Long contractBigCategory,Long colPayType,Long createDept,String yearStart,String yearEnd);
 	/**
 	 * 合同类型统计分析分页查询
 	 * @param page

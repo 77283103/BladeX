@@ -85,7 +85,6 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	 */
 	@ApiModelProperty(value="統計查詢類型(公司)")
 	private String company;
-
 	/**
 	 * 統計查詢類型(年份起始)
 	 */
