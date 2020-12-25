@@ -3,6 +3,7 @@ package org.springblade.contract.util;
 import com.aspose.words.Document;
 import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
+import org.springblade.core.tool.utils.Func;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,14 +19,18 @@ public class DataFormatUtils {
      *@param systemTime 系统时间
      */
     public static String systemTimeFormat(String systemTime) {
-		String [] strs = systemTime.split("[T]");
-		Date date = null;
-		try {
-			date = new SimpleDateFormat("yyyy-MM-dd").parse(strs[0]);
-		} catch (ParseException e) {
-			e.printStackTrace();
+    	if(Func.isEmpty(systemTime)){
+			return systemTime;
+		}else{
+			String [] strs = systemTime.split("[T]");
+			Date date = null;
+			try {
+				date = new SimpleDateFormat("yyyy-MM-dd").parse(strs[0]);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			String now = new SimpleDateFormat("yyyy年MM月dd日").format(date);
+			return now;
 		}
-		String now = new SimpleDateFormat("yyyy年MM月dd日").format(date);
-		return now;
 	}
 }

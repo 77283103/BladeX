@@ -42,11 +42,12 @@ public class AbutmentClient implements IAbutmentClient {
 	@Override
 	@GetMapping(EKP_SEND_FORM)
 	public R<EkpVo> sendEkpForm(EkpEntity entity) {
+
 		EkpVo ekpVo = null;
 		try {
 			PushEkpEntity pushEkpEntity = new PushEkpEntity();
 			pushEkpEntity.setFdTemplateId(fdTemplateId);
-			if(entity != null) {
+			/*if(entity != null) {
 				if(StrUtil.isNotEmpty(entity.getEmplno()) && StrUtil.isNotEmpty(entity.getDocSubject())) {
 					DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 					docCreatorEntity.setEmplno(entity.getEmplno());
@@ -90,7 +91,7 @@ public class AbutmentClient implements IAbutmentClient {
 						ekpVo = ekpService.pushData(pushEkpEntity);
 					}
 				}
-			}
+			}*/
 		} catch(Exception exception) {
 			log.error(exception.getMessage());
 		}

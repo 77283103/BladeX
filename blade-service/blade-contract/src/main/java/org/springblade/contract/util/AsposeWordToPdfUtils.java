@@ -3,6 +3,7 @@ package org.springblade.contract.util;
 import com.aspose.words.Document;
 import com.aspose.words.License;
 import com.aspose.words.SaveFormat;
+import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,7 +41,8 @@ public class AsposeWordToPdfUtils {
         }
         try {
 			//新建一个空白pdf文档
-            File file = new File(targetFile);
+            //File file = new File(targetFile);
+			File file=ResourceUtils.getFile(targetFile);
             FileOutputStream os = new FileOutputStream(file);
 			//sourcerFile是将要被转化的word文档
             Document doc = new Document(sourcerFile);

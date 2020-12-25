@@ -39,6 +39,7 @@ import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.*;
 import org.springblade.resource.feign.IFileClient;
@@ -46,6 +47,7 @@ import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
+import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
@@ -398,23 +400,6 @@ public class ContractFormInfoController extends BladeController {
 					singleSignVoList.add(abutmentClient.singleSignPost(singleSignEntity).getData()); //接口通了
 				}
 				// 盖章方法  结束
-
-				// 获取文件 下载或者在线查看
-				List<String> urls = new ArrayList<String>();
-				for(SingleSignVo singleSignVo :singleSignVoList){
-					ReadSignedEntity readSignedEntity = new ReadSignedEntity();
-					readSignedEntity.setId(singleSignVo.getFilePath());
-					// pdf的ID
-					if (ekpEntity.getFd_file_id() == null || ekpEntity.getFd_file_id().equals("")) {
-						ekpEntity.setFd_file_id(singleSignVo.getFilePath());
-					} else {
-						ekpEntity.setFd_file_id(ekpEntity.getFd_file_id() + "," + singleSignVo.getFilePath());
-					}
-					// 1在线预览  2下载
-					readSignedEntity.setType("1");
-					// 返回的是个完整路径,直接通过response.getWriter().write()返回到前台就可以
-					urls.add(abutmentClient.readSigned(readSignedEntity).getData()); //接口通了
-				}
 			}
 			contractFormInfoService.updateById(entity);
 		}
