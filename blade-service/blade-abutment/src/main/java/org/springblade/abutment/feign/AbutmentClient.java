@@ -9,6 +9,7 @@ import org.springblade.abutment.service.IDocService;
 import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.service.IEkpService;
 import org.springblade.abutment.vo.*;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,58 +41,72 @@ public class AbutmentClient implements IAbutmentClient {
 	private String fdTemplateId;
 
 	@Override
-	@GetMapping(EKP_SEND_FORM)
-	public R<EkpVo> sendEkpForm(EkpEntity entity) {
+	@PostMapping(EKP_SEND_FORM_POST)
+	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
 
 		EkpVo ekpVo = null;
 		try {
 			PushEkpEntity pushEkpEntity = new PushEkpEntity();
 			pushEkpEntity.setFdTemplateId(fdTemplateId);
-			/*if(entity != null) {
-				if(StrUtil.isNotEmpty(entity.getEmplno()) && StrUtil.isNotEmpty(entity.getDocSubject())) {
+			if(entity != null) {
+				//17090089
+				if(StrUtil.isNotEmpty("17090089") && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
 					DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
-					docCreatorEntity.setEmplno(entity.getEmplno());
+					//人员编号
+					docCreatorEntity.setEmplno("17090089");
 					pushEkpEntity.setDocCreator(docCreatorEntity);
 
 					FormValuesEntity formValuesEntity = new FormValuesEntity();
-					formValuesEntity.setFd_parent_id(entity.getFd_parent_id());
-					formValuesEntity.setFd_file_id(entity.getFd_file_id());
-					formValuesEntity.setFd_name(entity.getFd_name());
-					formValuesEntity.setFd_totle(entity.getFd_totle());
-					formValuesEntity.setFd_cont_scop(entity.getFd_cont_scop());
-					formValuesEntity.setFd_paydate(entity.getFd_paydate());
-					formValuesEntity.setFd_starttime(entity.getFd_starttime());
-					formValuesEntity.setFd_lasttime(entity.getFd_lasttime());
-					formValuesEntity.setFd_dollar(entity.getFd_dollar());
-					formValuesEntity.setFd_biaodi(entity.getFd_biaodi());
-					formValuesEntity.setFd_tiaokuan(entity.getFd_tiaokuan());
-					formValuesEntity.setFd_days(entity.getFd_days());
-					formValuesEntity.setFd_percent1(entity.getFd_percent1());
-					formValuesEntity.setFd_billday1(entity.getFd_billday1());
-					formValuesEntity.setFd_percent2(entity.getFd_percent2());
-					formValuesEntity.setFd_percent3(entity.getFd_percent3());
-					formValuesEntity.setFd_billday2(entity.getFd_billday2());
-					formValuesEntity.setFd_percent4(entity.getFd_percent4());
-					formValuesEntity.setFd_percent5(entity.getFd_percent5());
-					formValuesEntity.setFd_billday3(entity.getFd_billday3());
-					formValuesEntity.setFd_percent6(entity.getFd_percent6());
-					formValuesEntity.setFd_billday4(entity.getFd_billday4());
-					formValuesEntity.setFd_percent7(entity.getFd_percent7());
-					formValuesEntity.setFd_billday5(entity.getFd_billday5());
-					formValuesEntity.setFd_percent8(entity.getFd_percent8());
-					formValuesEntity.setFd_billday6(entity.getFd_billday6());
-					formValuesEntity.setFd_pay(entity.getFd_pay());
-					formValuesEntity.setFd_shouktk(entity.getFd_shouktk());
-					formValuesEntity.setFd_shoukts(entity.getFd_shoukts());
-					formValuesEntity.setFd_duty(entity.getFd_duty());
+					formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
+					formValuesEntity.setFd_contract_id(entity.getId().toString());
+					//pdf的id
+					formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
+					//合同起草流程类型
+					if("10".equals(entity.getContractSoure())){
+						formValuesEntity.setFd_contract_type("10");
+					}else if("30".equals(entity.getContractSoure())||StrUtil.isNotEmpty(entity.getOtherInformation())){
+						formValuesEntity.setFd_contract_type("30");
+					}else{
+						formValuesEntity.setFd_contract_type("20");
+					}
+					//合同主旨
+					formValuesEntity.setFd_main(entity.getContractName());
+					//合同大类
+					formValuesEntity.setFd_broad(entity.getContractName());
+					//合同主旨
+					formValuesEntity.setFd_main(entity.getContractName());
+					//申请用公章全称
+					formValuesEntity.setFd_offical_seal(entity.getSealName());
+					//相对方名称
+					formValuesEntity.setFd_full_name(entity.getCounterpart().get(0).getName());
+					//合同负责人
+					formValuesEntity.setFd_emplno("17090089");
+					//合同份数
+					formValuesEntity.setFd_copies(entity.getShare());
+					//合同期限
+					//合同期限
+					switch (entity.getContractPeriod()) {
+						case "xysn":
+							formValuesEntity.setFd_contract_period("sx");
+							break;
+						case "dysn":
+							formValuesEntity.setFd_contract_period("dx");
+							break;
+						case "wzzqx":
+							formValuesEntity.setFd_contract_period("wx");
+							break;
+					}
+					//合同主旨
+					formValuesEntity.setFd_main(entity.getContractName());
 					pushEkpEntity.setFormValues(formValuesEntity);
-					pushEkpEntity.setDocSubject(entity.getDocSubject());
+					//依据id
+					pushEkpEntity.setDocSubject(entity.getAccording().get(0).getFileId());
 					pushEkpEntity.setToken(ekpService.getToken());
 					if (StrUtil.isNotEmpty(pushEkpEntity.getToken())) {
 						ekpVo = ekpService.pushData(pushEkpEntity);
 					}
 				}
-			}*/
+			}
 		} catch(Exception exception) {
 			log.error(exception.getMessage());
 		}

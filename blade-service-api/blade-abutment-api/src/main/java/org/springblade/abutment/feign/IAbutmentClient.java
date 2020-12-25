@@ -2,6 +2,7 @@ package org.springblade.abutment.feign;
 
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +26,7 @@ public interface IAbutmentClient {
 	String DOC = "/doc";
 	String E_SEAL = "/eSeal";
 	String EKP_SEND_FORM = API_PREFIX + EKP + "/sendForm";
+	String EKP_SEND_FORM_POST = API_PREFIX + EKP + "/sendFormPost";
 	String DOC_QUERY_INFO = API_PREFIX + DOC + "/queryInfo";
 	String E_SEAL_UPLOAD_FILE = API_PREFIX + E_SEAL + "/uploadFiles";
 	String E_SEAL_SINGLE_SIGN = API_PREFIX + E_SEAL + "/singleSign";
@@ -34,13 +36,14 @@ public interface IAbutmentClient {
 	String E_SEAL_READ_SIGNED = API_PREFIX + E_SEAL + "/readSigned";
 	String E_SEAL_COMPANY_INFO = API_PREFIX + E_SEAL + "/queryCompanyInfo";
 
+
 	/**
 	 * 推送EKP信息
 	 * @param entity
 	 * @return
 	 */
-	@GetMapping(EKP_SEND_FORM)
-	R<EkpVo> sendEkpForm(EkpEntity entity);
+	@PostMapping(EKP_SEND_FORM_POST)
+	R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity);
 
 	/**
 	 * 获取依据信息

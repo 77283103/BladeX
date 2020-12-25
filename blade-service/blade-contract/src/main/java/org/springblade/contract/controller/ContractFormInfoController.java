@@ -400,6 +400,8 @@ public class ContractFormInfoController extends BladeController {
 					singleSignVoList.add(abutmentClient.singleSignPost(singleSignEntity).getData()); //接口通了
 				}
 				// 盖章方法  结束
+				//epk流程接口
+				abutmentClient.sendEkpFormPost(entity);
 			}
 			contractFormInfoService.updateById(entity);
 		}
