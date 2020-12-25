@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @ApiModel(value = "人员及组织信息返回数据,返回数据为List集合")
 public class OrganizationEntity {
@@ -27,4 +29,7 @@ public class OrganizationEntity {
     private String parentid;
     @ApiModelProperty(value = "最后修改时间")
     private String alterTime;
+    @ApiModelProperty(value = "最后修改时间")
+    private List<String> fieldsName;
+
 }
