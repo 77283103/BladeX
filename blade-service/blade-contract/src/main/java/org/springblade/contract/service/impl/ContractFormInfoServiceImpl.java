@@ -221,8 +221,29 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     public IPage<ContractFormInfoEntity> statisticsList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
         //部门合同数量、金额统计表
         if ("deptType".equals(contractFormInfo.getStatisticsType())) {
-            page = baseMapper.pageList(page, contractFormInfo);
+            page = baseMapper.deptType(page, contractFormInfo);
+            List<ContractFormInfoEntity> records = page.getRecords();
+            List<ContractFormInfoEntity> recordList = new ArrayList<>();
+            for (ContractFormInfoEntity v : records) {
+                /*为每个对象，设置创建者名字和组织名字*/
+                v.setCreateUserName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
+                v.setCreateDeptName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
+                //将多方起草关联的   相对方存入合同分页显示 获取相对方名称
+                List<ContractCounterpartEntity> counterpartEntityList = contractCounterpartMapper.selectByIds(v.getId());
+                if (Func.isNotEmpty(counterpartEntityList)) {
+                    v.setCounterpart(counterpartEntityList);
+                    StringBuilder name = new StringBuilder();
+                    for (ContractCounterpartEntity counterpartEntity : counterpartEntityList) {
+                        name.append(counterpartEntity.getName());
+                        name.append(",");
+                    }
+                    name.substring(0, name.length());
+                    v.setCounterpartName(name.toString());
 
+                }
+                recordList.add(v);
+                page.setRecords(recordList);
+            }
         }
         //月度合同数量统计表
         if ("monthType".equals(contractFormInfo.getStatisticsType())) {
@@ -252,14 +273,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         }
         //各类型合同统计表
         if ("eachType".equals(contractFormInfo.getStatisticsType())) {
-            page = baseMapper.eachType(page,contractFormInfo);
+            page = baseMapper.eachType(page, contractFormInfo);
             List<ContractFormInfoEntity> records = page.getRecords();
             List<ContractFormInfoEntity> recordList = new ArrayList<>();
             for (ContractFormInfoEntity v : records) {
-                Double payAmountVoidData=contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()),DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE);
-                Double receiveAmountVoidData=contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()),DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE);
+                Double payAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+                Double receiveAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+                v.setPayAmountVoidData(payAmountVoidData);
+                v.setReceiveAmountVoidData(receiveAmountVoidData);
+                recordList.add(v);
             }
+            page.setRecords(recordList);
         }
+
         return page;
     }
 

@@ -480,24 +480,21 @@
 
     <!-- 分页 部门合同数量、金额统计表-->
     <select id="deptType" resultMap="formInfoResultMap">
-        SELECT contract_big_category,
-        sum(contract_amount)         AS contract_amount,
-        count(contract_big_category) AS count,
-        dict_value
-        FROM `contract_form_info` info,
-        blade_dict_biz biz
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM `contract_form_info` info
         WHERE info.is_deleted = 0
-        AND info.contract_big_category = biz.id
-        GROUP BY contract_big_category
-        <!--金额区间查询-->
-        <if test="contractFormInfo.maxAmount != null and contractFormInfo.maxAmount != '' or contractFormInfo.minAmount != null and contractFormInfo.minAmount != ''">
-            and contract_amount between #{maxAmount} and #{minAmount}
+        <if test="contractFormInfo.createDept != null and contractFormInfo.createDept != ''">
+            AND info.create_dept=#{contractFormInfo.createDept}
         </if>
-        <if test="contractFormInfo.minContractAmount != null and contractFormInfo.minContractAmount != ''">
-            AND contract_amount &gt;= #{contractFormInfo.minContractAmount}
+        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != ''">
+            AND DATE_FORMAT(info.create_time,'%Y')=#{contractFormInfo.yearStart}
         </if>
-        <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
-            AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
+        <if test="contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
+            AND DATE_FORMAT(info.create_time,'%Y')=#{contractFormInfo.yearEnd}
+        </if>
+        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
+            AND DATE_FORMAT(info.create_time,'%Y') BETWEEN #{contractFormInfo.yearStart} and #{contractFormInfo.yearEnd}
         </if>
     </select>
     <!-- 分页 月度合同数量统计表-->
@@ -540,23 +537,35 @@
         <if test="contractFormInfo.createDept != null and contractFormInfo.createDept != ''">
             AND info.create_dept=#{contractFormInfo.createDept}
         </if>
-        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd = null or contractFormInfo.yearEnd = ''">
-            AND DATE_FORMAT(info.create_time,'%Y') = #{contractFormInfo.yearStart}
+        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != ''">
+            AND DATE_FORMAT(info.create_time,'%Y')=#{contractFormInfo.yearStart}
         </if>
-        <if test="contractFormInfo.yearStart = null or contractFormInfo.yearStart != '' and contractFormInfo.yearEnd != null or contractFormInfo.yearEnd != ''">
-            AND DATE_FORMAT(info.create_time,'%Y') = #{contractFormInfo.yearEnd}
+        <if test="contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
+            AND DATE_FORMAT(info.create_time,'%Y')=#{contractFormInfo.yearEnd}
         </if>
         <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
-            AND DATE_FORMAT(info.create_time,'%Y') BETWEEN #{contractFormInfo.yearStart} and #{param2.contractForm.yearEnd}
+            AND DATE_FORMAT(info.create_time,'%Y') BETWEEN #{contractFormInfo.yearStart} and #{contractFormInfo.yearEnd}
         </if>
-        GROUP BY contract_big_category
+        GROUP BY info.contract_big_category
     </select>
     <!--根據支付類型計算合同金額-->
     <select id="payTypeAmount" resultType="Double">
         SELECT sum(contract_amount)  AS contract_amount
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0
-        AND info.contract_big_category=#{contractFormInfo.contractBigCategoryig}
-        AND info.col_pay_type=#{contractFormInfo.colPayType}
+        AND info.contract_big_category=#{contractBigCategory}
+        AND info.col_pay_type=#{colPayType}
+        <if test="createDept != null and createDept != ''">
+            AND info.create_dept=#{createDept}
+        </if>
+        <if test="yearStart != null and yearStart != ''">
+            AND DATE_FORMAT(info.create_time,'%Y')=#{yearStart}
+        </if>
+        <if test="yearEnd != null and yearEnd != '' ">
+            AND DATE_FORMAT(info.create_time,'%Y')=#{yearEnd}
+        </if>
+        <if test="yearStart != null and yearStart != '' and yearEnd != null and yearEnd != ''">
+            AND DATE_FORMAT(info.create_time,'%Y') BETWEEN #{yearStart} and #{yearEnd}
+        </if>
     </select>
 </mapper>

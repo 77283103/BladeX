@@ -355,7 +355,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 返回页面的付款金额数据
 	 */
 	@TableField(exist = false)
-	private String payAmountVoidData;
+	private Double payAmountVoidData;
 	/**
 	 * 返回页面的金额数据
 	 */
@@ -365,7 +365,18 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 返回页面的收款金额数据
 	 */
 	@TableField(exist = false)
-	private String receiveAmountVoidData;
+	private Double receiveAmountVoidData;
+	/**
+	 * 返回页面的用戶名
+	 */
+	@TableField(exist = false)
+	private String createUserName;
+	/**
+	 * 返回页面的部門
+	 */
+	@TableField(exist = false)
+	private String createDeptName;
+
 	/**
 	 * 归档日期
 	 */
