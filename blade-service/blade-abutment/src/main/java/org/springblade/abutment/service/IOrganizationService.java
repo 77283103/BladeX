@@ -1,6 +1,7 @@
 package org.springblade.abutment.service;
 
 import org.springblade.abutment.entity.OrganizationEntity;
+import org.springblade.abutment.vo.OrganizationVo;
 
 import java.util.List;
 
@@ -17,5 +18,5 @@ public interface IOrganizationService {
      * 获取组织及人员信息数据
      * @return
      */
-    List<OrganizationEntity> getOrganizationInfo(OrganizationEntity entity) throws Exception;
+    List<OrganizationVo> getOrganizationInfo(OrganizationEntity entity) throws Exception;
 }

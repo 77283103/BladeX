@@ -8,6 +8,7 @@ import cn.hutool.json.XML;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
+import org.springblade.abutment.vo.OrganizationVo;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +42,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
     private String namespace;
 
     @Override
-    public List<OrganizationEntity> getOrganizationInfo(OrganizationEntity entity) throws Exception {
+    public List<OrganizationVo> getOrganizationInfo(OrganizationEntity entity) throws Exception {
         Map<String, Object> paramMap = new HashMap<String, Object>();
         List<Map<String, String>> fieldsList = new ArrayList<Map<String, String>>();
         if(entity.getFieldsName() != null && entity.getFieldsName().size() > 1) {
