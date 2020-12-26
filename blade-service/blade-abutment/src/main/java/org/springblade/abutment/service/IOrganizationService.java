@@ -18,5 +18,5 @@ public interface IOrganizationService {
      * 获取组织及人员信息数据
      * @return
      */
-    List<OrganizationEntity> getOrganizationInfo(OrganizationVo organizationVo) throws Exception;
+    List<OrganizationVo> getOrganizationInfo(OrganizationEntity entity) throws Exception;
 }

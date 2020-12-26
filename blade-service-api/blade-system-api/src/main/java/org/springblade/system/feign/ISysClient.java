@@ -23,6 +23,7 @@ import org.springblade.system.entity.*;
 import org.springblade.system.vo.DeptVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -61,7 +62,8 @@ public interface ISysClient {
 	String TENANT_ID = API_PREFIX + "/tenant-id";
 	String PARAM = API_PREFIX + "/param";
 	String PARAM_VALUE = API_PREFIX + "/param-value";
-
+	String SAVE_DEPT_API=API_PREFIX +"save_dept_api";
+	String SAVE_POST_API=API_PREFIX +"save_post_api";
 	/**
 	 * 获取菜单
 	 *
@@ -261,5 +263,22 @@ public interface ISysClient {
 	 */
 	@GetMapping(PARAM_VALUE)
 	R<String> getParamValue(@RequestParam("paramKey") String paramKey);
+
+	/**
+	 *
+	 * @param dept
+	 * @return
+	 */
+	@PostMapping(SAVE_DEPT_API)
+	R<Boolean> saveOrUpdateBatchDept(List<Dept> dept);
+
+
+	/**
+	 *
+	 * @param post
+	 * @return
+	 */
+	@PostMapping(SAVE_POST_API)
+	R<Boolean> saveOrUpdateBatchPost(List<Post> post);
 
 }

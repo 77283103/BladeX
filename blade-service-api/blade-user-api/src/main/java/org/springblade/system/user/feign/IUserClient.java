@@ -19,6 +19,7 @@ package org.springblade.system.user.feign;
 
 import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.tool.api.R;
+import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
@@ -50,7 +51,8 @@ public interface IUserClient {
 	String USER_INFO_BY_DEPTID_AND_POSTID = API_PREFIX + "/user-info-by-deptAndPost";
 	String USER_INFO_BY_USERID_ARRAY = API_PREFIX + "/user-info-by-userIdArray";
 	String USER_INFO_BY_BENCH_MINISTER = API_PREFIX + "/user-Info-by-bench-minister";
-
+	String SAVE_USER_BACH_API=API_PREFIX +"save-user-api";
+	String SAVE_USER_DEPART_BACH_API=API_PREFIX +"save-user-depart-bach_api";
 	/**
 	 * 获取用户信息
 	 *
@@ -100,6 +102,23 @@ public interface IUserClient {
 	@PostMapping(SAVE_USER)
 	R<Boolean> saveUser(@RequestBody UserDTO user);
 
+	/**
+	 * 同步用户
+	 *
+	 * @param user API
+	 * @return
+	 */
+	@PostMapping(SAVE_USER_BACH_API)
+	R<Boolean> saveOrUpdateBatch(@RequestBody List<User> user);
+
+	/**
+	 * 同步用户
+	 *
+	 * @param userDepart API
+	 * @return
+	 */
+	@PostMapping(SAVE_USER_DEPART_BACH_API)
+	R<Boolean> saveOrUpdateBatchDepart(@RequestBody List<UserDepartEntity> userDepart);
 	/**
 	 * 删除用户
 	 *

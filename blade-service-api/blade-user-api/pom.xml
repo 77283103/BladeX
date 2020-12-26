@@ -22,7 +22,8 @@
         <dependency>
             <groupId>org.springblade</groupId>
             <artifactId>blade-system-api</artifactId>
-            <version>${bladex.project.version}</version>
+            <version>2.5.0.RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

@@ -141,4 +141,15 @@ public class ISysClientFallback implements ISysClient {
 	public R<String> getParamValue(String paramKey) {
 		return R.fail("获取数据失败");
 	}
+
+	@Override
+	public R<Boolean> saveOrUpdateBatchDept(List<Dept> dept) {
+		return R.fail("保存數據失敗");
+	}
+
+	@Override
+	public R<Boolean> saveOrUpdateBatchPost(List<Post> post) {
+		return  R.fail("保存數據失敗");
+	}
+
 }
