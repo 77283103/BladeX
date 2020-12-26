@@ -4,32 +4,30 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
-import java.util.List;
-
+/**
+ * @author xhbbo
+ */
 @Data
-@ApiModel(value = "获取组织及人员信息的入参")
-public class OrganizationVo implements Serializable {
-    @ApiModelProperty(value = "字段名(选填,不填写则返回所有字段,字段名称可填写:id,email,loginName,emplno,name,namePinyin,isAvailable,orgType,parentid,alterTime)")
-    private List<String> fieldsName;
-    @ApiModelProperty(value = "查询条件:ID(唯一ID,选填,不填写则返回所有)")
+@ApiModel(value = "人员及组织信息返回数据,返回数据为List集合")
+public class OrganizationVo {
+    @ApiModelProperty(value = "唯一ID")
     private String id;
-    @ApiModelProperty(value = "查询条件:email(email地址,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "email地址")
     private String email;
-    @ApiModelProperty(value = "查询条件:loginName(登录名,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "登录名")
     private String loginName;
-    @ApiModelProperty(value = "查询条件:emplno(员工编号,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "员工编号)")
     private String emplno;
-    @ApiModelProperty(value = "查询条件:name(名称,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "名称")
     private String name;
-    @ApiModelProperty(value = "查询条件:namePinyin(名称拼音,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "名称拼音")
     private String namePinyin;
-    @ApiModelProperty(value = "查询条件:isAvailable(是否有效 1表示有效,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "是否有效 1表示有效")
     private String isAvailable;
-    @ApiModelProperty(value = "查询条件:orgType(类型 2部门 4岗位 8个人,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "类型 2部门 4岗位 8个人")
     private String orgType;
-    @ApiModelProperty(value = "查询条件:parentid(父节点,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "父节点")
     private String parentid;
-    @ApiModelProperty(value = "查询条件:alterTime(最后修改时间,选填,不填写则返回所有)")
+    @ApiModelProperty(value = "最后修改时间")
     private String alterTime;
 }

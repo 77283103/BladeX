@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.common.annotation.AutoLog;
+import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
@@ -54,7 +55,7 @@ public class OrganizationController {
 	@GetMapping("/queryOrganization")
 	@AutoLog
 	@ApiOperation(value = "获取组织及人员信息的接口")
-	public R<List<OrganizationVo>> queryOrganization(OrganizationVo entity) {
+	public R<List<OrganizationVo>> queryOrganization(OrganizationEntity entity) {
 		List<OrganizationVo> organizationList = null;
 		try {
 			organizationList = organizationService.getOrganizationInfo(entity);
