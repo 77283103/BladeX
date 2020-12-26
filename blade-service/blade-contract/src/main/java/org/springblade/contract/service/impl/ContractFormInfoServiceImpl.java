@@ -4,13 +4,21 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import feign.form.ContentType;
 import lombok.AllArgsConstructor;
+import org.springblade.abutment.entity.*;
+import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.CompanyInfoVo;
+import org.springblade.abutment.vo.EkpVo;
+import org.springblade.abutment.vo.SingleSignVo;
+import org.springblade.abutment.vo.UploadFileVo;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
+import org.springblade.contract.util.AsposeWordToPdfUtils;
 import org.springblade.contract.util.ExcelSaveUntil;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
@@ -30,10 +38,14 @@ import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -56,6 +68,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
     private IDictBizClient bizClient;
 
+	private IAbutmentClient abutmentClient;
 
     private ContractFormInfoMapper contractFormInfoMapper;
 
@@ -985,13 +998,136 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         return contractFormInfoMapper.textExportCount(id, fileExportCount, fileExportCategory);
     }
 
+
+
+	/**
+	 * 电子签章业务处理
+	 *
+	 * @param entity            合同信息
+	 * @return 返回统计状态
+	 */
+	@Override
+	public ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity) {
+		// 查查公司有没有申请电子章
+		CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
+		companyInfoEntity.setQueryType("1");
+		// 企业信用代码  从相对方里面来  需要修改
+		companyInfoEntity.setOrganCode("91360823092907952B");//这个统一用相对方里的企业信用代码
+		// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
+		CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData(); //这块通了
+		// 有章才操作
+		if (companyInfoVo.getAvailable().equals("1")) {
+			// 上传合同文件 开始  问题:不知道怎么生成pdf,所以就直接从entity里拿了,没有的话是不是需要生成一下?
+			// 接口是支持批量上传的
+			UploadFileEntity uploadFileEntity = new UploadFileEntity();
+			//查询合同正文
+			File filePDF=null;
+			//独立起草的pdf处理
+			if("10".equals(entity.getContractSoure())||"20".equals(entity.getContractSoure())){
+				List<FileVO> fileVO=fileClient.getByIds(entity.getTextFile()).getData();
+				String newFileDoc="";
+				String newFilePdf="";
+				//doc转为pdf
+				if(CollectionUtil.isNotEmpty(fileVO)){
+					newFileDoc=fileVO.get(0).getLink();
+					int index = fileVO.get(0).getName().lastIndexOf(".");
+					newFilePdf="D:/ftl/"+fileVO.get(0).getName().substring(0,index)+".pdf";
+					AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
+				}
+				filePDF = new File(newFilePdf);
+				R<FileVO> filePDFVO = null;
+				try {
+					MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
+						ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
+					filePDFVO=fileClient.save(multipartFile);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				/* 上传文件 */
+				assert filePDFVO != null;
+				entity.setTextFilePdf(filePDFVO.getData().getId()+",");
+			}else{
+				filePDF = new File(entity.getFilePDF());
+			}
+			// 入参是个file文件,怎么获取这个file文件? 这样获取对不对?
+			List<File> files = new ArrayList<File>();
+			files.add(filePDF);
+			uploadFileEntity.setFile(files);
+			// 默认是不合并,该上传几个文件就几个文件
+			uploadFileEntity.setIsMerge("0");
+			// 调用上传方法 另外需要注意 接口里自动进行了获取token的动作, 现在的获取地址和账号密码都是测试的,正式使用需要修改这些内容,修改位置在blade-abutment的resources.application里
+			List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
+			// 上传合同文件 结束
+
+			// 盖章方法  开始 问题:这里直接盖章吗?????????? 如果不在这里的话, 把它挪到对应地方
+			// 这里用的是单个盖章, 批量盖章需要短信验证
+			List<SingleSignVo> singleSignVoList = new ArrayList<SingleSignVo>();
+			for(UploadFileVo uploadFileVo:uploadFileVoList){
+				SingleSignEntity singleSignEntity = new SingleSignEntity();
+				// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
+				singleSignEntity.setIdno("91360823092907952B");
+				// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
+				singleSignEntity.setSignType("Key");
+				// 文档信息
+				FileInfoEntity fileInfoEntity = new FileInfoEntity();
+				// 给哪个文档盖章(上传后返回的文档id)
+				fileInfoEntity.setId(uploadFileVo.getId());
+				// 显不显示E签宝logo,false是不显示
+				fileInfoEntity.setShowImage(false);
+				// 盖完章之后文件叫什么名字 可以不填
+				//fileInfoEntity.setFileName(null);
+				// 如果是加密文档的话,需要输入密码, 没有的话不填
+				//fileInfoEntity.setOwnerPassword(null);
+				singleSignEntity.setFileBean(fileInfoEntity);
+				// 签章位置信息,除骑缝签章外必填
+				SignPosEntity signPosEntity = new SignPosEntity();
+				// 给哪页盖章 用逗号间隔页码 如 1,2,3 当前是关键字签章,所以不用填
+				//signPosEntity.setPosPage(null);
+				// 盖章坐标x 不填就是0 关键字的话坐标中心点是关键字
+				//signPosEntity.setPosX(0f);
+				// 盖章坐标y 不填就是0 关键字的话坐标中心点是关键字
+				//signPosEntity.setPosY(0f);
+				// 只有关键字签章的时候采用,输入关键字
+				signPosEntity.setKey("盖章");
+				// 章大小 可以不填,不填最大显示159,小于159按实际大小走,大于159只显示159大小
+				//signPosEntity.setWidth(0f);
+				// 是否二维码签署 骑缝和多页不生效
+				//signPosEntity.setQrcodeSign(false);
+				// 是不是作废,如果需要签作废章就选true
+				//signPosEntity.setCacellingSign(false);
+				// 显示签署时间,印章大于92才能显示
+				//signPosEntity.setAddSignTime(false);
+				singleSignEntity.setSignPos(signPosEntity);
+				// 如果签完一种章需要签另一种的话,就可以天
+				AutoSignEntity autoSignEntity = new AutoSignEntity();
+				// 企业信用代码 这个代码是为了定位章  如果要盖别单位的章就得填别单位的,不然就和上面填一样
+				autoSignEntity.setIdno(singleSignEntity.getIdno());
+				// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
+				autoSignEntity.setIdno("Edges");
+				// 和上面那个一样,设定盖章位置
+				//SignPosEntity autoSignPosEntity = new SignPosEntity();
+				//autoSignEntity.setSignPos(autoSignPosEntity);
+				singleSignEntity.setAutoSign(autoSignEntity);
+				// 返回的内容里有个filePath,是个ID,这个id可以用来下载或者在线查看盖完章的文件
+				singleSignVoList.add(abutmentClient.singleSignPost(singleSignEntity).getData()); //接口通了
+			}
+			// 盖章方法  结束
+			//epk流程接口
+			entity.setTextFilePdf(singleSignVoList.get(0).getFilePath());
+			EkpVo ekpVo=abutmentClient.sendEkpFormPost(entity).getData();
+		}
+		return entity;
+	}
+
+
+
     /**
      * 范本起草保存
      *
      * @param json 合同模板
      */
     @Override
-    public String templateDraft(ContractFormInfoEntity contractFormInfo, String json) {
+    public ContractFormInfoEntity templateDraft(ContractFormInfoEntity contractFormInfo, String json) {
         //把Json对象转成对象
         List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
         for (TemplateFieldJsonEntity templateField : templateFieldList) {
@@ -1031,6 +1167,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         templateField.setTableData(JSONObject.toJSONString(accordingList));
                         templateField.setTableDataList(accordingList);
                     }
+					contractFormInfo.setAccording(accordingList);
                 }
                 //是关联列表的组件都在这里处理
                 if (ContractFormInfoTemplateContract.CONTRACT_COUNTERPART.equals(templateField.getRelationCode())) {
@@ -1045,27 +1182,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                             contractFormInfoMapper.saveCounterpart(contractFormInfo.getId(), contractCounterpart);
                             obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_COUNTERPART, contractCounterpart);
                         }
+						contractFormInfo.setCounterpart(contractCounterpart);
                         //判断保证金是否为空
                         if (!"{}".equals(obj.getString(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND))) {
                             com.alibaba.fastjson.JSONArray contractBondArry = obj.getJSONArray(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND);
                             List<ContractBondEntity> contractBond = JSON.parseArray(contractBondArry.toString(), ContractBondEntity.class);
-                            /*if (CollectionUtil.isNotEmpty(contractBond)) {
-								ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
-                                contractBondMapper.deleteBond(contractFormInfo.getId());
-								//删除保证金履约计划脏数据
-								contractBondPlanService.deleteByContractId(contractFormInfo.getId());
-                                List<Long> list = new ArrayList<>();
-                                if (Func.isEmpty(contractFormInfo.getId())) {
-                                    contractBondMapper.insert(contractBond.get(0));
-                                    contractBond.get(0).setId(contractBond.get(0).getId());
-                                    obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND, contractBond);
-                                } else {
-                                    contractBondMapper.updateById(contractBond.get(0));
-                                    obj.put(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND, contractBond);
-                                }
-									*//*list.add(contractBond.get(0).getId());
-									contractBondMapper.saveBond(list, contractFormInfo.getId());*//*
-                            }*/
+							contractFormInfo.setContractBond(contractBond);
                             /*保存保证金信息*/
                             if (CollectionUtil.isNotEmpty(contractBond)) {
                                 List<Long> list = new ArrayList<>();
@@ -1317,8 +1439,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 }
             }
         }
-        //toJSONString(templateFieldList);
-        return toJSONString(templateFieldList);
+		contractFormInfo.setJson(toJSONString(templateFieldList));
+        return contractFormInfo;
     }
 
     //替换所有组件里的数据

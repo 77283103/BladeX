@@ -378,6 +378,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private String createDeptName;
 
 	/**
+	 * 范本起草的pdf文件本地地址
+	 */
+	@TableField(exist = false)
+	private String filePDF;
+	/**
 	 * 归档日期
 	 */
 	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)

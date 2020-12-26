@@ -142,8 +142,8 @@ public enum TemplateExporterEnum {
 			dataModel.put("mtlAdaptationIssues",j.get("mtlAdaptationIssues"));
 			dataModel.put("mtlNameOfAdvertising",j.get("mtlNameOfAdvertising"));
 			dataModel.put("mtlBasedOnTheContent",j.get("mtlBasedOnTheContent"));
-			dataModel.put("mtlProductionStartTime",j.get("mtlProductionStartTime"));
-			dataModel.put("mtlProductionCompletionTime",j.get("mtlProductionCompletionTime"));
+			dataModel.put("mtlProductionStartTime",DataFormatUtils.systemTimeFormat(j.get("mtlProductionStartTime").toString()));
+			dataModel.put("mtlProductionCompletionTime",DataFormatUtils.systemTimeFormat(j.get("mtlProductionCompletionTime").toString()));
 			dataModel.put("mtlHaveHasNot",j.get("mtlHaveHasNot"));
 			dataModel.put("mtlUnpaidTaxRmb",j.get("mtlUnpaidTaxRmb"));
 			dataModel.put("mtlRate",j.get("mtlRate"));
@@ -387,7 +387,7 @@ public enum TemplateExporterEnum {
             MtlVideoProductionContractEntity mtlVideoProductionContract = JSONObject.toJavaObject(j, MtlVideoProductionContractEntity.class);
             dataModel.put("mtlPatyA",j.get("mtlPatyA"));
             dataModel.put("mtlPatyAEmail",j.get("mtlPatyAEmail"));
-            dataModel.put("mtlmtlContactEmail",j.get("mtlmtlContactEmail"));
+            dataModel.put("mtlContactEmail",j.get("mtlContactEmail"));
             dataModel.put("mtlPatyB",j.get("mtlPatyB"));
             dataModel.put("mtlPatyBEmail",j.get("mtlPatyBEmail"));
             dataModel.put("mtlPatyBHome",j.get("mtlPatyBHome"));

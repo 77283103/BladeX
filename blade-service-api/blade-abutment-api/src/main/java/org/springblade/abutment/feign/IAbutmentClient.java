@@ -43,7 +43,7 @@ public interface IAbutmentClient {
 	 * @return
 	 */
 	@PostMapping(EKP_SEND_FORM_POST)
-	R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity);
+	R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity);
 
 	/**
 	 * 获取依据信息

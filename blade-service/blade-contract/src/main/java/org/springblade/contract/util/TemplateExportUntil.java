@@ -100,7 +100,7 @@ public class TemplateExportUntil {
 			/* 上传文件 */
 			R<FileVO> fileVO=templateExportUntil.fileClient.save(multipartFile);
 			files=fileVO.getData();
-			pdfId= files.getId() +",";
+			files.setLink(newFilePdf);
 		} catch (TemplateException | IOException e) {
 			e.printStackTrace();
 		}

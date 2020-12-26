@@ -116,12 +116,19 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	boolean textExportCount(Long id,Integer fileExportCount,String  fileExportCategory);
 
+	/**
+	 * 电子签章业务处理
+	 *
+	 * @param entity            合同信息
+	 * @return 返回统计状态
+	 */
+	ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity);
 
 	/**
 	 *范本起草保存
 	 * @param contractFormInfoEntity 合同模板
 	 */
-	String templateDraft(ContractFormInfoEntity contractFormInfoEntity,String json);
+	ContractFormInfoEntity templateDraft(ContractFormInfoEntity contractFormInfoEntity,String json);
 
 	/**
 	 * 合同大类金额

@@ -36,7 +36,7 @@ public class FormValuesEntity implements Serializable {
 	private String fd_start_time;
 	@ApiModelProperty(value = "单据内容:合同时间止(合同起止时间，请传yyyy-MM-dd格式字符串(仅支持该格式))")
 	private String fd_lasttime;
-	@ApiModelProperty(value = "单据内容:收付款(必填,xs:≤三年 ds:>三年 wx:未附终止期限)")
+	@ApiModelProperty(value = "单据内容:收付款(必填,付款|1 收款|2 合同无价款|3)")
 	private String fd_payment;
 	@ApiModelProperty(value = "单据内容:收款条件(必填,全部预付货款|1 部分预付货款|2 帐扣|3 票折|4 补货|5 10天≤票期<45天|6 票期≥45天|7)")
 	private String fd_condition;
@@ -56,6 +56,8 @@ public class FormValuesEntity implements Serializable {
 	private String fd_automatic;
 	@ApiModelProperty(value = "有无押金（关联表）")
 	private String fd_cash_pledge;
+	@ApiModelProperty(value = "押金（关联表）")
+	private String fd_cash;
 	@ApiModelProperty(value = "单据内容:缴交时间（关联表）")
 	private String fd_pay_time;
 	@ApiModelProperty(value = "单据内容:退回时间（关联表）")
