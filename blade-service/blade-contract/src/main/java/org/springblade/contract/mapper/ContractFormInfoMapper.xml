@@ -537,10 +537,10 @@
         <if test="contractFormInfo.createDept != null and contractFormInfo.createDept != ''">
             AND info.create_dept=#{contractFormInfo.createDept}
         </if>
-        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != ''">
+        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd == null">
             AND DATE_FORMAT(info.create_time,'%Y')=#{contractFormInfo.yearStart}
         </if>
-        <if test="contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
+        <if test="contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != '' and contractFormInfo.yearStart == null">
             AND DATE_FORMAT(info.create_time,'%Y')=#{contractFormInfo.yearEnd}
         </if>
         <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
@@ -558,10 +558,10 @@
         <if test="createDept != null and createDept != ''">
             AND info.create_dept=#{createDept}
         </if>
-        <if test="yearStart != null and yearStart != ''">
+        <if test="yearStart != null and yearStart != '' and yearEnd == null">
             AND DATE_FORMAT(info.create_time,'%Y')=#{yearStart}
         </if>
-        <if test="yearEnd != null and yearEnd != '' ">
+        <if test="yearEnd != null and yearEnd != '' and yearStart == null ">
             AND DATE_FORMAT(info.create_time,'%Y')=#{yearEnd}
         </if>
         <if test="yearStart != null and yearStart != '' and yearEnd != null and yearEnd != ''">

@@ -98,25 +98,7 @@
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
-            <artifactId>blade-user</artifactId>
-            <version>2.5.0.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-user</artifactId>
-            <version>2.5.0.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-system</artifactId>
-            <version>2.5.0.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-system</artifactId>
+            <artifactId>blade-user-api</artifactId>
             <version>2.5.0.RELEASE</version>
             <scope>compile</scope>
         </dependency>

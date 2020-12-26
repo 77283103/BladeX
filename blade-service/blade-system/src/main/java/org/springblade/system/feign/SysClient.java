@@ -24,6 +24,7 @@ import org.springblade.system.entity.*;
 import org.springblade.system.service.*;
 import org.springblade.system.vo.DeptVO;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -169,6 +170,18 @@ public class SysClient implements ISysClient {
 	@GetMapping(PARAM_VALUE)
 	public R<String> getParamValue(String paramKey) {
 		return R.data(paramService.getValue(paramKey));
+	}
+
+	@Override
+	@PostMapping(SAVE_DEPT_API)
+	public R<Boolean> saveOrUpdateBatchDept(List<Dept> dept) {
+		return R.status(deptService.saveOrUpdateBatch(dept));
+	}
+
+	@Override
+	@PostMapping(SAVE_POST_API)
+	public R<Boolean> saveOrUpdateBatchPost(List<Post> post) {
+		return R.status(postService.saveOrUpdateBatch(post));
 	}
 
 	@Override

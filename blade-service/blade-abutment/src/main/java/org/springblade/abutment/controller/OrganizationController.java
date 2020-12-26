@@ -5,21 +5,18 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.common.annotation.AutoLog;
-import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.Post;
 import org.springblade.system.entity.UserDepartEntity;
-import org.springblade.system.service.IDeptService;
-import org.springblade.system.service.IPostService;
+import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
-import org.springblade.system.user.service.IUserDepartService;
-import org.springblade.system.user.service.IUserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springblade.system.user.feign.IUserClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,18 +38,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/rest/api")
 @Api(value = "组织及人员信息")
+@AllArgsConstructor
 public class OrganizationController {
-	@Autowired
-	IOrganizationService organizationService;
-	@Autowired
-	IDeptService deptService;
-	@Autowired
-	IPostService postService;
-	@Autowired
-	IUserService userService;
-	@Autowired
-	IUserDepartService userDepartService;
 
+	IOrganizationService organizationService;
+
+	ISysClient sysClient;
+
+	IUserClient userClient;
 	/**
 	 * 获取组织及人员信息
 	 * @param entity
@@ -61,7 +54,7 @@ public class OrganizationController {
 	@GetMapping("/queryOrganization")
 	@AutoLog
 	@ApiOperation(value = "获取组织及人员信息的接口")
-	public R<List<OrganizationVo>> queryOrganization(OrganizationEntity entity) {
+	public R<List<OrganizationVo>> queryOrganization(OrganizationVo entity) {
 		List<OrganizationVo> organizationList = null;
 		try {
 			organizationList = organizationService.getOrganizationInfo(entity);
@@ -70,9 +63,9 @@ public class OrganizationController {
 			List<Post> postList = new ArrayList<Post>();
 			List<User> userList = new ArrayList<User>();
 			List<UserDepartEntity> userDepartList = new ArrayList<UserDepartEntity>();
-			if(organizationList != null) {
+			if(organizationList.size()>0) {
 				for(OrganizationVo organizationVo : organizationList) {
-					Map<String, String> map = new HashMap<String, String>();
+					Map<String, String> map = new HashMap();
 					map.put("id", IdUtil.createSnowflake(1, Long.parseLong(organizationVo.getOrgType())).nextIdStr());
 					map.put("orgType", organizationVo.getOrgType());
 					idMap.put(organizationVo.getId(), map);
@@ -124,10 +117,10 @@ public class OrganizationController {
 							userDepartList.add(userDepart);
 							break;
 					}
-					deptService.saveOrUpdateBatch(deptList);
-					postService.saveOrUpdateBatch(postList);
-					userService.saveOrUpdateBatch(userList);
-					userDepartService.saveOrUpdateBatch(userDepartList);
+					sysClient.saveOrUpdateBatchDept(deptList);
+					sysClient.saveOrUpdateBatchPost(postList);
+					userClient.saveOrUpdateBatch(userList);
+					userClient.saveOrUpdateBatchDepart(userDepartList);
 				}
 			}
 		} catch (Exception e) {

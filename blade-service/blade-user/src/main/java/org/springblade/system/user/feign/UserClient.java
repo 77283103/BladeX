@@ -16,14 +16,15 @@
  */
 package org.springblade.system.user.feign;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserInfo;
+import org.springblade.system.user.service.IUserDepartService;
 import org.springblade.system.user.service.IUserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,6 +43,7 @@ import java.util.List;
 public class UserClient implements IUserClient {
 
 	private IUserService service;
+	private IUserDepartService departService;
 
 	@Override
 	@GetMapping(USER_INFO_BY_ID)
@@ -70,6 +72,18 @@ public class UserClient implements IUserClient {
 	@PostMapping(SAVE_USER)
 	public R<Boolean> saveUser(@RequestBody UserDTO user) {
 		return R.data(service.submit(user));
+	}
+
+	@Override
+	@PostMapping(SAVE_USER_BACH_API)
+	public R<Boolean> saveOrUpdateBatch(List<User>  user) {
+		return R.data(service.saveOrUpdateBatch(user));
+	}
+
+	@Override
+	@PostMapping(SAVE_USER_DEPART_BACH_API)
+	public R<Boolean> saveOrUpdateBatchDepart(List<UserDepartEntity> userDepart) {
+		return R.data(departService.saveOrUpdateBatch(userDepart));
 	}
 
 	@Override
