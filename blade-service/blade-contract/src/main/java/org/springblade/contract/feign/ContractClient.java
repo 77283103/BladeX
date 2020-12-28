@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
+import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.mapper.ContractTemplateMapper;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.service.IContractTemplateService;
@@ -31,6 +32,7 @@ import java.util.List;
 public class ContractClient implements IContractClient{
 
     private IContractFormInfoService formInfoService;
+	private IContractFormInfoService contractFormInfoMapper;
 	private IContractTemplateService templateService;
 	private ContractTemplateMapper templateMapper;
     @Override
@@ -62,5 +64,13 @@ public class ContractClient implements IContractClient{
 			}
 		}
 		return null;
+	}
+
+	@Override
+	@GetMapping(CONTRACTSAVE)
+	public boolean saveContractFormInfo(Long id, String submitStatus) {
+		ContractFormInfoEntity contractFormInfo=contractFormInfoMapper.getById(id);
+		contractFormInfo.setSubmitStatus(submitStatus);
+		return formInfoService.saveOrUpdate(contractFormInfo);
 	}
 }

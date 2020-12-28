@@ -1,5 +1,7 @@
 package org.springblade.contract.controller;
 
+import cn.hutool.http.HttpUtil;
+import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSON;
@@ -11,7 +13,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
@@ -35,7 +36,6 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.*;
-import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
@@ -297,6 +297,8 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
+		//String paramStr = "{\"contractId\":\"1343427293518774274\",\"submitStatus\":\"30\"}";
+		//cn.hutool.json.JSONObject docInfoJson = JSONUtil.parseObj(HttpUtil.createPost("http://localhost:18080/ekp/submit").body(paramStr,"application/json").execute().body());
 		//开始接口处理
 		if("30".equals(entity.getContractStatus())){
 			//处理电子签章和oa流程
@@ -341,11 +343,10 @@ public class ContractFormInfoController extends BladeController {
 				j.put(templateField.getFieldName(), templateField.getFieldValue());
 			}
 		}
-		TemplateSaveUntil templateSaveUntil =new TemplateSaveUntil();
 		//把json串转换成一个对象
 		ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
-		//保存合同和关联表
-		templateSaveUntil.templateSave(contractFormInfoEntity,template,j);
+		//保存合同和关联表 这个方法有问题
+		TemplateSaveUntil.templateSave(contractFormInfoEntity,template,j);
 		/*if (Func.isEmpty(contractFormInfoEntity.getId())) {
 			contractFormInfoEntity.setContractSoure("30");
 			contractFormInfoEntity.setContractStatus("10");

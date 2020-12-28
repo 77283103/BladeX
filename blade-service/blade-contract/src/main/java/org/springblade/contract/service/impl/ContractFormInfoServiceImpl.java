@@ -897,13 +897,14 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
             }
         }
         /* 查询创建者 */
-        if (Func.isNoneBlank(contractFormInfoResponseVO.getCreateUser().toString())) {
+
+        if (!Func.isEmpty(contractFormInfoResponseVO.getCreateUser())) {
             /*User user = UserCache.getUser(entity.getCreateUser());*/
             User user = userClient.userInfoById(contractFormInfoResponseVO.getCreateUser()).getData();
             contractFormInfoResponseVO.setUserRealName(user.getRealName());
         }
         /* 查询创建者组织 */
-        if (Func.isNoneBlank(contractFormInfoResponseVO.getCreateDept().toString())) {
+        if (!Func.isEmpty(contractFormInfoResponseVO.getCreateDept())) {
             String dept = sysClient.getDeptName(contractFormInfoResponseVO.getCreateDept()).getData();
             contractFormInfoResponseVO.setUserDepartName(dept);
         }
@@ -1015,6 +1016,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		companyInfoEntity.setOrganCode("91360823092907952B");//这个统一用相对方里的企业信用代码
 		// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
 		CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData(); //这块通了
+		if(companyInfoVo==null){
+			companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData(); //这块通了
+		}
 		// 有章才操作
 		if (companyInfoVo.getAvailable().equals("1")) {
 			// 上传合同文件 开始  问题:不知道怎么生成pdf,所以就直接从entity里拿了,没有的话是不是需要生成一下?

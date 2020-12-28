@@ -29,7 +29,7 @@ public interface IContractClient {
 	String CONTRACT = API_PREFIX + "/contractFormInfo";
 	String TEMPLATE_UPDATE = API_PREFIX + "/template_update";
 	String CHOOSE=API_PREFIX + "/getChooseList";
-
+	String CONTRACTSAVE = API_PREFIX + "/contractSave";
 	/**
 	 * 获取合同信息
 	 * @param id
@@ -49,4 +49,12 @@ public interface IContractClient {
 	 */
 	@PostMapping(TEMPLATE_UPDATE)
 	R<ContractTemplateResponseVO> templateUpdate(@RequestBody TemplateEntity entity);
+
+	/**
+	 * 更新模板里json
+	 * @para @return
+	 * @return
+	 */
+	@GetMapping(CONTRACTSAVE)
+	boolean saveContractFormInfo(@RequestParam("id") Long id,@RequestParam("id") String submitStatus);
 }

@@ -90,7 +90,7 @@ public class TemplateSaveUntil {
 		templateSaveUntil = this;
 	}
 
-	public String templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO template, JSONObject j) {
+	public static String templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO template, JSONObject j) {
 		Long id = null;
 		if (Func.isEmpty(contractFormInfoEntity.getId())) {
 			contractFormInfoEntity.setContractSoure("30");

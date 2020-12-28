@@ -29,4 +29,9 @@ public class IContractFallback implements IContractClient {
 	public R<ContractTemplateResponseVO> templateUpdate(TemplateEntity entity) {
 		return R.fail("更新模板json信息失败！");
 	}
+
+	@Override
+	public boolean saveContractFormInfo(Long id, String submitStatus) {
+			return false;
+	}
 }

@@ -10,6 +10,8 @@ import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.service.IEkpService;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractPerformanceColPayEntity;
+import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.DictBiz;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,20 +59,75 @@ public class AbutmentClient implements IAbutmentClient {
 			if(entity != null) {
 				//17090089是登录人的编号
 				if(StrUtil.isNotEmpty("17090089") && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
+					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 					DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 					//人员编号
 					docCreatorEntity.setEmplno("17090089");
 					pushEkpEntity.setDocCreator(docCreatorEntity);
 					FormValuesEntity formValuesEntity = new FormValuesEntity();
 					//依据编号
-					formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
+					//formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
+					formValuesEntity.setFd_accord_id("1762642a34c79442253858b4b2aab793");
 					//合同id
 					formValuesEntity.setFd_contract_id(entity.getId().toString());
 					//pdf的id
 					formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
+					//pdf的id
+					formValuesEntity.setFd_contract_url("");
 					//合同起草流程类型
 					if("10".equals(entity.getContractSoure())){
 						formValuesEntity.setFd_contract_type("10");
+						//performanceColPayList
+						List <KeepList> keepList=new ArrayList<KeepList>();
+						KeepList keep=new KeepList();
+						List <PayList> payList=new ArrayList<PayList>();
+						PayList pay=new PayList();
+						for(ContractPerformanceEntity performance:entity.getPerformanceList()){
+							//交易类型
+							switch (performance.getType()) {
+								case "1":
+									keep.setFd_trade_type("有效期交易");
+									break;
+								case "2":
+									keep.setFd_trade_type("安合同量交易");
+									break;
+								case "3":
+									keep.setFd_trade_type("单次交易");
+									break;
+								case "4":
+									keep.setFd_trade_type("按周期交易");
+									break;
+								default:
+							}
+							keep.setFd_receipt(performance.getAcceptanceConditions());
+							keep.setFd_plan_time(sdf.format(performance.getPlanPayTime()));
+							keep.setFd_plan_content(performance.getName());
+							keepList.add(keep);
+						}
+						for(ContractPerformanceColPayEntity performanceColPay:entity.getPerformanceColPayList()){
+							//交易类型
+							switch (performanceColPay.getType()) {
+								case "1":
+									pay.setFd_trade_kind("有效期交易");
+									break;
+								case "2":
+									pay.setFd_trade_kind("安合同量交易");
+									break;
+								case "3":
+									pay.setFd_trade_kind("单次交易");
+									break;
+								case "4":
+									pay.setFd_trade_kind("按周期交易");
+									break;
+								default:
+							}
+							pay.setFd_p_receipt(performanceColPay.getAcceptanceConditions());
+							pay.setFd_plan_ptime(sdf.format(performanceColPay.getPlanPayTime()));
+							pay.setFd_plan_psum(performanceColPay.getName());
+							payList.add(pay);
+						}
+						formValuesEntity.setFd_keep_list(keepList);
+						formValuesEntity.setFd_pay_list(payList);
 					}else if("30".equals(entity.getContractSoure())||StrUtil.isNotEmpty(entity.getOtherInformation())){
 						formValuesEntity.setFd_contract_type("30");
 					}else{
@@ -78,7 +136,13 @@ public class AbutmentClient implements IAbutmentClient {
 					//合同主旨
 					formValuesEntity.setFd_main(entity.getContractName());
 					//合同大类
-					formValuesEntity.setFd_broad(entity.getContractName());
+					R<List<DictBiz>> contract_HTDL = bizClient.getList("HTDL");
+					List<DictBiz> dataBiz = contract_HTDL.getData();
+					dataBiz.forEach(bz -> {
+						if ((bz.getId().toString()).equals(entity.getContractBigCategory())) {
+							formValuesEntity.setFd_broad(bz.getDictKey());
+						}
+					});
 					//合同主旨
 					formValuesEntity.setFd_main(entity.getContractName());
 					//申请用公章全称
@@ -86,7 +150,7 @@ public class AbutmentClient implements IAbutmentClient {
 					//相对方名称
 					formValuesEntity.setFd_full_name(entity.getCounterpart().get(0).getName());
 					//合同负责人
-					formValuesEntity.setFd_emplno("17090089");
+					formValuesEntity.setFd_emplno("08048200");
 					//合同份数
 					formValuesEntity.setFd_copies(entity.getShare());
 					//合同期限
@@ -100,24 +164,25 @@ public class AbutmentClient implements IAbutmentClient {
 						case "wzzqx":
 							formValuesEntity.setFd_contract_period("3");
 							break;
+						default:
 					}
-					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
-					java.util.Date date=new java.util.Date();
+
 					//合同时间起
 					formValuesEntity.setFd_start_time(sdf.format(entity.getStartingTime()));
 					//合同时间止
 					formValuesEntity.setFd_lasttime(sdf.format(entity.getEndTime()));
 					//收付款
 					switch (entity.getColPayType()) {
-						case "1323239469884764161":
+						case "1323239541401841666":
 							formValuesEntity.setFd_payment("1");
 							break;
-						case "1323239541401841666":
+						case "1323239469884764161":
 							formValuesEntity.setFd_payment("2");
 							break;
 						case "1323239716493062146":
 							formValuesEntity.setFd_payment("3");
 							break;
+						default:
 					}
 					//收付款条件
 					switch (entity.getColPayTerm()) {
@@ -151,6 +216,7 @@ public class AbutmentClient implements IAbutmentClient {
 						case "1323241507062411265":
 							formValuesEntity.setFd_payee_condition("3");
 							break;
+						default:
 					}
 					if (!Func.isEmpty(entity.getDays())) {
 						formValuesEntity.setFd_payee_days(entity.getDays().toString());
@@ -163,14 +229,18 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_tax_include(entity.getContractTaxAmount().toString());
 					//币种
 					R<List<DictBiz>> contract_bz = bizClient.getList("bz");
-					List<DictBiz> dataBiz = contract_bz.getData();
-					dataBiz.forEach(bz -> {
+					List<DictBiz> databz = contract_bz.getData();
+					databz.forEach(bz -> {
 						if (bz.getDictKey().equals(entity.getCurrencyCategory())) {
 							formValuesEntity.setFd_currency(bz.getDictValue());
 						}
 					});
 					//是否延期条款
-					formValuesEntity.setFd_automatic(entity.getExtension());
+					if("0".equals(entity.getExtension())){
+						formValuesEntity.setFd_automatic("1");
+					}else{
+						formValuesEntity.setFd_automatic("2");
+					}
 					if(entity.getContractBond().size()>0){
 						//有无押金
 						formValuesEntity.setFd_cash_pledge(entity.getContractBond().get(0).getIsNotBond());
@@ -199,7 +269,8 @@ public class AbutmentClient implements IAbutmentClient {
 					pushEkpEntity.setFormValues(formValuesEntity);
 					//依据id
 					if (!Func.isEmpty(entity.getAccording().get(0).getFileId())) {
-						pushEkpEntity.setDocSubject(entity.getAccording().get(0).getFileId());
+						//pushEkpEntity.setDocSubject(entity.getAccording().get(0).getFileId());
+						pushEkpEntity.setDocSubject("1762642a34c79442253858b4b2aab793");
 					}
 					pushEkpEntity.setToken(ekpService.getToken());
 					pushEkpEntity.setDocSubject(entity.getContractName());

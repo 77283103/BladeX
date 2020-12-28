@@ -62,7 +62,8 @@ public class TemplateExportUntil {
 		dataModel=TemplateExporterEnum.fromValue(templateVO.getTemplateCode()).setScheduler(contractFormInfoEntity, templateVO, json, j);
 		//--------------从这里开始取所需要的数据 end
 		// 设置生成doc的文档名称
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");//设置日期格式
+		//设置日期格式
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = df.format(new Date());
 		//String newFileDoc="D:/ftl/"+templateVO.getTemplateCode()+date+".doc";
 		String newFileDoc=_PATH+templateVO.getTemplateCode()+date+".doc";

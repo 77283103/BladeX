@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * @author battle
@@ -16,6 +17,8 @@ public class FormValuesEntity implements Serializable {
 	private String fd_contract_id;
 	@ApiModelProperty(value = "单据内容:PDF文件id(必填,合同上传E签宝返回的附件id,可用于查阅E签宝签字合同附件)")
 	private String fd_attachment_id;
+	@ApiModelProperty(value = "单据内容:合同查看链接")
+	private String fd_contract_url;
 	@ApiModelProperty(value = "单据内容:合同起草类型(独立起草|10 范本起草|20 范本起草-有其他约定|30)")
 	private String fd_contract_type;
 	@ApiModelProperty(value = "单据内容:合同主旨(必填)")
@@ -76,4 +79,9 @@ public class FormValuesEntity implements Serializable {
 	private String fd_email;
 	@ApiModelProperty(value = "单据内容:相对方联系地址（）")
 	private String fd_address;
+	@ApiModelProperty(value = "单据内容:履约清单")
+	private List<KeepList> fd_keep_list;
+	@ApiModelProperty(value = "单据内容:收付款清单")
+	private List<PayList> fd_pay_list;
+
 }
