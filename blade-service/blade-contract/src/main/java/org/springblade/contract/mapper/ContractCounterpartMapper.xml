@@ -94,6 +94,9 @@
         <if test="counterpart.legalRepresentative != null and counterpart.legalRepresentative != ''">
             AND legal_representative like concat('%', #{counterpart.legalRepresentative}, '%')
         </if>
+        <if test="counterpart.establishDateString != null and counterpart.establishDateString != ''">
+            AND DATE_FORMAT(establish_date,'%Y-%m-%d') = #{counterpart.establishDateString}
+        </if>
     </select>
     <!--根据合同id查询相对方集合-->
     <select id="selectByIds" resultMap="counterpartResultMap">

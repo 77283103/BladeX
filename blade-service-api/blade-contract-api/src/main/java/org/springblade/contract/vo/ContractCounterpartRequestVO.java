@@ -90,6 +90,9 @@ public class ContractCounterpartRequestVO extends ContractCounterpartEntity {
 	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	private Date establishDate;
 
+	@ApiModelProperty(value = "成立日期剷鱏字段")
+	private String establishDateString;
+
 	@ApiModelProperty(value = "公司地址")
 	private String companyAddress;
 
