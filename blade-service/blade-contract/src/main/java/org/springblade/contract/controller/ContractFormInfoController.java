@@ -34,7 +34,10 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.*;
+import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.core.tool.utils.Charsets;
+import org.springblade.core.tool.utils.CollectionUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
@@ -907,14 +910,14 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
 			contractFormInfoService.save(entity);
-		}else if(Long.valueOf(CHANGE_CONTRACT_ID).equals(contractFormInfo.getChangeContractId())) {
+		} else if (Long.valueOf(CHANGE_CONTRACT_ID).equals(contractFormInfo.getChangeContractId())) {
 			entity.setId(null);
 			entity.setChangeContractId(contractFormInfo.getId());
 			//清空合同的文本导出次数记录
 			entity.setFileExportCount(0);
 			entity.setFileExportCategory(0);
 			contractFormInfoService.save(entity);
-		}else {
+		} else {
 			contractFormInfoService.updateById(entity);
 		}
 		contractFormInfo.setId(entity.getId());
@@ -935,7 +938,7 @@ public class ContractFormInfoController extends BladeController {
 				//判断是否为保证金库里面的保证金、或变更合同原合同的保证金
 				if (Func.isEmpty(contractBondEntity.getId())) {
 					contractBondService.save(contractBondEntity);
-				}else {
+				} else {
 					contractBondPlan.setId(null);
 				}
 				//保存保证金履约计划
@@ -957,7 +960,7 @@ public class ContractFormInfoController extends BladeController {
 			//删除履约信息脏数据
 			performanceService.deleteByContractId(contractFormInfo.getId());
 			contractFormInfo.getPerformanceList().forEach(performance -> {
-				if (Func.isNotEmpty(performance.getId())){
+				if (Func.isNotEmpty(performance.getId())) {
 					performance.setId(null);
 				}
 				performance.setContractId(contractFormInfo.getId());
@@ -969,7 +972,7 @@ public class ContractFormInfoController extends BladeController {
 			//删除收付款脏数据
 			contractPerformanceColPayService.deleteByContractId(contractFormInfo.getId());
 			contractFormInfo.getPerformanceColPayList().forEach(performanceColPay -> {
-				if (Func.isNotEmpty(performanceColPay.getId())){
+				if (Func.isNotEmpty(performanceColPay.getId())) {
 					performanceColPay.setId(null);
 				}
 				performanceColPay.setContractId(contractFormInfo.getId());
@@ -977,10 +980,11 @@ public class ContractFormInfoController extends BladeController {
 			});
 		}
 		//判断满足已变更新合同的条件 修改原合同状态
-		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory())&& APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())
+		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory()) && APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())
 				&& CONTRACT_REVIEW_STATUS.equals(contractFormInfo.getContractStatus())) {
-			formInfoMapper.updateExportStatus(ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS,contractFormInfo.getChangeContractId());
+			formInfoMapper.updateExportStatus(ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS, contractFormInfo.getChangeContractId());
 		}
 		return R.data(contractFormInfo);
 	}
+
 }

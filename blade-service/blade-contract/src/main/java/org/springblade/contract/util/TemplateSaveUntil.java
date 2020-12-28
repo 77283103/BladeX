@@ -100,18 +100,18 @@ public class TemplateSaveUntil {
 				contractFormInfoEntity.setChangeContractId(template.getChangeContractId());
 				contractFormInfoEntity.setChangeCategory("10");
 			}
-			//新陈列协议书
-			if ("CLXY_42".equals(template.getTemplateCode())) {
-				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
-				templateSaveUntil.ywlANewDisplayService.save(ywlANewDisplay);
-				id = ywlANewDisplay.getId();
-
-			} //店招合同
-			else if ("DZHT_35".equals(template.getTemplateCode())) {
-				YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
-				templateSaveUntil.ywlShopRecruitmentService.save(ywlShopRecruitment);
-				id = ywlShopRecruitment.getId();
-			}
+//			//新陈列协议书
+//			if ("CLXY_42".equals(template.getTemplateCode())) {
+//				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
+//				templateSaveUntil.ywlANewDisplayService.save(ywlANewDisplay);
+//				id = ywlANewDisplay.getId();
+//
+//			} //店招合同
+//			else if ("DZHT_35".equals(template.getTemplateCode())) {
+//				YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
+//				templateSaveUntil.ywlShopRecruitmentService.save(ywlShopRecruitment);
+//				id = ywlShopRecruitment.getId();
+//			}
 			//活动执行合同
 			else if ("HDZX_05".equals(template.getTemplateCode())) {
 				CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
@@ -309,13 +309,13 @@ public class TemplateSaveUntil {
 			}
 			templateSaveUntil.contractFormInfoService.updateById(contractFormInfoEntity);
 			if ("CLXY_42".equals(template.getTemplateCode())) {
-				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
-				ywlANewDisplay.setId(contractFormInfoEntity.getContractListId());
-				templateSaveUntil.ywlANewDisplayService.updateById(ywlANewDisplay);
-			} else if ("DZHT_35".equals(template.getTemplateCode())) {
-				YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
-				ywlShopRecruitment.setId(contractFormInfoEntity.getContractListId());
-				templateSaveUntil.ywlShopRecruitmentService.updateById(ywlShopRecruitment);
+//				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
+//				ywlANewDisplay.setId(contractFormInfoEntity.getContractListId());
+//				templateSaveUntil.ywlANewDisplayService.updateById(ywlANewDisplay);
+//			} else if ("DZHT_35".equals(template.getTemplateCode())) {
+//				YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
+//				ywlShopRecruitment.setId(contractFormInfoEntity.getContractListId());
+//				templateSaveUntil.ywlShopRecruitmentService.updateById(ywlShopRecruitment);
 			}
 			//活动执行合同
 			else if ("HDZX_05".equals(template.getTemplateCode())) {
