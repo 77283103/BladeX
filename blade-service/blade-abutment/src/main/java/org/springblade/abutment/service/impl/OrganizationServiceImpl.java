@@ -5,10 +5,12 @@ import cn.hutool.http.webservice.SoapClient;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.json.XML;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrganizationVo;
+import org.springblade.system.entity.TemplateFieldEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -102,7 +104,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
         log.info(mesStr);
         JSONObject message =  XML.toJSONObject(mesStr).getJSONObject("soap:Envelope").getJSONObject("soap:Body").getJSONObject("ns1:updateOrganizationResponse");
         JSONObject organizationInfoJson = message != null ? message.getJSONObject("return") : null;
-        return organizationInfoJson == null ? null : organizationInfoJson.getStr("status").equals("succeed") ? organizationInfoJson.get("data", List.class) : null;
+        return organizationInfoJson == null ? null : organizationInfoJson.getStr("status").equals("succeed") ? JSON.parseArray(organizationInfoJson.get("data", List.class).toString() , OrganizationVo.class): null;
     }
 
     private Map<String, String> getWhereMap(String key, String value) throws Exception {

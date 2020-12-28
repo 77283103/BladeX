@@ -19,6 +19,7 @@ import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +38,7 @@ import java.util.Map;
  */
 @Slf4j
 @RestController
-@RequestMapping("/rest/api")
+@RequestMapping("/organization")
 @Api(value = "组织及人员信息")
 @AllArgsConstructor
 public class OrganizationController {
@@ -49,17 +50,21 @@ public class OrganizationController {
 	IUserClient userClient;
 	/**
 	 * 获取组织及人员信息
-	 * @param entity
 	 * @return
 	 */
-	@GetMapping("/queryOrganization")
+	@PostMapping("/queryOrganization")
 	@AutoLog
 	@ApiOperation(value = "获取组织及人员信息的接口")
-	public R<List<OrganizationVo>> queryOrganization(OrganizationEntity entity) {
+	public R<List<OrganizationVo>> queryOrganization() {
+		OrganizationEntity entity=new OrganizationEntity();
 		List<OrganizationVo> organizationList = null;
+		/*try {*/
 		try {
 			organizationList = organizationService.getOrganizationInfo(entity);
-			Map<String, Map<String, String>> idMap = new HashMap<String, Map<String, String>>();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Map<String, Map<String, String>> idMap = new HashMap<String, Map<String, String>>();
 			List<Dept> deptList = new ArrayList<Dept>();
 			List<Post> postList = new ArrayList<Post>();
 			List<User> userList = new ArrayList<User>();
@@ -67,6 +72,10 @@ public class OrganizationController {
 			if(organizationList.size()>0) {
 				for(OrganizationVo organizationVo : organizationList) {
 					Map<String, String> map = new HashMap();
+					System.out.println(organizationVo.getOrgType());
+					if(Integer.parseInt(organizationVo.getOrgType())>=30){
+						organizationVo.setOrgType("3");
+					}
 					map.put("id", IdUtil.createSnowflake(1, Long.parseLong(organizationVo.getOrgType())).nextIdStr());
 					map.put("orgType", organizationVo.getOrgType());
 					idMap.put(organizationVo.getId(), map);
@@ -124,9 +133,9 @@ public class OrganizationController {
 					userClient.saveOrUpdateBatchDepart(userDepartList);
 				}
 			}
-		} catch (Exception e) {
+		 /*}catch (Exception e) {
 			log.error(e.getMessage());
-		}
+		}*/
 		return R.data(organizationList);
 	}
 }
