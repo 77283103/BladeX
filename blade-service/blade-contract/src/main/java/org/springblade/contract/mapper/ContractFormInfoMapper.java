@@ -7,6 +7,7 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.MonthTypeSelect;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -50,7 +51,7 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	IPage<ContractFormInfoEntity> eachType(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
-	Double payTypeAmount(Long contractBigCategory,Long colPayType,Long createDept,String yearStart,String yearEnd);
+	BigDecimal payTypeAmount(Long contractBigCategory, Long colPayType, Long createDept, String yearStart, String yearEnd);
 	/**
 	 * 合同类型统计分析分页查询
 	 * @param page

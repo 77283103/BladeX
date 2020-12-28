@@ -252,7 +252,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                     }
                     name.substring(0, name.length());
                     v.setCounterpartName(name.toString());
-
+                    BigDecimal payAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+                    BigDecimal receiveAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+                    v.setPayAmountVoidData(payAmountVoidData);
+                    v.setReceiveAmountVoidData(receiveAmountVoidData);
                 }
                 recordList.add(v);
                 page.setRecords(recordList);
@@ -290,8 +293,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
             List<ContractFormInfoEntity> records = page.getRecords();
             List<ContractFormInfoEntity> recordList = new ArrayList<>();
             for (ContractFormInfoEntity v : records) {
-                Double payAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
-                Double receiveAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+                BigDecimal payAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+                BigDecimal receiveAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
                 v.setPayAmountVoidData(payAmountVoidData);
                 v.setReceiveAmountVoidData(receiveAmountVoidData);
                 recordList.add(v);

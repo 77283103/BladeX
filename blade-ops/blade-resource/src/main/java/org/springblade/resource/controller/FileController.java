@@ -1,20 +1,23 @@
 package org.springblade.resource.controller;
 
-import io.swagger.annotations.Api;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import javax.validation.Valid;
-
 import org.springblade.core.boot.ctrl.BladeController;
-
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
-import org.springframework.web.bind.annotation.*;
-
+import org.springblade.resource.entity.FileEntity;
 import org.springblade.resource.service.IFileService;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URLEncoder;
 
 
 /**
@@ -63,4 +66,26 @@ public class FileController extends BladeController {
 		return R.status(fileService.del(Func.toLongList(ids)));
 	}
 
+	@GetMapping("/downloadFiles")
+	public void downloadFiles(@RequestParam String id, HttpServletResponse response) {
+		try {
+			FileEntity fileEntity = fileService.getById(Long.valueOf(id));
+			String fileName = fileEntity.getGenerateName();
+
+			InputStream object = fileService.getObject(fileName);
+			byte buf[] = new byte[1024];
+			int length = 0;
+			response.reset();
+			response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileEntity.getName(), "UTF-8"));
+			response.setContentType("application/octet-stream");
+			response.setCharacterEncoding("utf-8");
+			OutputStream outputStream = response.getOutputStream();
+			while ((length = object.read(buf)) > 0) {
+				outputStream.write(buf, 0, length);
+			}
+			outputStream.close();
+		} catch (Exception ex) {
+			System.out.println("导出失败");
+		}
+	}
 }

@@ -317,6 +317,24 @@
         <if test="contractFormInfo.maxContractAmount != null and contractFormInfo.maxContractAmount != ''">
             AND contract_amount &lt;= #{contractFormInfo.maxContractAmount}
         </if>
+        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd == null">
+            AND id IN (SELECT ref_contract_id
+            FROM contract_seal_using_info seal
+            WHERE  seal.is_deleted=0
+            AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') &gt;= #{contractFormInfo.yearStart})
+        </if>
+        <if test="contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != '' and contractFormInfo.yearStart == null">
+            AND id IN (SELECT ref_contract_id
+            FROM contract_seal_using_info seal
+            WHERE  seal.is_deleted=0
+            AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') &lt;= #{contractFormInfo.yearEnd})
+        </if>
+        <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
+            AND id IN (SELECT ref_contract_id
+            FROM contract_seal_using_info seal
+            WHERE seal.is_deleted=0
+            AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') BETWEEN #{contractFormInfo.yearStart} and #{contractFormInfo.yearEnd})
+        </if>
     </select>
     <!--修改合同状态-->
     <update id="updateExportStatus">
@@ -549,7 +567,7 @@
         GROUP BY info.contract_big_category
     </select>
     <!--根據支付類型計算合同金額-->
-    <select id="payTypeAmount" resultType="Double">
+    <select id="payTypeAmount" resultType="java.math.BigDecimal">
         SELECT sum(contract_amount)  AS contract_amount
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0
