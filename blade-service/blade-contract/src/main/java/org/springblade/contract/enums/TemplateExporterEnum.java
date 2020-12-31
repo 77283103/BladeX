@@ -25,16 +25,16 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
-import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.util.DataFormatUtils;
 import org.springblade.contract.vo.*;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -89,10 +89,10 @@ public enum TemplateExporterEnum {
 				dataModel.put("ywlPatyA",j.get("ywlPatyA"));
 				dataModel.put("ywlPatyB",j.get("ywlPatyB"));
 				dataModel.put("ywlLocation",j.get("ywlLocation"));
-				dataModel.put("ywlSuspensionStart",DataFormatUtils.systemTimeFormat(j.get("ywlSuspensionStart").toString()));
-				dataModel.put("ywlSuspensionEnd",DataFormatUtils.systemTimeFormat(j.get("ywlSuspensionEnd").toString()));
-				dataModel.put("ywlAgreementPeriodStart",DataFormatUtils.systemTimeFormat(j.get("ywlAgreementPeriodStart").toString()));
-				dataModel.put("ywlAgreementPeriodEnd",DataFormatUtils.systemTimeFormat(j.get("ywlAgreementPeriodEnd").toString()));
+				dataModel.put("ywlSuspensionStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlSuspensionStart"))));
+				dataModel.put("ywlSuspensionEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlSuspensionEnd").toString())));
+				dataModel.put("ywlAgreementPeriodStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlAgreementPeriodStart").toString())));
+				dataModel.put("ywlAgreementPeriodEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlAgreementPeriodEnd").toString())));
 				dataModel.put("ywlProductionCosts",j.get("ywlProductionCosts"));
 				dataModel.put("ywlAmountOf",j.get("ywlAmountOf"));
 				dataModel.put("ywlOtherConventions",j.get("ywlOtherConventions"));
