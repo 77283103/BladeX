@@ -217,6 +217,12 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
+		//开始接口处理
+		if("30".equals(entity.getContractStatus())){
+			//处理电子签章和oa流程
+			entity=contractFormInfoService.SingleSign(entity);
+			contractFormInfoService.updateById(entity);
+		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
 
@@ -365,9 +371,10 @@ public class ContractFormInfoController extends BladeController {
 			//导出pdf文件
 			TemplateExportUntil templateExportUntil=new TemplateExportUntil();
 			FileVO filevo=templateExportUntil.templateSave(contractFormInfoEntity,template,contractFormInfoEntity.getJson(),j);
+			contractFormInfoEntity.setContractStatus("30");
 			contractFormInfoEntity.setTextFilePdf(filevo.getId()+",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
-			contractFormInfoEntity.setFilePDF(filevo.getLink());
+			contractFormInfoEntity.setFilePDF(filevo.getDomain());
 			contractFormInfoEntity=contractFormInfoService.SingleSign(contractFormInfoEntity);
 		}
 		contractFormInfoService.updateById(contractFormInfoEntity);

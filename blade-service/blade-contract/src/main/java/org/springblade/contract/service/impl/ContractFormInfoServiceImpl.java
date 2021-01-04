@@ -1012,6 +1012,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity) {
+		//String _PATH="D:/ftl/";//模板路径
+		String _PATH="/ftl/";//模板路径
 		// 查查公司有没有申请电子章
 		CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
 		companyInfoEntity.setQueryType("1");
@@ -1038,7 +1040,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				if(CollectionUtil.isNotEmpty(fileVO)){
 					newFileDoc=fileVO.get(0).getLink();
 					int index = fileVO.get(0).getName().lastIndexOf(".");
-					newFilePdf="D:/ftl/"+fileVO.get(0).getName().substring(0,index)+".pdf";
+					newFilePdf=_PATH+fileVO.get(0).getName().substring(0,index)+".pdf";
 					AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
 				}
 				filePDF = new File(newFilePdf);
@@ -1095,7 +1097,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				// 盖章坐标y 不填就是0 关键字的话坐标中心点是关键字
 				//signPosEntity.setPosY(0f);
 				// 只有关键字签章的时候采用,输入关键字
-				signPosEntity.setKey("盖章");
+				signPosEntity.setKey("甲方：");
 				// 章大小 可以不填,不填最大显示159,小于159按实际大小走,大于159只显示159大小
 				//signPosEntity.setWidth(0f);
 				// 是否二维码签署 骑缝和多页不生效
@@ -1111,6 +1113,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				autoSignEntity.setIdno(singleSignEntity.getIdno());
 				// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
 				autoSignEntity.setIdno("Edges");
+				//autoSignEntity.setKey("盖章");
 				// 和上面那个一样,设定盖章位置
 				//SignPosEntity autoSignPosEntity = new SignPosEntity();
 				//autoSignEntity.setSignPos(autoSignPosEntity);

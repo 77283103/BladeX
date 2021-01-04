@@ -14,6 +14,8 @@ import org.springblade.contract.entity.ContractPerformanceColPayEntity;
 import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.feign.IFileClient;
+import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.feign.IDictBizClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,8 @@ public class AbutmentClient implements IAbutmentClient {
 	private IESealService eSealService;
 	@Autowired
 	private IDictBizClient bizClient;
+	@Autowired
+	private IFileClient fileClient;
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
 
@@ -67,9 +71,19 @@ public class AbutmentClient implements IAbutmentClient {
 					FormValuesEntity formValuesEntity = new FormValuesEntity();
 					//依据编号
 					//formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
+					//乙方电话
+					formValuesEntity.setFd_b_number("13350894824");
+					//乙方税籍编号
+					formValuesEntity.setFd_b_taxno("91360823092907952B");
 					formValuesEntity.setFd_accord_id("1762642a34c79442253858b4b2aab793");
 					//合同id
 					formValuesEntity.setFd_contract_id(entity.getId().toString());
+					//合同文件名称  需要查询出来 TextFile是null
+					formValuesEntity.setFd_contract_name("新陈列室合同");
+					/*List<FileVO> fileVO=fileClient.getByIds(entity.getTextFile()).getData();
+					if(fileVO.size()>0){
+						formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
+					}*/
 					//pdf的id
 					formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
 					//pdf的id
@@ -166,7 +180,6 @@ public class AbutmentClient implements IAbutmentClient {
 							break;
 						default:
 					}
-
 					//合同时间起
 					formValuesEntity.setFd_start_time(sdf.format(entity.getStartingTime()));
 					//合同时间止
@@ -221,12 +234,18 @@ public class AbutmentClient implements IAbutmentClient {
 					if (!Func.isEmpty(entity.getDays())) {
 						formValuesEntity.setFd_payee_days(entity.getDays().toString());
 					}
-					//合同未税金额
-					formValuesEntity.setFd_taxed_price(entity.getContractAmount().toString());
-					//税率
-					formValuesEntity.setFd_tax_rate(entity.getContactTaxRate().toString());
-					//含税金额
-					formValuesEntity.setFd_tax_include(entity.getContractTaxAmount().toString());
+					if (!Func.isEmpty(entity.getContractAmount())) {
+						//合同未税金额
+						formValuesEntity.setFd_taxed_price(entity.getContractAmount().toString());
+					}
+					if (!Func.isEmpty(entity.getContactTaxRate())) {
+						//税率
+						formValuesEntity.setFd_tax_rate(entity.getContactTaxRate().toString());
+					}
+					if (!Func.isEmpty(entity.getContractTaxAmount())) {
+						//含税金额
+						formValuesEntity.setFd_tax_include(entity.getContractTaxAmount().toString());
+					}
 					//币种
 					R<List<DictBiz>> contract_bz = bizClient.getList("bz");
 					List<DictBiz> databz = contract_bz.getData();

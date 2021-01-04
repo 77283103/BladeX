@@ -11,11 +11,17 @@ import java.util.List;
  */
 @Data
 public class FormValuesEntity implements Serializable {
+	@ApiModelProperty(value = "单据内容:乙方电话(必填)")
+	private String fd_b_number;
+	@ApiModelProperty(value = "单据内容:乙方信用代码或税籍编号(必填)")
+	private String fd_b_taxno;
 	@ApiModelProperty(value = "单据内容:依据文档id(必填,ekp跳转到合同平台传递的依据文档id)")
 	private String fd_accord_id;
 	@ApiModelProperty(value = "单据内容:合同id(必填,合同平台生成的电子用印合同的id,可以用于合同查阅)")
 	private String fd_contract_id;
 	@ApiModelProperty(value = "单据内容:PDF文件id(必填,合同上传E签宝返回的附件id,可用于查阅E签宝签字合同附件)")
+	private String fd_contract_name;
+	@ApiModelProperty(value = "单据内容:合同文件名称(必填)")
 	private String fd_attachment_id;
 	@ApiModelProperty(value = "单据内容:合同查看链接")
 	private String fd_contract_url;
