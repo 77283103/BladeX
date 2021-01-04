@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.SclContractTemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="sclContractTemplateResultMap" type="org.springblade.contract.entity.SclContractTemplateEntity">
+        <result column="id" property="id"/>
+        <result column="scl_party_a" property="sclPartyA"/>
+        <result column="scl_party_b" property="sclPartyB"/>
+        <result column="scl_paty_b" property="sclPatyB"/>
+        <result column="scl_month" property="sclMonth"/>
+        <result column="scl_day" property="sclDay"/>
+        <result column="scl_site" property="sclSite"/>
+        <result column="scl_storage" property="sclStorage"/>
+        <result column="scl_area" property="sclArea"/>
+        <result column="scl_no" property="sclNo"/>
+        <result column="scl_storageee" property="sclStorageee"/>
+        <result column="scl_conditionsa" property="sclConditionsa"/>
+        <result column="scl_number" property="sclNumber"/>
+        <result column="scl_services" property="sclServices"/>
+        <result column="scl_food" property="sclFood"/>
+        <result column="scl_drinks" property="sclDrinks"/>
+        <result column="scl_dairy" property="sclDairy"/>
+        <result column="scl_water" property="sclWater"/>
+        <result column="scl_requirementsp" property="sclRequirementsp"/>
+        <result column="scl_range" property="sclRange"/>
+        <result column="scl_areae" property="sclAreae"/>
+        <result column="scl_requirementse" property="sclRequirementse"/>
+        <result column="scl_contractd" property="sclContractd"/>
+        <result column="scl_second" property="sclSecond"/>
+        <result column="scl_breach" property="sclBreach"/>
+        <result column="scl_provide" property="sclProvide"/>
+        <result column="scl_hours" property="sclHours"/>
+        <result column="scl_morning" property="sclMorning"/>
+        <result column="scl_afternoon" property="sclAfternoon"/>
+        <result column="scl_advance" property="sclAdvance"/>
+        <result column="scl_season" property="sclSeason"/>
+        <result column="scl_return" property="sclReturn"/>
+        <result column="scl_liquidated_damages" property="sclLiquidatedDamages"/>
+        <result column="scl_sen_damages" property="sclSenDamages"/>
+        <result column="scl_eng_damages" property="sclEngDamages"/>
+        <result column="scl_requesta" property="sclRequesta"/>
+        <result column="scl_items" property="sclItems"/>
+        <result column="scl_date" property="sclDate"/>
+        <result column="scl_start_times" property="sclStartTimes"/>
+        <result column="scl_end_times" property="sclEndTimes"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        scl_party_a,
+        scl_party_b,
+        scl_paty_b,
+        scl_month,
+        scl_day,
+        scl_site,
+        scl_storage,
+        scl_area,
+        scl_no,
+        scl_storageee,
+        scl_conditionsa,
+        scl_number,
+        scl_services,
+        scl_food,
+        scl_drinks,
+        scl_dairy,
+        scl_water,
+        scl_requirementsp,
+        scl_range,
+        scl_areae,
+        scl_requirementse,
+        scl_contractd,
+        scl_second,
+        scl_breach,
+        scl_provide,
+        scl_hours,
+        scl_morning,
+        scl_afternoon,
+        scl_advance,
+        scl_season,
+        scl_return,
+        scl_liquidated_damages,
+        scl_sen_damages,
+        scl_eng_damages,
+        scl_requesta,
+        scl_items,
+        scl_date,
+        scl_start_times,
+        scl_end_times,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="sclContractTemplateResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM scl_contract_template
+        WHERE is_deleted = 0
+    </select>
+</mapper>

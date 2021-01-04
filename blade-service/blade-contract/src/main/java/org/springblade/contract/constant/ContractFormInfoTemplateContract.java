@@ -34,6 +34,10 @@ public interface ContractFormInfoTemplateContract {
 	String CONTRACT_MTLSHOOTINGANDPRODUCTIONCONTRACT1 = "MtlShootingAndProductionContract1";
 	//视频广告拍摄制作合同 交付数量关联表
 	String CONTRACT_MTLSHOOTINGANDPRODUCTIONCONTRACT2 = "MtlShootingAndProductionContract2";
+	//平面广告拍摄制作合同 关联表1
+	String CONTRACT_MTBPRODUCTIONCONTRACT1="MtbProductionContract1";
+	//平面广告拍摄制作合同 关联表2
+	String CONTRACT_MTBPRODUCTIONCONTRACT2="MtbProductionContract2";
 	//买卖合同（国内设备购买）關聯表1
 	String CONTRACT_CGLSALESCONTRACT1ENTITY = "CglSalesContract1";
     //生产项目外包服务合同
