@@ -25,8 +25,8 @@ import java.util.*;
 @Component
 public class TemplateExportUntil {
 
-	private static String _PATH="D:/ftl/";//模板路径
-	//private static String _PATH="/ftl/";//模板路径
+	//private static String _PATH="D:/ftl/";//模板路径
+	private static String _PATH="/ftl/";//模板路径
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
 	@Autowired
@@ -101,7 +101,7 @@ public class TemplateExportUntil {
 			/* 上传文件 */
 			R<FileVO> fileVO=templateExportUntil.fileClient.save(multipartFile);
 			files=fileVO.getData();
-			files.setLink(newFilePdf);
+			files.setDomain(newFilePdf);
 		} catch (TemplateException | IOException e) {
 			e.printStackTrace();
 		}

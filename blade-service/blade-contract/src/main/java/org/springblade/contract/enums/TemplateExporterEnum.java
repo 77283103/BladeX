@@ -68,7 +68,7 @@ public enum TemplateExporterEnum {
 			}
 			dataModel.put("ywlCooperationContent",j.get("ywlCooperationContent"));
 			dataModel.put("ywlTheStartTime",DataFormatUtils.systemTimeFormat(j.get("ywlTheStartTime").toString()));
-			dataModel.put("ywlEndOfTime",DataFormatUtils.systemTimeFormat(j.get("ywlTheStartTime").toString()));
+			dataModel.put("ywlEndOfTime",DataFormatUtils.systemTimeFormat(j.get("ywlEndOfTime").toString()));
 			dataModel.put("ywlDisplayFee",j.get("ywlDisplayFee"));
 			dataModel.put("ywlDisplayDfee",j.get("ywlDisplayDfee"));
 			if("1".equals(j.get("ywlDisplayType"))){

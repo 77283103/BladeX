@@ -22,10 +22,11 @@ public class DataFormatUtils {
     	if(Func.isEmpty(systemTime)){
 			return systemTime;
 		}else{
-			String [] strs = systemTime.split("[T]");
+			systemTime = systemTime.replace("Z", " UTC");
+			SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");
 			Date date = null;
 			try {
-				date = new SimpleDateFormat("yyyy-MM-dd").parse(strs[0]);
+				date = format.parse(systemTime);
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
