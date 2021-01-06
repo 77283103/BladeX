@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrganizationVo;
-import org.springblade.system.entity.TemplateFieldEntity;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -86,6 +85,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
         if(StrUtil.isNotEmpty(entity.getIsAvailable())) {
             whereList.add(this.getWhereMap("isAvailable", entity.getIsAvailable()));
         }
+        entity.setOrgType("2");
         if(StrUtil.isNotEmpty(entity.getOrgType())) {
             whereList.add(this.getWhereMap("orgType", entity.getOrgType()));
         }

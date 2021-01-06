@@ -740,6 +740,36 @@ public enum TemplateExporterEnum {
             dataModel.put("sclDate",j.get("sclDate"));
             return dataModel;
         }
+    },
+    //物流服务合同（一段+调拨运输）
+    FWHT_25("FWHT_25"){
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+            Map dataModel = new HashMap();
+            SclProductionCategoryEntity sclProductionCategory = JSONObject.toJavaObject(j, SclProductionCategoryEntity.class);
+            dataModel.put("sclPartyA",j.get("sclPartyA"));
+            dataModel.put("sclPartyB",j.get("sclPartyB"));
+            dataModel.put("sclDateOfSigning",j.get("sclDateOfSigning"));
+            dataModel.put("sclSite",j.get("sclSite"));
+            dataModel.put("sclStorage",j.get("sclStorage"));
+            dataModel.put("sclArea",j.get("sclArea"));
+            dataModel.put("sclNo",j.get("sclNo"));
+            dataModel.put("sclStorageee",j.get("sclStorageee"));
+            dataModel.put("sclBail",j.get("sclBail"));
+            dataModel.put("sclStorageee1",j.get("sclStorageee1"));
+            dataModel.put("sclAffiliatedEnterprise",j.get("sclAffiliatedEnterprise"));
+            dataModel.put("sclContract",j.get("sclContract"));
+            dataModel.put("sclDeposit",j.get("sclDeposit"));
+            dataModel.put("sclStorageee2",j.get("sclStorageee2"));
+            dataModel.put("sclConditionsa",j.get("sclConditionsa"));
+            dataModel.put("sclNumber",j.get("sclNumber"));
+            dataModel.put("sclServices",j.get("sclServices"));
+            dataModel.put("sclFood",j.get("sclFood"));
+            dataModel.put("sclDrinks",j.get("sclDrinks"));
+            dataModel.put("sclDateOfs",j.get("sclDateOfs"));
+            dataModel.put("sclRequirementsss",j.get("sclRequirementsss"));
+            return dataModel;
+        }
     };
 
     public abstract Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j);

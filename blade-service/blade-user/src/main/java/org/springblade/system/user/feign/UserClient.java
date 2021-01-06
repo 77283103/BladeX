@@ -76,7 +76,7 @@ public class UserClient implements IUserClient {
 
 	@Override
 	@PostMapping(SAVE_USER_BACH_API)
-	public R<Boolean> saveOrUpdateBatch(List<User>  user) {
+	public R<Boolean> saveOrUpdateBatch(List<User> user) {
 		return R.data(service.saveOrUpdateBatch(user));
 	}
 
