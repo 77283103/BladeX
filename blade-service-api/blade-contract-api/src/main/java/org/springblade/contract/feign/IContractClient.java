@@ -29,7 +29,7 @@ public interface IContractClient {
 	String CONTRACT = API_PREFIX + "/contractFormInfo";
 	String TEMPLATE_UPDATE = API_PREFIX + "/template_update";
 	String CHOOSE=API_PREFIX + "/getChooseList";
-	String CONTRACTSAVE = API_PREFIX + "/contractSave";
+	String CONTRACT_SAVE = API_PREFIX + "/contractSave";
 	/**
 	 * 获取合同信息
 	 * @param id
@@ -55,6 +55,6 @@ public interface IContractClient {
 	 * @para @return
 	 * @return
 	 */
-	@GetMapping(CONTRACTSAVE)
-	boolean saveContractFormInfo(@RequestParam("id") Long id,@RequestParam("id") String submitStatus);
+	@GetMapping(CONTRACT_SAVE)
+	R saveContractFormInfo(@RequestParam("id") Long id, @RequestParam("status") String status);
 }

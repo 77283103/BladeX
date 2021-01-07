@@ -311,7 +311,7 @@ public class ContractFormInfoController extends BladeController {
 		//String paramStr = "{\"contractId\":\"1343427293518774274\",\"submitStatus\":\"30\"}";
 		//cn.hutool.json.JSONObject docInfoJson = JSONUtil.parseObj(HttpUtil.createPost("http://localhost:18080/ekp/submit").body(paramStr,"application/json").execute().body());
 		//开始接口处理
-		if("30".equals(entity.getContractStatus())){
+		if("20".equals(entity.getContractStatus())){
 			//处理电子签章和oa流程
 			entity=contractFormInfoService.SingleSign(entity);
 			contractFormInfoService.updateById(entity);
@@ -328,8 +328,8 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateSave')")
 	@Transactional(rollbackFor = Exception.class)
-	public R<String> templateSave(@Valid @RequestBody TemplateRequestVO template) {
-		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		/*List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
 		//处理合同的二级联动保存
 		for (TemplateFieldEntity templateField : templateFieldList) {
@@ -353,32 +353,85 @@ public class ContractFormInfoController extends BladeController {
 			} else {
 				j.put(templateField.getFieldName(), templateField.getFieldValue());
 			}
+		}*/
+		TemplateRequestVO template=contractFormInfo.getTemplate();
+		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+		JSONObject j = new JSONObject();
+		for (TemplateFieldEntity templateField : templateFieldList) {
+			j.put(templateField.getFieldName(), templateField.getFieldValue());
 		}
 		//把json串转换成一个对象
-		ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
+		ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
+		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
+		contractFormInfoEntity.setContractTemplateId(contractFormInfo.getContractListId());
+		Long id=TemplateSaveUntil.templateSave(contractFormInfoEntity,template,j);
+		contractFormInfo.setId(id);
+		/*保存相对方信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
+			contractFormInfoService.saveCounterpart(contractFormInfo);
+		}
+		/*保存保证金信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
+			List<Long> list = new ArrayList<>();
+			ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
+			//删除保证金库脏数据
+			contractBondService.deleteByContractId(contractFormInfo.getId());
+			//删除保证金履约计划脏数据
+			contractBondPlanService.deleteByContractId(contractFormInfo.getId());
+			for (ContractBondEntity contractBondEntity : contractFormInfo.getContractBond()) {
+				BeanUtil.copy(contractBondEntity, contractBondPlan);
+				if (Func.isEmpty(contractBondEntity.getId())) {
+					contractBondService.save(contractBondEntity);
+				}
+				//保存保证金履约计划
+				contractBondPlan.setContractId(contractFormInfo.getId());
+				contractBondPlan.setId(null);
+				contractBondPlanService.save(contractBondPlan);
+				list.add(contractBondEntity.getId());
+			}
+			contractBondService.saveBond(list, contractFormInfo.getId());
+		}
+		/*保存依据信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
+			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
+			contractAccording.setContractId(contractFormInfo.getId());
+			accordingService.updateById(contractAccording);
+			contractFormInfoService.saveAccording(contractFormInfo);
+		}
+		/*保存履约信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
+			//删除履约信息脏数据
+			performanceService.deleteByContractId(contractFormInfo.getId());
+			contractFormInfo.getPerformanceList().forEach(performance -> {
+				performance.setContractId(contractFormInfo.getId());
+				performanceService.save(performance);
+			});
+		}
+		/*保存履约计划收付款*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
+			//删除收付款脏数据
+			contractPerformanceColPayService.deleteByContractId(contractFormInfo.getId());
+			contractFormInfo.getPerformanceColPayList().forEach(performanceColPay -> {
+				performanceColPay.setContractId(contractFormInfo.getId());
+				contractPerformanceColPayService.save(performanceColPay);
+			});
+		}
+		//ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
 		//保存合同和关联表 这个方法有问题
-		TemplateSaveUntil.templateSave(contractFormInfoEntity,template,j);
-		/*if (Func.isEmpty(contractFormInfoEntity.getId())) {
-			contractFormInfoEntity.setContractSoure("30");
-			contractFormInfoEntity.setContractStatus("10");
-			contractFormInfoService.save(contractFormInfoEntity);
-		} else {
-			contractFormInfoService.updateById(contractFormInfoEntity);
-		}*/
 		contractFormInfoEntity= contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
 		//页面用这个字段来判断是否提交
-		if("30".equals(template.getBean())){
+		if("20".equals(template.getBean())){
 			//导出pdf文件
 			TemplateExportUntil templateExportUntil=new TemplateExportUntil();
 			FileVO filevo=templateExportUntil.templateSave(contractFormInfoEntity,template,contractFormInfoEntity.getJson(),j);
-			contractFormInfoEntity.setContractStatus("30");
+			contractFormInfoEntity.setContractStatus("20");
 			contractFormInfoEntity.setTextFilePdf(filevo.getId()+",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
 			contractFormInfoEntity=contractFormInfoService.SingleSign(contractFormInfoEntity);
 		}
 		contractFormInfoService.updateById(contractFormInfoEntity);
-		return R.data(contractFormInfoEntity.getJson());
+		return R.data(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 	}
 
 	/**
@@ -388,30 +441,12 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "合同预览", notes = "template")
 	@Transactional(rollbackFor = Exception.class)
-	public R<String> contractBrowse(@Valid @RequestBody TemplateRequestVO template){
+	public R<String> contractBrowse(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo){
+		TemplateRequestVO template=contractFormInfo.getTemplate();
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
-		//处理合同的二级联动保存
 		for (TemplateFieldEntity templateField : templateFieldList) {
-			if (ContractFormInfoTemplateContract.CONTRACT_BIG_CATEGORY.equals(templateField.getRelationCode())) {
-				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
-				JSONObject json = JSON.parseObject(jsonObj.get("template").toString());
-				j.put("contractBigCategory", jsonObj.get("first"));
-				j.put("contractSmallCategory", jsonObj.get("second"));
-				if(null!=json){
-					j.put("contractTemplateId", json.get("id"));
-				}
-			} else if (ContractFormInfoTemplateContract.CONTRACT_COL_PAY.equals(templateField.getRelationCode())) {
-				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
-				j.put("colPayType", jsonObj.get("first"));
-				j.put("colPayTerm", jsonObj.get("second"));
-				j.put("days", jsonObj.get("days"));
-			} else if ("id".equals(templateField.getComponentType())) {
-				j.put("id", templateField.getFieldValue());
-			} else if ("upload".equals(templateField.getComponentType())) {
-			} else {
-				j.put(templateField.getFieldName(), templateField.getFieldValue());
-			}
+			j.put(templateField.getFieldName(), templateField.getFieldValue());
 		}
 		//把json串转换成一个对象
 		ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
@@ -512,7 +547,7 @@ public class ContractFormInfoController extends BladeController {
 			}
 			json = objects.toJSONString();
 			infoEntity.setJson(json);
-			infoEntity.setContractStatus("30");
+			infoEntity.setContractStatus("20");
 			contractFormInfoService.saveOrUpdate(infoEntity);
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(infoEntity));

@@ -15,6 +15,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.util.Date;
@@ -55,16 +57,22 @@ public class CglActivityExecutionContractEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="区域")
 	private String cglArea;
+
 	/**
 	 * 本活动执行发起时间
 	 */
-    @ApiModelProperty(value="本活动执行发起时间")
-	private String cglByTheTime;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value="本活动执行发起时间")
+	private Date cglByTheTime;
+
 	/**
 	 * 本活动执行截止时间
 	 */
-    @ApiModelProperty(value="本活动执行截止时间")
-	private String cglAsOfTime;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value="本活动执行截止时间")
+	private Date cglAsOfTime;
 	/**
 	 * 附件二
 	 */
@@ -85,6 +93,13 @@ public class CglActivityExecutionContractEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="本活动总费用")
 	private String cglTotalCost;
+
+	/**
+	 * 本活动总费用
+	 */
+	@ApiModelProperty(value="本活动总费用")
+	private BigDecimal cglAmoutActivity;
+
 	/**
 	 * 活动场次
 	 */
@@ -102,11 +117,35 @@ public class CglActivityExecutionContractEntity extends BaseEntity {
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="首款付款签订后天数")
 	private Integer cglNumberOfDays;
+
+	/**
+	 * 总金额百分比金额
+	 */
+	@ApiModelProperty(value="总金额百分比金额")
+	private BigDecimal cglTAmount;
+
+	/**
+	 * 大写百分比总金额
+	 */
+	@ApiModelProperty(value="大写百分比总金额")
+	private String cglAmountWords;
+
 	/**
 	 * 一次性支付剩余款项比例
 	 */
     @ApiModelProperty(value="一次性支付剩余款项比例")
 	private Double cglProportion;
+	/**
+	 * 一次性支付金额
+	 */
+	@ApiModelProperty(value="一次性支付金额")
+	private BigDecimal cglLumpSum;
+	/**
+	 * 大写金额2
+	 */
+	@ApiModelProperty(value="大写金额2")
+	private String cglCapitalize;
+
 	/**
 	 * 其他方式
 	 */

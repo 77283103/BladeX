@@ -135,7 +135,7 @@ public class TemplateFieldController extends BladeController {
 	public R update(@Valid @RequestBody List<TemplateFieldRequestVO> templateFieldList) {
 		TemplateFieldEntity entity = new TemplateFieldEntity();
 		for (TemplateFieldRequestVO templateField:templateFieldList){
-			if("true".equals(templateField.getIsShow())){
+			if(templateField.getComponentType()!=null){
 				BeanUtil.copy(templateField,entity);
 				if(Func.isEmpty(entity.getId())){
 					templateFieldService.save(entity);

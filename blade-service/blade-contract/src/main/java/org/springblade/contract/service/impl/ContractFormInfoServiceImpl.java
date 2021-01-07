@@ -1012,8 +1012,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity) {
-		//String _PATH="D:/ftl/";//模板路径
-		String _PATH="/ftl/";//模板路径
+		String _PATH="D:/ftl/";//模板路径
+		//String _PATH="/ftl/";//模板路径
 		// 查查公司有没有申请电子章
 		CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
 		companyInfoEntity.setQueryType("1");
@@ -1070,7 +1070,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 			// 盖章方法  开始 问题:这里直接盖章吗?????????? 如果不在这里的话, 把它挪到对应地方
 			// 这里用的是单个盖章, 批量盖章需要短信验证
-			List<SingleSignVo> singleSignVoList = new ArrayList<SingleSignVo>();
+			/*List<SingleSignVo> singleSignVoList = new ArrayList<SingleSignVo>();
 			for(UploadFileVo uploadFileVo:uploadFileVoList){
 				SingleSignEntity singleSignEntity = new SingleSignEntity();
 				// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
@@ -1097,7 +1097,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				// 盖章坐标y 不填就是0 关键字的话坐标中心点是关键字
 				//signPosEntity.setPosY(0f);
 				// 只有关键字签章的时候采用,输入关键字
-				signPosEntity.setKey("甲方：");
+				signPosEntity.setKey("盖章");
 				// 章大小 可以不填,不填最大显示159,小于159按实际大小走,大于159只显示159大小
 				//signPosEntity.setWidth(0f);
 				// 是否二维码签署 骑缝和多页不生效
@@ -1112,18 +1112,18 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				// 企业信用代码 这个代码是为了定位章  如果要盖别单位的章就得填别单位的,不然就和上面填一样
 				autoSignEntity.setIdno(singleSignEntity.getIdno());
 				// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
-				autoSignEntity.setIdno("Edges");
-				//autoSignEntity.setKey("盖章");
+				autoSignEntity.setSignType("Edges");;
+				//autoSignEntity.setKey("");
 				// 和上面那个一样,设定盖章位置
 				//SignPosEntity autoSignPosEntity = new SignPosEntity();
 				//autoSignEntity.setSignPos(autoSignPosEntity);
 				singleSignEntity.setAutoSign(autoSignEntity);
 				// 返回的内容里有个filePath,是个ID,这个id可以用来下载或者在线查看盖完章的文件
 				singleSignVoList.add(abutmentClient.singleSignPost(singleSignEntity).getData()); //接口通了
-			}
+			}*/
 			// 盖章方法  结束
 			//epk流程接口
-			entity.setTextFilePdf(singleSignVoList.get(0).getFilePath());
+			entity.setTextFilePdf(uploadFileVoList.get(0).getId());
 			EkpVo ekpVo=abutmentClient.sendEkpFormPost(entity).getData();
 		}
 		return entity;
@@ -1141,9 +1141,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
         //把Json对象转成对象
         List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
         for (TemplateFieldJsonEntity templateField : templateFieldList) {
-            if (ContractFormInfoTemplateContract.CONTRACT_ID.equals(templateField.getComponentType())) {
+            /*if (ContractFormInfoTemplateContract.CONTRACT_ID.equals(templateField.getComponentType())) {
                 templateField.setFieldValue(contractFormInfo.getId().toString());
-            }
+            }*/
             //处理二级联动组件类型的数据
             if (ContractFormInfoTemplateContract.COMPONENT_TYPE_SELECT.equals(templateField.getComponentType())) {
                 Object object = JSON.parseObject(templateField.getSecondSelectData(), Object.class);
@@ -1166,9 +1166,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 }
             }
             if (ContractFormInfoTemplateContract.COMPONENT_TYPE.contains(templateField.getComponentType())) {
-                if (ContractFormInfoTemplateContract.CONTRACT_ACCORDING.equals(templateField.getRelationCode())) {
+                /*if (ContractFormInfoTemplateContract.CONTRACT_ACCORDING.equals(templateField.getRelationCode())) {
                     List<ContractAccordingEntity> accordingList = JSON.parseArray(templateField.getTableData(), ContractAccordingEntity.class);
-                    /*保存依据信息*/
+                    *//*保存依据信息*//*
                     if (CollectionUtil.isNotEmpty(accordingList)) {
                         ContractAccordingEntity contractAccording = accordingList.get(0);
                         contractAccording.setContractId(contractFormInfo.getId());
@@ -1198,7 +1198,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                             com.alibaba.fastjson.JSONArray contractBondArry = obj.getJSONArray(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND);
                             List<ContractBondEntity> contractBond = JSON.parseArray(contractBondArry.toString(), ContractBondEntity.class);
 							contractFormInfo.setContractBond(contractBond);
-                            /*保存保证金信息*/
+                            *//*保存保证金信息*//*
                             if (CollectionUtil.isNotEmpty(contractBond)) {
                                 List<Long> list = new ArrayList<>();
                                 List<ContractBondEntity> bondList = new ArrayList<>();
@@ -1256,7 +1256,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         templateField.setTableData(JSONObject.toJSONString(list));
                         templateField.setTableDataList(list);
                     }
-                }
+                }*/
                 //*新陈列协议书关联表
                 if (ContractFormInfoTemplateContract.CONTRACT_YWLANEWDISPLAY1.equals(templateField.getRelationCode())) {
                     List<YwlANewDisplay1ResponseVO> ywlANewDisplay1List = JSON.parseArray(templateField.getTableData(), YwlANewDisplay1ResponseVO.class);

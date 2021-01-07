@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springblade.contract.entity.*;
+import org.springblade.system.vo.TemplateRequestVO;
 
 import java.util.List;
 
@@ -63,6 +64,9 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 
 	@ApiModelProperty(value="履约计划收付款集合")
 	private List<ContractPerformanceColPayEntity> performanceColPayList;
+
+	@ApiModelProperty(value="模板对象")
+	private TemplateRequestVO template;
 
 	@ApiModelProperty(value="合同状态集合")
 	private List<String> code;

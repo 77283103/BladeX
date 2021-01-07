@@ -161,9 +161,9 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 		List<TemplateFieldEntity> listT=new ArrayList<TemplateFieldEntity>();
 		try {
 			//默认先生成所有的合同主表
-			Class<?> clazz = Class.forName("org.springblade.contract.entity.ContractFormInfoEntity");
+			/*Class<?> clazz = Class.forName("org.springblade.contract.entity.ContractFormInfoEntity");
 			Field[] fieldFather = clazz.getDeclaredFields();
-			List<Field> fieldFatherList= new ArrayList(Arrays.asList(fieldFather));
+			List<Field> fieldFatherList= new ArrayList(Arrays.asList(fieldFather));*/
 			//生成传过来的合同子表
 			Class<?> clazzz = Class.forName(bean.getBean());
 			Field[] fieldSon = clazzz.getDeclaredFields();
@@ -195,11 +195,11 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					fieldSonList.remove(field);
 				}
 			}
-			fieldFatherList.addAll(fieldSonList);
+			//fieldFatherList.addAll(fieldSonList);
 			// 获取类名
-			String strName01 = clazz.getName();
+			String strName01 = clazzz.getName();
 			// 返回所有的属性
-			for(Field field:fieldFatherList){
+			for(Field field:fieldSonList){
 				TemplateFieldEntity templateFieldEntity=new TemplateFieldEntity();
 				if("serialVersionUID".equals(field.getName())){
 					templateFieldEntity.setFieldName("id");

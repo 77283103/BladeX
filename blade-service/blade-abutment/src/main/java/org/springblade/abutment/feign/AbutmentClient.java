@@ -72,7 +72,7 @@ public class AbutmentClient implements IAbutmentClient {
 					//依据编号
 					//formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
 					//乙方电话
-					formValuesEntity.setFd_b_number("13350894824");
+					formValuesEntity.setFd_b_number("13361615656");
 					//乙方税籍编号
 					formValuesEntity.setFd_b_taxno("91360823092907952B");
 					formValuesEntity.setFd_accord_id("1762642a34c79442253858b4b2aab793");

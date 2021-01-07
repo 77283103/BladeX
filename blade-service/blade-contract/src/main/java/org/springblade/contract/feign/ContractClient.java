@@ -67,10 +67,14 @@ public class ContractClient implements IContractClient{
 	}
 
 	@Override
-	@GetMapping(CONTRACTSAVE)
-	public boolean saveContractFormInfo(Long id, String submitStatus) {
+	@GetMapping(CONTRACT_SAVE)
+	public R saveContractFormInfo(Long id, String status) {
 		ContractFormInfoEntity contractFormInfo=contractFormInfoMapper.getById(id);
-		contractFormInfo.setSubmitStatus(submitStatus);
-		return formInfoService.saveOrUpdate(contractFormInfo);
+		if(Func.isEmpty(contractFormInfo.getId())){
+			return R.fail("合同信息不存在");
+		}
+		contractFormInfo.setContractStatus(status);
+		formInfoService.saveOrUpdate(contractFormInfo);
+		return R.success("审核成功");
 	}
 }

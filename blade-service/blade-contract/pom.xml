@@ -47,12 +47,6 @@
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
-            <artifactId>blade-abutment-api</artifactId>
-            <version>2.5.0.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
             <artifactId>blade-user-api</artifactId>
             <version>2.5.0.RELEASE</version>
             <scope>compile</scope>
@@ -112,6 +106,12 @@
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>
             <version>5.5.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-abutment-api</artifactId>
+            <version>2.5.0.RELEASE</version>
             <scope>compile</scope>
         </dependency>
         <!--excel导出-->

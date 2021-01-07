@@ -54,6 +54,8 @@ public class EkpController {
 	@AutoLog
 	@ApiOperation(value = "epk通过后返回给合同平台合同状态接口")
 	public R queryOrganization(@RequestBody ContractSubmit contractSubmit) {
-		return R.data(contractClient.saveContractFormInfo(Long.valueOf(contractSubmit.getContractId()),contractSubmit.getSubmitStatus()));
+		String status=contractSubmit.getSubmitStatus();
+		Long id=Long.valueOf(contractSubmit.getContractId());
+		return R.data(contractClient.saveContractFormInfo(id,status));
 	}
 }

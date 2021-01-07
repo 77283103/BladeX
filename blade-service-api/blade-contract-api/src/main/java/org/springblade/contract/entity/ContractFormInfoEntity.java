@@ -237,6 +237,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@JsonSerialize(using = ToStringSerializer.class)
 	@ApiModelProperty(value = "模板表id")
 	private Long contractListId;
+
+	/**
+	 * 模板表id
+	 */
+	@ApiModelProperty(value = "范本名称")
+	private String contractListName;
 	/**
 	 * 关联相对方信息
 	 */
