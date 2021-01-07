@@ -1,6 +1,6 @@
 #服务器端口
 server:
-  port: 8011
+  port: 8012
 
 oss:
   enable: true

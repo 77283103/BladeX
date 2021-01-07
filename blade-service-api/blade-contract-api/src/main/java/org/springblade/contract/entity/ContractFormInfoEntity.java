@@ -509,5 +509,9 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "解决争议其他约定")
 	private String ywlSettlement;
-
+	/**
+	 * 合同起草方（字典）
+	 */
+	@ApiModelProperty(value = "合同起草方（字典）")
+	private String contractRoles;
 }

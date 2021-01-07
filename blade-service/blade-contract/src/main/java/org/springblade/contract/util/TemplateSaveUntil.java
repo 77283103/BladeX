@@ -81,6 +81,8 @@ public class TemplateSaveUntil {
 	private IShjbNonSaleableOptionalService shjbNonSaleableOptionalService;
 	@Autowired
 	private ICglSalesContractService cglSalesContractService;
+	@Autowired
+	private ISclContractTemplateService sclContractTemplateService;
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -298,6 +300,12 @@ public class TemplateSaveUntil {
 				templateSaveUntil.cglSalesContractService.save(cglSalesContract);
 				id = cglSalesContract.getId();
 			}
+			//下脚品买卖合同模版
+			else if ("MMHT_26".equals(template.getTemplateCode())) {
+				SclContractTemplateEntity sclContractTemplate= JSONObject.toJavaObject(j, SclContractTemplateEntity.class);
+				templateSaveUntil.sclContractTemplateService.save(sclContractTemplate);
+				id = sclContractTemplate.getId();
+			}
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
@@ -502,6 +510,12 @@ public class TemplateSaveUntil {
 				CglSalesContractEntity cglSalesContract= JSONObject.toJavaObject(j, CglSalesContractEntity.class);
 				cglSalesContract.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.cglSalesContractService.updateById(cglSalesContract);
+			}
+			//下脚品买卖合同模版
+			else if ("MMHT_26".equals(template.getTemplateCode())) {
+				SclContractTemplateEntity sclContractTemplate= JSONObject.toJavaObject(j, SclContractTemplateEntity.class);
+				sclContractTemplate.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.sclContractTemplateService.updateById(sclContractTemplate);
 			}
 		}
 		return contractFormInfoEntity.getId();

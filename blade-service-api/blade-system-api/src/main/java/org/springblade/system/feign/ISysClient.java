@@ -24,6 +24,7 @@ import org.springblade.system.vo.DeptVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -62,8 +63,10 @@ public interface ISysClient {
 	String TENANT_ID = API_PREFIX + "/tenant-id";
 	String PARAM = API_PREFIX + "/param";
 	String PARAM_VALUE = API_PREFIX + "/param-value";
-	String SAVE_DEPT_API=API_PREFIX +"save_dept_api";
-	String SAVE_POST_API=API_PREFIX +"save_post_api";
+	String SAVE_DEPT_API=API_PREFIX +"/save-dept-api";
+	String SAVE_POST_API=API_PREFIX +"/save-post-api";
+	String SUBMIT_DEPT_API=API_PREFIX +"/submit-dept-api";
+	String SUBMIT_POST_API=API_PREFIX +"/submit-post-api";
 	/**
 	 * 获取菜单
 	 *
@@ -270,7 +273,7 @@ public interface ISysClient {
 	 * @return
 	 */
 	@PostMapping(SAVE_DEPT_API)
-	R<Boolean> saveOrUpdateBatchDept(List<Dept> dept);
+	R<Boolean> saveOrUpdateBatchDept(@RequestBody List<Dept> dept);
 
 
 	/**
@@ -279,6 +282,23 @@ public interface ISysClient {
 	 * @return
 	 */
 	@PostMapping(SAVE_POST_API)
-	R<Boolean> saveOrUpdateBatchPost(List<Post> post);
+	R<Boolean> saveOrUpdateBatchPost(@RequestBody List<Post> post);
+
+	/**
+	 *
+	 * @param dept
+	 * @return
+	 */
+	@PostMapping(SUBMIT_DEPT_API)
+	R<Boolean> saveDept(@RequestBody Dept dept);
+
+
+	/**
+	 *
+	 * @param post
+	 * @return
+	 */
+	@PostMapping(SUBMIT_POST_API)
+	R<Boolean> savePost(@RequestBody Post post);
 
 }

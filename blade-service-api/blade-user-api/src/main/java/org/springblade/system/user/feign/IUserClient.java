@@ -51,8 +51,8 @@ public interface IUserClient {
 	String USER_INFO_BY_DEPTID_AND_POSTID = API_PREFIX + "/user-info-by-deptAndPost";
 	String USER_INFO_BY_USERID_ARRAY = API_PREFIX + "/user-info-by-userIdArray";
 	String USER_INFO_BY_BENCH_MINISTER = API_PREFIX + "/user-Info-by-bench-minister";
-	String SAVE_USER_BACH_API=API_PREFIX +"save-user-api";
-	String SAVE_USER_DEPART_BACH_API=API_PREFIX +"save-user-depart-bach_api";
+	String SAVE_USER_BACH_API=API_PREFIX +"/save-user-api";
+	String SAVE_USER_DEPART_BACH_API=API_PREFIX +"/save-user-depart-bach-api";
 	/**
 	 * 获取用户信息
 	 *

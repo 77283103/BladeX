@@ -152,4 +152,14 @@ public class ISysClientFallback implements ISysClient {
 		return  R.fail("保存數據失敗");
 	}
 
+	@Override
+	public R<Boolean> saveDept(Dept dept) {
+		return R.fail("保存數據失敗");
+	}
+
+	@Override
+	public R<Boolean> savePost(Post post) {
+		return R.fail("保存數據失敗");
+	}
+
 }
