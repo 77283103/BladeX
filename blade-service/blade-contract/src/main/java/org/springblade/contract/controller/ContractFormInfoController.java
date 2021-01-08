@@ -197,7 +197,11 @@ public class ContractFormInfoController extends BladeController {
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
 			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
-			accordingService.updateById(contractAccording);
+			if (Func.isEmpty(contractFormInfo.getId())) {
+				accordingService.save(contractAccording);
+			}else {
+				accordingService.updateById(contractAccording);
+			}
 		}
 		/*保存履约信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
@@ -287,7 +291,11 @@ public class ContractFormInfoController extends BladeController {
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
 			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
-			accordingService.updateById(contractAccording);
+			if (Func.isEmpty(contractFormInfo.getId())) {
+				accordingService.save(contractAccording);
+			}else {
+				accordingService.updateById(contractAccording);
+			}
 			contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
@@ -363,7 +371,9 @@ public class ContractFormInfoController extends BladeController {
 		//把json串转换成一个对象
 		ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
-		contractFormInfoEntity.setContractTemplateId(contractFormInfo.getContractListId());
+		if(Func.isEmpty(contractFormInfoEntity.getContractTemplateId())){
+			contractFormInfoEntity.setContractTemplateId(contractFormInfo.getContractListId());
+		}
 		Long id=TemplateSaveUntil.templateSave(contractFormInfoEntity,template,j);
 		contractFormInfo.setId(id);
 		/*保存相对方信息*/
@@ -395,8 +405,12 @@ public class ContractFormInfoController extends BladeController {
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
 			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
-			accordingService.updateById(contractAccording);
-			contractFormInfoService.saveAccording(contractFormInfo);
+			if (Func.isEmpty(contractFormInfo.getId())) {
+				accordingService.save(contractAccording);
+			}else {
+				accordingService.updateById(contractAccording);
+			}
+			//contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
@@ -441,7 +455,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "合同预览", notes = "template")
 	@Transactional(rollbackFor = Exception.class)
-	public R<String> contractBrowse(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo){
+	public R<FileVO> contractBrowse(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo){
 		TemplateRequestVO template=contractFormInfo.getTemplate();
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
@@ -454,7 +468,7 @@ public class ContractFormInfoController extends BladeController {
 		//导出pdf文件
 		TemplateExportUntil templateExportUntil=new TemplateExportUntil();
 		FileVO files=templateExportUntil.templateSave(contractFormInfoEntity,template,template.getJson(),j);
-		return R.data(files.getLink());
+		return R.data(files);
 	}
 
 

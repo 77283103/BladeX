@@ -102,7 +102,7 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileEntity> imp
 	public InputStream getObject(String fileName) {
 		try {
 			//MinioClient minioClient = new MinioClient(ossProperties.getEndpoint(), ossProperties.getAccessKey(), ossProperties.getSecretKey());
-			InputStream object = client.getObject(ossProperties.getBucketName(),fileName);
+			InputStream object = client.getObject("000000-"+ossProperties.getBucketName(),fileName);
 			return object;
 		} catch (Exception e) {
 			e.printStackTrace();

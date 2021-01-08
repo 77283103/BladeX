@@ -172,6 +172,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "税率")
 	private Double contactTaxRate;
 	/**
+	 * 是否有其它信息
+	 */
+	@ApiModelProperty(value = "其它信息")
+	private String isNotOther;
+
+	/**
 	 * 其它信息
 	 */
 	@ApiModelProperty(value = "其它信息")
