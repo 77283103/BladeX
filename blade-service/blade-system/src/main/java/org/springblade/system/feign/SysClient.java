@@ -175,24 +175,24 @@ public class SysClient implements ISysClient {
 	@Override
 	@PostMapping(SAVE_DEPT_API)
 	public R<Boolean> saveOrUpdateBatchDept(List<Dept> dept) {
-		return R.status(deptService.saveOrUpdateBatch(dept));
+		return R.data(deptService.saveOrUpdateBatch(dept));
 	}
 
 	@Override
 	@PostMapping(SAVE_POST_API)
 	public R<Boolean> saveOrUpdateBatchPost(List<Post> post) {
-		return R.status(postService.saveOrUpdateBatch(post));
+		return R.data(postService.saveOrUpdateBatch(post));
 	}
 	@Override
 	@PostMapping(SUBMIT_DEPT_API)
 	public R<Boolean> saveDept(Dept dept) {
-		return R.status(deptService.saveOrUpdate(dept));
+		return R.data(deptService.saveOrUpdate(dept));
 	}
 
 	@Override
 	@PostMapping(SUBMIT_POST_API)
 	public R<Boolean> savePost(Post post) {
-		return R.status(postService.saveOrUpdate(post));
+		return R.data(postService.saveOrUpdate(post));
 	}
 	@Override
 	@GetMapping(DEPT_NEW_ID)

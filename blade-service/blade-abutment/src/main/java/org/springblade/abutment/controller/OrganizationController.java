@@ -59,7 +59,6 @@ public class OrganizationController {
     public R<List<OrganizationVo>> queryOrganization() {
         OrganizationEntity entity = new OrganizationEntity();
         List<OrganizationVo> organizationList = null;
-        /*try {*/
         try {
             organizationList = organizationService.getOrganizationInfo(entity);
         } catch (Exception e) {
@@ -80,32 +79,31 @@ public class OrganizationController {
                 map.put("id", IdUtil.createSnowflake(1, Long.parseLong(organizationVo.getOrgType())).nextIdStr());
                 map.put("orgType", organizationVo.getOrgType());
                 idMap.put(organizationVo.getId(), map);
-            }
-            for (OrganizationVo organizationVo : organizationList) {
                 switch (organizationVo.getOrgType()) {
                     // 部门
                     case "2":
                         Dept dept = new Dept();
                         dept.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 1 : 0);
-//                        dept.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
-//                        if (Func.isNotEmpty(idMap.get(organizationVo.getParentid()).get("id"))) {
-//                            dept.setParentId(Long.parseLong(idMap.get(organizationVo.getParentid()).get("id")));
-//                        }
+                        dept.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
+                        dept.setParentId(Long.parseLong(idMap.get(organizationVo.getId()).get("id")));
                         dept.setId(Long.parseLong(idMap.get(organizationVo.getId()).get("id")));
                         dept.setDeptName(organizationVo.getName());
+                        dept.setPinyinName(organizationVo.getNamePinyin());
                         dept.setIsDeleted(0);
-                        sysClient.saveDept(dept);
-//                        deptList.add(dept);
+                        dept.setStatus(1);
+                        deptList.add(dept);
+                        sysClient.saveOrUpdateBatchDept(deptList);
                         break;
                     // 岗位
                     case "4":
                         Post post = new Post();
                         post.setIsDeleted(0);
                         post.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
-                        post.setCreateDept(Long.parseLong(idMap.get(organizationVo.getParentid()).get("id")));
+                        post.setCreateDept(Long.parseLong(idMap.get(organizationVo.getId()).get("id")));
                         post.setId(Long.parseLong(idMap.get(organizationVo.getId()).get("id")));
                         post.setPostName(organizationVo.getName());
                         postList.add(post);
+                        sysClient.saveOrUpdateBatchPost(postList);
                         break;
                     // 个人
                     case "8":
@@ -120,26 +118,22 @@ public class OrganizationController {
                         user.setRealName(organizationVo.getName());
                         user.setEmail(organizationVo.getEmail());
                         userList.add(user);
-                        UserDepartEntity userDepart = new UserDepartEntity();
+                        userClient.saveOrUpdateBatch(userList);
+                        /*UserDepartEntity userDepart = new UserDepartEntity();
                         userDepart.setUserId(user.getId());
-                        if ("2".equals(idMap.get(organizationVo.getParentid()).get("orgType"))) {
-                            userDepart.setDeptId(Long.parseLong(idMap.get(organizationVo.getParentid()).get("id")));
+                        if ("2".equals(idMap.get(organizationVo.getId()).get("orgType"))) {
+                            userDepart.setDeptId(Long.parseLong(idMap.get(organizationVo.getId()).get("id")));
                         }
-                        if ("4".equals(idMap.get(organizationVo.getParentid()).get("orgType"))) {
-                            userDepart.setPostId(Long.parseLong(idMap.get(organizationVo.getParentid()).get("id")));
+                        if ("4".equals(idMap.get(organizationVo.getId()).get("orgType"))) {
+                            userDepart.setPostId(Long.parseLong(idMap.get(organizationVo.getId()).get("id")));
                         }
                         userDepartList.add(userDepart);
+                        userClient.saveOrUpdateBatchDepart(userDepartList);*/
                         break;
                 }
-//                sysClient.saveOrUpdateBatchDept(deptList);
-//                sysClient.saveOrUpdateBatchPost(postList);
-//                userClient.saveOrUpdateBatch(userList);
-//                userClient.saveOrUpdateBatchDepart(userDepartList);
+
             }
         }
-		 /*}catch (Exception e) {
-			log.error(e.getMessage());
-		}*/
         return R.data(organizationList);
     }
 }

@@ -42,6 +42,7 @@ public interface IDictBizClient {
 	String GET_VALUE = API_PREFIX + "/dict-biz/get-value";
 	String GET_VALUES = API_PREFIX + "/dict-biz/get-values";
 	String GET_LIST = API_PREFIX + "/dict-biz/get-list";
+	String GET_KEY = API_PREFIX + "/dict-biz/get-key";
 
 	/**
 	 * 获取字典实体
@@ -61,6 +62,15 @@ public interface IDictBizClient {
 	 */
 	@GetMapping(GET_VALUE)
 	R<String> getValue(@RequestParam("code") String code, @RequestParam("dictKey") String dictKey);
+	/**
+	 * 获取字典表对应键
+	 *
+	 * @param code    字典编号
+	 * @param dictValue 字典序号
+	 * @return
+	 */
+	@GetMapping(GET_KEY)
+	R<String> getKey(@RequestParam("code") String code, @RequestParam("dictValue") String dictValue);
 	/**
 	 * 获取字典表对应中文
 	 *

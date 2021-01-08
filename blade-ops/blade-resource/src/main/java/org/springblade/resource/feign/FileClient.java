@@ -2,7 +2,6 @@ package org.springblade.resource.feign;
 
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.service.IFileService;
 import org.springblade.resource.vo.FileVO;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**

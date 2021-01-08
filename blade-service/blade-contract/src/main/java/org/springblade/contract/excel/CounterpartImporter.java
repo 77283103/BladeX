@@ -14,43 +14,27 @@
  *  this software without specific prior written permission.
  *  Author: Chill 庄骞 (smallchill@163.com)
  */
-package org.springblade.system.feign;
+package org.springblade.contract.excel;
 
-import org.springblade.core.tool.api.R;
-import org.springblade.system.entity.DictBiz;
-import org.springframework.stereotype.Component;
+import lombok.RequiredArgsConstructor;
+import org.springblade.contract.service.IContractCounterpartService;
+import org.springblade.core.excel.support.ExcelImporter;
 
 import java.util.List;
 
 /**
- * Feign失败配置
+ * 相对方数据导入类
  *
  * @author Chill
  */
-@Component
-public class IDictBizClientFallback implements IDictBizClient {
-	@Override
-	public R<DictBiz> getById(Long id) {
-		return R.fail("获取数据失败");
-	}
+@RequiredArgsConstructor
+public class CounterpartImporter implements ExcelImporter<ContractCounterpartExcel> {
+
+	private final IContractCounterpartService service;
+	private final Boolean isCovered;
 
 	@Override
-	public R<String> getValue(String code, String dictKey) {
-		return R.fail("获取数据失败");
-	}
-
-	@Override
-	public R<String> getKey(String code, String dictValue) {
-		return R.fail("获取数据失败");
-	}
-
-	@Override
-	public R<String> getValues(String code, Long id) {
-		return  R.fail("获取数据失败");
-	}
-
-	@Override
-	public R<List<DictBiz>> getList(String code) {
-		return R.fail("获取数据失败");
+	public void save(List<ContractCounterpartExcel> data) {
+		service.importCounterpart(data, isCovered);
 	}
 }

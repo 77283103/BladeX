@@ -53,6 +53,11 @@ public class DictBizClient implements IDictBizClient {
 	}
 
 	@Override
+	public R<String> getKey(String code, String dictValue) {
+		return  R.data(service.getKey(code, dictValue));
+	}
+
+	@Override
 	public R<String> getValues(String code, Long id) {
 		return  R.data(service.getValues(code, id));
 	}

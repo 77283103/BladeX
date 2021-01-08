@@ -2,9 +2,12 @@ package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.contract.excel.ContractCounterpartExcel;
 import org.springblade.contract.vo.ContractCounterpartRequestVO;
 import org.springblade.contract.vo.ContractCounterpartResponseVO;
 import org.springblade.core.mp.base.BaseService;
+
+import java.util.List;
 
 /**
  * 相对方管理 服务类
@@ -20,7 +23,7 @@ public interface IContractCounterpartService extends BaseService<ContractCounter
 	 * @param counterpart
 	 * @return
 	 */
-	IPage<ContractCounterpartEntity> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartRequestVO counterpart);
+	IPage<ContractCounterpartResponseVO> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartRequestVO counterpart);
 
 	/**
 	 * 重写向对方vo 返回附件列表到视图
@@ -28,4 +31,12 @@ public interface IContractCounterpartService extends BaseService<ContractCounter
 	 * @return
 	 */
 	ContractCounterpartResponseVO getById(Long id);
+
+
+	/**
+	 * 导入相对方数据数据
+	 * @param data
+	 * @param isCovered
+	 */
+	void importCounterpart(List<ContractCounterpartExcel> data, Boolean isCovered);
 }

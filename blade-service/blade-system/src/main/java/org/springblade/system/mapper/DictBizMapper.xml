@@ -59,6 +59,11 @@
             dict_value
         from blade_dict_biz where code = #{param1} and dict_key = #{param2} and is_deleted = 0
     </select>
+    <select id="getKey" resultType="java.lang.String">
+        select
+                dict_key
+        from blade_dict_biz where code = #{param1} and dict_value = #{param2} and is_deleted = 0
+    </select>
     <select id="getValues" resultType="java.lang.String">
         select
         dict_value

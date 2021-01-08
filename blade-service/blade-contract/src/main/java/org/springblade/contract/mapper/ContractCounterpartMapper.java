@@ -3,6 +3,7 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.contract.vo.ContractCounterpartRequestVO;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	 * @param counterpart
 	 * @return
 	 */
-	IPage<ContractCounterpartEntity> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartEntity counterpart);
+	IPage<ContractCounterpartEntity> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartRequestVO counterpart);
 
 	/**
 	 * 根据合同id查询相对方集合
@@ -43,5 +44,9 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	 */
 	List<ContractCounterpartEntity> selectByName(String name);
 
-
+	/**
+	 *
+	 * @param entity
+	 */
+	void updateByName(ContractCounterpartEntity entity);
 }

@@ -97,7 +97,6 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileEntity> imp
 		List<FileEntity> fileEntityList = baseMapper.selectBatchIds(Func.toLongList(ids));
 		return FileWrapper.build().listVO(fileEntityList);
 	}
-
 	@Override
 	public InputStream getObject(String fileName) {
 		try {

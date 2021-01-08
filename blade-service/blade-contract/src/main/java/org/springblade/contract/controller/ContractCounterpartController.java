@@ -7,11 +7,14 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.contract.excel.ContractCounterpartExcel;
+import org.springblade.contract.excel.CounterpartImporter;
 import org.springblade.contract.service.IContractCounterpartService;
 import org.springblade.contract.vo.ContractCounterpartRequestVO;
 import org.springblade.contract.vo.ContractCounterpartResponseVO;
 import org.springblade.contract.wrapper.ContractCounterpartWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
+import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
@@ -20,8 +23,12 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -47,7 +54,7 @@ public class ContractCounterpartController extends BladeController {
 	@PreAuth("hasPermission('contract:counterpart:detail')")
 	public R<ContractCounterpartResponseVO> detail(@RequestParam Long id) {
 		ContractCounterpartEntity detail = counterpartService.getById(id);
-		return R.data(ContractCounterpartWrapper.build().entityVO(detail));
+		return R.data(ContractCounterpartWrapper.build().entityPV(detail));
 	}
 
 	/**
@@ -58,8 +65,8 @@ public class ContractCounterpartController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入counterpart")
 	@PreAuth("hasPermission('contract:counterpart:list')")
 	public R<IPage<ContractCounterpartResponseVO>> list(ContractCounterpartRequestVO counterpart, Query query) {
-		IPage<ContractCounterpartEntity> pages = counterpartService.pageList(Condition.getPage(query), counterpart);
-		return R.data(ContractCounterpartWrapper.build().pageVO(pages));
+		IPage<ContractCounterpartResponseVO> pages = counterpartService.pageList(Condition.getPage(query), counterpart);
+		return R.data(pages);
 	}
 
 	/**
@@ -102,4 +109,25 @@ public class ContractCounterpartController extends BladeController {
 		return R.status(counterpartService.deleteLogic(Func.toLongList(ids)));
 	}
 
+	/**
+	 * 导入相对方
+	 */
+	@PostMapping("import-counterpart")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "导入相对方", notes = "传入excel")
+	public R importUser(MultipartFile file, Integer isCovered) {
+		CounterpartImporter counterpartImporter = new CounterpartImporter(counterpartService, isCovered == 1);
+		ExcelUtil.save(file, counterpartImporter, ContractCounterpartExcel.class);
+		return R.success("操作成功");
+	}
+	/**
+	 * 导出模板
+	 */
+	@GetMapping("export-template")
+	@ApiOperationSupport(order = 14)
+	@ApiOperation(value = "导出模板")
+	public void exportUser(HttpServletResponse response) {
+		List<ContractCounterpartExcel> list = new ArrayList<>();
+		ExcelUtil.export(response, "相对方数据模板", "相对方数据表", list, ContractCounterpartExcel.class);
+	}
 }

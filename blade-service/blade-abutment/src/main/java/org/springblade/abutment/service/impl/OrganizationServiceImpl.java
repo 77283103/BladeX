@@ -85,7 +85,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
         if(StrUtil.isNotEmpty(entity.getIsAvailable())) {
             whereList.add(this.getWhereMap("isAvailable", entity.getIsAvailable()));
         }
-        entity.setOrgType("2");
+        entity.setOrgType("4");
         if(StrUtil.isNotEmpty(entity.getOrgType())) {
             whereList.add(this.getWhereMap("orgType", entity.getOrgType()));
         }

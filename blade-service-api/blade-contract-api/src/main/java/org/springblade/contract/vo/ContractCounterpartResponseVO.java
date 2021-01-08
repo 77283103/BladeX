@@ -27,4 +27,9 @@ public class ContractCounterpartResponseVO extends ContractCounterpartEntity {
 	 */
 	private List<FileVO> counterpartFilesVOList;
 
+	private String createUserName;
+
+	private String createDeptName;
+
+	private String updateUserName;
 }
