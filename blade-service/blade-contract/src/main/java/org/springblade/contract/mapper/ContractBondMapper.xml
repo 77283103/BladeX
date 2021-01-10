@@ -18,6 +18,7 @@
         <result column="plan_return_amount" property="planReturnAmount"/>
         <result column="actual_return_time" property="actualReturnTime"/>
         <result column="actual_return_amount" property="actualReturnAmount"/>
+        <result column="return_condition" property="returnCondition"/>
         <result column="counterpart_id" property="counterpartId"/>
         <result column="factories" property="factories"/>
         <result column="create_user" property="createUser"/>
@@ -44,6 +45,7 @@
         plan_return_amount,
         actual_return_time,
         actual_return_amount,
+        return_condition,
         counterpart_id,
         factories,
         create_user,
@@ -61,10 +63,10 @@
         FROM contract_bond a
         WHERE a.is_deleted = 0
         AND ((SELECT count(*) FROM contract_bond_setting b  where b.bond_id=a.id)>=1)
+        AND a.is_not_bond in('0','2')
         <if test="contractBond.bondName != null and contractBond.bondName != ''">
             AND bond_name like concat('%',#{contractBond.bondName},'%')
         </if>
-
     </select>
     <!-- 严重超期 -->
     <select id="pageListSerious" resultMap="contractBondResultMap">

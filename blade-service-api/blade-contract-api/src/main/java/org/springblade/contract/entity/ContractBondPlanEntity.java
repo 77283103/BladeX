@@ -115,7 +115,11 @@ public class ContractBondPlanEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "实际退回金额")
 	private BigDecimal actualReturnAmount;
-
+	/**
+	 * 退回条件
+	 */
+	@ApiModelProperty(value = "退回条件", required = true)
+	private String returnCondition;
 	/**
 	 * 相对方id
 	 */

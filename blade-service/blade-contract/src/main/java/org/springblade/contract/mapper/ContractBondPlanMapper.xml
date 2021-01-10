@@ -19,6 +19,7 @@
         <result column="plan_return_amount" property="planReturnAmount"/>
         <result column="actual_return_time" property="actualReturnTime"/>
         <result column="actual_return_amount" property="actualReturnAmount"/>
+        <result column="return_condition" property="returnCondition"/>
         <result column="counterpart_id" property="counterpartId"/>
         <result column="factories" property="factories"/>
         <result column="create_user" property="createUser"/>
@@ -46,6 +47,7 @@
         plan_return_amount,
         actual_return_time,
         actual_return_amount,
+        return_condition,
         counterpart_id,
         factories,
         create_user,

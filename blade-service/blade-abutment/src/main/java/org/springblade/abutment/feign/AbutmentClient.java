@@ -79,7 +79,7 @@ public class AbutmentClient implements IAbutmentClient {
 					//合同id
 					formValuesEntity.setFd_contract_id(entity.getId().toString());
 					//合同文件名称  需要查询出来 TextFile是null
-					formValuesEntity.setFd_contract_name("新陈列室合同");
+					formValuesEntity.setFd_contract_name(entity.getContractListName());
 					/*List<FileVO> fileVO=fileClient.getByIds(entity.getTextFile()).getData();
 					if(fileVO.size()>0){
 						formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
@@ -153,8 +153,8 @@ public class AbutmentClient implements IAbutmentClient {
 					R<List<DictBiz>> contract_HTDL = bizClient.getList("HTDL");
 					List<DictBiz> dataBiz = contract_HTDL.getData();
 					dataBiz.forEach(bz -> {
-						if ((bz.getId().toString()).equals(entity.getContractBigCategory())) {
-							formValuesEntity.setFd_broad(bz.getDictKey());
+						if (bz.getDictKey().equals(entity.getContractBigCategory())) {
+							formValuesEntity.setFd_currency(bz.getDictValue());
 						}
 					});
 					//合同主旨

@@ -42,13 +42,11 @@ public class ContractBondEntity extends BaseEntity {
 	/**
 	 * 保证金名称
 	 */
-	@NotBlank(message = "保证金名称不能为空")
 	@ApiModelProperty(value = "保证金名称", required = true)
 	private String bondName;
 	/**
 	 * 有无保证金(字典)
 	 */
-	@NotBlank(message = "有无保证金(字典)不能为空")
 	@ApiModelProperty(value = "有无保证金(字典)", required = true)
 	private String isNotBond;
 	/**
@@ -65,13 +63,11 @@ public class ContractBondEntity extends BaseEntity {
 	/**
 	 * 币种
 	 */
-	@NotBlank(message = "币种不能为空")
 	@ApiModelProperty(value = "币种", required = true)
 	private String currencyCategory;
 	/**
 	 * 计划缴纳时间
 	 */
-	@NotNull(message = "计划缴纳时间不能为空")
 	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
 	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	@ApiModelProperty(value = "计划缴纳时间", required = true)
@@ -79,7 +75,6 @@ public class ContractBondEntity extends BaseEntity {
 	/**
 	 * 计划缴纳金额
 	 */
-	@NotNull(message = "计划缴纳金额不能为空")
 	@ApiModelProperty(value = "计划缴纳金额", required = true)
 	private BigDecimal planPayAmount;
 	/**
@@ -97,7 +92,6 @@ public class ContractBondEntity extends BaseEntity {
 	/**
 	 * 计划退回时间
 	 */
-	@NotNull(message = "计划退回时间不能为空")
 	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
 	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	@ApiModelProperty(value = "计划退回时间", required = true)
@@ -105,7 +99,6 @@ public class ContractBondEntity extends BaseEntity {
 	/**
 	 * 计划退回金额
 	 */
-	@NotNull(message = "计划退回金额不能为空")
 	@ApiModelProperty(value = "计划退回金额", required = true)
 	private BigDecimal planReturnAmount;
 	/**
@@ -121,6 +114,11 @@ public class ContractBondEntity extends BaseEntity {
 	@ApiModelProperty(value = "实际退回金额")
 	private BigDecimal actualReturnAmount;
 
+	/**
+	 * 退回条件
+	 */
+	@ApiModelProperty(value = "退回条件", required = true)
+	private String returnCondition;
 	/**
 	 * 相对方id
 	 */
