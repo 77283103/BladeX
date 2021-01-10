@@ -20,7 +20,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springblade.common.constant.CommonConstant;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.log.exception.ServiceException;
@@ -31,12 +30,10 @@ import org.springblade.core.tool.constant.BladeConstant;
 import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
-import org.springblade.system.entity.Dict;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.mapper.DictBizMapper;
 import org.springblade.system.service.IDictBizService;
 import org.springblade.system.vo.DictBizVO;
-import org.springblade.system.vo.DictVO;
 import org.springblade.system.wrapper.DictBizWrapper;
 import org.springframework.stereotype.Service;
 
@@ -81,7 +78,10 @@ public class DictBizServiceImpl extends BaseServiceImpl<DictBizMapper, DictBiz> 
 	public String getValue(String code, String dictKey) {
 		return Func.toStr(baseMapper.getValue(code, dictKey), StringPool.EMPTY);
 	}
-
+	@Override
+	public String getKey(String code, String dictValue) {
+		return Func.toStr(baseMapper.getKey(code, dictValue), StringPool.EMPTY);
+	}
 	@Override
 	public String getValues(String code, Long id) {
 		return Func.toStr(baseMapper.getValues(code, id), StringPool.EMPTY);

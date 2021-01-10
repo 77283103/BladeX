@@ -16,24 +16,21 @@
  */
 package org.springblade.system.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springblade.core.mp.base.BaseEntity;
-
-import java.io.Serializable;
 
 /**
  * 实体类
  *
  * @author Chill
  */
+@EqualsAndHashCode(callSuper = true)
 @Data
 @TableName("blade_dept")
 @ApiModel(value = "Dept对象", description = "Dept对象")

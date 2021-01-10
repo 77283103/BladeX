@@ -92,6 +92,21 @@ public class ContractCounterpartEntity extends BaseEntity {
 	@ApiModelProperty(value = "电子印章序列号")
 	private String electronicSealSerialId;
 	/**
+	 * 组织机构代码证
+	 */
+	@ApiModelProperty(value = "组织机构代码证")
+	private String organizationCode;
+	/**
+	 * 开户地址
+	 */
+	@ApiModelProperty(value = "开户地址")
+	private String accountOpeningAddress;
+	/**
+	 * 存续状态
+	 */
+	@ApiModelProperty(value = "存续状态")
+	private String existenceStatus;
+	/**
 	 * 税率
 	 */
 	@ApiModelProperty(value = "税率")
@@ -124,7 +139,7 @@ public class ContractCounterpartEntity extends BaseEntity {
 	 * 注册资金
 	 */
 	@ApiModelProperty(value = "注册资金")
-	private BigDecimal registeredCapital;
+	private String  registeredCapital;
 	/**
 	 * 法定代表人
 	 */

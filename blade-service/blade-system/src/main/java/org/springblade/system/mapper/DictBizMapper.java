@@ -42,6 +42,14 @@ public interface DictBizMapper extends BaseMapper<DictBiz> {
 	 */
 	String getValue(String code, String dictKey);
 	/**
+	 * 获取字典表对应键值
+	 *
+	 * @param code    字典编号
+	 * @param dictValue 字典序号
+	 * @return
+	 */
+	String getKey(String code, String dictValue);
+	/**
 	 * 获取字典表对应中文
 	 *
 	 * @param code    字典编号

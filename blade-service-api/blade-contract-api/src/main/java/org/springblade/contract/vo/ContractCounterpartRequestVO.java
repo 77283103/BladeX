@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
-import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.core.mp.base.BaseEntity;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -27,10 +27,16 @@ import java.util.Date;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(description = "相对方管理请求对象")
-public class ContractCounterpartRequestVO extends ContractCounterpartEntity {
+public class ContractCounterpartRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
+
+	private String createUserName;
+
+	private String createDeptName;
+
+	private String updateUserName;
 
 	@ApiModelProperty(value = "相对方名称")
 	private String name;
@@ -97,7 +103,7 @@ public class ContractCounterpartRequestVO extends ContractCounterpartEntity {
 	private String companyAddress;
 
 	@ApiModelProperty(value = "注册资金")
-	private BigDecimal registeredCapital;
+	private String registeredCapital;
 
 	@ApiModelProperty(value = "法定代表人")
 	private String legalRepresentative;

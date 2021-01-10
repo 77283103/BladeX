@@ -11,12 +11,15 @@
         <result column="nature_category" property="natureCategory"/>
         <result column="counterpart_category" property="counterpartCategory"/>
         <result column="registered_address" property="registeredAddress"/>
+        <result column="existence_status" property="existenceStatus"/>
         <result column="contact_person_phone" property="contactPersonPhone"/>
         <result column="contact_person_name" property="contactPersonName"/>
         <result column="contact_address" property="contactAddress"/>
+        <result column="account_opening_address" property="accountOpeningAddress"/>
         <result column="passport_id" property="passportId"/>
         <result column="first_cooperation_date" property="firstCooperationDate"/>
         <result column="electronic_seal_serial_id" property="electronicSealSerialId"/>
+        <result column="organization_code" property="organizationCode"/>
         <result column="tax_rate" property="taxRate"/>
         <result column="payment_method" property="paymentMethod"/>
         <result column="information_syn_date" property="informationSynDate"/>
@@ -40,7 +43,7 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id,
+    id,
         name,
         id_number,
         unified_social_credit_code,
@@ -49,7 +52,10 @@
         registered_address,
         contact_person_phone,
         contact_person_name,
+        existence_status,
         contact_address,
+        organization_code,
+        account_opening_address,
         passport_id,
         first_cooperation_date,
         electronic_seal_serial_id,
@@ -72,6 +78,35 @@
         update_user,
         update_time,
         create_dept
+</sql>
+    <sql id="baseColumnListJoin">
+        name={name},
+        id_number={entity.id_number},
+        unified_social_credit_code={entity.unified_social_credit_code},
+        nature_category={entity.nature_category},
+        counterpart_category={entity.counterpart_category},
+        registered_address={entity.registered_address},
+        contact_person_phone={entity.contact_person_phone},
+        contact_person_name={entity.contact_person_name},
+        existence_status={entity.existence_status},
+        contact_address={entity.contactcontact_address},
+        organization_code={entity.organization_code},
+        account_opening_address={entity.account_opening_address},
+        passport_id={entity.passport_id},
+        first_cooperation_date={entity.first_cooperation_date},
+        electronic_seal_serial_id={entity.electronic_seal_serial_id},
+        tax_rate={entity.tax_rate},
+        payment_method={entity.payment_method},
+        information_syn_date={entity.information_syn_date},
+        establish_date={entity.establish_date},
+        company_address={entity.company_address},
+        registered_capital={entity.registered_capital},
+        legal_representative={entity.legal_representative},
+        contact_person_mail={entity.contact_person_mail},
+        deposit_bank={entity.deposit_bank},
+        bank_account={entity.bank_account},
+        attached_files={entity.attached_files},
+        currency_category={entity.currency_category},
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="counterpartResultMap">
@@ -126,4 +161,10 @@
         name = #{name}
     </select>
 
+    <!--根据相对方名称查询相对方集合-->
+    <update id="updateByName" >
+        UPDATE contract_counterpart
+        SET <include refid="baseColumnList"> </include>
+        WHERE name = #{entity.name}
+    </update>
 </mapper>

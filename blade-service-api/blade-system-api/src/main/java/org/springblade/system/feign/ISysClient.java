@@ -275,7 +275,6 @@ public interface ISysClient {
 	@PostMapping(SAVE_DEPT_API)
 	R<Boolean> saveOrUpdateBatchDept(@RequestBody List<Dept> dept);
 
-
 	/**
 	 *
 	 * @param post
