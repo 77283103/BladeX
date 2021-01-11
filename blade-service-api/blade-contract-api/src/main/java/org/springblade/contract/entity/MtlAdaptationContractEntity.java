@@ -1,25 +1,18 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -188,4 +181,20 @@ public class MtlAdaptationContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "交付数量关联表")
 	@TableField(exist = false)
 	private List<MtlAdaptationContract2Entity> mtlAdaptationContract2List;
+	/**
+	 * 合同包含甲方对本广告中出现演员的肖像权  *  年的使用权
+	 */
+	@ApiModelProperty(value="年")
+	private String yearA;
+	/**
+	 * 广告中音乐  *  年
+	 */
+	@ApiModelProperty(value="年")
+	private String yearB;
+	/**
+	 * 广告中配音员VO  *  年的使用权
+	 */
+	@ApiModelProperty(value="年")
+	private String yearC;
+
 }
