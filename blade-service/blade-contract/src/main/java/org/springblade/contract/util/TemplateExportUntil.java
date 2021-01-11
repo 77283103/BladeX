@@ -25,8 +25,8 @@ import java.util.*;
 @Component
 public class TemplateExportUntil {
 
-	private static String _PATH="D:/ftl/";//模板路径
-	//private static String _PATH="/ftl/";//模板路径
+	//private static String _PATH="D:/ftl/";//模板路径
+	private static String _PATH="/ftl/";//模板路径
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
 	@Autowired
