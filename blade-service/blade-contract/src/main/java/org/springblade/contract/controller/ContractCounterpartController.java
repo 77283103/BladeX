@@ -115,10 +115,10 @@ public class ContractCounterpartController extends BladeController {
 	@PostMapping("import-counterpart")
 	@ApiOperationSupport(order = 12)
 	@ApiOperation(value = "导入相对方", notes = "传入excel")
-	public R importUser(MultipartFile file, Integer isCovered) {
+	public R<String> importUser(MultipartFile file, Integer isCovered) {
 		CounterpartImporter counterpartImporter = new CounterpartImporter(counterpartService, isCovered == 1);
 		ExcelUtil.save(file, counterpartImporter, ContractCounterpartExcel.class);
-		return R.success("操作成功");
+		return R.status(true);
 	}
 	/**
 	 * 导出模板
