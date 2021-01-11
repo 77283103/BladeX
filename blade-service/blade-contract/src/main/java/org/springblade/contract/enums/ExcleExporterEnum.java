@@ -140,6 +140,9 @@ public enum ExcleExporterEnum {
 			dataModel.put("mtlCompanyName",j.get("mtlCompanyName"));
 			dataModel.put("mtlWhereItIs",j.get("mtlWhereItIs"));
 			dataModel.put("mtlAccount",j.get("mtlAccount"));
+			dataModel.put("yearA",j.get("yearA"));
+            dataModel.put("yearB",j.get("yearB"));
+            dataModel.put("yearC",j.get("yearC"));
 			dataModel.put("list",list);
 			dataModel.put("list1",list1);
 			return dataModel;
