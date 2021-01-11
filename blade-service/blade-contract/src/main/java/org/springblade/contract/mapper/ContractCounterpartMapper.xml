@@ -80,7 +80,7 @@
         create_dept
 </sql>
     <sql id="baseColumnListJoin">
-        name={name},
+        name={entity.name},
         id_number={entity.id_number},
         unified_social_credit_code={entity.unified_social_credit_code},
         nature_category={entity.nature_category},
@@ -106,7 +106,7 @@
         deposit_bank={entity.deposit_bank},
         bank_account={entity.bank_account},
         attached_files={entity.attached_files},
-        currency_category={entity.currency_category},
+        currency_category={entity.currency_category}
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="counterpartResultMap">
@@ -164,7 +164,7 @@
     <!--根据相对方名称查询相对方集合-->
     <update id="updateByName" >
         UPDATE contract_counterpart
-        SET <include refid="baseColumnList"> </include>
+        SET <include refid="baseColumnListJoin"> </include>
         WHERE name = #{entity.name}
     </update>
 </mapper>

@@ -1,6 +1,9 @@
 package org.springblade.contract.excel;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
+import com.alibaba.excel.annotation.write.style.ContentRowHeight;
+import com.alibaba.excel.annotation.write.style.HeadRowHeight;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -13,6 +16,9 @@ import java.io.Serializable;
  * @date : 2020-09-23 19:35:02
  */
 @Data
+@ColumnWidth(25)
+@HeadRowHeight(20)
+@ContentRowHeight(18)
 public class ContractCounterpartExcel implements Serializable {
 
 	private static final long serialVersionUID = 1L;

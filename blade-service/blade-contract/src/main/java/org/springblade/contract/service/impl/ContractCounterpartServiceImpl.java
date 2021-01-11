@@ -165,13 +165,11 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
                 contractCounterpartEntity.setExistenceStatus(
                         dictBizClient.getKey("existence_status",counterpartExcel.getExistenceStatus()).getData());
             }
-            if (Func.isEmpty(baseMapper.selectByName(contractCounterpartEntity.getName()))){
+            if (contractCounterpartMapper.selectByName(contractCounterpartEntity.getName()).size()<=0){
                 this.save(contractCounterpartEntity);
             }else {
                 contractCounterpartMapper.updateByName(contractCounterpartEntity);
             }
-
         });
-
     }
 }
