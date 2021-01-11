@@ -3,6 +3,7 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
+import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.core.mp.base.BaseService;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface IContractAccordingService extends BaseService<ContractAccording
 	 * @param according
 	 * @return
 	 */
-	IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingRequestVO according);
+	IPage<ContractAccordingResponseVO> pageList(IPage<ContractAccordingResponseVO> page, ContractAccordingRequestVO according);
 
 
 	/**

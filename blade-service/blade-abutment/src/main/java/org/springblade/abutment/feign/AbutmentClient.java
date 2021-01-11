@@ -71,6 +71,14 @@ public class AbutmentClient implements IAbutmentClient {
 					FormValuesEntity formValuesEntity = new FormValuesEntity();
 					//依据编号
 					//formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
+					//合同方对应关系
+					if("甲".equals(entity.getContractRoles())){
+						formValuesEntity.setFd_onetoone("乙");
+					}else if("乙".equals(entity.getContractRoles())){
+						formValuesEntity.setFd_onetoone("甲");
+					}else{
+						formValuesEntity.setFd_onetoone("乙");
+					}
 					//乙方电话
 					formValuesEntity.setFd_b_number("13361615656");
 					//乙方税籍编号
@@ -145,7 +153,7 @@ public class AbutmentClient implements IAbutmentClient {
 					}else if("30".equals(entity.getContractSoure())||StrUtil.isNotEmpty(entity.getOtherInformation())){
 						formValuesEntity.setFd_contract_type("30");
 					}else{
-						formValuesEntity.setFd_contract_type("20");
+						formValuesEntity.setFd_contract_type("40");
 					}
 					//合同主旨
 					formValuesEntity.setFd_main(entity.getContractName());
@@ -265,10 +273,14 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_cash_pledge(entity.getContractBond().get(0).getIsNotBond());
 						//押金
 						formValuesEntity.setFd_cash(entity.getContractBond().get(0).getIsNotBond());
-						//缴交时间
-						formValuesEntity.setFd_pay_time(sdf.format(entity.getContractBond().get(0).getPlanPayTime()));
-						//退回时间
-						formValuesEntity.setFd_back_time(sdf.format(entity.getContractBond().get(0).getPlanReturnTime()));
+						if(!Func.isEmpty(entity.getContractBond().get(0).getPlanPayTime())){
+							//缴交时间
+							formValuesEntity.setFd_pay_time(sdf.format(entity.getContractBond().get(0).getPlanPayTime()));
+						}
+						if(!Func.isEmpty(entity.getContractBond().get(0).getPlanReturnTime())){
+							//退回时间
+							formValuesEntity.setFd_back_time(sdf.format(entity.getContractBond().get(0).getPlanReturnTime()));
+						}
 						//保证金类别
 						formValuesEntity.setFd_deposit_type(entity.getContractBond().get(0).getType());
 						//保证金编号

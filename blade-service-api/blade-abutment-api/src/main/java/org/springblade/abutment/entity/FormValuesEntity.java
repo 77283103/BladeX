@@ -11,6 +11,8 @@ import java.util.List;
  */
 @Data
 public class FormValuesEntity implements Serializable {
+	@ApiModelProperty(value = "合同方对应关系")
+	private String fd_onetoone;
 	@ApiModelProperty(value = "单据内容:乙方电话(必填)")
 	private String fd_b_number;
 	@ApiModelProperty(value = "单据内容:乙方信用代码或税籍编号(必填)")

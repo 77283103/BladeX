@@ -405,7 +405,7 @@ public class ContractFormInfoController extends BladeController {
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
 			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
-			if (Func.isEmpty(contractFormInfo.getId())) {
+			if (Func.isEmpty(contractAccording.getId())) {
 				accordingService.save(contractAccording);
 			}else {
 				accordingService.updateById(contractAccording);

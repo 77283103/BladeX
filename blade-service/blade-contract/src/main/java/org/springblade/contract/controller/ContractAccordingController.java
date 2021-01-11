@@ -68,7 +68,7 @@ public class ContractAccordingController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入according")
 	@PreAuth("hasPermission('contract:according:list')")
 	public R<IPage<ContractAccordingResponseVO>> list(ContractAccordingRequestVO according, Query query) {
-		IPage<ContractAccordingEntity> pages = accordingService.pageList(Condition.getPage(query), according);
+		IPage<ContractAccordingResponseVO> pages = accordingService.pageList(Condition.getPage(query), according);
 		/*IPage<ContractAccordingEntity> pages = new Page<ContractAccordingEntity>();
 
 		// 查询依据 开始  cc 20201218
@@ -109,7 +109,8 @@ public class ContractAccordingController extends BladeController {
 		}*/
 		// 查询依据 结束
 
-		return R.data(ContractAccordingWrapper.build().pageVO(pages));
+		//return R.data(ContractAccordingWrapper.build().pageVO(pages));
+		return R.data(pages);
 	}
 
 	/**

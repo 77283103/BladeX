@@ -6,6 +6,7 @@ import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.mapper.ContractAccordingMapper;
 import org.springblade.contract.service.IContractAccordingService;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
+import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +24,7 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 
 
 	@Override
-	public IPage<ContractAccordingEntity> pageList(IPage<ContractAccordingEntity> page, ContractAccordingRequestVO according) {
+	public IPage<ContractAccordingResponseVO> pageList(IPage<ContractAccordingResponseVO> page, ContractAccordingRequestVO according) {
 		page= baseMapper.pageList(page, according);
 		return page;
 	}
