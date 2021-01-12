@@ -475,13 +475,13 @@ public enum TemplateExporterEnum {
         @Override
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
-            CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
+            //CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
             dataModel.put("cglPartyA",j.get("cglPartyA"));
             dataModel.put("cglPartyB",j.get("cglPartyB"));
             dataModel.put("cglActivity",j.get("cglActivity"));
             dataModel.put("cglArea",j.get("cglArea"));
-            dataModel.put("cglByTheTime",j.get("cglByTheTime"));
-            dataModel.put("cglAsOfTime",j.get("cglAsOfTime"));
+            dataModel.put("cglByTheTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("cglByTheTime"))));
+            dataModel.put("cglAsOfTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("cglAsOfTime"))));
             dataModel.put("cglAttachmentTwo",j.get("cglAttachmentTwo"));
             dataModel.put("cglAttachmentThree",j.get("cglAttachmentThree"));
             dataModel.put("cglAttachmentOne",j.get("cglAttachmentOne"));
