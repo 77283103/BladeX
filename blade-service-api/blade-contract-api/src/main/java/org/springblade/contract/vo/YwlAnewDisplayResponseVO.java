@@ -1,12 +1,11 @@
 package org.springblade.contract.vo;
 
+import io.swagger.annotations.ApiModel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.EqualsAndHashCode;
-import org.springblade.contract.entity.YwlANewDisplayEntity;
-import io.swagger.annotations.ApiModel;
-import java.util.Date;
+import org.springblade.contract.entity.YwlAnewDisplayEntity;
 
 /**
  * 业务类：21.新陈列协议书 返回模型VO
@@ -19,7 +18,7 @@ import java.util.Date;
 @ToString
 @ApiModel(description = "业务类：21.新陈列协议书返回对象")
 @EqualsAndHashCode(callSuper = true)
-public class YwlANewDisplayResponseVO extends YwlANewDisplayEntity {
+public class YwlAnewDisplayResponseVO extends YwlAnewDisplayEntity {
 
 	private static final long serialVersionUID = 1L;
 

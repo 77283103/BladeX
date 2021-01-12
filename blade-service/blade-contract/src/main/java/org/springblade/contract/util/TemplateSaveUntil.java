@@ -17,7 +17,7 @@ public class TemplateSaveUntil {
 	@Autowired
 	private IYwlANewDisplayService ywlANewDisplayService;
 	@Autowired
-	private IYwlShopRecruitmentService ywlShopRecruitmentService;
+	private IYwiShopRecruitmentService ywlShopRecruitmentService;
 	@Autowired
 	private ICglActivityExecutionContractService cglActivityExecutionContractService;
 	@Autowired
@@ -83,6 +83,12 @@ public class TemplateSaveUntil {
 	private ICglSalesContractService cglSalesContractService;
 	@Autowired
 	private ISclContractTemplateService sclContractTemplateService;
+	@Autowired
+	private ICglAdvertisementProductionService cglAdvertisementProductionService;
+	@Autowired
+	private ICglProofingContractService cglProofingContractService;
+	@Autowired
+	private IYwbBusContracteTemplateService ywbBusinessContractTemplateService;
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -306,6 +312,24 @@ public class TemplateSaveUntil {
 				templateSaveUntil.sclContractTemplateService.save(sclContractTemplate);
 				id = sclContractTemplate.getId();
 			}
+			//广告制作安装合同模板
+			else if ("GGZZ_04".equals(template.getTemplateCode())) {
+				CglAdvertisementProductionEntity cglAdvertisementProduction= JSONObject.toJavaObject(j, CglAdvertisementProductionEntity.class);
+				templateSaveUntil.cglAdvertisementProductionService.save(cglAdvertisementProduction);
+				id = cglAdvertisementProduction.getId();
+			}
+			//打样合同书
+			else if ("DYHT_03".equals(template.getTemplateCode())) {
+				CglProofingContractEntity cglProofingContractEntity= JSONObject.toJavaObject(j, CglProofingContractEntity.class);
+				templateSaveUntil.cglProofingContractService.save(cglProofingContractEntity);
+				id = cglProofingContractEntity.getId();
+			}
+			//房屋租赁合同模板
+			else if ("FWZL_36".equals(template.getTemplateCode())) {
+				YwbBusinessContractTemplateEntity ywbBusinessContractTemplateEntity= JSONObject.toJavaObject(j, YwbBusinessContractTemplateEntity.class);
+				templateSaveUntil.ywbBusinessContractTemplateService.save(ywbBusinessContractTemplateEntity);
+				id = ywbBusinessContractTemplateEntity.getId();
+			}
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
@@ -516,6 +540,24 @@ public class TemplateSaveUntil {
 				SclContractTemplateEntity sclContractTemplate= JSONObject.toJavaObject(j, SclContractTemplateEntity.class);
 				sclContractTemplate.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.sclContractTemplateService.updateById(sclContractTemplate);
+			}
+			//广告制作安装合同模板
+			else if ("GGZZ_04".equals(template.getTemplateCode())) {
+				CglAdvertisementProductionEntity cglAdvertisementProduction= JSONObject.toJavaObject(j, CglAdvertisementProductionEntity.class);
+				cglAdvertisementProduction.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.cglAdvertisementProductionService.updateById(cglAdvertisementProduction);
+			}
+			//打样合同书
+			else if ("DYHT_03".equals(template.getTemplateCode())) {
+				CglProofingContractEntity cglProofingContractEntity= JSONObject.toJavaObject(j, CglProofingContractEntity.class);
+				cglProofingContractEntity.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.cglProofingContractService.updateById(cglProofingContractEntity);
+			}
+			//房屋租赁合同模板
+			else if ("FWZL_36".equals(template.getTemplateCode())) {
+				YwbBusinessContractTemplateEntity ywbBusinessContractTemplateEntity= JSONObject.toJavaObject(j, YwbBusinessContractTemplateEntity.class);
+				ywbBusinessContractTemplateEntity.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.ywbBusinessContractTemplateService.updateById(ywbBusinessContractTemplateEntity);
 			}
 		}
 		return contractFormInfoEntity.getId();

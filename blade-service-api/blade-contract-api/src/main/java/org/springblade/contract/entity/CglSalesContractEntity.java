@@ -1,5 +1,6 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -15,6 +16,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -163,5 +165,10 @@ public class CglSalesContractEntity extends BaseEntity {
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="第七.3.（2）项日期要求")
 	private Integer cglDateOfRequests;
-
+	/**
+	 * 关联子表1
+	 */
+    @ApiModelProperty(value="关联子表1")
+	@TableField(exist = false)
+	private List<CglSalesContract1Entity> contract1EntityList;
 }

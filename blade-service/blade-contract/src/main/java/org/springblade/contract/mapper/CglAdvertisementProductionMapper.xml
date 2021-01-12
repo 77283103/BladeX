@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglAdvertisementProductionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglAdvertisementProductionResultMap" type="org.springblade.contract.entity.CglAdvertisementProductionEntity">
+        <result column="id" property="id"/>
+        <result column="cgl_party_a" property="cglPartyA"/>
+        <result column="cgl_address_a" property="cglAddressA"/>
+        <result column="cgl_contact" property="cglContact"/>
+        <result column="cgl_party_b" property="cglPartyB"/>
+        <result column="cgl_address" property="cglAddress"/>
+        <result column="cgl_area" property="cglArea"/>
+        <result column="individual" property="individual"/>
+        <result column="day" property="day"/>
+        <result column="day_a" property="dayA"/>
+        <result column="day_b" property="dayB"/>
+        <result column="day_c" property="dayC"/>
+        <result column="day_d" property="dayD"/>
+        <result column="day_e" property="dayE"/>
+        <result column="day_f" property="dayF"/>
+        <result column="payment_method" property="paymentMethod"/>
+        <result column="type" property="type"/>
+        <result column="day_g" property="dayG"/>
+        <result column="other_ways" property="otherWays"/>
+        <result column="corporate_name" property="corporateName"/>
+        <result column="bank_deposit" property="bankDeposit"/>
+        <result column="account" property="account"/>
+        <result column="day_h" property="dayH"/>
+        <result column="money" property="money"/>
+        <result column="day_i" property="dayI"/>
+        <result column="special_agreement" property="specialAgreement"/>
+        <result column="date" property="date"/>
+        <result column="date_a" property="dateA"/>
+        <result column="number" property="number"/>
+        <result column="number_a" property="numberA"/>
+        <result column="number_b" property="numberB"/>
+        <result column="cgl_attachment" property="cglAttachment"/>
+        <result column="cgl_attachment_a" property="cglAttachmentA"/>
+        <result column="quotation_sheet" property="quotationSheet"/>
+        <result column="cgl_email" property="cglEmail"/>
+        <result column="year" property="year"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        cgl_party_a,
+        cgl_address_a,
+        cgl_contact,
+        cgl_party_b,
+        cgl_address,
+        cgl_area,
+        individual,
+        day,
+        day_a,
+        day_b,
+        day_c,
+        day_d,
+        day_e,
+        day_f,
+        payment_method,
+        type,
+        day_g,
+        other_ways,
+        corporate_name,
+        bank_deposit,
+        account,
+        day_h,
+        money,
+        day_i,
+        special_agreement,
+        date,
+        date_a,
+        number,
+        number_a,
+        number_b,
+        cgl_attachment,
+        cgl_attachment_a,
+        quotation_sheet,
+        cgl_email,
+        year,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglAdvertisementProductionResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_advertisement_production
+        WHERE is_deleted = 0
+    </select>
+</mapper>

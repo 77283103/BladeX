@@ -1,11 +1,10 @@
 package org.springblade.contract.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import org.springblade.contract.entity.YwlShopRecruitmentEntity;
-import java.util.Date;
+import org.springblade.contract.entity.YwiShopRecruitmentEntity;
 
 /**
  * 业务类：14.店招合同 模型DTO
@@ -17,7 +16,7 @@ import java.util.Date;
 @Setter
 @ToString
 @EqualsAndHashCode(callSuper = true)
-public class YwlShopRecruitmentDTO extends YwlShopRecruitmentEntity {
+public class YwiShopRecruitmentDTO extends YwiShopRecruitmentEntity {
 
 	private static final long serialVersionUID = 1L;
 

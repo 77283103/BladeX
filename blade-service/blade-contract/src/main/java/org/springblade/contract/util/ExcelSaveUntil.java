@@ -30,7 +30,7 @@ public class ExcelSaveUntil {
 	@Autowired
 	private IYwlANewDisplayService ywlANewDisplayService;
 	@Autowired
-	private IYwlShopRecruitmentService ywlShopRecruitmentService;
+	private IYwiShopRecruitmentService ywlShopRecruitmentService;
 	@Autowired
 	private ICglActivityExecutionContractService cglActivityExecutionContractService;
 	@Autowired
@@ -80,12 +80,13 @@ public class ExcelSaveUntil {
 		JSONObject j = new JSONObject();
 		//新陈列协议书
 		if ("CLXY_42".equals(template.getTemplateCode())) {
-			YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
+			YwlAnewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlAnewDisplayEntity.class);
 			templateSaveUntil.ywlANewDisplayService.save(ywlANewDisplay);
 			id = ywlANewDisplay.getId();
-		} //店招合同
+		}
+		//店招合同
 		else if ("DZHT_35".equals(template.getTemplateCode())) {
-			YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
+			YwiShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwiShopRecruitmentEntity.class);
 			templateSaveUntil.ywlShopRecruitmentService.save(ywlShopRecruitment);
 			id = ywlShopRecruitment.getId();
 		}

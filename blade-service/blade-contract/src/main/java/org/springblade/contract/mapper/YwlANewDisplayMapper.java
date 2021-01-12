@@ -2,7 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.YwlANewDisplayEntity;
+import org.springblade.contract.entity.YwlAnewDisplayEntity;
 import org.springblade.contract.vo.YwlANewDisplayRequestVO;
 
 /**
@@ -11,7 +11,7 @@ import org.springblade.contract.vo.YwlANewDisplayRequestVO;
  * @author szw
  * @date : 2020-12-07 15:37:42
  */
-public interface YwlANewDisplayMapper extends BaseMapper<YwlANewDisplayEntity> {
+public interface YwlANewDisplayMapper extends BaseMapper<YwlAnewDisplayEntity> {
 
 	/**
 	 * 分页查询
@@ -19,6 +19,6 @@ public interface YwlANewDisplayMapper extends BaseMapper<YwlANewDisplayEntity> {
 	 * @param ywlANewDisplay
 	 * @return
 	 */
-	IPage<YwlANewDisplayEntity> pageList(IPage<YwlANewDisplayEntity> page, YwlANewDisplayRequestVO ywlANewDisplay);
+	IPage<YwlAnewDisplayEntity> pageList(IPage<YwlAnewDisplayEntity> page, YwlANewDisplayRequestVO ywlANewDisplay);
 
 }

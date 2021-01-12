@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CglProofingContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="cglProofingContractResultMap" type="org.springblade.contract.entity.CglProofingContractEntity">
+        <result column="id" property="id"/>
+        <result column="party_a" property="partyA"/>
+        <result column="party_b" property="partyB"/>
+        <result column="element" property="element"/>
+        <result column="date" property="date"/>
+        <result column="element1" property="element1"/>
+        <result column="tax_rate" property="taxRate"/>
+        <result column="element2" property="element2"/>
+        <result column="account_name" property="accountName"/>
+        <result column="account_number" property="accountNumber"/>
+        <result column="bank_deposit" property="bankDeposit"/>
+        <result column="is_enable" property="isEnable"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        party_a,
+        party_b,
+        element,
+        date,
+        element1,
+        tax_rate,
+        element2,
+        account_name,
+        account_number,
+        bank_deposit,
+        is_enable,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="cglProofingContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM cgl_proofing_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

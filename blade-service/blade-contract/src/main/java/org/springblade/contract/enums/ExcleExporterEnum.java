@@ -460,46 +460,128 @@ public enum ExcleExporterEnum {
         }
     },
     //活动执行合同
-    HDZX_05("HDZX_05"){
+    HDZX_05("HDZX_05") {
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+            Map dataModel = new HashMap();
+            CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
+            dataModel.put("cglPartyA", j.get("cglPartyA"));
+            dataModel.put("cglPartyB", j.get("cglPartyB"));
+            dataModel.put("cglActivity", j.get("cglActivity"));
+            dataModel.put("cglArea", j.get("cglArea"));
+            dataModel.put("cglByTheTime", j.get("cglByTheTime"));
+            dataModel.put("cglAsOfTime", j.get("cglAsOfTime"));
+            dataModel.put("cglAttachmentTwo", j.get("cglAttachmentTwo"));
+            dataModel.put("cglAttachmentThree", j.get("cglAttachmentThree"));
+            dataModel.put("cglAttachmentOne", j.get("cglAttachmentOne"));
+            dataModel.put("cglTotalCost", j.get("cglTotalCost"));
+            dataModel.put("cglAmoutActivity", j.get("cglAmoutActivity"));
+            dataModel.put("cglSession", j.get("cglSession"));
+            dataModel.put("cglPayment", j.get("cglPayment"));
+            dataModel.put("cglNumberOfDays", j.get("cglNumberOfDays"));
+            dataModel.put("cglTAmount", j.get("cglTAmount"));
+            dataModel.put("cglAmountWords", j.get("cglAmountWords"));
+            dataModel.put("cglProportion", j.get("cglProportion"));
+            dataModel.put("cglLumpSum", j.get("cglLumpSum"));
+            dataModel.put("cglCapitalize", j.get("cglCapitalize"));
+            dataModel.put("cglOtherWay", j.get("cglOtherWay"));
+            dataModel.put("cglBankOf", j.get("cglBankOf"));
+            dataModel.put("cglAccountName", j.get("cglAccountName"));
+            dataModel.put("cglAccount", j.get("cglAccount"));
+            dataModel.put("cglInvoice", j.get("cglInvoice"));
+            dataModel.put("cglBreachOfContract", j.get("cglBreachOfContract"));
+            dataModel.put("cglPlanningScheme", j.get("cglPlanningScheme"));
+            dataModel.put("cglScheduling", j.get("cglScheduling"));
+            dataModel.put("cglThePrice", j.get("cglThePrice"));
+            dataModel.put("cglInspectionStandard", j.get("cglInspectionStandard"));
+            return dataModel;
+        }
+    },
+    //广告制作安装合同模板
+    GGZZ_04("GGZZ_04"){
         @Override
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
-            CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
-            dataModel.put("cglPartyA",j.get("cglPartyA"));
+            CglAdvertisementProductionEntity cglAdvertisementProductionEntity = JSONObject.toJavaObject(j, CglAdvertisementProductionEntity.class);
+            dataModel.put("sclPartyA",j.get("sclPartyA"));
+            dataModel.put("cglAddressA",j.get("cglAddressA"));
             dataModel.put("cglPartyB",j.get("cglPartyB"));
-            dataModel.put("cglActivity",j.get("cglActivity"));
-            dataModel.put("cglArea",j.get("cglArea"));
-            dataModel.put("cglByTheTime",j.get("cglByTheTime"));
-            dataModel.put("cglAsOfTime",j.get("cglAsOfTime"));
-            dataModel.put("cglAttachmentTwo",j.get("cglAttachmentTwo"));
-            dataModel.put("cglAttachmentThree",j.get("cglAttachmentThree"));
-            dataModel.put("cglAttachmentOne",j.get("cglAttachmentOne"));
-            dataModel.put("cglTotalCost",j.get("cglTotalCost"));
-            dataModel.put("cglAmoutActivity",j.get("cglAmoutActivity"));
-            dataModel.put("cglSession",j.get("cglSession"));
-            dataModel.put("cglPayment",j.get("cglPayment"));
-            dataModel.put("cglNumberOfDays",j.get("cglNumberOfDays"));
-            dataModel.put("cglTAmount",j.get("cglTAmount"));
-            dataModel.put("cglAmountWords",j.get("cglAmountWords"));
-            dataModel.put("cglProportion",j.get("cglProportion"));
-            dataModel.put("cglLumpSum",j.get("cglLumpSum"));
-            dataModel.put("cglCapitalize",j.get("cglCapitalize"));
-            dataModel.put("cglOtherWay",j.get("cglOtherWay"));
-            dataModel.put("cglBankOf",j.get("cglBankOf"));
-            dataModel.put("cglAccountName",j.get("cglAccountName"));
-            dataModel.put("cglAccount",j.get("cglAccount"));
-            dataModel.put("cglInvoice",j.get("cglInvoice"));
-            dataModel.put("cglBreachOfContract",j.get("cglBreachOfContract"));
-            dataModel.put("cglPlanningScheme",j.get("cglPlanningScheme"));
-            dataModel.put("cglScheduling",j.get("cglScheduling"));
-            dataModel.put("cglThePrice",j.get("cglThePrice"));
-            dataModel.put("cglInspectionStandard",j.get("cglInspectionStandard"));
+            dataModel.put("cglAddress",j.get("cglAddress"));
+            dataModel.put("sclArea",j.get("sclArea"));
+            dataModel.put("quotationSheet",j.get("quotationSheet"));
+            dataModel.put("cglEmail",j.get("cglEmail"));
+            dataModel.put("individual",j.get("individual"));
+            dataModel.put("day",j.get("day"));
+            dataModel.put("dayA",j.get("dayA"));
+            dataModel.put("dayB",j.get("dayB"));
+            dataModel.put("dayC",j.get("dayC"));
+            dataModel.put("dayD",j.get("dayD"));
+            dataModel.put("dayE",j.get("dayE"));
+            dataModel.put("year",j.get("year"));
+            dataModel.put("dayF",j.get("dayF"));
+            dataModel.put("paymentMethod",j.get("paymentMethod"));
+            dataModel.put("type",j.get("type"));
+            dataModel.put("dayG",j.get("dayG"));
+            dataModel.put("otherWays",j.get("otherWays"));
+            dataModel.put("corporateName",j.get("corporateName"));
+            dataModel.put("bankDeposit",j.get("bankDeposit"));
+            dataModel.put("account",j.get("account"));
+            dataModel.put("dayH",j.get("dayH"));
+            dataModel.put("money",j.get("money"));
+            dataModel.put("dayI",j.get("dayI"));
+            dataModel.put("specialAgreement",j.get("specialAgreement"));
+            dataModel.put("date",j.get("date"));
+            dataModel.put("dateA",j.get("dateA"));
+            dataModel.put("number",j.get("number"));
+            dataModel.put("numberA",j.get("numberA"));
+            dataModel.put("numberB",j.get("numberB"));
+            dataModel.put("cglAttachment",j.get("cglAttachment"));
+            dataModel.put("cglAttachmentA",j.get("cglAttachmentA"));
+            return dataModel;
+        }
+    },
+    //采购类_打样合同书
+    DYHT_03("DYHT_03"){
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+            Map dataModel = new HashMap();
+            List<Map<String, Object>> list=new ArrayList();
+            List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+            for (TemplateFieldJsonEntity templateField : templateFieldList) {
+                //设备维修保养合同 关联表1
+                if (ContractFormInfoTemplateContract.CONTRACT_CGLPROOFINGCONTRACT1.equals(templateField.getRelationCode())) {
+                    List<CglProofingContract1ResponseVO> cglProofingContract1List = JSON.parseArray(templateField.getTableData(), CglProofingContract1ResponseVO.class);
+                    for (int i = 0; i < cglProofingContract1List.size(); i++) {
+                        JSONObject glProofingContract1 = JSON.parseObject(JSON.toJSONString(cglProofingContract1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
+                        Map<String, Object> map = new HashMap();
+                        map.put("proofingProducts",glProofingContract1.get("proofingProducts"));
+                        map.put("proofingContent",glProofingContract1.get("proofingContent"));
+                        map.put("textureMaterial",glProofingContract1.get("textureMaterial"));
+                        map.put("unitPrice",glProofingContract1.get("unitPrice"));
+                        map.put("number",glProofingContract1.get("number"));
+                        map.put("totalAmount",glProofingContract1.get("totalAmount"));
+                        list.add(map);
+                    }
+                }
+            }
+            CglProofingContractEntity cglProofingContract = JSONObject.toJavaObject(j, CglProofingContractEntity.class);
+            dataModel.put("partyA",j.get("partyA"));
+            dataModel.put("partyB",j.get("partyB"));
+            dataModel.put("element",j.get("element"));
+            dataModel.put("date",j.get("date"));
+            dataModel.put("element1",j.get("element1"));
+            dataModel.put("taxRate",j.get("taxRate"));
+            dataModel.put("element2",j.get("element2"));
+            dataModel.put("accounName",j.get("accounName"));
+            dataModel.put("accountNumber",j.get("accountNumber"));
+            dataModel.put("bankDeposit",j.get("bankDeposit"));
+            dataModel.put("list",list);
             return dataModel;
         }
     };
 
 
-	public abstract Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j);
+    public abstract Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j);
 
 	@Getter
 	public String type;

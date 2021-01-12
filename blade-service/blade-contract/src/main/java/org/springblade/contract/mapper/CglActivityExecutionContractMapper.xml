@@ -14,7 +14,7 @@
         <result column="cgl_attachment_two" property="cglAttachmentTwo"/>
         <result column="cgl_attachment_three" property="cglAttachmentThree"/>
         <result column="cgl_attachment_one" property="cglAttachmentOne"/>
-        <result column="cgl_total_cost" property="cgl totalCost"/>
+        <result column="cgl_total_cost" property="cglTotalCost"/>
         <result column="cgl_session" property="cglSession"/>
         <result column="cgl_payment" property="cglPayment"/>
         <result column="cgl_number_of_days" property="cglNumberOfDays"/>

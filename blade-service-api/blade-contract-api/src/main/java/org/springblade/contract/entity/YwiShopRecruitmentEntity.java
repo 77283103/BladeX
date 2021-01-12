@@ -1,20 +1,18 @@
 package org.springblade.contract.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -28,7 +26,7 @@ import java.util.List;
 @TableName("ywl_shop_recruitment")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "YwlShopRecruitment对象", description = "业务类：14.店招合同")
-public class YwlShopRecruitmentEntity extends BaseEntity {
+public class YwiShopRecruitmentEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 

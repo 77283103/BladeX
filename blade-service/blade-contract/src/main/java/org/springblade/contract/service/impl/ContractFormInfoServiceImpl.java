@@ -6,11 +6,11 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import feign.form.ContentType;
 import lombok.AllArgsConstructor;
-import org.springblade.abutment.entity.*;
+import org.springblade.abutment.entity.CompanyInfoEntity;
+import org.springblade.abutment.entity.UploadFileEntity;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.abutment.vo.CompanyInfoVo;
 import org.springblade.abutment.vo.EkpVo;
-import org.springblade.abutment.vo.SingleSignVo;
 import org.springblade.abutment.vo.UploadFileVo;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
@@ -26,7 +26,6 @@ import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -126,6 +125,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private IContractBondService contractBondService;
     private ContractPerformanceMapper performanceMapper;
     private ContractPerformanceColPayMapper performanceColPayMapper;
+    private ICglProofingContract1Service cglProofingContract1Service;
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -1470,10 +1470,20 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 }
                 //*设备维修保养合同(关联表1）
                 if (ContractFormInfoTemplateContract.CONTRACT_SCLEQUIOMENTMAINTENANCE1.equals(templateField.getRelationCode())) {
-                    List<SclEquipmentMaintenance1ResponseVO> sclEquipmentMaintenance2List = JSON.parseArray(templateField.getTableData(), SclEquipmentMaintenance1ResponseVO.class);
-                    if (CollectionUtil.isNotEmpty(sclEquipmentMaintenance2List)) {
-                        sclEquipmentMaintenance1Service.saveBatchByRefId(contractFormInfo.getId(), sclEquipmentMaintenance2List);
+                    List<SclEquipmentMaintenance1ResponseVO> sclEquipmentMaintenance1List = JSON.parseArray(templateField.getTableData(), SclEquipmentMaintenance1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(sclEquipmentMaintenance1List)) {
+                        sclEquipmentMaintenance1Service.saveBatchByRefId(contractFormInfo.getId(), sclEquipmentMaintenance1List);
                         List<SclEquipmentMaintenance1ResponseVO> list = sclEquipmentMaintenance1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*采购类_打样合同书(关联表1）
+                if (ContractFormInfoTemplateContract.CONTRACT_CGLPROOFINGCONTRACT1.equals(templateField.getRelationCode())) {
+                    List<CglProofingContract1ResponseVO> CglProofingContract1List = JSON.parseArray(templateField.getTableData(), CglProofingContract1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(CglProofingContract1List)) {
+                        cglProofingContract1Service.saveBatchByRefId(contractFormInfo.getId(), CglProofingContract1List);
+                        List<CglProofingContract1ResponseVO> list = cglProofingContract1Service.selectRefList(contractFormInfo.getId());
                         templateField.setTableData(JSONObject.toJSONString(list));
                         templateField.setTableDataList(list);
                     }
