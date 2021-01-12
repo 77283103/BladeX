@@ -3,7 +3,7 @@
 <mapper namespace="org.springblade.contract.mapper.YwlANewDisplayMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="ywlANewDisplayResultMap" type="org.springblade.contract.entity.YwlANewDisplayEntity">
+    <resultMap id="ywlANewDisplayResultMap" type="org.springblade.contract.entity.YwlAnewDisplayEntity">
         <result column="id" property="id"/>
         <result column="ywl_cooperation_content" property="ywlCooperationContent"/>
         <result column="ywl_the_start_time" property="ywlTheStartTime"/>

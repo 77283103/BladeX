@@ -2,7 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.YwlShopRecruitmentEntity;
+import org.springblade.contract.entity.YwiShopRecruitmentEntity;
 import org.springblade.contract.vo.YwlShopRecruitmentRequestVO;
 
 /**
@@ -11,7 +11,7 @@ import org.springblade.contract.vo.YwlShopRecruitmentRequestVO;
  * @author szw
  * @date : 2020-12-04 19:04:55
  */
-public interface YwlShopRecruitmentMapper extends BaseMapper<YwlShopRecruitmentEntity> {
+public interface YwlShopRecruitmentMapper extends BaseMapper<YwiShopRecruitmentEntity> {
 
 	/**
 	 * 分页查询
@@ -19,6 +19,6 @@ public interface YwlShopRecruitmentMapper extends BaseMapper<YwlShopRecruitmentE
 	 * @param ywlShopRecruitment
 	 * @return
 	 */
-	IPage<YwlShopRecruitmentEntity> pageList(IPage<YwlShopRecruitmentEntity> page, YwlShopRecruitmentRequestVO ywlShopRecruitment);
+	IPage<YwiShopRecruitmentEntity> pageList(IPage<YwiShopRecruitmentEntity> page, YwlShopRecruitmentRequestVO ywlShopRecruitment);
 
 }

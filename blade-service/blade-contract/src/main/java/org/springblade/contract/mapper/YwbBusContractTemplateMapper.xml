@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.YwbBusContractTemplateMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="ywbBusinessContractTemplateResultMap" type="org.springblade.contract.entity.YwbBusinessContractTemplateEntity">
+        <result column="id" property="id"/>
+        <result column="ywb_lessors" property="ywbLessors"/>
+        <result column="ywb_certificate" property="ywbCertificate"/>
+        <result column="ywb_address" property="ywbAddress"/>
+        <result column="ywb_tenantry" property="ywbTenantry"/>
+        <result column="ywb_certificate_b" property="ywbCertificateB"/>
+        <result column="ywb_residence" property="ywbResidence"/>
+        <result column="ywb_agrees" property="ywbAgrees"/>
+        <result column="ywb_builtup_area" property="ywbBuiltupArea"/>
+        <result column="ywb_between_a" property="ywbBetweenA"/>
+        <result column="ywb_party_room" property="ywbPartyRoom"/>
+        <result column="ywb_term" property="ywbTerm"/>
+        <result column="ywb_shall" property="ywbShall"/>
+        <result column="ywb_requirement" property="ywbRequirement"/>
+        <result column="ywb_standard" property="ywbStandard"/>
+        <result column="ywb_payment" property="ywbPayment"/>
+        <result column="ywb_totalrent" property="ywbTotalrent"/>
+        <result column="ywb_bank_remittance" property="ywbBankRemittance"/>
+        <result column="ywb_mdmbs_contract" property="ywbMdmbsContract"/>
+        <result column="ywb_hmdbf_previous" property="ywbHmdbfPrevious"/>
+        <result column="ywb_deposit_a" property="ywbDepositA"/>
+        <result column="ywb_deposit" property="ywbDeposit"/>
+        <result column="ywb_damages_a" property="ywbDamagesA"/>
+        <result column="ywb_terminclude" property="ywbTerminclude"/>
+        <result column="ywb_period" property="ywbPeriod"/>
+        <result column="ywb_requirement_a" property="ywbRequirementA"/>
+        <result column="ywb_compensation_a" property="ywbCompensationA"/>
+        <result column="ywb_time_requirement" property="ywbTimeRequirement"/>
+        <result column="ywb_agreements" property="ywbAgreements"/>
+        <result column="ywb_hmcopies" property="ywbHmcopies"/>
+        <result column="ywb_hmcopies_a" property="ywbHmcopiesA"/>
+        <result column="ywb_hmcopies_b" property="ywbHmcopiesB"/>
+        <result column="ywb_attachments" property="ywbAttachments"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        ywb_lessors,
+        ywb_certificate,
+        ywb_address,
+        ywb_tenantry,
+        ywb_certificate_b,
+        ywb_residence,
+        ywb_agrees,
+        ywb_builtup_area,
+        ywb_between_a,
+        ywb_party_room,
+        ywb_term,
+        ywb_shall,
+        ywb_requirement,
+        ywb_standard,
+        ywb_payment,
+        ywb_totalrent,
+        ywb_bank_remittance,
+        ywb_mdmbs_contract,
+        ywb_hmdbf_previous,
+        ywb_deposit_a,
+        ywb_deposit,
+        ywb_damages_a,
+        ywb_terminclude,
+        ywb_period,
+        ywb_requirement_a,
+        ywb_compensation_a,
+        ywb_time_requirement,
+        ywb_agreements,
+        ywb_hmcopies,
+        ywb_hmcopies_a,
+        ywb_hmcopies_b,
+        ywb_attachments,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="ywbBusinessContractTemplateResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM ywb_business_contract_template
+        WHERE is_deleted = 0
+    </select>
+</mapper>

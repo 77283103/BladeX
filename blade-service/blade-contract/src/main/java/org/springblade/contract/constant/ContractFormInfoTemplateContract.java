@@ -26,6 +26,8 @@ public interface ContractFormInfoTemplateContract {
 	String CONTRACT_CGLRAWMATERIALS1 = "CglRawMaterials1";
 	//设备维修保养合同(关联表）
 	String CONTRACT_SCLEQUIOMENTMAINTENANCE1 = "SclEquipmentMaintenance1";
+	//采购类——打样合同书
+	String CONTRACT_CGLPROOFINGCONTRACT1="CglProofingContract1";
 	//视频广告改编合同 广告完成形式关联表
 	String CONTRACT_MTADAPTATIONCONTRACT1 = "MtlAdaptationContract1";
 	//视频广告改编合同 交付数量关联表

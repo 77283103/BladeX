@@ -3,15 +3,17 @@
 <mapper namespace="org.springblade.contract.mapper.YwlShopRecruitmentMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="ywlShopRecruitmentResultMap" type="org.springblade.contract.entity.YwlShopRecruitmentEntity">
+    <resultMap id="ywlShopRecruitmentResultMap" type="org.springblade.contract.entity.YwiShopRecruitmentEntity">
         <result column="id" property="id"/>
         <result column="ywl_paty_a" property="ywlPatyA"/>
         <result column="ywl_paty_b" property="ywlPatyB"/>
         <result column="ywl_location" property="ywlLocation"/>
-        <result column="ywl_suspension" property="ywlSuspension"/>
-        <result column="ywl_agreement_period" property="ywlAgreementPeriod"/>
+        <result column="ywl_suspension_start" property="ywlSuspensionStart"/>
+        <result column="ywl_suspension_end" property="ywlSuspensionEnd"/>
+        <result column="ywl_agreement_period_start" property="ywlAgreementPeriodStart"/>
+        <result column="ywl_agreement_period_end" property="ywlAgreementPeriodEnd"/>
         <result column="ywl_production_costs" property="ywlProductionCosts"/>
-        <result column="ywl_amount_of" property="ywlAmount_of"/>
+        <result column="ywl_amount_of" property="ywlAmountOf"/>
         <result column="ywl_other_conventions" property="ywlOtherConventions"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
