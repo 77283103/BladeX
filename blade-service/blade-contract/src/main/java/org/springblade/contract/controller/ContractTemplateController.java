@@ -107,7 +107,7 @@ public class ContractTemplateController extends BladeController {
         BeanUtil.copy(template,entity);
         entity.setOriginalTemplateId(entity.getId());
         entity.setTemplateStatus(TEMPLATE_STATUS);
-		return R.status(templateService.save(entity));
+		return R.status(templateService.save(entity,"SAVE"));
 	}
 
 	/**
@@ -189,7 +189,7 @@ public class ContractTemplateController extends BladeController {
 		BeanUtil.copy(template,entity);
 		entity.setTemplateCode(template.getTemplateCode());
 		entity.setTemplateStatus(TEMPLATE_REVISION_STATUS);
-		templateService.save(entity);
+		templateService.save(entity,"REVISION");
 		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD,entity.getOriginalTemplateId());
 		return R.data(entity);
 	}

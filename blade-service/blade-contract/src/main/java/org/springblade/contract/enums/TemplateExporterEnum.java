@@ -641,7 +641,6 @@ public enum TemplateExporterEnum {
             return dataModel;
         }
     },
-
     //生产类：设备维修保养合同
     BYHT_21("BYHT_21"){
         @Override
@@ -656,6 +655,7 @@ public enum TemplateExporterEnum {
                     for (int i = 0; i < slEquipmentMaintenance1List.size(); i++) {
                         JSONObject slEquipmentMaintenance1 = JSON.parseObject(JSON.toJSONString(slEquipmentMaintenance1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
                         Map<String, Object> map = new HashMap();
+                        map.put("sclNumber",i+1);
                         map.put("sclDeviceName",slEquipmentMaintenance1.get("sclDeviceName"));
                         map.put("sclBrand",slEquipmentMaintenance1.get("sclBrand"));
                         map.put("sclSpecification",slEquipmentMaintenance1.get("sclSpecification"));
@@ -767,7 +767,7 @@ public enum TemplateExporterEnum {
             SclProductionCategoryEntity sclProductionCategory = JSONObject.toJavaObject(j, SclProductionCategoryEntity.class);
             dataModel.put("sclPartyA", j.get("sclPartyA"));
             dataModel.put("sclPartyB", j.get("sclPartyB"));
-            dataModel.put("sclDateOfSigning", j.get("sclDateOfSigning"));
+            dataModel.put("sclDateOfSigning",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclDateOfSigning"))));
             dataModel.put("sclSite", j.get("sclSite"));
             dataModel.put("sclStorage", j.get("sclStorage"));
             dataModel.put("sclArea", j.get("sclArea"));
@@ -776,7 +776,7 @@ public enum TemplateExporterEnum {
             dataModel.put("sclBail", j.get("sclBail"));
             dataModel.put("sclStorageee1", j.get("sclStorageee1"));
             dataModel.put("sclAffiliatedEnterprise", j.get("sclAffiliatedEnterprise"));
-            dataModel.put("sclContract", j.get("sclContract"));
+            dataModel.put("sclContract", j.get("sclContract"));//合同编号
             dataModel.put("sclDeposit", j.get("sclDeposit"));
             dataModel.put("sclStorageee2", j.get("sclStorageee2"));
             dataModel.put("sclConditionsa", j.get("sclConditionsa"));
@@ -872,7 +872,6 @@ public enum TemplateExporterEnum {
         }
     },
     //房屋租赁合同模板
-    //TODO 字段待修改
     FWZL_36("FWZL_36"){
         @Override
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
@@ -883,7 +882,7 @@ public enum TemplateExporterEnum {
             dataModel.put("ywbCertificate",j.get("ywbCertificate"));
             dataModel.put("ywbAddress",j.get("ywbAddress"));
             dataModel.put("ywbTenantry",j.get("ywbTenantry"));
-            dataModel.put("ywbCertificate_b",j.get("ywbCertificate_b"));
+            dataModel.put("ywbCertificateB",j.get("ywbCertificateB"));
             dataModel.put("ywbResidence",j.get("ywbResidence"));
             dataModel.put("ywbAgrees",j.get("ywbAgrees"));
             dataModel.put("ywbBuiltupArea",j.get("ywbBuiltupArea"));
@@ -895,22 +894,22 @@ public enum TemplateExporterEnum {
             dataModel.put("ywbStandard",j.get("ywbStandard"));
             dataModel.put("ywbPayment",j.get("ywbPayment"));
             dataModel.put("ywbTotalrent",j.get("ywbTotalrent"));
-            dataModel.put("ywbDepositA",j.get("ywbDepositA"));
+            dataModel.put("ywbDepositCapitali",j.get("ywbDepositCapitali"));
             dataModel.put("ywbDeposit",j.get("ywbDeposit"));
             dataModel.put("ywbBankRemittance",j.get("ywbBankRemittance"));
             dataModel.put("ywbMdmbsContract",j.get("ywbMdmbsContract"));
             dataModel.put("ywbHmdbfPrevious",j.get("ywbHmdbfPrevious"));
-            dataModel.put("ywbDepositA",j.get("ywbDepositA"));
-            dataModel.put("ywbDeposit",j.get("ywbDeposit"));
+            dataModel.put("ywbShallCapitali",j.get("ywbShallCapitali"));
+            dataModel.put("ywbShallRmba",j.get("ywbShallRmba"));
             dataModel.put("ywbDamagesA",j.get("ywbDamagesA"));
             dataModel.put("ywbTerminclude",j.get("ywbTerminclude"));
-            dataModel.put("date",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
-            dataModel.put("dateA",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("dateA"))));
-            dataModel.put("number",j.get("number"));
-            dataModel.put("numberA",j.get("numberA"));
-            dataModel.put("numberB",j.get("numberB"));
-            dataModel.put("cglAttachment",j.get("cglAttachment"));
-            dataModel.put("cglAttachmentA",j.get("cglAttachmentA"));
+            dataModel.put("ywbRequirementA",j.get("ywbRequirementA"));
+            dataModel.put("ywbTimeRequirement",j.get("ywbTimeRequirement"));
+            dataModel.put("ywbSettlementCompensation",j.get("ywbSettlementCompensation"));
+            dataModel.put("ywbAgreements",j.get("ywbAgreements"));
+            dataModel.put("ywbHmcopies",j.get("ywbHmcopies"));
+            dataModel.put("ywbHmcopiesA",j.get("ywbHmcopiesA"));
+            dataModel.put("ywbHmcopiesB",j.get("ywbHmcopiesB"));
             return dataModel;
         }
     };

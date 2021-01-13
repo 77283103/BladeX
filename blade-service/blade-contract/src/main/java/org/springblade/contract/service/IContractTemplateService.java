@@ -48,6 +48,5 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @param templateEntity
 	 * @return
 	 */
-	@Override
-	boolean save(ContractTemplateEntity templateEntity);
+	boolean save(ContractTemplateEntity templateEntity,String type);
 }

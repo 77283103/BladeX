@@ -11,8 +11,8 @@ import java.util.Date;
 /**
  * 生产类：物流服务合同（二段配送） 返回模型VO
  *
- * @author kx
- * @date : 2020-12-18 17:17:48
+ * @author 张文武
+ * @date : 2021-01-04 14:31:03
  */
 @Getter
 @Setter

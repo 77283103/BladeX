@@ -20,9 +20,12 @@ import org.springblade.system.user.feign.IUserClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.math.BigDecimal.ROUND_HALF_EVEN;
 
 /**
  * 范本管理 服务实现类
@@ -88,6 +91,11 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	public ContractTemplateResponseVO getById(Long id) {
 		//查询实体数据
 		ContractTemplateEntity templateEntity=baseMapper.selectById(id);
+		//统计范本使用率，履约中和疼痛数量，已完成合同数量
+		templateEntity.setUsageRate(BigDecimal.valueOf(templateMapper.selectByIdUsageRate(id).doubleValue())
+				.divide(BigDecimal.valueOf(templateMapper.selectByIdTemplateCount().doubleValue()),4,ROUND_HALF_EVEN).doubleValue()*100+"%");
+		templateEntity.setAuthenticPerformanceCount(templateMapper.selectByIdFulfillingCount(id));
+		templateEntity.setCompletedContractCount(templateMapper.selectByIdCompletedCount(id));
 		//将实体数据存入vo
 		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityPV(templateEntity);
 		//判断vo的文件id是否为空
@@ -123,11 +131,19 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 		List<ContractTemplateEntity> templateEntityList=new ArrayList<>();
 		//根据最新版本id查询最新范本数据
 		ContractTemplateEntity templateEntity = baseMapper.selectById(id);
+		templateEntity.setUsageRate(BigDecimal.valueOf(templateMapper.selectByIdUsageRate(id).doubleValue())
+				.divide(BigDecimal.valueOf(templateMapper.selectByIdTemplateCount().doubleValue()),4,ROUND_HALF_EVEN).doubleValue()*100+"%");
+		templateEntity.setAuthenticPerformanceCount(templateMapper.selectByIdFulfillingCount(id));
+		templateEntity.setCompletedContractCount(templateMapper.selectByIdCompletedCount(id));
 		while (templateEntity.getOriginalTemplateId()!=null && templateEntity.getOriginalTemplateId()!=-1) {
 			templateEntity = baseMapper.selectById(templateEntity.getOriginalTemplateId());
+			templateEntity.setUsageRate(BigDecimal.valueOf(templateMapper.selectByIdUsageRate(templateEntity.getId()).doubleValue())
+					.divide(BigDecimal.valueOf(templateMapper.selectByIdTemplateCount().doubleValue()),4,ROUND_HALF_EVEN).doubleValue()*100+"%");
+			templateEntity.setAuthenticPerformanceCount(templateMapper.selectByIdFulfillingCount(templateEntity.getId()));
+			templateEntity.setCompletedContractCount(templateMapper.selectByIdCompletedCount(templateEntity.getId()));
 			templateEntityList.add(templateEntity);
 		}
-		//将实体数据存入vo
+		//将实体数据存入void
 		ContractTemplateResponseVO templateResponseVO= ContractTemplateWrapper.build().entityPV(templateEntity);
 		templateResponseVO.setTemplateEntityOldVOList(templateEntityList);
 		return templateResponseVO;
@@ -143,22 +159,26 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public boolean save(ContractTemplateEntity entity) {
-		String templateType=bizClient.getById(Long.valueOf(entity.getContractBigCategory())).getData().getDictKey()+
-				"-"+bizClient.getById(Long.valueOf(entity.getContractSmallCategory())).getData().getDictKey();
-		Integer number=templateMapper.selectByIdTemplateNumber(templateType);
-		if (Func.isEmpty(number)){
-			entity.setTemplateNumber(templateType+"-00"+1);
-			templateMapper.instertTemplateNumbered(templateType,1);
-		}else {
-			templateMapper.updateTemplateNumbered(templateType, number += 1);
-			if (number <= TEMPLATE_NUMBER_DIGITS) {
-				entity.setTemplateNumber(templateType + "-00" + number);
-			} else if (number > TEMPLATE_NUMBER_DIGITS) {
-				entity.setTemplateNumber(templateType + "-0" + number);
-			} else if (number >= TEMPLATE_NUMBER_TENSE) {
-				entity.setTemplateNumber(templateType + "-" + number);
+	public boolean save(ContractTemplateEntity entity,String type) {
+		if ("SAVE".equals(type)) {
+			String templateType = bizClient.getById(Long.valueOf(entity.getContractBigCategory())).getData().getDictKey() +
+					"-" + bizClient.getById(Long.valueOf(entity.getContractSmallCategory())).getData().getDictKey();
+			Integer number = templateMapper.selectByIdTemplateNumber(templateType);
+			if (Func.isEmpty(number)) {
+				entity.setTemplateNumber(templateType + "-00" + 1);
+				templateMapper.instertTemplateNumbered(templateType, 1);
+			} else {
+				templateMapper.updateTemplateNumbered(templateType, number += 1);
+				if (number <= TEMPLATE_NUMBER_DIGITS) {
+					entity.setTemplateNumber(templateType + "-00" + number);
+				} else if (number > TEMPLATE_NUMBER_DIGITS) {
+					entity.setTemplateNumber(templateType + "-0" + number);
+				} else if (number >= TEMPLATE_NUMBER_TENSE) {
+					entity.setTemplateNumber(templateType + "-" + number);
+				}
 			}
+		}else if("REVISION".equals(type)){
+			entity.setTemplateNumber(baseMapper.selectById(entity.getOriginalTemplateId()).getTemplateNumber());
 		}
 		return super.save(entity);
 	}

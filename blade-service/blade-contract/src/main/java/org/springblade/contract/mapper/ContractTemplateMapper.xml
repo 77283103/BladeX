@@ -126,6 +126,39 @@
         FROM contract_template_number
         WHERE type = #{type}
     </select>
+    <!--根据范本id查询范本使用率-->
+    <select id="selectByIdUsageRate" resultType="Integer">
+        SELECT
+                COUNT(contract_template_id) count
+        FROM contract_form_info
+        WHERE  is_deleted = 0
+        AND contract_template_id = #{id}
+    </select>
+    <!--根据范本id查询范本履约中数量-->
+    <select id="selectByIdFulfillingCount" resultType="Integer">
+        SELECT
+                COUNT(contract_template_id) count
+        FROM contract_form_info
+        WHERE  is_deleted = 0
+        AND contract_template_id = #{id}
+        AND contract_status=70
+    </select>
+    <!--根据范本id查询范本已完成数量-->
+    <select id="selectByIdCompletedCount" resultType="Integer">
+        SELECT
+                COUNT(contract_template_id) count
+        FROM contract_form_info
+        WHERE  is_deleted = 0
+        AND contract_template_id = #{id}
+        AND contract_status=110
+    </select>
+     <!-- 标准范本总和计数   -->
+    <select id="selectByIdTemplateCount" resultType="Integer">
+        SELECT
+                COUNT(template_status) count
+        FROM contract_template
+        WHERE template_status in (10,20,40)
+    </select>
      <!-- 新增範本編號   -->
     <insert id="instertTemplateNumbered">
         INSERT INTO contract_template_number
