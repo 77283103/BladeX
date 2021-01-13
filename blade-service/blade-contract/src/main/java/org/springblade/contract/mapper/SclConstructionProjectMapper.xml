@@ -9,19 +9,13 @@
         <result column="scl_party_address" property="sclPartyAddress"/>
         <result column="scl_contractor" property="sclContractor"/>
         <result column="scl_address_of_contractor" property="sclAddressOfContractor"/>
-        <result column="scl_varieties" property="sclVarieties"/>
-        <result column="scl_specifications" property="sclSpecifications"/>
-        <result column="scl_processing_fee" property="sclProcessingFee"/>
         <result column="scl_start_time" property="sclStartTime"/>
         <result column="scl_completion_time" property="sclCompletionTime"/>
         <result column="scl_processing_way" property="sclProcessingWay"/>
-        <result column="scl_serial_number" property="sclSerialNumber"/>
-        <result column="scl_riginal_material" property="sclRiginalMaterial"/>
-        <result column="scl_name_of_raw_material" property="sclNameOfRawMaterial"/>
-        <result column="scl_transport" property="sclTransport"/>
         <result column="scl_expense_bearing_party" property="sclExpenseBearingParty"/>
         <result column="scl_expense_bearing_party1" property="sclExpenseBearingParty1"/>
         <result column="scl_risk_of_loss" property="sclRiskOfLoss"/>
+        <result column="scl_payment_time" property="sclPaymentTime"/>
         <result column="scl_date_of_request" property="sclDateOfRequest"/>
         <result column="scl_name_of_bank" property="sclNameOfBank"/>
         <result column="scl_account_name" property="sclAccountName"/>
@@ -31,12 +25,12 @@
         <result column="scl_penalties" property="sclPenalties"/>
         <result column="scl_breach_of_contract" property="sclBreachOfContract"/>
         <result column="scl_datatime" property="sclDatatime"/>
-        <result column="scl_processing_fee_1" property="sclProcessingFee1"/>
-        <result column="scl_breach_of_contract_78" property="sclBreachOfContract78"/>
-        <result column="scl_breach_of_contract_711" property="sclBreachOfContract711"/>
-        <result column="scl_breach_of_contract_712" property="sclBreachOfContract712"/>
-        <result column="scl_breach_of_contract_7151" property="sclBreachOfContract7151"/>
-        <result column="scl_breach_of_contract_7152" property="sclBreachOfContract7152"/>
+        <result column="scl_processing_fee1" property="sclProcessingFee1"/>
+        <result column="scl_breach_of_contract78" property="sclBreachOfContract78"/>
+        <result column="scl_breach_of_contract711" property="sclBreachOfContract711"/>
+        <result column="scl_breach_of_contract712" property="sclBreachOfContract712"/>
+        <result column="scl_breach_of_contract7151" property="sclBreachOfContract7151"/>
+        <result column="scl_breach_of_contract7152" property="sclBreachOfContract7152"/>
         <result column="scl_paid" property="sclPaid"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
@@ -53,19 +47,13 @@
         scl_party_address,
         scl_contractor,
         scl_address_of_contractor,
-        scl_varieties,
-        scl_specifications,
-        scl_processing_fee,
         scl_start_time,
         scl_completion_time,
         scl_processing_way,
-        scl_serial_number,
-        scl_riginal_material,
-        scl_name_of_raw_material,
-        scl_transport,
         scl_expense_bearing_party,
         scl_expense_bearing_party1,
         scl_risk_of_loss,
+        scl_payment_time,
         scl_date_of_request,
         scl_name_of_bank,
         scl_account_name,
@@ -75,12 +63,12 @@
         scl_penalties,
         scl_breach_of_contract,
         scl_datatime,
-        scl_processing_fee_1,
-        scl_breach_of_contract_78,
-        scl_breach_of_contract_711,
-        scl_breach_of_contract_712,
-        scl_breach_of_contract_7151,
-        scl_breach_of_contract_7152,
+        scl_processing_fee1,
+        scl_breach_of_contract78,
+        scl_breach_of_contract711,
+        scl_breach_of_contract712,
+        scl_breach_of_contract7151,
+        scl_breach_of_contract7152,
         scl_paid,
         status,
         is_deleted,
@@ -93,7 +81,7 @@
     <!-- 分页 -->
     <select id="pageList" resultMap="sclConstructionProjectResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+        <include refid="baseColumnList"></include>
         FROM scl_construction_project
         WHERE is_deleted = 0
     </select>

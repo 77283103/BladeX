@@ -60,21 +60,6 @@ public class SclConstructionProjectEntity extends BaseEntity {
 	@ApiModelProperty(value="承揽方地址")
 	private String sclAddressOfContractor;
 	/**
-	 * 品种
-	 */
-	@ApiModelProperty(value="品种")
-	private String sclVarieties;
-	/**
-	 * 规格
-	 */
-	@ApiModelProperty(value="规格")
-	private String sclSpecifications;
-	/**
-	 * 加工费用
-	 */
-	@ApiModelProperty(value="加工费用")
-	private String sclProcessingFee;
-	/**
 	 * 加工开始时间
 	 */
 	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
@@ -94,27 +79,6 @@ public class SclConstructionProjectEntity extends BaseEntity {
 	@ApiModelProperty(value="加工方式：甲乙双方同意采取以下【？】条方式合作")
 	private String sclProcessingWay;
 	/**
-	 * 损耗结算：序号
-	 */
-	@JsonSerialize(nullsUsing = NullSerializer.class)
-	@ApiModelProperty(value="损耗结算：序号")
-	private Integer sclSerialNumber;
-	/**
-	 * 原/物料
-	 */
-	@ApiModelProperty(value="原/物料")
-	private String sclRiginalMaterial;
-	/**
-	 * 原物料名称
-	 */
-	@ApiModelProperty(value="原物料名称")
-	private String sclNameOfRawMaterial;
-	/**
-	 * 损耗率
-	 */
-	@ApiModelProperty(value="损耗率")
-	private String sclTransport;
-	/**
 	 * 运输及费用：代工产品之运输（包括但不限于叫车、装卸货、运输防护等）由【？】方负责
 	 */
 	@ApiModelProperty(value="运输及费用：代工产品之运输（包括但不限于叫车、装卸货、运输防护等）由【？】方负责")
@@ -129,6 +93,11 @@ public class SclConstructionProjectEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value="代工产品交付前的毁损、灭失风险由【？】方承担")
 	private String sclRiskOfLoss;
+	/**
+	 * 支付时间
+	 */
+	@ApiModelProperty(value="支付时间")
+	private String sclPaymentTime;
 	/**
 	 * (第四.4.1项日期要求)
 	 */

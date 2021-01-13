@@ -231,6 +231,7 @@ public enum TemplateExporterEnum {
             dataModel.put("sclPenalties",j.get("sclPenalties"));
             dataModel.put("sclBreachOfContract",j.get("sclBreachOfContract"));
             dataModel.put("sclDatatime",j.get("sclDatatime"));
+			dataModel.put("sclPaymentTime",j.get("sclPaymentTime"));
             dataModel.put("sclProcessingFee1",j.get("sclProcessingFee1"));
             dataModel.put("sclBreachOfContract78",j.get("sclBreachOfContract78"));
             dataModel.put("sclBreachOfContract711",j.get("sclBreachOfContract711"));
@@ -295,15 +296,30 @@ public enum TemplateExporterEnum {
             dataModel.put("mtlAdaptationIssues",j.get("mtlAdaptationIssues"));
             dataModel.put("mtlNameOfTheAudio",j.get("mtlNameOfTheAudio"));
             dataModel.put("mtlAudioContent",j.get("mtlAudioContent"));
-            dataModel.put("mtlProductionStartTime",j.get("mtlProductionStartTime"));
-            dataModel.put("mtlProductionCompletionTime",j.get("mtlProductionCompletionTime"));
-            dataModel.put("mtlAcceptance",j.get("mtlAcceptance"));
+			dataModel.put("mtlHaveHasNot",j.get("mtlHaveHasNot"));
+            dataModel.put("mtlProductionStartTime",DataFormatUtils.systemTimeFormat(j.get("mtlProductionStartTime").toString()));
+            dataModel.put("mtlProductionCompletionTime",DataFormatUtils.systemTimeFormat(j.get("mtlProductionCompletionTime").toString()));
+			dataModel.put("mtlSubmitContent",j.get("mtlSubmitContent"));
+			dataModel.put("mtlDesignatedPerson",j.get("mtlDesignatedPerson"));
             dataModel.put("mtlUnpaidTaxRmb",j.get("mtlUnpaidTaxRmb"));
             dataModel.put("mtlRate",j.get("mtlRate"));
             dataModel.put("mtlTaxAmountIsRmb",j.get("mtlTaxAmountIsRmb"));
+			if("1".equals(j.get("mtlTerm"))){
+				dataModel.put("mtlTerm","1");
+			}else{
+				dataModel.put("mtlTerm","2");
+			}
+			dataModel.put("mtlInvoiceDays1",j.get("mtlInvoiceDays1"));
+			dataModel.put("mtlInvoiceDays2",j.get("mtlInvoiceDays2"));
+			dataModel.put("mtlCapitalizationRmb2",j.get("mtlCapitalizationRmb2"));
+			dataModel.put("mtlCapitalizationRmbSy2",j.get("mtlCapitalizationRmbSy2"));
             dataModel.put("mtlCompanyName",j.get("mtlCompanyName"));
             dataModel.put("mtlWhereItIs",j.get("mtlWhereItIs"));
             dataModel.put("mtlAccount",j.get("mtlAccount"));
+			dataModel.put("mtlMusicUse",j.get("mtlMusicUse"));
+			dataModel.put("mtlLiquidatedDamages2",j.get("mtlLiquidatedDamages2"));
+			dataModel.put("mtlSingerUse",j.get("mtlSingerUse"));
+			dataModel.put("mtlDubbingUse",j.get("mtlDubbingUse"));
             dataModel.put("list",list);
             dataModel.put("list1",list1);
             return dataModel;
