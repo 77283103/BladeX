@@ -7,12 +7,11 @@
         <result column="id" property="id"/>
         <result column="scl_party_a" property="sclPartyA"/>
         <result column="scl_party_b" property="sclPartyB"/>
-        <result column="scl_year" property="sclYear"/>
-        <result column="scl_month" property="sclMonth"/>
-        <result column="scl_day" property="sclDay"/>
+        <result column="scl_date_of_signing" property="sclDateOfSigning"/>
         <result column="scl_site" property="sclSite"/>
         <result column="scl_storage" property="sclStorage"/>
         <result column="scl_area" property="sclArea"/>
+        <result column="scl_d_day" property="sclDDay"/>
         <result column="scl_no" property="sclNo"/>
         <result column="scl_storageee" property="sclStorageee"/>
         <result column="scl_conditionsa" property="sclConditionsa"/>
@@ -32,12 +31,13 @@
         <result column="scl_provide" property="sclProvide"/>
         <result column="scl_hours" property="sclHours"/>
         <result column="scl_morning" property="sclMorning"/>
+        <result column="scl_manifest" property="sclManifest"/>
         <result column="scl_afternoon" property="sclAfternoon"/>
         <result column="scl_advance" property="sclAdvance"/>
         <result column="scl_season" property="sclSeason"/>
         <result column="scl_return" property="sclReturn"/>
         <result column="scl_requesta" property="sclRequesta"/>
-        <result column="scl_Items" property="sclItems"/>
+        <result column="scl_items" property="sclItems"/>
         <result column="scl_date" property="sclDate"/>
         <result column="scl_requirementsddd" property="sclRequirementsddd"/>
         <result column="scl_third" property="sclThird"/>
@@ -61,12 +61,11 @@
         id,
         scl_party_a,
         scl_party_b,
-        scl_year,
-        scl_month,
-        scl_day,
+        scl_date_of_signing,
         scl_site,
         scl_storage,
         scl_area,
+        scl_d_day,
         scl_no,
         scl_storageee,
         scl_conditionsa,
@@ -86,12 +85,13 @@
         scl_provide,
         scl_hours,
         scl_morning,
+        scl_manifest,
         scl_afternoon,
         scl_advance,
         scl_season,
         scl_return,
         scl_requesta,
-        scl_Items,
+        scl_items,
         scl_date,
         scl_requirementsddd,
         scl_third,

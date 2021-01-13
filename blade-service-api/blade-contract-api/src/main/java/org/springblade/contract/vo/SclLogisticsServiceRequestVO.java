@@ -1,19 +1,10 @@
 package org.springblade.contract.vo;
 
-import lombok.ToString;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import org.springblade.core.tool.utils.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
-
+import lombok.ToString;
 import org.springblade.core.mp.base.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 
 
 /**
@@ -23,8 +14,8 @@ import com.fasterxml.jackson.databind.ser.std.NullSerializer;
  * @NotBlank 检查约束 (字符串) 是不是Null还有被Trim的长度是否大于0,只对字符串,且会去掉前后空格.
  * @NotEmpty 检查(集合)约束元素是否为NULL或者是EMPTY.
  *
- * @author kx
- * @date : 2020-12-18 17:17:40
+ * @author 张文武
+ * @date : 2021-01-04 14:30:50
  */
 @Getter
 @Setter

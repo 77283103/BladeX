@@ -8,8 +8,8 @@ import org.springblade.contract.vo.SclLogisticsServiceRequestVO;
 /**
  * 生产类：物流服务合同（二段配送） Mapper 接口
  *
- * @author kx
- * @date : 2020-12-18 17:17:41
+ * @author 张文武
+ * @date : 2021-01-04 14:30:51
  */
 public interface SclLogisticsServiceMapper extends BaseMapper<SclLogisticsServiceEntity> {
 

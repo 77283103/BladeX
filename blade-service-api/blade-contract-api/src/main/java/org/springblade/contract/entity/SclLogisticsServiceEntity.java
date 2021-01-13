@@ -1,7 +1,6 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -11,18 +10,16 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
-import org.springblade.core.tool.utils.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.util.Date;
+import java.time.LocalTime;
 
 
 /**
  * 生产类：物流服务合同（二段配送） 实体类
  *
- * @author kx
- * @date : 2020-12-18 17:17:38
+ * @author 张文武
+ * @date : 2021-01-04 14:30:48
  */
 @Getter
 @Setter
@@ -44,23 +41,11 @@ public class SclLogisticsServiceEntity extends BaseEntity {
     @ApiModelProperty(value="立合同人乙方")
 	private String sclPartyB;
 	/**
-	 * 签订日期：年
+	 * 签订日期：
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="签订日期：年")
-	private Integer sclYear;
-	/**
-	 * 月
-	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="月")
-	private Integer sclMonth;
-	/**
-	 * 日
-	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="日")
-	private Integer sclDay;
+    @ApiModelProperty(value="签订日期：")
+	private Integer sclDateOfSigning;
 	/**
 	 * 签订地点
 	 */
@@ -77,6 +62,12 @@ public class SclLogisticsServiceEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="中标的物流线路为")
 	private String sclArea;
+	/**
+	 * 出货传票上所载出货日期为【？】日
+	 */
+    @JsonSerialize(nullsUsing = NullSerializer.class)
+    @ApiModelProperty(value="出货传票上所载出货日期为【？】日")
+	private Integer sclDDay;
 	/**
 	 * 正常单
 	 */
@@ -180,6 +171,11 @@ public class SclLogisticsServiceEntity extends BaseEntity {
     @ApiModelProperty(value="乙方于结算截止日之后【？】日内，将运费清单递至甲方")
 	private Integer sclMorning;
 	/**
+	 * 将运费清单递至甲方           
+	 */
+    @ApiModelProperty(value="将运费清单递至甲方           ")
+	private String sclManifest;
+	/**
 	 * 对于账目不清之处，乙方有责任与甲方物流部核算员共同核对，并限于【？】内达成共识
 	 */
     @ApiModelProperty(value="对于账目不清之处，乙方有责任与甲方物流部核算员共同核对，并限于【？】内达成共识")
@@ -238,16 +234,12 @@ public class SclLogisticsServiceEntity extends BaseEntity {
 	 * 合同有效期：开始时间
 	 */
     @ApiModelProperty(value="合同有效期：开始时间")
-	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
-	private Date sclDateOfs;
+	private LocalTime sclDateOfs;
 	/**
-	 * 合同有效期：开始时间
+	 * 合同有效期：结束时间
 	 */
-    @ApiModelProperty(value="合同有效期：开始时间")
-	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
-	private Date sclRequirementsss;
+    @ApiModelProperty(value="合同有效期：结束时间")
+	private LocalTime sclRequirementsss;
 	/**
 	 * 除本合同另有约定外，非经双方协商一致，任一方均不得擅自解除本合同，否则应向对方支付违约金计人民币【？】万元整
 	 */
