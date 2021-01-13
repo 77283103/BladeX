@@ -70,7 +70,7 @@ public class AbutmentClient implements IAbutmentClient {
 					pushEkpEntity.setDocCreator(docCreatorEntity);
 					FormValuesEntity formValuesEntity = new FormValuesEntity();
 					//依据编号
-					//formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
+					formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
 					//合同方对应关系
 					if("甲".equals(entity.getContractRoles())){
 						formValuesEntity.setFd_onetoone("乙");
@@ -83,7 +83,7 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_b_number("13361615656");
 					//乙方税籍编号
 					formValuesEntity.setFd_b_taxno("91360823092907952B");
-					formValuesEntity.setFd_accord_id("1762642a34c79442253858b4b2aab793");
+					//formValuesEntity.setFd_accord_id("1762642a34c79442253858b4b2aab793");
 					//合同id
 					formValuesEntity.setFd_contract_id(entity.getId().toString());
 					//合同文件名称  需要查询出来 TextFile是null
@@ -161,7 +161,7 @@ public class AbutmentClient implements IAbutmentClient {
 					R<List<DictBiz>> contract_HTDL = bizClient.getList("HTDL");
 					List<DictBiz> dataBiz = contract_HTDL.getData();
 					dataBiz.forEach(bz -> {
-						if (bz.getDictKey().equals(entity.getContractBigCategory())) {
+						if (bz.getId().equals(entity.getContractBigCategory())) {
 							formValuesEntity.setFd_currency(bz.getDictValue());
 						}
 					});
@@ -177,13 +177,13 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_copies(entity.getShare());
 					//合同期限
 					switch (entity.getContractPeriod()) {
-						case "xysn":
+						case "1095":
 							formValuesEntity.setFd_contract_period("1");
 							break;
-						case "dysn":
+						case "1460":
 							formValuesEntity.setFd_contract_period("2");
 							break;
-						case "wzzqx":
+						case "365000":
 							formValuesEntity.setFd_contract_period("3");
 							break;
 						default:
@@ -270,7 +270,13 @@ public class AbutmentClient implements IAbutmentClient {
 					}
 					if(entity.getContractBond().size()>0){
 						//有无押金
-						formValuesEntity.setFd_cash_pledge(entity.getContractBond().get(0).getIsNotBond());
+						if("0".equals(entity.getContractBond().get(0).getIsNotBond())){
+							formValuesEntity.setFd_cash_pledge("有");
+						}else if("1".equals(entity.getContractBond().get(0).getIsNotBond())){
+							formValuesEntity.setFd_cash_pledge("无");
+						}else{
+							formValuesEntity.setFd_cash_pledge("共享");
+						}
 						//押金
 						formValuesEntity.setFd_cash(entity.getContractBond().get(0).getIsNotBond());
 						if(!Func.isEmpty(entity.getContractBond().get(0).getPlanPayTime())){
@@ -300,8 +306,8 @@ public class AbutmentClient implements IAbutmentClient {
 					pushEkpEntity.setFormValues(formValuesEntity);
 					//依据id
 					if (!Func.isEmpty(entity.getAccording().get(0).getFileId())) {
-						//pushEkpEntity.setDocSubject(entity.getAccording().get(0).getFileId());
-						pushEkpEntity.setDocSubject("1762642a34c79442253858b4b2aab793");
+						pushEkpEntity.setDocSubject(entity.getAccording().get(0).getFileId());
+						//pushEkpEntity.setDocSubject("1762642a34c79442253858b4b2aab793");
 					}
 					pushEkpEntity.setToken(ekpService.getToken());
 					pushEkpEntity.setDocSubject(entity.getContractName());
