@@ -78,4 +78,29 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 * @return
 	 */
 	Integer selectByIdTemplateNumber(@Param("type") String type);
+
+	/**
+	 * 根据范本id查询范本使用率
+	 * @param id
+	 * @return
+	 */
+	Integer selectByIdUsageRate(Long id);
+	/**
+	 * 根据范本id查询范本履约中数量
+	 * @param id
+	 * @return
+	 */
+	Integer selectByIdFulfillingCount(Long id);
+	/**
+	 * 根据范本id查询范本已完成数量
+	 * @param id
+	 * @return
+	 */
+	Integer selectByIdCompletedCount(Long id);
+
+	/**
+	 * 标准范本总和计数
+	 * @return
+	 */
+	Integer selectByIdTemplateCount();
 }

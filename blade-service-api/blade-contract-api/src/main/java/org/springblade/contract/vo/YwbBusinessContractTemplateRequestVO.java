@@ -105,7 +105,10 @@ public class YwbBusinessContractTemplateRequestVO extends BaseEntity {
 	
     @ApiModelProperty(value="百分比作为解约补偿金")
 	private Double ywbCompensationA;
-	
+
+	@ApiModelProperty(value = "第九.3项解决补偿金")
+	private Date ywbSettlementCompensation;
+
     @ApiModelProperty(value="第九.4项时间要求")
 	private Date ywbTimeRequirement;
 	

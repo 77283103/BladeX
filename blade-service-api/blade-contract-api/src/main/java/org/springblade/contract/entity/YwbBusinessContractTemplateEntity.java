@@ -158,6 +158,11 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	@ApiModelProperty(value = "百分比作为解约补偿金")
 	private Double ywbCompensationA;
 	/**
+	 * 第九.3项解决补偿金
+	 */
+	@ApiModelProperty(value = "第九.3项解决补偿金")
+	private Date ywbSettlementCompensation;
+	/**
 	 * 第九.4项时间要求
 	 */
 	@ApiModelProperty(value = "第九.4项时间要求")
