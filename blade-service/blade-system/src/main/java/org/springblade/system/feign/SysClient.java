@@ -17,6 +17,7 @@
 package org.springblade.system.feign;
 
 import lombok.AllArgsConstructor;
+import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -29,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
+
+import static org.springblade.core.cache.constant.CacheConstant.SYS_CACHE;
 
 /**
  * 系统服务Feign实现类
@@ -175,12 +178,14 @@ public class SysClient implements ISysClient {
 	@Override
 	@PostMapping(SAVE_DEPT_API)
 	public R<Boolean> saveOrUpdateBatchDept(List<Dept> dept) {
+		CacheUtil.clear(SYS_CACHE);
 		return R.data(deptService.saveOrUpdateBatch(dept));
 	}
 
 	@Override
 	@PostMapping(SAVE_POST_API)
 	public R<Boolean> saveOrUpdateBatchPost(List<Post> post) {
+		CacheUtil.clear(SYS_CACHE);
 		return R.data(postService.saveOrUpdateBatch(post));
 	}
 	@Override

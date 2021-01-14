@@ -150,8 +150,12 @@ public class AbutmentClient implements IAbutmentClient {
 						}
 						formValuesEntity.setFd_keep_list(keepList);
 						formValuesEntity.setFd_pay_list(payList);
-					}else if("30".equals(entity.getContractSoure())||StrUtil.isNotEmpty(entity.getOtherInformation())){
-						formValuesEntity.setFd_contract_type("30");
+					}else if("30".equals(entity.getContractSoure())){
+						if(StrUtil.isNotEmpty(entity.getOtherInformation())){
+							formValuesEntity.setFd_contract_type("30");
+						}else{
+							formValuesEntity.setFd_contract_type("20");
+						}
 					}else{
 						formValuesEntity.setFd_contract_type("40");
 					}
@@ -161,8 +165,18 @@ public class AbutmentClient implements IAbutmentClient {
 					R<List<DictBiz>> contract_HTDL = bizClient.getList("HTDL");
 					List<DictBiz> dataBiz = contract_HTDL.getData();
 					dataBiz.forEach(bz -> {
-						if (bz.getId().equals(entity.getContractBigCategory())) {
-							formValuesEntity.setFd_currency(bz.getDictValue());
+						if ((bz.getId().toString()).equals(entity.getContractBigCategory())) {
+							formValuesEntity.setFd_broad(bz.getDictKey());
+						}
+					});
+					//合同中类
+					formValuesEntity.setFd_secondary(entity.getContractListName());
+					//合同小类
+					R<List<DictBiz>> contract_HTXL = bizClient.getList("HTXL");
+					List<DictBiz> dataHTXLBiz = contract_HTXL.getData();
+					dataHTXLBiz.forEach(bz -> {
+						if ((bz.getId().toString()).equals(entity.getContractSmallCategory())) {
+							formValuesEntity.setFd_small(bz.getDictKey());
 						}
 					});
 					//合同主旨
@@ -269,16 +283,23 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_automatic("2");
 					}
 					if(entity.getContractBond().size()>0){
+						if(!Func.isEmpty(entity.getContractBond().get(0).getPlanPayAmount())){
+							formValuesEntity.setFd_cash(entity.getContractBond().get(0).getPlanPayAmount().toString());
+						}
+						//保证金类别
+						formValuesEntity.setFd_deposit_type(entity.getContractBond().get(0).getType());
+						//保证金编号
+						formValuesEntity.setFd_number(entity.getContractBond().get(0).getId().toString());
 						//有无押金
 						if("0".equals(entity.getContractBond().get(0).getIsNotBond())){
-							formValuesEntity.setFd_cash_pledge("有");
+							formValuesEntity.setFd_cash_pledge("1");
 						}else if("1".equals(entity.getContractBond().get(0).getIsNotBond())){
-							formValuesEntity.setFd_cash_pledge("无");
+							formValuesEntity.setFd_cash_pledge("2");
+							//押金
+							formValuesEntity.setFd_cash("");
 						}else{
-							formValuesEntity.setFd_cash_pledge("共享");
+							formValuesEntity.setFd_cash_pledge("3");
 						}
-						//押金
-						formValuesEntity.setFd_cash(entity.getContractBond().get(0).getIsNotBond());
 						if(!Func.isEmpty(entity.getContractBond().get(0).getPlanPayTime())){
 							//缴交时间
 							formValuesEntity.setFd_pay_time(sdf.format(entity.getContractBond().get(0).getPlanPayTime()));
@@ -287,10 +308,6 @@ public class AbutmentClient implements IAbutmentClient {
 							//退回时间
 							formValuesEntity.setFd_back_time(sdf.format(entity.getContractBond().get(0).getPlanReturnTime()));
 						}
-						//保证金类别
-						formValuesEntity.setFd_deposit_type(entity.getContractBond().get(0).getType());
-						//保证金编号
-						formValuesEntity.setFd_number(entity.getContractBond().get(0).getId().toString());
 					}
 					//合同形式
 					formValuesEntity.setFd_contract_no(entity.getContractForm());
@@ -305,10 +322,10 @@ public class AbutmentClient implements IAbutmentClient {
 
 					pushEkpEntity.setFormValues(formValuesEntity);
 					//依据id
-					if (!Func.isEmpty(entity.getAccording().get(0).getFileId())) {
+					/*if (!Func.isEmpty(entity.getAccording().get(0).getFileId())) {
 						pushEkpEntity.setDocSubject(entity.getAccording().get(0).getFileId());
 						//pushEkpEntity.setDocSubject("1762642a34c79442253858b4b2aab793");
-					}
+					}*/
 					pushEkpEntity.setToken(ekpService.getToken());
 					pushEkpEntity.setDocSubject(entity.getContractName());
 					pushEkpEntity.setFdTemplateId("176212613bf6f84e6bf1ad942cbb8344");

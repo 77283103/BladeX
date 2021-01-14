@@ -32,4 +32,15 @@ public class OrganizationVo implements Serializable {
 	private String parentid;
 	@ApiModelProperty(value = "查询条件:alterTime(最后修改时间,选填,不填写则返回所有)")
 	private String alterTime;
+	@ApiModelProperty(value = "厂别代号")
+	private String factno;
+	@ApiModelProperty(value = "厂别名称")
+	private String factname;
+	@ApiModelProperty(value = "部门代号")
+	private String deptno;
+	@ApiModelProperty(value = "部门名称")
+	private String deptnm;
+	@ApiModelProperty(value = "来源厂别")
+	private String laiyuan;
+
 }

@@ -81,5 +81,9 @@ public class User extends TenantEntity {
 	 * 是否启用
 	 */
 	private Integer isEnable;
-
+	/**
+	 * 关联供应商id
+	 */
+	@ApiModelProperty(value = "关联供应商id")
+	private String associationId;
 }

@@ -62,5 +62,9 @@ public class Post extends TenantEntity {
 	@ApiModelProperty(value = "岗位描述")
 	private String remark;
 
-
+	/**
+	 * 关联供应商id
+	 */
+	@ApiModelProperty(value = "关联供应商id")
+	private String associationId;
 }

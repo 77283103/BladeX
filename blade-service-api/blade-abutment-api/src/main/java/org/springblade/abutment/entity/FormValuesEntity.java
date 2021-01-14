@@ -33,6 +33,10 @@ public class FormValuesEntity implements Serializable {
 	private String fd_main;
 	@ApiModelProperty(value = "单据内容:合同大类(必填,采购合同|CG 销售合同|XS 广宣合同|GX 租赁合同|ZL 运输、仓储、保管合同|YB 维保合同（不含信息化）|WB建设工程合同|GC 保密、廉洁合同|BL财务合同（非银行）|CW 银行合同|YH 非主营业务|GY 加工承缆合同|JC 服务合同|SC 公用事业合同|PB 劳务合同|LC)")
 	private String fd_broad;
+	@ApiModelProperty(value = "单据内容:合同中类(范本的需要传)")
+	private String fd_secondary;
+	@ApiModelProperty(value = "单据内容:合同小类(必填 字典)")
+	private String fd_small;
 	@ApiModelProperty(value = "单据内容:申请用公章全称(必填)")
 	private String fd_offical_seal;
 	@ApiModelProperty(value = "单据内容:相对方名称(必填)")

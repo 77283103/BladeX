@@ -11,6 +11,7 @@ import org.springblade.abutment.common.annotation.AutoLog;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrganizationVo;
+import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.Post;
@@ -26,6 +27,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.springblade.core.cache.constant.CacheConstant.SYS_CACHE;
 
 /**
  * <p>
@@ -48,11 +51,86 @@ public class OrganizationController {
 
     IUserClient userClient;
 
+
+	/**
+	 * 获取组织及人员信息
+	 *
+	 * @return
+	 */
+	@PostMapping("/queryOrganization")
+	@AutoLog
+	@ApiOperation(value = "获取组织及人员信息的接口")
+	public R<List<OrganizationVo>> queryOrganization() {
+		OrganizationEntity entity = new OrganizationEntity();
+		List<OrganizationVo> organizationList = null;
+		try {
+			organizationList = organizationService.getOrganizationInfo(entity);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		Map<String, Map<String, String>> idMap = new HashMap<String, Map<String, String>>();
+		List<Dept> deptList = new ArrayList<Dept>();
+		List<Post> postList = new ArrayList<Post>();
+		List<User> userList = new ArrayList<User>();
+		List<UserDepartEntity> userDepartList = new ArrayList<UserDepartEntity>();
+		if (organizationList.size() > 0) {
+			for (OrganizationVo organizationVo : organizationList) {
+				switch (organizationVo.getOrgType()) {
+					// 部门
+					case "2":
+						Dept dept = new Dept();
+						dept.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 1 : 0);
+						dept.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
+						//dept.setParentId(Long.parseLong(organizationVo.getId()));
+						dept.setDeptName(organizationVo.getName());
+						dept.setPinyinName(organizationVo.getNamePinyin());
+						dept.setDeptNm(organizationVo.getDeptnm());
+						dept.setDeptNo(organizationVo.getDeptno());
+						dept.setFactNo(organizationVo.getFactno());
+						dept.setFactName(organizationVo.getFactname());
+						dept.setIsDeleted(0);
+						dept.setStatus(1);
+						dept.setAssociationId(organizationVo.getId());
+						deptList.add(dept);
+						break;
+					// 岗位
+					case "4":
+						Post post = new Post();
+						post.setIsDeleted(0);
+						post.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
+						post.setPostName(organizationVo.getName());
+						post.setAssociationId(organizationVo.getId());
+						postList.add(post);
+						break;
+					// 个人
+					case "8":
+						User user = new User();
+						user.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 1 : 0);
+						user.setIsDeleted(0);
+						user.setPassword(SecureUtil.md5("111111"));
+						user.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
+						user.setCode(organizationVo.getEmplno());
+						user.setAccount(organizationVo.getLoginName());
+						user.setRealName(organizationVo.getName());
+						user.setEmail(organizationVo.getEmail());
+						user.setAssociationId(organizationVo.getId());
+						userList.add(user);
+						break;
+				}
+
+			}
+			sysClient.saveOrUpdateBatchDept(deptList);
+			sysClient.saveOrUpdateBatchPost(postList);
+			userClient.saveOrUpdateBatch(userList);
+		}
+		return R.data(organizationList);
+	}
+
     /**
      * 获取组织及人员信息
      *
      * @return
-     */
+     *//*
     @PostMapping("/queryOrganization")
     @AutoLog
     @ApiOperation(value = "获取组织及人员信息的接口")
@@ -119,7 +197,7 @@ public class OrganizationController {
                         user.setEmail(organizationVo.getEmail());
                         userList.add(user);
                         userClient.saveOrUpdateBatch(userList);
-                        /*UserDepartEntity userDepart = new UserDepartEntity();
+                        *//*UserDepartEntity userDepart = new UserDepartEntity();
                         userDepart.setUserId(user.getId());
                         if ("2".equals(idMap.get(organizationVo.getId()).get("orgType"))) {
                             userDepart.setDeptId(Long.parseLong(idMap.get(organizationVo.getId()).get("id")));
@@ -128,12 +206,12 @@ public class OrganizationController {
                             userDepart.setPostId(Long.parseLong(idMap.get(organizationVo.getId()).get("id")));
                         }
                         userDepartList.add(userDepart);
-                        userClient.saveOrUpdateBatchDepart(userDepartList);*/
+                        userClient.saveOrUpdateBatchDepart(userDepartList);*//*
                         break;
                 }
 
             }
         }
         return R.data(organizationList);
-    }
+    }*/
 }
