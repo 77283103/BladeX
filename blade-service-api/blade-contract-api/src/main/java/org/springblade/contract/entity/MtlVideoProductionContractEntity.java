@@ -78,57 +78,10 @@ public class MtlVideoProductionContractEntity extends BaseEntity {
     @ApiModelProperty(value="视频内容")
 	private String mtlVideoContent;
 	/**
-	 * 交付形式
-	 */
-    @ApiModelProperty(value="交付形式")
-	private String mtlDeliveryForm;
-	/**
-	 * 数量
-	 */
-    @ApiModelProperty(value="数量")
-	private String mtlNumberOf;
-	/**
-	 * 内容主旨
-	 */
-    @ApiModelProperty(value="内容主旨")
-	private String mtlContentIdea;
-	/**
-	 * 要求（语言、规格、精度等）
-	 */
-    @ApiModelProperty(value="要求（语言、规格、精度等）")
-	private String mtlRequirements;
-	/**
-	 * 费用（元，含税）
-	 */
-    @ApiModelProperty(value="费用（元，含税）")
-	private BigDecimal mtlCost;
-	/**
 	 * 作品中【？】（有/未）涉及第三方知识产权、肖像权
 	 */
     @ApiModelProperty(value="作品中【？】（有/未）涉及第三方知识产权、肖像权")
 	private String mtlHaveHasNot;
-	/**
-	 * 第三方知识产权
-	 */
-    @ApiModelProperty(value="第三方知识产权")
-	private String mtlPropertyRights;
-	/**
-	 * 小样
-	 */
-    @ApiModelProperty(value="小样")
-	private String mtlSmallKind;
-	/**
-	 * 使用期限
-	 */
-    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
-    @ApiModelProperty(value="使用期限")
-	private Date mtlUsePeriod;
-	/**
-	 * 使用区域
-	 */
-    @ApiModelProperty(value="使用区域")
-	private String mtlUseArea;
 	/**
 	 * 制作开始时间
 	 */
@@ -143,6 +96,16 @@ public class MtlVideoProductionContractEntity extends BaseEntity {
     @JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value="制作完成时间")
 	private Date mtlProductionCompletionTime;
+	/**
+	 * 乙方制作的作品被甲方全部确认后，应同时提交以下内容（勾选）：
+	 */
+	@ApiModelProperty(value="乙方制作的作品被甲方全部确认后，应同时提交以下内容（勾选）：")
+    private String mtlSubmitContent;
+	/**
+	 * 上述广告作品给甲方指定人员${mtlAcceptance}验收。
+	 */
+	@ApiModelProperty(value="上述广告作品给甲方指定人员${mtlAcceptance}验收。")
+	private String mtlAcceptance;
 	/**
 	 * 本视频制作合同价款为(未税额人民币)
 	 */
@@ -159,6 +122,31 @@ public class MtlVideoProductionContractEntity extends BaseEntity {
     @ApiModelProperty(value="现含税金额人民币")
 	private BigDecimal mtlTaxAmountIsRmb;
 	/**
+	 * 本合同付款时间及比例依以下第${mtlPaymentMethod}项执行：
+	 */
+	@ApiModelProperty(value="本合同付款时间及比例依以下第${mtlPaymentMethod}项执行：")
+    private String mtlPaymentMethod;
+	/**
+	 * 项执行：(1)本合同签订
+	 */
+	@ApiModelProperty(value=" 项执行：(1)本合同签订")
+	private String mtlInvoiceDays1;
+	/**
+	 * 项执行：(2)法税务发票后${ mtlInvoiceDays2}天内，
+	 */
+	@ApiModelProperty(value="项执行：(2)法税务发票后${ mtlInvoiceDays2}天内")
+	private String mtlInvoiceDays2;
+	/**
+	 *向乙方支付人民币（大写）${mtlCapitalizationRmb2}元
+	 */
+	@ApiModelProperty(value="向乙方支付人民币（大写）${mtlCapitalizationRmb2}元")
+	private String mtlCapitalizationRmb2;
+	/**
+	 * 甲方向乙方支付剩余全部款项即人民币（大写${mtlCapitalizationRmbSy2}元
+	 */
+	@ApiModelProperty(value="甲方向乙方支付剩余全部款项即人民币（大写${mtlCapitalizationRmbSy2}元。")
+	private String mtlCapitalizationRmbSy2;
+	/**
 	 * 公司名
 	 */
     @ApiModelProperty(value="公司名")
@@ -174,18 +162,28 @@ public class MtlVideoProductionContractEntity extends BaseEntity {
     @ApiModelProperty(value="账号")
 	private String mtlAccount;
 	/**
-	 * 上述广告作品给甲方指定人员【？】验收
+	 * 肖像权
 	 */
-    @ApiModelProperty(value="上述广告作品给甲方指定人员【？】验收")
-	private String mtlAcceptance;
+	@ApiModelProperty(value="肖像权")
+	private String mtlPortraitRights;
 	/**
-	 * 视频制作合同关联表1
+	 * 广告中音乐
+	 */
+	@ApiModelProperty(value="广告中音乐")
+	private String mtlLiquidatedDamages2;
+	/**
+	 * 配音员VO
+	 */
+	@ApiModelProperty(value="配音员VO")
+	private String mtlDubbingUse;
+	/**
+	 * 视频制作合同关联表1 交付形式
 	 */
 	@ApiModelProperty(value="视频制作合同关联表1")
 	@TableField(exist = false)
 	private List<MtlVideoProductionContract1Entity> mtlVideoProductionContract1EntityList;
 	/**
-	 * 视频制作合同关联表2
+	 * 视频制作合同关联表2 涉及第三方知识产权、肖像权
 	 */
 	@ApiModelProperty(value="视频制作合同关联表2")
 	@TableField(exist = false)
