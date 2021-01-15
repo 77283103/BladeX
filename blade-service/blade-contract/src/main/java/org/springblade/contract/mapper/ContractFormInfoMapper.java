@@ -209,4 +209,11 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	List<ContractFormInfoEntity> findContractList(Long id);
+
+	/**
+	 * 范本使用的合同集合
+	 * @param id
+	 * @return
+	 */
+	List<ContractFormInfoEntity> getByIdForm(Long id);
 }

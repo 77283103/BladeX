@@ -2,7 +2,11 @@ package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
+import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
+import org.springblade.contract.mapper.ContractCounterpartMapper;
+import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.mapper.ContractTemplateMapper;
 import org.springblade.contract.service.IContractTemplateService;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
@@ -39,6 +43,10 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 
 	private ContractTemplateMapper templateMapper;
 
+	private ContractFormInfoMapper formInfoMapper;
+
+	private ContractCounterpartMapper contractCounterpartMapper;
+
 	private IFileClient fileClient;
 
 	private IUserClient userClient;
@@ -62,6 +70,26 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 			/*为每个对象，设置创建者名字和组织名字*/
 			v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
 			v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
+			v.setUsageRate(BigDecimal.valueOf(templateMapper.selectByIdUsageRate(v.getId()).doubleValue())
+					.divide(BigDecimal.valueOf(templateMapper.selectByIdTemplateCount().doubleValue()),4,ROUND_HALF_EVEN).doubleValue()*100+"%");
+			v.setAuthenticPerformanceCount(templateMapper.selectByIdFulfillingCount(v.getId()));
+			v.setCompletedContractCount(templateMapper.selectByIdCompletedCount(v.getId()));
+			v.setUsageRecord(String.valueOf(templateMapper.selectByIdUsageRate(v.getId())));
+			//范本所使用过的合同集合
+			List<ContractFormInfoEntity> formInfoEntityList=new ArrayList<>();
+			if (formInfoMapper.getByIdForm(v.getId()).size()>0) {
+				formInfoMapper.getByIdForm(v.getId()).forEach(form->{
+					StringBuilder name = new StringBuilder();
+					for (ContractCounterpartEntity counterpartEntity : contractCounterpartMapper.selectByIds(form.getId())) {
+						name.append(counterpartEntity.getName());
+						name.append(",");
+					}
+					name.substring(0, name.length());
+					form.setCounterpartName(name.toString());
+					formInfoEntityList.add(form);
+				});
+				v.setFormInfoEntityList(formInfoEntityList);
+			}
 			/*判断范本是否为最新范本*/
 			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
 				recordList.add(v);
@@ -118,6 +146,21 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 			String dept = sysClient.getDeptName(templateResponseVO.getCreateDept()).getData();
 			templateResponseVO.setUserDepartName(dept);
 		}
+		//范本所使用过的合同集合
+		List<ContractFormInfoEntity> formInfoEntityList=new ArrayList<>();
+		if (formInfoMapper.getByIdForm(templateResponseVO.getId()).size()>0) {
+			formInfoMapper.getByIdForm(templateResponseVO.getId()).forEach(form->{
+				StringBuilder name = new StringBuilder();
+				for (ContractCounterpartEntity counterpartEntity : contractCounterpartMapper.selectByIds(form.getId())) {
+					name.append(counterpartEntity.getName());
+					name.append(",");
+				}
+				name.substring(0, name.length());
+				form.setCounterpartName(name.toString());
+				formInfoEntityList.add(form);
+			});
+			templateResponseVO.setFormInfoEntityList(formInfoEntityList);
+		}
 		//返回vo
 		return templateResponseVO;
 	}
@@ -141,6 +184,21 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 					.divide(BigDecimal.valueOf(templateMapper.selectByIdTemplateCount().doubleValue()),4,ROUND_HALF_EVEN).doubleValue()*100+"%");
 			templateEntity.setAuthenticPerformanceCount(templateMapper.selectByIdFulfillingCount(templateEntity.getId()));
 			templateEntity.setCompletedContractCount(templateMapper.selectByIdCompletedCount(templateEntity.getId()));
+			//范本所使用过的合同集合
+			List<ContractFormInfoEntity> formInfoEntityList=new ArrayList<>();
+			if (formInfoMapper.getByIdForm(templateEntity.getId()).size()>0) {
+				formInfoMapper.getByIdForm(templateEntity.getId()).forEach(form->{
+					StringBuilder name = new StringBuilder();
+					for (ContractCounterpartEntity counterpartEntity : contractCounterpartMapper.selectByIds(form.getId())) {
+						name.append(counterpartEntity.getName());
+						name.append(",");
+					}
+					name.substring(0, name.length());
+					form.setCounterpartName(name.toString());
+					formInfoEntityList.add(form);
+				});
+				templateEntity.setFormInfoEntityList(formInfoEntityList);
+			}
 			templateEntityList.add(templateEntity);
 		}
 		//将实体数据存入void

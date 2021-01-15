@@ -1,5 +1,6 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -7,6 +8,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
+
+import java.util.List;
 
 
 /**
@@ -130,4 +133,10 @@ public class ContractTemplateEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "json页面")
 	private String json;
+	/**
+	 * 范本使用的合同集合
+	 */
+	@ApiModelProperty(value = "范本使用的合同集合")
+	@TableField(exist = false)
+	private List<ContractFormInfoEntity> formInfoEntityList;
 }

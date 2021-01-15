@@ -13,8 +13,8 @@ public class DataFormatUtils {
      *@param systemTime 系统时间
      */
     public static String systemTimeFormat(String systemTime) {
-    	if(Func.isEmpty(systemTime)){
-			return systemTime;
+    	if("null"==systemTime || Func.isBlank(systemTime)){
+			return "__";
 		}else{
 			systemTime = systemTime.replace("Z", " UTC");
 			//SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS Z");

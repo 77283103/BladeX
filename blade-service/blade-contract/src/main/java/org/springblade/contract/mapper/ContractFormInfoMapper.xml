@@ -502,7 +502,14 @@
         AND
         id IN (SELECT c.contract_id  FROM  contract_bond_setting c WHERE c.bond_id = #{id})
     </select>
-
+    <!--   范本使用的合同集合 -->
+    <select id="getByIdForm" resultMap="formInfoResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_form_info
+        WHERE is_deleted = 0
+        AND contract_template_id = #{id}
+    </select>
     <!-- 分页 部门合同数量、金额统计表-->
     <select id="deptType" resultMap="formInfoResultMap">
         SELECT

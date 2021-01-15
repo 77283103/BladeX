@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.service.*;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +13,8 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class TemplateSaveUntil {
+    @Autowired
+    private static IDictBizClient bizClient;
 	@Autowired
 	private IContractFormInfoService contractFormInfoService;
 	@Autowired
@@ -183,6 +186,8 @@ public class TemplateSaveUntil {
 			//视频制作合同
 			else if ("ZZHT_16".equals(template.getTemplateCode())) {
 				MtlVideoProductionContractEntity mtlVideoProductionContract= JSONObject.toJavaObject(j, MtlVideoProductionContractEntity.class);
+				mtlVideoProductionContract.setMtlHaveHasNot(bizClient.getValue("bond",mtlVideoProductionContract.getMtlHaveHasNot()).getData());
+				mtlVideoProductionContract.setMtlPaymentMethod(bizClient.getValue("mtl_term",mtlVideoProductionContract.getMtlHaveHasNot()).getData());
 				templateSaveUntil.mtlVideoProductionContractService.save(mtlVideoProductionContract);
 				id = mtlVideoProductionContract.getId();
 			}
