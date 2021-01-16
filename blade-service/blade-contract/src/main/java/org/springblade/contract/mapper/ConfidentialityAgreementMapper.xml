@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ConfidentialityAgreementMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="confidentialityAgreementResultMap" type="org.springblade.contract.entity.ConfidentialityAgreementEntity">
+        <result column="id" property="id"/>
+        <result column="trade_side" property="tradeSide"/>
+        <result column="manufacturer" property="manufacturer"/>
+        <result column="product_involved" property="productInvolved"/>
+        <result column="contents_information" property="contentsInformation"/>
+        <result column="product_involved_a" property="productInvolvedA"/>
+        <result column="contents_information_a" property="contentsInformationA"/>
+        <result column="ownership_subject" property="ownershipSubject"/>
+        <result column="blank_field" property="blankField"/>
+        <result column="other_agreements" property="otherAgreements"/>
+        <result column="specific_date" property="specificDate"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        trade_side,
+        manufacturer,
+        product_involved,
+        contents_information,
+        product_involved_a,
+        contents_information_a,
+        ownership_subject,
+        blank_field,
+        other_agreements,
+        specific_date
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="confidentialityAgreementResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM confidentiality_agreement
+        WHERE is_deleted = 0
+    </select>
+</mapper>

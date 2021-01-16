@@ -89,6 +89,11 @@ public class TemplateSaveUntil {
 	private ICglProofingContractService cglProofingContractService;
 	@Autowired
 	private IYwbBusContracteTemplateService ywbBusinessContractTemplateService;
+	@Autowired
+	private ILyConfidentialityAgreementService lyConfidentialityAgreementService;
+	@Autowired
+	private IConfidentialityAgreementService confidentialityAgreementService;
+
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -120,6 +125,18 @@ public class TemplateSaveUntil {
 //				templateSaveUntil.ywlShopRecruitmentService.save(ywlShopRecruitment);
 //				id = ywlShopRecruitment.getId();
 //			}
+			//保密协议（二方）
+			else if ("BMXY_01".equals(template.getTemplateCode())) {
+				LyConfidentialityAgreementEntity lyConfidentialityAgreementEntity = JSONObject.toJavaObject(j, LyConfidentialityAgreementEntity.class);
+				templateSaveUntil.lyConfidentialityAgreementService.save(lyConfidentialityAgreementEntity);
+				id = lyConfidentialityAgreementEntity.getId();
+			}
+			//保密协议（三方）
+			else if ("BMXY_02".equals(template.getTemplateCode())) {
+				ConfidentialityAgreementEntity confidentialityAgreementEntity = JSONObject.toJavaObject(j, ConfidentialityAgreementEntity.class);
+				templateSaveUntil.confidentialityAgreementService.save(confidentialityAgreementEntity);
+				id = confidentialityAgreementEntity.getId();
+			}
 			//活动执行合同
 			else if ("HDZX_05".equals(template.getTemplateCode())) {
 				CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
@@ -348,6 +365,12 @@ public class TemplateSaveUntil {
 //				YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
 //				ywlShopRecruitment.setId(contractFormInfoEntity.getContractListId());
 //				templateSaveUntil.ywlShopRecruitmentService.updateById(ywlShopRecruitment);
+			}
+			//保密协议（二方）
+			else if ("BMXY_01".equals(template.getTemplateCode())) {
+				LyConfidentialityAgreementEntity lyConfidentialityAgreementEntity = JSONObject.toJavaObject(j, LyConfidentialityAgreementEntity.class);
+				lyConfidentialityAgreementEntity.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.lyConfidentialityAgreementService.save(lyConfidentialityAgreementEntity);
 			}
 			//活动执行合同
 			else if ("HDZX_05".equals(template.getTemplateCode())) {

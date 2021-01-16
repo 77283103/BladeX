@@ -514,20 +514,23 @@ public enum TemplateExporterEnum {
             dataModel.put("planningScheme",j.get("planningScheme"));
             dataModel.put("cglTotal",j.get("cglTotal"));
             dataModel.put("capitalization",j.get("capitalization"));
+			dataModel.put("events",j.get("events"));
             dataModel.put("cglPayment",j.get("cglPayment"));
+			dataModel.put("days",j.get("days"));
             dataModel.put("amount",j.get("amount"));
             dataModel.put("element",j.get("element"));
-            dataModel.put("cglAmountWords",j.get("cglAmountWords"));
+			dataModel.put("amountWords",j.get("amountWords"));
             dataModel.put("cglProportion",j.get("cglProportion"));
             dataModel.put("cglLumpSum",j.get("cglLumpSum"));
             dataModel.put("cglCapitalize",j.get("cglCapitalize"));
             dataModel.put("other",j.get("other"));
             dataModel.put("cglBank",j.get("cglBank"));
             dataModel.put("cglAccountName",j.get("cglAccountName"));
+			dataModel.put("cglAccount",j.get("cglAccount"));
             dataModel.put("cglInvoice",j.get("cglInvoice"));
-            dataModel.put("one",j.get("one"));
-            dataModel.put("two",j.get("two"));
-            dataModel.put("three",j.get("three"));
+			dataModel.put("days1",j.get("days1"));
+			dataModel.put("days2",j.get("days2"));
+			dataModel.put("breachContract",j.get("breachContract"));
             dataModel.put("four",j.get("four"));
             return dataModel;
         }
@@ -879,6 +882,42 @@ public enum TemplateExporterEnum {
             return dataModel;
         }
     },
+	//保密协议（二方）
+	BMXY_01("BMXY_01"){
+		@Override
+		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+			Map dataModel = new HashMap();
+			List<Map<String, Object>> list=new ArrayList();
+			dataModel.put("pontactPartyB",j.get("pontactPartyB"));
+			dataModel.put("productNameA",j.get("productNameA"));
+			dataModel.put("productContentA",j.get("productContentA"));
+			dataModel.put("productNameB",j.get("productNameB"));
+			dataModel.put("productContentB",j.get("taxRate"));
+			dataModel.put("otherEnterprises",j.get("otherEnterprises"));
+			dataModel.put("otherAgreements",j.get("otherAgreements"));
+			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate)"))));
+			return dataModel;
+		}
+	},
+	//保密协议（三方）
+	BMXY_02("BMXY_02"){
+		@Override
+		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+			Map dataModel = new HashMap();
+			List<Map<String, Object>> list=new ArrayList();
+			dataModel.put("tradeSide",j.get("tradeSide"));
+			dataModel.put("manufacturer",j.get("manufacturer"));
+			dataModel.put("productInvolved",j.get("productInvolved"));
+			dataModel.put("contentsInformation",j.get("contentsInformation"));
+			dataModel.put("productInvolvedA",j.get("productInvolvedA"));
+			dataModel.put("contentsInformationA",j.get("contentsInformationA"));
+			dataModel.put("ownershipSubject",j.get("ownershipSubject"));
+			dataModel.put("blankField",j.get("blankField"));
+			dataModel.put("otherAgreements",j.get("otherAgreements"));
+			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate)"))));
+			return dataModel;
+		}
+	},
     //房屋租赁合同模板
     FWZL_36("FWZL_36"){
         @Override

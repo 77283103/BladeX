@@ -40,171 +40,186 @@ public class CglActivityExecutionContractEntity extends BaseEntity {
 	/**
 	 * 甲方
 	 */
-    @ApiModelProperty(value="甲方")
-	private String cglPartyA;
+	@ApiModelProperty(value = "甲方")
+	private String cglPartya;
 	/**
 	 * 乙方
 	 */
-    @ApiModelProperty(value="乙方")
-	private String cglPartyB;
+	@ApiModelProperty(value = "乙方")
+	private String cglPartyb;
 	/**
 	 * 活动
 	 */
-    @ApiModelProperty(value="活动")
+	@ApiModelProperty(value = "活动")
 	private String cglActivity;
 	/**
 	 * 区域
 	 */
-    @ApiModelProperty(value="区域")
+	@ApiModelProperty(value = "区域")
 	private String cglArea;
-
+	/**
+	 * 活动名称
+	 */
+	@ApiModelProperty(value = "活动名称")
+	private String activityName;
 	/**
 	 * 本活动执行发起时间
 	 */
-	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
-	@ApiModelProperty(value="本活动执行发起时间")
-	private Date cglByTheTime;
-
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATETIME)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATETIME)
+	@ApiModelProperty(value = "本活动执行发起时间")
+	private Date cglByTime;
 	/**
 	 * 本活动执行截止时间
 	 */
-	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
-	@ApiModelProperty(value="本活动执行截止时间")
-	private Date cglAsOfTime;
-	/**
-	 * 附件二
-	 */
-    @ApiModelProperty(value="附件二")
-	private String cglAttachmentTwo;
-	/**
-	 * 附件三
-	 */
-    @ApiModelProperty(value="附件三")
-	private String cglAttachmentThree;
-	/**
-	 * 附件一
-	 */
-    @ApiModelProperty(value="附件一")
-	private String cglAttachmentOne;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATETIME)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATETIME)
+	@ApiModelProperty(value = "本活动执行截止时间")
+	private Date cglAsTime;
 	/**
 	 * 本活动总费用
 	 */
-    @ApiModelProperty(value="本活动总费用")
-	private String cglTotalCost;
-
-	/**
-	 * 本活动总费用
-	 */
-	@ApiModelProperty(value="本活动总费用")
-	private BigDecimal cglAmoutActivity;
-
+	@ApiModelProperty(value = "本活动总费用")
+	private String cglTotal;
 	/**
 	 * 活动场次
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="活动场次")
+	@ApiModelProperty(value = "活动场次")
 	private Integer cglSession;
 	/**
 	 * 甲、乙双方同意按约定向乙方付款
 	 */
-    @ApiModelProperty(value="甲、乙双方同意按约定向乙方付款")
+	@ApiModelProperty(value = "甲、乙双方同意按约定向乙方付款")
 	private String cglPayment;
 	/**
 	 * 首款付款签订后天数
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="首款付款签订后天数")
-	private Integer cglNumberOfDays;
-
+	@ApiModelProperty(value = "首款付款签订后天数")
+	private Integer days;
 	/**
 	 * 总金额百分比金额
 	 */
-	@ApiModelProperty(value="总金额百分比金额")
-	private BigDecimal cglTAmount;
-
+	@ApiModelProperty(value = "总金额百分比金额")
+	private BigDecimal amount;
 	/**
 	 * 大写百分比总金额
 	 */
-	@ApiModelProperty(value="大写百分比总金额")
-	private String cglAmountWords;
-
+	@ApiModelProperty(value = "大写百分比总金额")
+	private String amountWords;
 	/**
 	 * 一次性支付剩余款项比例
 	 */
-    @ApiModelProperty(value="一次性支付剩余款项比例")
+	@ApiModelProperty(value = "一次性支付剩余款项比例")
 	private Double cglProportion;
 	/**
 	 * 一次性支付金额
 	 */
-	@ApiModelProperty(value="一次性支付金额")
+	@ApiModelProperty(value = "一次性支付金额")
 	private BigDecimal cglLumpSum;
 	/**
 	 * 大写金额2
 	 */
-	@ApiModelProperty(value="大写金额2")
+	@ApiModelProperty(value = "大写金额2")
 	private String cglCapitalize;
-
 	/**
 	 * 其他方式
 	 */
-    @ApiModelProperty(value="其他方式")
-	private String cglOtherWay;
+	@ApiModelProperty(value = "其他方式")
+	private String other;
 	/**
 	 * 乙方开户行
 	 */
-    @ApiModelProperty(value="乙方开户行")
-	private String cglBankOf;
+	@ApiModelProperty(value = "乙方开户行")
+	private String cglBank;
 	/**
 	 * 乙方户名
 	 */
-    @ApiModelProperty(value="乙方户名")
+	@ApiModelProperty(value = "乙方户名")
 	private String cglAccountName;
 	/**
 	 * 乙方账号
 	 */
-    @ApiModelProperty(value="乙方账号")
+	@ApiModelProperty(value = "乙方账号")
 	private String cglAccount;
 	/**
 	 * 乙方提供增值税发票【】%
 	 */
-    @ApiModelProperty(value="乙方提供增值税发票【】%")
+	@ApiModelProperty(value = "乙方提供增值税发票【】%")
 	private Double cglInvoice;
 	/**
-	 * 8项日期要求
+	 * 天
 	 */
-    @ApiModelProperty(value="8项日期要求")
-	private String cglDateOfRequest;
+	@ApiModelProperty(value = "天")
+	private String days1;
 	/**
-	 * 2.1项日期要求
+	 * 日
 	 */
-    @ApiModelProperty(value="2.1项日期要求")
-	private String cglDateOfRequest1;
+	@ApiModelProperty(value = "日")
+	private String days2;
 	/**
-	 * 延期后支付违约金比例
+	 * 违约金比例
 	 */
-    @ApiModelProperty(value="延期后支付违约金比例")
-	private Double cglBreachOfContract;
+	@ApiModelProperty(value = "违约金比例")
+	private Double breachContract;
 	/**
 	 * 活动策划方案
 	 */
-    @ApiModelProperty(value="活动策划方案")
+	@ApiModelProperty(value = "活动策划方案")
 	private String cglPlanningScheme;
-	/**
-	 * 附件二：活动排期
-	 */
-    @ApiModelProperty(value="附件二：活动排期")
-	private String cglScheduling;
 	/**
 	 * 附件三：价格
 	 */
-    @ApiModelProperty(value="附件三：价格")
-	private String cglThePrice;
+	@ApiModelProperty(value = "附件三：价格")
+	private String cglPrice;
 	/**
 	 * 附件四：考核标准
 	 */
-    @ApiModelProperty(value="附件四：考核标准")
+	@ApiModelProperty(value = "附件四：考核标准")
 	private String cglInspectionStandard;
+	/**
+	 * 活动排期
+	 */
+	@ApiModelProperty(value = "活动排期")
+	private String scheduling;
+	/**
+	 * 活动策划方案
+	 */
+	@ApiModelProperty(value = "活动策划方案")
+	private String planningScheme;
+	/**
+	 * 大写：人民币
+	 */
+	@ApiModelProperty(value = "大写：人民币")
+	private String capitalization;
+	/**
+	 * 活动场次
+	 */
+	@ApiModelProperty(value = "活动场次")
+	private String events;
+	/**
+	 * 元
+	 */
+	@ApiModelProperty(value = "元")
+	private BigDecimal element;
+	/**
+	 * 附件一
+	 */
+	@ApiModelProperty(value = "附件一")
+	private String one;
+	/**
+	 * 附件二
+	 */
+	@ApiModelProperty(value = "附件二")
+	private String two;
+	/**
+	 * 附件三
+	 */
+	@ApiModelProperty(value = "附件三")
+	private String three;
+	/**
+	 * 附件四
+	 */
+	@ApiModelProperty(value = "附件四")
+	private String four;
 
 }
