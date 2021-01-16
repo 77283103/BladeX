@@ -66,7 +66,7 @@ import static org.springblade.common.constant.CommonConstant.DEFAULT_TENANT_ID;
 public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implements IUserService {
 
 	private IUserDepartService userDepartService;
-
+	private UserMapper userMapper;
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public boolean submit(UserDTO user) {
@@ -285,4 +285,13 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		return baseMapper.findByBenchMinister(benchUserId);
 	}
 
+	@Override
+	public Long getUserIdByAssociationId(String associationId) {
+		User user = userMapper.getUserIdByAssociationId(associationId);
+		/*调用前已经将用户进行全量同步*/
+		if (Func.isNotEmpty(user)) {
+			return user.getId();
+		}
+		return null;
+	}
 }

@@ -67,6 +67,9 @@ public interface ISysClient {
 	String SAVE_POST_API=API_PREFIX +"/save-post-api";
 	String SUBMIT_DEPT_API=API_PREFIX +"/submit-dept-api";
 	String SUBMIT_POST_API=API_PREFIX +"/submit-post-api";
+	String GET_DEPT_ID_BY_LUNID = API_PREFIX + "/get-dept-id-by-lunid";
+	String GET_ANCESTOR_IDS = API_PREFIX + "/get-ancestor-ids";
+	String GET_POST_ID_BY_LUNID = API_PREFIX + "/get-post-id-by-lunid";
 	/**
 	 * 获取菜单
 	 *
@@ -300,4 +303,29 @@ public interface ISysClient {
 	@PostMapping(SUBMIT_POST_API)
 	R<Boolean> savePost(@RequestBody Post post);
 
+	/**
+	 * 根据部门Lunid获取部门id
+	 *
+	 * @param associationId 唯一标识
+	 * @return deptId
+	 */
+	@GetMapping(GET_DEPT_ID_BY_LUNID)
+	R<Long> getDeptIdByAssociationId(@RequestParam("associationId") String associationId);
+
+	/**
+	 * 将lunid祖籍列表转为blade祖籍列表
+	 * @param ancestorIds
+	 * @return
+	 */
+	@GetMapping(GET_ANCESTOR_IDS)
+	R<String> getAncestors(@RequestParam("ancestorIds") Long ancestorIds);
+
+	/**
+	 * 根据岗位Lunid获取岗位id
+	 *
+	 * @param associationId 唯一标识
+	 * @return postId
+	 */
+	@GetMapping(GET_POST_ID_BY_LUNID)
+	R<Long> getPostIdByAssociationId(@RequestParam("associationId") String associationId);
 }

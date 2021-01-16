@@ -202,4 +202,11 @@ public interface IUserService extends BaseService<User> {
 	 * @return
 	 */
 	List<User> userInfoByBenchMinister(String benchUserId);
+
+	/**
+	 * 根据lunid获取Id
+	 * @param lunid
+	 * @return
+	 */
+	Long getUserIdByAssociationId(String associationId);
 }

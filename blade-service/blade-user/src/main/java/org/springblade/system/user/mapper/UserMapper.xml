@@ -242,4 +242,14 @@
             and u.account = #{userName}
         </if>
     </select>
+
+    <select id="getUserIdByAssociationId" resultType="org.springblade.system.user.entity.User">
+        SELECT
+        u.*
+        FROM
+        blade_user u
+        <if test="associationId!=null and associationId != ''">
+            where u.association_id = #{associationId}
+        </if>
+    </select>
 </mapper>

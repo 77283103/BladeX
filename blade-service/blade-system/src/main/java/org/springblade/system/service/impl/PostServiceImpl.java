@@ -18,6 +18,7 @@ package org.springblade.system.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import lombok.AllArgsConstructor;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Post;
@@ -35,8 +36,10 @@ import java.util.stream.Collectors;
  * @author Chill
  */
 @Service
+@AllArgsConstructor
 public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implements IPostService {
 
+	private PostMapper postMapper;
 	@Override
 	public IPage<Post> pageList(IPage<Post> page, Post post) {
 		return baseMapper.pageList(page, post);
@@ -64,6 +67,15 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
 	@Override
 	public boolean getByCode(String postCode) {
 		return false;
+	}
+
+	@Override
+	public Long getPostIdByAssociationId(String associationId) {
+		Post post = postMapper.getPostIdByAssociationId(associationId);
+		if(Func.isNotEmpty(post)){
+			return post.getId();
+		}
+		return null;
 	}
 
 }

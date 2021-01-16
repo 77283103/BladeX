@@ -123,4 +123,21 @@ public interface IDeptService extends BaseService<Dept> {
 	 * @return
 	 */
 	boolean updateDeptStatus(String deptId, Integer isEnable);
+
+	/**
+	 * 根据lunid获取id
+	 *
+	 * @param associationId 接口唯一标识
+	 * @return 主键
+	 */
+	Long getDeptIdByAssociationId(String associationId);
+
+	/**
+	 * lunid祖籍ID转blade祖籍id
+	 *
+	 * @param ancestorIds lunid祖籍id
+	 * @return blade的祖籍id
+	 */
+	String getAncestors(Long ancestorIds);
+
 }

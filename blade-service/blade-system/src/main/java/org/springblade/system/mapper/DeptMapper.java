@@ -73,4 +73,11 @@ public interface DeptMapper extends BaseMapper<Dept> {
 	 */
 	Dept getDeptNewId(Long id);
 
+	/**
+	 * 根据lunid查询dept
+	 *
+	 * @param associationId 接口唯一标识
+	 * @return
+	 */
+	Dept getDeptIdByAssociationId(String associationId);
 }

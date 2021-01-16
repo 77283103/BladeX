@@ -67,4 +67,12 @@
         </if>
     </select>
 
+    <select id="getPostIdByAssociationId" resultType="org.springblade.system.entity.Post" parameterType="java.lang.String">
+        select
+        t.*
+        from blade_post t
+        <if test="associationId != null and associationId != ''">
+            where t.association_id = #{associationId}
+        </if>
+    </select>
 </mapper>

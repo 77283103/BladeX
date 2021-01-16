@@ -194,4 +194,31 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 		}while (null != dept);
 		return newId;
 	}
+
+	@Override
+	public Long getDeptIdByAssociationId(String associationId) {
+		Dept dept = deptMapper.getDeptIdByAssociationId(associationId);
+		if (Func.isNotEmpty(dept)) {
+			return dept.getId();
+		}
+		return null;
+	}
+
+	@Override
+	public String getAncestors(Long parentId) {
+		StringBuilder sb = new StringBuilder(StringPool.ZERO);
+		if(parentId == 0L){
+			return sb.toString();
+		}
+		Dept dept = baseMapper.selectById(parentId);
+		if(Func.isEmpty(dept)){
+			return sb.toString();
+		}
+		sb.append(StringPool.COMMA).append(dept.getId());
+		while (dept.getParentId() != 0){
+			dept = baseMapper.selectById(dept.getParentId());
+			sb.append(StringPool.COMMA).append(dept.getId());
+		}
+		return sb.toString();
+	}
 }

@@ -150,4 +150,13 @@
             where dept.update_dept_id = ${id}
         </if>
     </select>
+
+    <select id="getDeptIdByAssociationId" resultType="org.springblade.system.entity.Dept" parameterType="java.lang.String">
+        select
+        t.*
+        from blade_dept t
+        <if test="associationId != null and associationId != ''">
+            where t.association_id = #{associationId}
+        </if>
+    </select>
 </mapper>

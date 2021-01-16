@@ -92,4 +92,12 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @return
 	 */
 	User getByUserName(String userName);
+
+	/**
+	 * 根据lunid获取userid
+	 *
+	 * @param associationId 接口唯一标识
+	 * @return
+	 */
+	User getUserIdByAssociationId(String associationId);
 }

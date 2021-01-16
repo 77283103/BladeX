@@ -56,4 +56,11 @@ public interface PostMapper extends BaseMapper<Post> {
 	 */
 	List<String> getPostNames(Long[] ids);
 
+	/**
+	 * 根据lunid获取岗位Id
+	 *
+	 * @param associationId
+	 * @return
+	 */
+	Post getPostIdByAssociationId(String associationId);
 }

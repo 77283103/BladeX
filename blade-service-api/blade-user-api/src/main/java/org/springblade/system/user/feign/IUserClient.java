@@ -53,6 +53,7 @@ public interface IUserClient {
 	String USER_INFO_BY_BENCH_MINISTER = API_PREFIX + "/user-Info-by-bench-minister";
 	String SAVE_USER_BACH_API=API_PREFIX +"/save-user-api";
 	String SAVE_USER_DEPART_BACH_API=API_PREFIX +"/save-user-depart-bach-api";
+	String GET_ID_BY_LUNID = API_PREFIX + "/get-id-by-lunid";
 	/**
 	 * 获取用户信息
 	 *
@@ -150,4 +151,11 @@ public interface IUserClient {
 	@GetMapping(USER_INFO_BY_BENCH_MINISTER)
 	R<List<User>> userInfoByBenchMinister(@RequestParam("benchUserId") String benchUserId);
 
+	/**
+	 * 根据lunid获取Id（接口用）
+	 * @param associationId
+	 * @return
+	 */
+	@GetMapping(GET_ID_BY_LUNID)
+	R<Long> getUserIdByAssociationId(@RequestParam("associationId") String associationId);
 }

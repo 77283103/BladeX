@@ -73,4 +73,12 @@ public interface IPostService extends BaseService<Post> {
 	 */
 	boolean getByCode(String postCode);
 
+	/**
+	 * 根据lunid获取Id
+	 *
+	 * @param associationId 接口唯一标识
+	 * @return 岗位id
+	 */
+	Long getPostIdByAssociationId(String associationId);
+
 }

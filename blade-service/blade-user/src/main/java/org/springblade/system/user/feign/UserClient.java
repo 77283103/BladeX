@@ -114,5 +114,9 @@ public class UserClient implements IUserClient {
 		return R.data(service.userInfoByBenchMinister(benchUserId));
 	}
 
-
+	@Override
+	@GetMapping(GET_ID_BY_LUNID)
+	public R<Long> getUserIdByAssociationId(String associationId) {
+		return R.data(service.getUserIdByAssociationId(associationId));
+	}
 }

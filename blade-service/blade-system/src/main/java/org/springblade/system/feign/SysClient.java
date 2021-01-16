@@ -205,4 +205,20 @@ public class SysClient implements ISysClient {
 		return R.data(deptService.getDeptNewId(id));
 	}
 
+	@Override
+	@GetMapping(GET_DEPT_ID_BY_LUNID)
+	public R<Long> getDeptIdByAssociationId(String associationId) {
+		return R.data(deptService.getDeptIdByAssociationId(associationId));
+	}
+
+	@Override
+	@GetMapping(GET_ANCESTOR_IDS)
+	public R<String> getAncestors(Long ancestorIds) {
+		return R.data(deptService.getAncestors(ancestorIds));
+	}
+
+	@Override
+	public R<Long> getPostIdByAssociationId(String associationId) {
+		return null;
+	}
 }

@@ -162,4 +162,19 @@ public class ISysClientFallback implements ISysClient {
 		return R.fail("保存數據失敗");
 	}
 
+	@Override
+	public R<Long> getDeptIdByAssociationId(String associationId) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<String> getAncestors(Long ancestorIds) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<Long> getPostIdByAssociationId(String associationId) {
+		return R.fail("获取数据失败");
+	}
+
 }
