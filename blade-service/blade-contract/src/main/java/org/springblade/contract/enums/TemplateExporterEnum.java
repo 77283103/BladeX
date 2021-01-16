@@ -341,7 +341,7 @@ public enum TemplateExporterEnum {
                         Map<String, Object> map = new HashMap();
                         map.put("pictureSample",mtlEditedTheContract1.get("pictureSample"));
                         map.put("modificationRequirements",mtlEditedTheContract1.get("modificationRequirements"));
-                        map.put("deliveryTime",mtlEditedTheContract1.get("deliveryTime"));
+                        map.put("deliveryTime",DataFormatUtils.systemTimeFormat(String.valueOf(mtlEditedTheContract1.get("deliveryTime"))));
                         map.put("modeDelivery",mtlEditedTheContract1.get("modeDelivery"));
                         list.add(map);
                     }
@@ -722,8 +722,8 @@ public enum TemplateExporterEnum {
             return dataModel;
         }
     },
-    //下脚品买卖合同模版
-    MMHT_26("MMHT_26"){
+    //下脚品买卖合同模版-废弃
+    FQHT_26("FQHT_26"){
         @Override
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
@@ -957,6 +957,55 @@ public enum TemplateExporterEnum {
             dataModel.put("ywbHmcopies",j.get("ywbHmcopies"));
             dataModel.put("ywbHmcopiesA",j.get("ywbHmcopiesA"));
             dataModel.put("ywbHmcopiesB",j.get("ywbHmcopiesB"));
+            return dataModel;
+        }
+    },
+    //下脚品买卖合同模版
+    MMHT_26("MMHT_26"){
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+            Map dataModel = new HashMap();
+            InferiorProductContractEntity inferiorProductContract = JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
+            dataModel.put("infSaler",j.get("infSaler"));
+            dataModel.put("infSalerAddr",j.get("infSalerAddr"));
+            dataModel.put("infBuyer",j.get("infBuyer"));
+            dataModel.put("infBuyerAddr",j.get("infBuyerAddr"));
+            dataModel.put("infTypeFir",j.get("infTypeFir"));
+            dataModel.put("infWeekStart",j.get("infWeekStart"));
+            dataModel.put("infWeekEnd",j.get("infWeekEnd"));
+            dataModel.put("infTimeStart",j.get("infTimeStart"));
+            dataModel.put("infTimeEnd",j.get("infTimeEnd"));
+            dataModel.put("infSortAddr",j.get("infSortAddr"));
+            dataModel.put("infLeastAmount",j.get("infLeastAmount"));
+            dataModel.put("infTimeAmount",j.get("infTimeAmount"));
+            dataModel.put("infLoadAddr",j.get("infLoadAddr"));
+            dataModel.put("infAppointAmount",j.get("infAppointAmount"));
+            dataModel.put("infCap",j.get("infCap"));
+            dataModel.put("infTimeLeastFir",j.get("infTimeLeastFir"));
+            dataModel.put("infTimeLeastSec",j.get("infTimeLeastSec"));
+            dataModel.put("infSalerAccoutName",j.get("infSalerAccoutName"));
+            dataModel.put("infBuyerAccoutName",j.get("infBuyerAccoutName"));
+            dataModel.put("infSalerAccoutId",j.get("infSalerAccoutId"));
+            dataModel.put("infBuyerAccoutId",j.get("infBuyerAccoutId"));
+            dataModel.put("infSalerAccoutBank",j.get("infSalerAccoutBank"));
+            dataModel.put("infBuyerAccoutBank",j.get("infBuyerAccoutBank"));
+            dataModel.put("infTimeLeastThi",j.get("infTimeLeastThi"));
+            dataModel.put("infSalerMail",j.get("infSalerMail"));
+            dataModel.put("infBuyerMail",j.get("infBuyerMail"));
+            dataModel.put("infBreachAmountFir",j.get("infBreachAmountFir"));
+            dataModel.put("infBreachAmountSec",j.get("infBreachAmountSec"));
+            dataModel.put("infBreachAmountThi",j.get("infBreachAmountThi"));
+            dataModel.put("infBreachAmountFou",j.get("infBreachAmountFou"));
+            dataModel.put("infContractStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("infContractStart"))));
+            dataModel.put("infContractEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("infContractEnd"))));
+            dataModel.put("infContractNum",j.get("infContractNum"));
+            dataModel.put("infSalerPhone",j.get("infSalerPhone"));
+            dataModel.put("infBuyerPhone",j.get("infBuyerPhone"));
+            dataModel.put("infSalerPerson",j.get("infSalerPerson"));
+            dataModel.put("infBuyerPerson",j.get("infBuyerPerson"));
+            dataModel.put("infSurf",j.get("infSurf"));
+            dataModel.put("infOil",j.get("infOil"));
+            dataModel.put("infTeaSurf",j.get("infTeaSurf"));
             return dataModel;
         }
     };

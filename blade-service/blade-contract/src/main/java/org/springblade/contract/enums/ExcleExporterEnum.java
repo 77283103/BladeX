@@ -26,6 +26,7 @@ import lombok.Getter;
 import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.util.DataFormatUtils;
 import org.springblade.contract.vo.*;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -576,6 +577,55 @@ public enum ExcleExporterEnum {
             dataModel.put("accountNumber",j.get("accountNumber"));
             dataModel.put("bankDeposit",j.get("bankDeposit"));
             dataModel.put("list",list);
+            return dataModel;
+        }
+    },
+    //下脚品买卖合同模版
+    MMHT_26("MMHT_26"){
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+            Map dataModel = new HashMap();
+            InferiorProductContractEntity inferiorProductContract = JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
+            dataModel.put("infSaler",j.get("infSaler"));
+            dataModel.put("infSalerAddr",j.get("infSalerAddr"));
+            dataModel.put("infBuyer",j.get("infBuyer"));
+            dataModel.put("infBuyerAddr",j.get("infBuyerAddr"));
+            dataModel.put("infTypeFir",j.get("infTypeFir"));
+            dataModel.put("infWeekStart",j.get("infWeekStart"));
+            dataModel.put("infWeekEnd",j.get("infWeekEnd"));
+            dataModel.put("infTimeStart",j.get("infTimeStart"));
+            dataModel.put("infTimeEnd",j.get("infTimeEnd"));
+            dataModel.put("infSortAddr",j.get("infSortAddr"));
+            dataModel.put("infLeastAmount",j.get("infLeastAmount"));
+            dataModel.put("infTimeAmount",j.get("infTimeAmount"));
+            dataModel.put("infLoadAddr",j.get("infLoadAddr"));
+            dataModel.put("infAppointAmount",j.get("infAppointAmount"));
+            dataModel.put("infCap",j.get("infCap"));
+            dataModel.put("infTimeLeastFir",j.get("infTimeLeastFir"));
+            dataModel.put("infTimeLeastSec",j.get("infTimeLeastSec"));
+            dataModel.put("infSalerAccoutName",j.get("infSalerAccoutName"));
+            dataModel.put("infBuyerAccoutName",j.get("infBuyerAccoutName"));
+            dataModel.put("infSalerAccountId",j.get("infSalerAccountId"));
+            dataModel.put("infBuyerAccountId",j.get("infBuyerAccountId"));
+            dataModel.put("infSalerAccountBank",j.get("infSalerAccountBank"));
+            dataModel.put("infBuyerAccountBank",j.get("infBuyerAccountBank"));
+            dataModel.put("infTimeLeastThi",j.get("infTimeLeastThi"));
+            dataModel.put("infSalerMail",j.get("infSalerMail"));
+            dataModel.put("infBuyerMail",j.get("infBuyerMail"));
+            dataModel.put("infBreachAmountFir",j.get("infBreachAmountFir"));
+            dataModel.put("infBreachAmountSec",j.get("infBreachAmountSec"));
+            dataModel.put("infBreachAmountThi",j.get("infBreachAmountThi"));
+            dataModel.put("infBreachAmountFou",j.get("infBreachAmountFou"));
+            dataModel.put("infContractStart", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("infContractStart"))));
+            dataModel.put("infContractEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("infContractEnd"))));
+            dataModel.put("infContractNum",j.get("infContractNum"));
+            dataModel.put("infSalerPhone",j.get("infSalerPhone"));
+            dataModel.put("infBuyerPhone",j.get("infBuyerPhone"));
+            dataModel.put("infSalerPerson",j.get("infSalerPerson"));
+            dataModel.put("infBuyerPerson",j.get("infBuyerPerson"));
+            dataModel.put("infSurf",j.get("infSurf"));
+            dataModel.put("infOil",j.get("infOil"));
+            dataModel.put("infTeaSurf",j.get("infTeaSurf"));
             return dataModel;
         }
     };
