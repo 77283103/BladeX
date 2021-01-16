@@ -103,4 +103,5 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 * @return
 	 */
 	Integer selectByIdTemplateCount();
+
 }
