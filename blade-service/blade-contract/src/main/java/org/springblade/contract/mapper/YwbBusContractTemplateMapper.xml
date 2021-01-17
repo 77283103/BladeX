@@ -15,7 +15,7 @@
         <result column="ywb_builtup_area" property="ywbBuiltupArea"/>
         <result column="ywb_between_a" property="ywbBetweenA"/>
         <result column="ywb_party_room" property="ywbPartyRoom"/>
-        <result column="ywb_term" property="ywbTerm"/>
+        <result column="ywb_term_start" property="ywbTermStart"/>
         <result column="ywb_shall" property="ywbShall"/>
         <result column="ywb_requirement" property="ywbRequirement"/>
         <result column="ywb_standard" property="ywbStandard"/>
@@ -24,8 +24,8 @@
         <result column="ywb_bank_remittance" property="ywbBankRemittance"/>
         <result column="ywb_mdmbs_contract" property="ywbMdmbsContract"/>
         <result column="ywb_hmdbf_previous" property="ywbHmdbfPrevious"/>
-        <result column="ywb_deposit_a" property="ywbDepositA"/>
-        <result column="ywb_deposit" property="ywbDeposit"/>
+        <result column="ywb_shall_capitali" property="ywbShallCapitali"/>
+        <result column="ywb_shall_rmba" property="ywbShallRmba"/>
         <result column="ywb_damages_a" property="ywbDamagesA"/>
         <result column="ywb_terminclude" property="ywbTerminclude"/>
         <result column="ywb_period" property="ywbPeriod"/>
@@ -44,6 +44,22 @@
         <result column="update_time" property="updateTime"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="ywb_term_end" property="ywbTermEnd"/>
+        <result column="ywb_jiaofu" property="ywbJiaofu"/>
+        <result column="ywb_shuilv" property="ywbShuilv"/>
+        <result column="ywb_zujinjine" property="ywbZujinjine"/>
+        <result column="ywb_zujinjined" property="ywbZujinjined"/>
+        <result column="ywb_qianmingjia" property="ywbQianmingjia"/>
+        <result column="ywb_qianmingyi" property="ywbQianmingyi"/>
+        <result column="ywb_qianmingdai" property="ywbQianmingdai"/>
+        <result column="ywb_qianmingdaia" property="ywbQianmingdaia"/>
+        <result column="ywb_kaihuhangjia" property="ywbKaihuhangjia"/>
+        <result column="ywb_kaihuhangjiaa" property="ywbKaihuhangjiaa"/>
+        <result column="ywb_zhanghaojia" property="ywbZhanghaojia"/>
+        <result column="ywb_zhanghaoyi" property="ywbZhanghaoyi"/>
+        <result column="ywb_dianhuajia" property="ywbDianhuajia"/>
+        <result column="ywb_dianhuayi" property="ywbDianhuayi"/>
+        <result column="ywb_adreesqian" property="ywbAdreesqian"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -58,7 +74,7 @@
         ywb_builtup_area,
         ywb_between_a,
         ywb_party_room,
-        ywb_term,
+        ywb_term_start,
         ywb_shall,
         ywb_requirement,
         ywb_standard,
@@ -67,8 +83,8 @@
         ywb_bank_remittance,
         ywb_mdmbs_contract,
         ywb_hmdbf_previous,
-        ywb_deposit_a,
-        ywb_deposit,
+        ywb_shall_capitali,
+        ywb_shall_rmba,
         ywb_damages_a,
         ywb_terminclude,
         ywb_period,
@@ -86,12 +102,28 @@
         update_user,
         update_time,
         status,
-        is_deleted
+        is_deleted,
+        ywb_term_end,
+        ywb_jiaofu,
+        ywb_shuilv,
+        ywb_zujinjine,
+        ywb_zujinjined,
+        ywb_qianmingjia,
+        ywb_qianmingyi,
+        ywb_qianmingdai,
+        ywb_qianmingdaia,
+        ywb_kaihuhangjia,
+        ywb_kaihuhangjiaa,
+        ywb_zhanghaojia,
+        ywb_zhanghaoyi,
+        ywb_dianhuajia,
+        ywb_dianhuayi,
+        ywb_adreesqian
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="ywbBusinessContractTemplateResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+        <include refid="baseColumnList"></include>
         FROM ywb_business_contract_template
         WHERE is_deleted = 0
     </select>
