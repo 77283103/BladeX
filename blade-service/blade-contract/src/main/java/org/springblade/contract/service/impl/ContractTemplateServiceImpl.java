@@ -90,8 +90,12 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 				});
 				v.setFormInfoEntityList(formInfoEntityList);
 			}
-			/*判断范本是否为最新范本*/
-			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
+			if ("NEW".equals(template.getAdditionalPageConditionsTemplate())) {
+				/*判断范本是否为最新范本*/
+				if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
+					recordList.add(v);
+				}
+			}else if("ANALYSIS".equals(template.getAdditionalPageConditionsTemplate())){
 				recordList.add(v);
 			}
 		}

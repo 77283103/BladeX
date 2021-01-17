@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.InferiorProductContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="inferiorProductContractResultMap" type="org.springblade.contract.entity.InferiorProductContractEntity">
+        <result column="ID" property="id"/>
+        <result column="inf_saler" property="infSaler"/>
+        <result column="inf_saler_addr" property="infSalerAddr"/>
+        <result column="inf_buyer" property="infBuyer"/>
+        <result column="inf_buyer_addr" property="infBuyerAddr"/>
+        <result column="inf_type_fir" property="infTypeFir"/>
+        <result column="inf_week_start" property="infWeekStart"/>
+        <result column="inf_week_end" property="infWeekEnd"/>
+        <result column="inf_time_start" property="infTimeStart"/>
+        <result column="inf_time_end" property="infTimeEnd"/>
+        <result column="inf_sort_addr" property="infSortAddr"/>
+        <result column="inf_least_amount" property="infLeastAmount"/>
+        <result column="inf_time_amount" property="infTimeAmount"/>
+        <result column="inf_load_addr" property="infLoadAddr"/>
+        <result column="inf_appoint_amount" property="infAppointAmount"/>
+        <result column="inf_cap" property="infCap"/>
+        <result column="inf_time_least_fir" property="infTimeLeastFir"/>
+        <result column="inf_time_least_sec" property="infTimeLeastSec"/>
+        <result column="inf_saler_accout_name" property="infSalerAccoutName"/>
+        <result column="inf_saler_accout_id" property="infSalerAccoutId"/>
+        <result column="inf_saler_accout_bank" property="infSalerAccoutBank"/>
+        <result column="inf_buyer_accout_name" property="infBuyerAccoutName"/>
+        <result column="inf_buyer_accout_id" property="infBuyerAccoutId"/>
+        <result column="inf_buyer_accout_bank" property="infBuyerAccoutBank"/>
+        <result column="inf_time_least_thi" property="infTimeLeastThi"/>
+        <result column="inf_saler_mail" property="infSalerMail"/>
+        <result column="inf_buyer_mail" property="infBuyerMail"/>
+        <result column="inf_breach_amount_fir" property="infBreachAmountFir"/>
+        <result column="inf_breach_amount_sec" property="infBreachAmountSec"/>
+        <result column="inf_breach_amount_thi" property="infBreachAmountThi"/>
+        <result column="inf_breach_amount_fou" property="infBreachAmountFou"/>
+        <result column="inf_contract_start" property="infContractStart"/>
+        <result column="inf_contract_end" property="infContractEnd"/>
+        <result column="inf_contract_num" property="infContractNum"/>
+        <result column="inf_saler_phone" property="infSalerPhone"/>
+        <result column="inf_buyer_phone" property="infBuyerPhone"/>
+        <result column="inf_saler_person" property="infSalerPerson"/>
+        <result column="inf_buyer_person" property="infBuyerPerson"/>
+        <result column="inf_surf" property="infSurf"/>
+        <result column="inf_oil" property="infOil"/>
+        <result column="inf_tea_surf" property="infTeaSurf"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        ID,
+        inf_saler,
+        inf_saler_addr,
+        inf_buyer,
+        inf_buyer_addr,
+        inf_type_fir,
+        inf_week_start,
+        inf_week_end,
+        inf_time_start,
+        inf_time_end,
+        inf_sort_addr,
+        inf_least_amount,
+        inf_time_amount,
+        inf_load_addr,
+        inf_appoint_amount,
+        inf_cap,
+        inf_time_least_fir,
+        inf_time_least_sec,
+        inf_saler_accout_name,
+        inf_saler_accout_id,
+        inf_saler_accout_bank,
+        inf_buyer_accout_name,
+        inf_buyer_accout_id,
+        inf_buyer_accout_bank,
+        inf_time_least_thi,
+        inf_saler_mail,
+        inf_buyer_mail,
+        inf_breach_amount_fir,
+        inf_breach_amount_sec,
+        inf_breach_amount_thi,
+        inf_breach_amount_fou,
+        inf_contract_start,
+        inf_contract_end,
+        inf_contract_num,
+        inf_saler_phone,
+        inf_buyer_phone,
+        inf_saler_person,
+        inf_buyer_person,
+        inf_surf,
+        inf_oil,
+        inf_tea_surf
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="inferiorProductContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM inferior_product_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

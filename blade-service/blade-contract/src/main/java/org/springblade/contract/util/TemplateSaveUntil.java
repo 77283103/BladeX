@@ -93,6 +93,8 @@ public class TemplateSaveUntil {
 	@Autowired
 	private IYwbBusContracteTemplateService ywbBusinessContractTemplateService;
 	@Autowired
+	private IMinferiorProductContractService inferiorProductContractService;
+	@Autowired
 	private ILyConfidentialityAgreementService lyConfidentialityAgreementService;
 	@Autowired
 	private IConfidentialityAgreementService confidentialityAgreementService;
@@ -330,9 +332,9 @@ public class TemplateSaveUntil {
 			}
 			//下脚品买卖合同模版
 			else if ("MMHT_26".equals(template.getTemplateCode())) {
-				SclContractTemplateEntity sclContractTemplate= JSONObject.toJavaObject(j, SclContractTemplateEntity.class);
-				templateSaveUntil.sclContractTemplateService.save(sclContractTemplate);
-				id = sclContractTemplate.getId();
+				InferiorProductContractEntity inferiorProductContract= JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
+				templateSaveUntil.inferiorProductContractService.save(inferiorProductContract);
+				id = inferiorProductContract.getId();
 			}
 			//广告制作安装合同模板
 			else if ("GGZZ_04".equals(template.getTemplateCode())) {
@@ -565,9 +567,9 @@ public class TemplateSaveUntil {
 			}
 			//下脚品买卖合同模版
 			else if ("MMHT_26".equals(template.getTemplateCode())) {
-				SclContractTemplateEntity sclContractTemplate= JSONObject.toJavaObject(j, SclContractTemplateEntity.class);
-				sclContractTemplate.setId(contractFormInfoEntity.getContractListId());
-				templateSaveUntil.sclContractTemplateService.updateById(sclContractTemplate);
+				InferiorProductContractEntity inferiorProductContract= JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
+				inferiorProductContract.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.inferiorProductContractService.updateById(inferiorProductContract);
 			}
 			//广告制作安装合同模板
 			else if ("GGZZ_04".equals(template.getTemplateCode())) {

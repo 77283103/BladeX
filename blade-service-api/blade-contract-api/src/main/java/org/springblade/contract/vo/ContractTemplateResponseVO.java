@@ -1,10 +1,12 @@
 package org.springblade.contract.vo;
 
-import lombok.*;
-import org.springblade.contract.entity.ContractTemplateEntity;
 import io.swagger.annotations.ApiModel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.resource.vo.FileVO;
-import org.springblade.system.entity.TemplateEntity;
 
 import java.util.List;
 
@@ -40,4 +42,8 @@ public class ContractTemplateResponseVO extends ContractTemplateEntity {
 	private String userRealName;
 
 	private String userDepartName;
+	/**
+	 * 范本分页查询附加条件
+	 */
+	private String additionalPageConditionsTemplate;
 }

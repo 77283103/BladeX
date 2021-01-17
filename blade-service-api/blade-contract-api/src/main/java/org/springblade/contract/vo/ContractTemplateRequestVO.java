@@ -83,4 +83,8 @@ public class ContractTemplateRequestVO extends ContractTemplateEntity {
 
 	@ApiModelProperty(value="模板状态集合")
 	private List<String> code;
+	/**
+	 * 范本分页查询附加条件
+	 */
+	private String additionalPageConditionsTemplate;
 }
