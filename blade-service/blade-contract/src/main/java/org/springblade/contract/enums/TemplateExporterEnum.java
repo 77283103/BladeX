@@ -888,11 +888,11 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list=new ArrayList();
-			dataModel.put("pontactPartyB",j.get("pontactPartyB"));
+			dataModel.put("pontactPartyB","");
 			dataModel.put("productNameA",j.get("productNameA"));
 			dataModel.put("productContentA",j.get("productContentA"));
 			dataModel.put("productNameB",j.get("productNameB"));
-			dataModel.put("productContentB",j.get("taxRate"));
+			dataModel.put("productContentB",j.get("productContentB"));
 			dataModel.put("otherEnterprises",j.get("otherEnterprises"));
 			dataModel.put("otherAgreements",j.get("otherAgreements"));
 			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate)"))));

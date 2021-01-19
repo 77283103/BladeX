@@ -21,4 +21,14 @@ public interface IUserDepartService extends IService<UserDepartEntity> {
 	 * @return
 	 */
 	boolean updateByDept(Long newDeptId, Long oldDeptId);
+
+
+	/**
+	 * 根据lunid获取id
+	 *
+	 * @param associationId 接口唯一标识
+	 * @return 主键
+	 */
+	Long getUserDepartIdByAssociationId(Long associationId);
+
 }

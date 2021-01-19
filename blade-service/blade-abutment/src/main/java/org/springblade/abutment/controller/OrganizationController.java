@@ -70,6 +70,7 @@ public class OrganizationController {
 	@ApiOperation(value = "获取组织及人员信息的接口")
 	public R<List<OrganizationVo>> queryOrganization() {
 		OrganizationEntity entity = new OrganizationEntity();
+		entity.setOrgType("2");
 		List<OrganizationVo> organizationList = null;
 		try {
 			organizationList = organizationService.getOrganizationInfo(entity);
@@ -128,8 +129,8 @@ public class OrganizationController {
 
 			}
 			sysClient.saveOrUpdateBatchDept(deptList);
-			sysClient.saveOrUpdateBatchPost(postList);
-			userClient.saveOrUpdateBatch(userList);
+			//sysClient.saveOrUpdateBatchPost(postList);
+			//userClient.saveOrUpdateBatch(userList);
 		}
 		return R.data(organizationList);
 	}*/
@@ -153,13 +154,13 @@ public class OrganizationController {
 		}
 		sysClient.saveOrUpdateBatchDept(getOrgListUpdate(organizationList));
 		//保存岗位
-		try {
+		/*try {
 			entity.setOrgType("4");
 			organizationList = organizationService.getOrganizationInfo(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));
+		sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));*/
 		//保存个人
 		try {
 			entity.setOrgType("8");
@@ -167,7 +168,7 @@ public class OrganizationController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		userClient.saveOrUpdateBatch(getPersonListUpdate(organizationList));
+		getPersonListUpdate(organizationList);
 		return R.data(organizationList);
 	}
     /**
@@ -271,8 +272,6 @@ public class OrganizationController {
 		for (OrganizationVo organizationVo : organizationList) {
 			Dept dept = new Dept();
 			dept.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 1 : 0);
-			dept.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
-			//dept.setParentId(Long.parseLong(organizationVo.getId()));
 			dept.setDeptName(organizationVo.getName());
 			dept.setPinyinName(organizationVo.getNamePinyin());
 			dept.setDeptNm(organizationVo.getDeptnm());
@@ -282,15 +281,14 @@ public class OrganizationController {
 			dept.setIsDeleted(0);
 			dept.setStatus(1);
 			dept.setAssociationId(organizationVo.getId());
-			list.add(dept);
-			/*上级部门*/
+			//*上级部门*//*
 			R<Long> deptIdByAssociationId= sysClient.getDeptIdByAssociationId(organizationVo.getParentid());
 			if (deptIdByAssociationId.isSuccess() && Func.isNotEmpty(deptIdByAssociationId.getData())) {
 				dept.setParentId(deptIdByAssociationId.getData());
 			} else {
 				dept.setParentId(0L);
 			}
-			/*祖籍列表*/
+			//*祖籍列表*//*
 			if (Func.isNotEmpty(dept.getParentId())) {
 				R<String> hierarchy = sysClient.getAncestors(dept.getParentId());
 				if (hierarchy.isSuccess()) {
@@ -299,7 +297,7 @@ public class OrganizationController {
 					dept.setAncestors(StringPool.EMPTY);
 				}
 			}
-			/*根据Lunid查询机构的ID*/
+			//*根据唯一id查询机构的ID*//*
 			deptIdByAssociationId = sysClient.getDeptIdByAssociationId(organizationVo.getId());
 			if (deptIdByAssociationId.isSuccess() && Func.isNotEmpty(deptIdByAssociationId.getData())) {
 				dept.setId(deptIdByAssociationId.getData());
@@ -339,6 +337,7 @@ public class OrganizationController {
 	 */
 	private List<User> getPersonListUpdate(List<OrganizationVo> organizationList) {
 			List<User> list = new ArrayList<>();
+			List<UserDepart> userDepartList = new ArrayList<>();
 			for (OrganizationVo organizationVo : organizationList) {
 				User user = new User();
 				UserDepart userDepart = new UserDepart();
@@ -356,20 +355,27 @@ public class OrganizationController {
 					userid = userIdResult.getData();
 				}
 				user.setId(userid);
+				list.add(user);
 				/*R<Long> postIdByAssociationId = sysClient.getPostIdByAssociationId(organizationVo.getId());
 				if (postIdByAssociationId.isSuccess()) {
 					userDepart.setPostId(postIdByAssociationId.getData());
-				}
+				}*/
 				R<Long> deptIdByAssociationId= sysClient.getDeptIdByAssociationId(organizationVo.getParentid());
 				if (deptIdByAssociationId.isSuccess() && Func.isNotEmpty(deptIdByAssociationId.getData())) {
-					dept.setParentId(deptIdByAssociationId.getData());
-					userDepart.setDeptId();
+					userDepart.setDeptId(deptIdByAssociationId.getData());
 				}
-				userDepart.setRoleId();
-				userDepart.setUserId();
-				user.setUserDepartList();*/
-				list.add(user);
+				userDepart.setRoleId(1270659143136452610L);
+				Long userDepartId = null;
+				R<Long> userDepartIdByAssociationId= sysClient.getUserDepartByAssociationId(userid);
+				if (userDepartIdByAssociationId.isSuccess()) {
+					userDepartId = userDepartIdByAssociationId.getData();
+				}
+				userDepart.setId(userDepartId);
+				userDepart.setUserId(userid);
+				userDepartList.add(userDepart);
 		}
+		userClient.saveOrUpdateBatch(list);
+		//userDepartClient.saveOrUpdateBatch(list);
 		return list;
 	}
 }

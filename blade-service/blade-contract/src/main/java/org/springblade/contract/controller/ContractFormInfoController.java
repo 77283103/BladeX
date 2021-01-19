@@ -188,6 +188,7 @@ public class ContractFormInfoController extends BladeController {
 				}
 				//保存保证金履约计划
 				contractBondPlan.setContractId(contractFormInfo.getId());
+				contractBondPlan.setId(null);
 				contractBondPlanService.save(contractBondPlan);
 				list.add(contractBondEntity.getId());
 			}
@@ -202,6 +203,7 @@ public class ContractFormInfoController extends BladeController {
 			}else {
 				accordingService.updateById(contractAccording);
 			}
+			contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
@@ -222,7 +224,7 @@ public class ContractFormInfoController extends BladeController {
 			});
 		}
 		//开始接口处理
-		if("30".equals(entity.getContractStatus())){
+		if("20".equals(entity.getContractStatus())){
 			//处理电子签章和oa流程
 			entity=contractFormInfoService.SingleSign(entity);
 			contractFormInfoService.updateById(entity);

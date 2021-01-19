@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.IDocService;
 import org.springblade.abutment.service.IESealService;
@@ -71,14 +72,6 @@ public class AbutmentClient implements IAbutmentClient {
 					FormValuesEntity formValuesEntity = new FormValuesEntity();
 					//依据编号
 					formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
-					//合同方对应关系
-					if("甲".equals(entity.getContractRoles())){
-						formValuesEntity.setFd_onetoone("乙");
-					}else if("乙".equals(entity.getContractRoles())){
-						formValuesEntity.setFd_onetoone("甲");
-					}else{
-						formValuesEntity.setFd_onetoone("乙");
-					}
 					//乙方电话
 					formValuesEntity.setFd_b_number("13361615656");
 					//乙方税籍编号
@@ -97,9 +90,30 @@ public class AbutmentClient implements IAbutmentClient {
 					//pdf的id
 					formValuesEntity.setFd_contract_url("");
 					//合同起草流程类型
-					if("10".equals(entity.getContractSoure())){
+					if("10".equals(entity.getContractSoure())||"20".equals(entity.getContractSoure())){
+						if("10".equals(entity.getContractSoure())){
+							formValuesEntity.setFd_contract_type("10");
+							//合同方对应关系
+							if("甲".equals(entity.getContractRoles())){
+								formValuesEntity.setFd_onetoone("乙");
+							}else if("乙".equals(entity.getContractRoles())){
+								formValuesEntity.setFd_onetoone("甲");
+							}else{
+								formValuesEntity.setFd_onetoone("乙");
+							}
+						}
+						if("20".equals(entity.getContractSoure())){
+							formValuesEntity.setFd_contract_type("40");
+							String[] arrays = {"乙", "丙", "丁", "戊", "己"};
+							JSONObject s=new JSONObject();
+							s.put("甲","统一集团");
+							for(int i=0;i<entity.getCounterpart().size();i++){
+								s.put(arrays[i],entity.getCounterpart().get(i).getUnifiedSocialCreditCode());
+							}
+							formValuesEntity.setFd_onetoone(s.toJSONString());
+						}
 						formValuesEntity.setFd_contract_type("10");
-						//performanceColPayList
+						//履约信息
 						List <KeepList> keepList=new ArrayList<KeepList>();
 						KeepList keep=new KeepList();
 						List <PayList> payList=new ArrayList<PayList>();
@@ -156,8 +170,6 @@ public class AbutmentClient implements IAbutmentClient {
 						}else{
 							formValuesEntity.setFd_contract_type("20");
 						}
-					}else{
-						formValuesEntity.setFd_contract_type("40");
 					}
 					//合同主旨
 					formValuesEntity.setFd_main(entity.getContractName());

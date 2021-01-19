@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import lombok.AllArgsConstructor;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.mp.support.Condition;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.mapper.UserDepartMapper;
 import org.springblade.system.service.IUserDepartService;
@@ -29,4 +31,15 @@ public class UserDepartServiceImpl extends ServiceImpl<UserDepartMapper, UserDep
 		userDepartMapper.updateByDept(newDeptId,oldDeptId);
 		return true;
 	}
+
+	@Override
+	public Long getUserDepartIdByAssociationId(Long associationId) {
+		UserDepartEntity userDepart = userDepartMapper.getDeptIdByAssociationId(associationId);
+		if (Func.isNotEmpty(userDepart)) {
+			return userDepart.getId();
+		}
+		return null;
+	}
+
+
 }

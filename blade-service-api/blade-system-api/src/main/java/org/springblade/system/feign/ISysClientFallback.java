@@ -168,6 +168,11 @@ public class ISysClientFallback implements ISysClient {
 	}
 
 	@Override
+	public R<Long> getUserDepartByAssociationId(Long associationId) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
 	public R<String> getAncestors(Long ancestorIds) {
 		return R.fail("获取数据失败");
 	}

@@ -1013,8 +1013,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity) {
-		String _PATH="D:/ftl/";//模板路径
-		//String _PATH="/ftl/";//模板路径
+		//String _PATH="D:/ftl/";//模板路径
+		String _PATH="/ftl/";//模板路径
 		// 查查公司有没有申请电子章
 		CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
 		companyInfoEntity.setQueryType("1");

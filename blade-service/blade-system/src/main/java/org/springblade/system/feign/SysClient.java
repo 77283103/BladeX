@@ -45,6 +45,8 @@ public class SysClient implements ISysClient {
 
 	private IDeptService deptService;
 
+	private IUserDepartService userDepartService;
+
 	private IPostService postService;
 
 	private IRoleService roleService;
@@ -209,6 +211,13 @@ public class SysClient implements ISysClient {
 	@GetMapping(GET_DEPT_ID_BY_LUNID)
 	public R<Long> getDeptIdByAssociationId(String associationId) {
 		return R.data(deptService.getDeptIdByAssociationId(associationId));
+	}
+
+
+	@Override
+	@GetMapping(GET_USER_DEPART_ID_BY_LUNID)
+	public R<Long> getUserDepartByAssociationId(Long associationId) {
+		return R.data(userDepartService.getUserDepartIdByAssociationId(associationId));
 	}
 
 	@Override

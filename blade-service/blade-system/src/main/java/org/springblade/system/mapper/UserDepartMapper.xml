@@ -16,5 +16,12 @@
         set dept_id=${newDeptId}
         where dept_id = ${oldDeptId}
     </update>
-
+    <select id="getDeptIdByAssociationId" resultType="org.springblade.system.entity.Dept" parameterType="java.lang.Long">
+        select
+        t.*
+        from blade_user_depart t
+        <if test="associationId != null and associationId != ''">
+            where t.user_id = #{associationId}
+        </if>
+    </select>
 </mapper>
