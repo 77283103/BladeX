@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.DeviceLaunchUseContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="deviceLaunchUseContractResultMap" type="org.springblade.contract.entity.DeviceLaunchUseContractEntity">
+        <result column="id" property="id"/>
+        <result column="dev_saler" property="devSaler"/>
+        <result column="dev_saler_addr" property="devSalerAddr"/>
+        <result column="dev_buyer" property="devBuyer"/>
+        <result column="dev_buyer_addr" property="devBuyerAddr"/>
+        <result column="dev_buyer_num" property="devBuyerNum"/>
+        <result column="dev_number" property="devNumber"/>
+        <result column="dev_number_in_word" property="devNumberInWord"/>
+        <result column="dev_brand" property="devBrand"/>
+        <result column="dev_model" property="devModel"/>
+        <result column="dev_value" property="devValue"/>
+        <result column="dev_code" property="devCode"/>
+        <result column="dev_place" property="devPlace"/>
+        <result column="dev_borro_start" property="devBorroStart"/>
+        <result column="dev_borro_end" property="devBorroEnd"/>
+        <result column="dev_least_date" property="devLeastDate"/>
+        <result column="dev_deposit" property="devDeposit"/>
+        <result column="dev_deposit_in_word" property="devDepositInWord"/>
+        <result column="dev_saler_person" property="devSalerPerson"/>
+        <result column="dev_saler_time" property="devSalerTime"/>
+        <result column="dev_buyer_person" property="devBuyerPerson"/>
+        <result column="dev_buyer_time" property="devBuyerTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        dev_saler,
+        dev_saler_addr,
+        dev_buyer,
+        dev_buyer_addr,
+        dev_buyer_num,
+        dev_number,
+        dev_number_in_word,
+        dev_brand,
+        dev_model,
+        dev_value,
+        dev_code,
+        dev_place,
+        dev_borro_start,
+        dev_borro_end,
+        dev_least_date,
+        dev_deposit,
+        dev_deposit_in_word,
+        dev_saler_person,
+        dev_saler_time,
+        dev_buyer_person,
+        dev_buyer_time,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="deviceLaunchUseContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM device_launch_use_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

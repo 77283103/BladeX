@@ -127,6 +127,17 @@ public class ContractTemplateController extends BladeController {
 	}
 
 	/**
+	 * 根据范本名称合同范本模板编号筛选是否存在新增重复范本
+	 */
+	@PostMapping("/filterDuplicates")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "根据范本名称合同范本模板编号筛选是否存在新增重复范本", notes = "传入相关参数")
+	public R<List<ContractTemplateEntity>> FilterDuplicates(@Valid @RequestBody ContractTemplateRequestVO template) {
+		List<ContractTemplateEntity> filterDuplicates=templateService.FilterDuplicates(template.getName(),template.getTemplateCode());
+		return R.data(filterDuplicates);
+	}
+
+	/**
 	 * 删除
 	 */
 	@PostMapping("/remove")

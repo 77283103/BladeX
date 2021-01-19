@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ProductOutServiceContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="productOutServiceContractResultMap" type="org.springblade.contract.entity.ProductOutServiceContractEntity">
+        <result column="id" property="id"/>
+        <result column="pro_saler" property="proSaler"/>
+        <result column="pro_saler_addr" property="proSalerAddr"/>
+        <result column="pro_buyer" property="proBuyer"/>
+        <result column="pro_buyer_addr" property="proBuyerAddr"/>
+        <result column="pro_time_start" property="proTimeStart"/>
+        <result column="pro_time_end" property="proTimeEnd"/>
+        <result column="pro_amount" property="proAmount"/>
+        <result column="pro_age_require" property="proAgeRequire"/>
+        <result column="pro_max_percent" property="proMaxPercent"/>
+        <result column="pro_time_amount" property="proTimeAmount"/>
+        <result column="pro_buyer_person" property="proBuyerPerson"/>
+        <result column="pro_buyer_phone" property="proBuyerPhone"/>
+        <result column="pro_last_day_fir" property="proLastDayFir"/>
+        <result column="pro_last_day_sec" property="proLastDaySec"/>
+        <result column="pro_last_day_thi" property="proLastDayThi"/>
+        <result column="in_pay_type" property="inPayType"/>
+        <result column="pro_buyer_account_name" property="proBuyerAccountName"/>
+        <result column="pro_buyer_account_id" property="proBuyerAccountId"/>
+        <result column="pro_buyer_account_bank" property="proBuyerAccountBank"/>
+        <result column="pro_bond_amount_fir" property="proBondAmountFir"/>
+        <result column="pro_last_day_fou" property="proLastDayFou"/>
+        <result column="pro_last_day_fiv" property="proLastDayFiv"/>
+        <result column="pro_saler_accout_name" property="proSalerAccoutName"/>
+        <result column="pro_saler_accout_id" property="proSalerAccoutId"/>
+        <result column="pro_saler_accout_bank" property="proSalerAccoutBank"/>
+        <result column="pro_bond_amount_sec" property="proBondAmountSec"/>
+        <result column="pro_bond_amount_thi" property="proBondAmountThi"/>
+        <result column="pro_bond_amount_fou" property="proBondAmountFou"/>
+        <result column="pro_bond_amount_fiv" property="proBondAmountFiv"/>
+        <result column="pro_bond_amount_six" property="proBondAmountSix"/>
+        <result column="pro_supply_arrange" property="proSupplyArrange"/>
+        <result column="pro_annex_fir" property="proAnnexFir"/>
+        <result column="pro_annex_sec" property="proAnnexSec"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="pro_out_service_con1_id" property="proOutServiceCon1Id"/>
+        <result column="pro_out_service_con2_id" property="proOutServiceCon2Id"/>
+        <result column="pro_out_service_con3_id" property="proOutServiceCon3Id"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        pro_saler,
+        pro_saler_addr,
+        pro_buyer,
+        pro_buyer_addr,
+        pro_time_start,
+        pro_time_end,
+        pro_amount,
+        pro_age_require,
+        pro_max_percent,
+        pro_time_amount,
+        pro_buyer_person,
+        pro_buyer_phone,
+        pro_last_day_fir,
+        pro_last_day_sec,
+        pro_last_day_thi,
+        in_pay_type,
+        pro_buyer_account_name,
+        pro_buyer_account_id,
+        pro_buyer_account_bank,
+        pro_bond_amount_fir,
+        pro_last_day_fou,
+        pro_last_day_fiv,
+        pro_saler_accout_name,
+        pro_saler_accout_id,
+        pro_saler_accout_bank,
+        pro_bond_amount_sec,
+        pro_bond_amount_thi,
+        pro_bond_amount_fou,
+        pro_bond_amount_fiv,
+        pro_bond_amount_six,
+        pro_supply_arrange,
+        pro_annex_fir,
+        pro_annex_sec,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        pro_out_service_con1_id,
+        pro_out_service_con2_id,
+        pro_out_service_con3_id
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="productOutServiceContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM product_out_service_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

@@ -6,6 +6,8 @@ import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.base.BaseService;
 
+import java.util.List;
+
 /**
  * 范本管理 服务类
  *
@@ -49,4 +51,13 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @return
 	 */
 	boolean save(ContractTemplateEntity templateEntity,String type);
+
+
+	/**
+	 *根据范本名称合同范本模板编号筛选是否存在新增重复范本
+	 * @param templateName
+	 * @param templateCode
+	 * @return
+	 */
+	List<ContractTemplateEntity> FilterDuplicates(String templateName, String templateCode);
 }

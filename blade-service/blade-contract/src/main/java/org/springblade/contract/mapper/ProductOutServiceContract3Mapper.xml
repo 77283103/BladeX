@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ProductOutServiceContract3Mapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="productOutServiceContract3ResultMap" type="org.springblade.contract.entity.ProductOutServiceContract3Entity">
+        <result column="id" property="id"/>
+        <result column="punish_num" property="punishNum"/>
+        <result column="punish_content" property="punishContent"/>
+        <result column="punish_amount" property="punishAmount"/>
+        <result column="pro_out_ser_con3_id" property="proOutSerCon3Id"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        punish_num,
+        punish_content,
+        punish_amount,
+        pro_out_ser_con3_id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="productOutServiceContract3ResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM product_out_service_contract3
+        WHERE is_deleted = 0
+    </select>
+</mapper>
