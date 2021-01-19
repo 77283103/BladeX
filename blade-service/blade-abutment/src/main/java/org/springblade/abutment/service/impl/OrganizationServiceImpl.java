@@ -61,6 +61,16 @@ public class OrganizationServiceImpl implements IOrganizationService {
             fieldsList.add(this.getFieldMap("orgType"));
             fieldsList.add(this.getFieldMap("parentid"));
             fieldsList.add(this.getFieldMap("alterTime"));
+			fieldsList.add(this.getFieldMap("factno"));
+			fieldsList.add(this.getFieldMap("factname"));
+			fieldsList.add(this.getFieldMap("deptno"));
+			fieldsList.add(this.getFieldMap("deptnm"));
+			fieldsList.add(this.getFieldMap("laiyuan"));
+			fieldsList.add(this.getFieldMap("deptid"));
+			fieldsList.add(this.getFieldMap("gradid"));
+			fieldsList.add(this.getFieldMap("gradno"));
+			fieldsList.add(this.getFieldMap("gradnm"));
+			fieldsList.add(this.getFieldMap("thisLeaderid"));
         }
         paramMap.put("select",fieldsList);
         List<Map<String, String>> whereList = new ArrayList<Map<String, String>>();
@@ -85,7 +95,6 @@ public class OrganizationServiceImpl implements IOrganizationService {
         if(StrUtil.isNotEmpty(entity.getIsAvailable())) {
             whereList.add(this.getWhereMap("isAvailable", entity.getIsAvailable()));
         }
-        //entity.setOrgType("2");
         if(StrUtil.isNotEmpty(entity.getOrgType())) {
             whereList.add(this.getWhereMap("orgType", entity.getOrgType()));
         }

@@ -65,6 +65,7 @@ public interface ISysClient {
 	String PARAM_VALUE = API_PREFIX + "/param-value";
 	String SAVE_DEPT_API=API_PREFIX +"/save-dept-api";
 	String SAVE_POST_API=API_PREFIX +"/save-post-api";
+	String SAVE_USER_DEPART_API=API_PREFIX +"/save-user-depart-api";
 	String SUBMIT_DEPT_API=API_PREFIX +"/submit-dept-api";
 	String SUBMIT_POST_API=API_PREFIX +"/submit-post-api";
 	String GET_DEPT_ID_BY_LUNID = API_PREFIX + "/get-dept-id-by-lunid";
@@ -286,6 +287,14 @@ public interface ISysClient {
 	 */
 	@PostMapping(SAVE_POST_API)
 	R<Boolean> saveOrUpdateBatchPost(@RequestBody List<Post> post);
+
+	/**
+	 *
+	 * @param userDepart
+	 * @return
+	 */
+	@PostMapping(SAVE_USER_DEPART_API)
+	R<Boolean> saveOrUpdateBatchUserDepart(@RequestBody List<UserDepartEntity> userDepart);
 
 	/**
 	 *

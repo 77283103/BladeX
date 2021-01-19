@@ -5,10 +5,17 @@ import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import feign.form.ContentType;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.csource.common.MyException;
+import org.csource.common.NameValuePair;
+import org.csource.fastdfs.StorageClient;
+import org.csource.fastdfs.StorageServer;
+import org.csource.fastdfs.TrackerClient;
+import org.csource.fastdfs.TrackerServer;
 import org.springblade.abutment.common.annotation.AutoLog;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
@@ -18,6 +25,8 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.IntegerPool;
 import org.springblade.core.tool.utils.StringPool;
+import org.springblade.resource.feign.IFileClient;
+import org.springblade.resource.vo.FileVO;
 import org.springblade.system.dto.UserDepartDTO;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.Post;
@@ -27,10 +36,16 @@ import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.entity.UserDepart;
 import org.springblade.system.user.feign.IUserClient;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -59,7 +74,9 @@ public class OrganizationController {
 
     IUserClient userClient;
 
-
+	IFileClient fileClient;
+	@Autowired
+	private TrackerClient trackerClient;
 	/**
 	 * 获取组织及人员全部信息
 	 *
@@ -139,6 +156,65 @@ public class OrganizationController {
 	 *
 	 * @return
 	 */
+	@PostMapping("/fastFile")
+	@AutoLog
+	@ApiOperation(value = "获取组织及人员信息的接口")
+	public R fastFile() throws IOException, MyException {
+
+		List<FileVO> fileVOs=fileClient.getByIds("1351469422220513281").getData();
+		for(FileVO fileVO:fileVOs){
+			// 开始上传fastDFS服务器
+			NameValuePair[] nvp = new NameValuePair[5];
+			nvp[0] = new NameValuePair("fdFileName", fileVO.getName());//文件名称
+			nvp[1] = new NameValuePair("fileSuffix", "doc");//文件后缀
+			nvp[2] = new NameValuePair("fdKey", "key");//文件key？？
+			nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());//文件大小
+			nvp[4] = new NameValuePair("fileType", "1");//文件类型
+			//3.创建trackerServer
+			TrackerServer trackerServer = null;
+			try {
+				trackerServer = trackerClient.getConnection();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			// 4、创建一个 StorageServer 的引用，值为 null
+			StorageServer storageServer = null;
+			// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+			StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+			InputStream in =null;
+			BufferedInputStream bin =null;
+			ByteArrayOutputStream baos = null;
+			BufferedOutputStream bout =null;
+			byte[] bytes=null;
+			try {
+				URL url = new URL(fileVO.getLink());
+				URLConnection conn = url.openConnection();
+				in = conn.getInputStream();
+				bin = new  BufferedInputStream(in);
+				baos = new ByteArrayOutputStream();
+				bout = new BufferedOutputStream(baos);
+				byte[] buffer = new byte[1024];
+				int len = bin.read(buffer);
+				while(len != -1){
+					bout.write(buffer, 0, len);
+					len = bin.read(buffer);
+				}
+				//刷新此输出流并强制写出所有缓冲的输出字节
+				bout.flush();
+				bytes = baos.toByteArray();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			String[] fileIds = storageClient.upload_file(bytes, "doc", nvp); // 上传
+			System.out.println(fileIds);
+		}
+		return R.success("ceshi");
+	}
+	/**
+	 * 获取组织及人员增量信息
+	 *
+	 * @return
+	 */
 	@PostMapping("/queryOrganization")
 	@AutoLog
 	@ApiOperation(value = "获取组织及人员信息的接口")
@@ -146,21 +222,21 @@ public class OrganizationController {
 		OrganizationEntity entity = new OrganizationEntity();
 		List<OrganizationVo> organizationList = null;
 		//保存组织机构
-		try {
+		/*try {
 			entity.setOrgType("2");
 			organizationList = organizationService.getOrganizationInfo(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		sysClient.saveOrUpdateBatchDept(getOrgListUpdate(organizationList));
+		}*/
+		//sysClient.saveOrUpdateBatchDept(getOrgListUpdate(organizationList));
 		//保存岗位
 		/*try {
 			entity.setOrgType("4");
 			organizationList = organizationService.getOrganizationInfo(entity);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
-		sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));*/
+		}*/
+		/*sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));*/
 		//保存个人
 		try {
 			entity.setOrgType("8");
@@ -337,10 +413,10 @@ public class OrganizationController {
 	 */
 	private List<User> getPersonListUpdate(List<OrganizationVo> organizationList) {
 			List<User> list = new ArrayList<>();
-			List<UserDepart> userDepartList = new ArrayList<>();
+			List<UserDepartEntity> userDepartList = new ArrayList<>();
 			for (OrganizationVo organizationVo : organizationList) {
 				User user = new User();
-				UserDepart userDepart = new UserDepart();
+				UserDepartEntity userDepart = new UserDepartEntity();
 				user.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 0 : 1);
 				user.setIsDeleted(0);
 				user.setPassword(SecureUtil.md5("123456"));
@@ -348,6 +424,11 @@ public class OrganizationController {
 				user.setAccount(organizationVo.getLoginName());
 				user.setRealName(organizationVo.getName());
 				user.setEmail(organizationVo.getEmail());
+				user.setFactNo(organizationVo.getFactno());
+				user.setFactName(organizationVo.getFactname());
+				user.setDeptNo(organizationVo.getDeptno());
+				user.setDeptNm(organizationVo.getDeptnm());
+				user.setLaiYuan(organizationVo.getLaiyuan());
 				/*根据唯一标识获取用户id，因为此时用户已经同步到库中*/
 				Long userid = null;
 				R<Long> userIdResult = userClient.getUserIdByAssociationId(organizationVo.getId());
@@ -375,7 +456,10 @@ public class OrganizationController {
 				userDepartList.add(userDepart);
 		}
 		userClient.saveOrUpdateBatch(list);
-		//userDepartClient.saveOrUpdateBatch(list);
+		sysClient.saveOrUpdateBatchUserDepart(userDepartList);
 		return list;
 	}
+
+
+
 }

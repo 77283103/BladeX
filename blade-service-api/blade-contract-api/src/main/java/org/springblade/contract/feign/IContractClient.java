@@ -1,5 +1,6 @@
 package org.springblade.contract.feign;
 
+import com.sun.xml.internal.bind.v2.model.core.ID;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
@@ -30,6 +31,7 @@ public interface IContractClient {
 	String TEMPLATE_UPDATE = API_PREFIX + "/template_update";
 	String CHOOSE=API_PREFIX + "/getChooseList";
 	String CONTRACT_SAVE = API_PREFIX + "/contractSave";
+	String TEMPLATE_GET_ID = API_PREFIX + "/template_getId";
 	/**
 	 * 获取合同信息
 	 * @param id
@@ -57,4 +59,12 @@ public interface IContractClient {
 	 */
 	@GetMapping(CONTRACT_SAVE)
 	R saveContractFormInfo(@RequestParam("id") Long id, @RequestParam("status") String status);
+
+	/**
+	 * 根据模板查询id
+	 * @para @return
+	 * @return
+	 */
+	@GetMapping(TEMPLATE_GET_ID)
+	R<String> getByTemplateId(@RequestParam("id") Long id);
 }

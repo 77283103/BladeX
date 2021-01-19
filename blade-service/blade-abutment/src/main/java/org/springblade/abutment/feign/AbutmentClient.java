@@ -4,6 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.csource.common.NameValuePair;
+import org.csource.fastdfs.StorageClient;
+import org.csource.fastdfs.StorageServer;
+import org.csource.fastdfs.TrackerClient;
+import org.csource.fastdfs.TrackerServer;
 import org.json.simple.JSONObject;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.IDocService;
@@ -13,6 +18,7 @@ import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractPerformanceColPayEntity;
 import org.springblade.contract.entity.ContractPerformanceEntity;
+import org.springblade.contract.feign.IContractClient;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -26,6 +32,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.io.BufferedInputStream;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +57,9 @@ public class AbutmentClient implements IAbutmentClient {
 	@Autowired
 	private IDictBizClient bizClient;
 	@Autowired
-	private IFileClient fileClient;
+	private IContractClient contractClient;
+//	@Autowired
+//	private TrackerClient trackerClient;
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
 
@@ -58,7 +68,6 @@ public class AbutmentClient implements IAbutmentClient {
 	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
 
 		EkpVo ekpVo = null;
-		try {
 			PushEkpEntity pushEkpEntity = new PushEkpEntity();
 			pushEkpEntity.setFdTemplateId(fdTemplateId);
 			if(entity != null) {
@@ -169,6 +178,12 @@ public class AbutmentClient implements IAbutmentClient {
 							formValuesEntity.setFd_contract_type("30");
 						}else{
 							formValuesEntity.setFd_contract_type("20");
+						}
+						R<String> code=contractClient.getByTemplateId(entity.getContractTemplateId());
+						if("FWZL_36".equals(code.getData())){
+							formValuesEntity.setFd_onetoone("甲");
+						}else{
+							formValuesEntity.setFd_onetoone("乙");
 						}
 					}
 					//合同主旨
@@ -338,17 +353,34 @@ public class AbutmentClient implements IAbutmentClient {
 						pushEkpEntity.setDocSubject(entity.getAccording().get(0).getFileId());
 						//pushEkpEntity.setDocSubject("1762642a34c79442253858b4b2aab793");
 					}*/
-					pushEkpEntity.setToken(ekpService.getToken());
-					pushEkpEntity.setDocSubject(entity.getContractName());
-					pushEkpEntity.setFdTemplateId("176212613bf6f84e6bf1ad942cbb8344");
-					if (StrUtil.isNotEmpty(pushEkpEntity.getToken())) {
-						ekpVo = ekpService.pushData(pushEkpEntity);
+					try {
+						pushEkpEntity.setToken(ekpService.getToken());
+						pushEkpEntity.setDocSubject(entity.getContractName());
+						pushEkpEntity.setFdTemplateId("176212613bf6f84e6bf1ad942cbb8344");
+						if (StrUtil.isNotEmpty(pushEkpEntity.getToken())) {
+							ekpVo = ekpService.pushData(pushEkpEntity);
+
+							// 开始上传fastDFS服务器
+
+							NameValuePair[] nvp = new NameValuePair[5];
+							/*nvp[0]=new NameValuePair("fdFileName",fdFileName);//文件名称
+							nvp[1]=new NameValuePair("fileSuffix",fileSuffix);//文件后缀
+							nvp[2]=new NameValuePair("fdKey",fdKey);//文件key？？
+							nvp[3]=new NameValuePair("fdFileSize",String.valueOf(fdFileSize));//文件大小
+							nvp[4]=new NameValuePair("fileType",fileType);//文件类型
+							//3.创建trackerServer
+							TrackerServer trackerServer = trackerClient.getConnection();
+							// 4、创建一个 StorageServer 的引用，值为 null
+							StorageServer storageServer = null;
+							// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+							StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+							String[] fileIds = storageClient.upload_file(fileByte,fileSuffix,nvp); // 上传*/
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
 				}
 			}
-		} catch(Exception exception) {
-			log.error(exception.getMessage());
-		}
 		return R.data(ekpVo);
 	}
 

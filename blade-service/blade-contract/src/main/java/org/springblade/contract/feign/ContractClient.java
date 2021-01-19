@@ -77,4 +77,13 @@ public class ContractClient implements IContractClient{
 		formInfoService.saveOrUpdate(contractFormInfo);
 		return R.success("审核成功");
 	}
+
+	@Override
+	@GetMapping(TEMPLATE_GET_ID)
+	public R<String> getByTemplateId(Long id) {
+		ContractTemplateEntity templateFieldEntity=templateService.getById(id);
+		return R.data(templateFieldEntity.getTemplateCode());
+	}
+
+
 }

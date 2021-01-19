@@ -42,5 +42,15 @@ public class OrganizationVo implements Serializable {
 	private String deptnm;
 	@ApiModelProperty(value = "来源厂别")
 	private String laiyuan;
+	@ApiModelProperty(value = "员工所属部门id")
+	private String deptid;
+	@ApiModelProperty(value = "员工所属岗位id")
+	private String gradid;
+	@ApiModelProperty(value = "岗位代号")
+	private String gradno;
+	@ApiModelProperty(value = "岗位名称")
+	private String gradnm;
+	@ApiModelProperty(value = "本级领导id")
+	private String thisLeaderid;
 
 }

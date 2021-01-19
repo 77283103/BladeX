@@ -87,28 +87,28 @@ public class User extends TenantEntity {
 	@ApiModelProperty(value = "关联供应商id")
 	private String associationId;
 	/**
-	 * 关联供应商id
+	 * 厂别代号
 	 */
-//	@ApiModelProperty(value = "关联供应商id")
-//	private String associationId;
-//	/**
-//	 * 关联供应商id
-//	 */
-//	@ApiModelProperty(value = "关联供应商id")
-//	private String associationId;
-//	/**
-//	 * 关联供应商id
-//	 */
-//	@ApiModelProperty(value = "关联供应商id")
-//	private String associationId;
-//	/**
-//	 * 关联供应商id
-//	 */
-//	@ApiModelProperty(value = "关联供应商id")
-//	private String associationId;
-//	/**
-//	 * 关联供应商id
-//	 */
-//	@ApiModelProperty(value = "关联供应商id")
-//	private String associationId;
+	@ApiModelProperty(value = "厂别代号")
+	private String factNo;
+	/**
+	 * 厂别名称
+	 */
+	@ApiModelProperty(value = "厂别名称")
+	private String factName;
+	/**
+	 * 部门代号
+	 */
+	@ApiModelProperty(value = "部门代号")
+	private String deptNo;
+	/**
+	 * 部门名称
+	 */
+	@ApiModelProperty(value = "部门名称")
+	private String deptNm;
+	/**
+	 * 来源厂别
+	 */
+	@ApiModelProperty(value = "来源厂别")
+	private String laiYuan;
 }

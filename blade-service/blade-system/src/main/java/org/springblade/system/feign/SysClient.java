@@ -191,6 +191,13 @@ public class SysClient implements ISysClient {
 		return R.data(postService.saveOrUpdateBatch(post));
 	}
 	@Override
+	@PostMapping(SAVE_USER_DEPART_API)
+	public R<Boolean> saveOrUpdateBatchUserDepart(List<UserDepartEntity> userDepart) {
+		CacheUtil.clear(SYS_CACHE);
+		return R.data(userDepartService.saveOrUpdateBatch(userDepart));
+	}
+
+	@Override
 	@PostMapping(SUBMIT_DEPT_API)
 	public R<Boolean> saveDept(Dept dept) {
 		return R.data(deptService.saveOrUpdate(dept));
@@ -230,4 +237,5 @@ public class SysClient implements ISysClient {
 	public R<Long> getPostIdByAssociationId(String associationId) {
 		return null;
 	}
+
 }
