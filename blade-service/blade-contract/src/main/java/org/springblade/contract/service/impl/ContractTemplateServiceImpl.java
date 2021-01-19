@@ -68,8 +68,16 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 
 		for (ContractTemplateResponseVO v : records) {
 			/*为每个对象，设置创建者名字和组织名字*/
-			v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
-			v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
+			String RealName=userClient.userInfoById(v.getCreateUser()).getData().getRealName();
+			if (Func.isEmpty(RealName)){
+				v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
+			}
+			v.setUserRealName(RealName);
+			String DeptName=sysClient.getDept(v.getCreateDept()).getData().getDeptName();
+			if (Func.isEmpty(DeptName)){
+				v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
+			}
+			v.setUserDepartName(DeptName);
 			v.setUsageRate(BigDecimal.valueOf(templateMapper.selectByIdUsageRate(v.getId()).doubleValue())
 					.divide(BigDecimal.valueOf(templateMapper.selectByIdTemplateCount().doubleValue()),4,ROUND_HALF_EVEN).doubleValue()*100+"%");
 			v.setAuthenticPerformanceCount(templateMapper.selectByIdFulfillingCount(v.getId()));
@@ -215,7 +223,7 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	private static final Integer TEMPLATE_NUMBER_DIGITS=9;
 	private static final Integer TEMPLATE_NUMBER_TENSE=99;
 	/**
-	 * 新增范本，规范生成范本编号
+	 * 新增范本，规范生成范本编号 注：修订时范本编号与原合同编号相同
 	 * @param entity
 	 * @return
 	 */
@@ -245,4 +253,14 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 		return super.save(entity);
 	}
 
+	/**
+	 *根据范本名称合同范本模板编号筛选是否存在新增重复范本
+	 * @param templateName
+	 * @param templateCode
+	 * @return
+	 */
+	@Override
+	public ContractTemplateEntity FilterDuplicates(String templateName, String templateCode) {
+		return templateMapper.FilterDuplicates(templateName, templateCode);
+	}
 }

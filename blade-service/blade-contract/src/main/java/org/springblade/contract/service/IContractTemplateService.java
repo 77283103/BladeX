@@ -49,4 +49,13 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @return
 	 */
 	boolean save(ContractTemplateEntity templateEntity,String type);
+
+
+	/**
+	 *根据范本名称合同范本模板编号筛选是否存在新增重复范本
+	 * @param templateName
+	 * @param templateCode
+	 * @return
+	 */
+	ContractTemplateEntity FilterDuplicates(String templateName, String templateCode);
 }

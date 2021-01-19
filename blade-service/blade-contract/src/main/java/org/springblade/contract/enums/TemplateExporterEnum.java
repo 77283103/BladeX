@@ -780,6 +780,7 @@ public enum TemplateExporterEnum {
             dataModel.put("sclPartyB", j.get("sclPartyB"));
             dataModel.put("sclDateOfSigning",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclDateOfSigning"))));
             dataModel.put("sclSite", j.get("sclSite"));
+            dataModel.put("sclTimes",j.get("sclTimes"));
             dataModel.put("sclStorage", j.get("sclStorage"));
             dataModel.put("sclArea", j.get("sclArea"));
             dataModel.put("sclNo", j.get("sclNo"));
@@ -787,7 +788,7 @@ public enum TemplateExporterEnum {
             dataModel.put("sclBail", j.get("sclBail"));
             dataModel.put("sclStorageee1", j.get("sclStorageee1"));
             dataModel.put("sclAffiliatedEnterprise", j.get("sclAffiliatedEnterprise"));
-            dataModel.put("sclContract", j.get("sclContract"));//合同编号
+            //dataModel.put("sclContract", j.get("sclContract"));//合同编号
             dataModel.put("sclDeposit", j.get("sclDeposit"));
             dataModel.put("sclStorageee2", j.get("sclStorageee2"));
             dataModel.put("sclConditionsa", j.get("sclConditionsa"));
@@ -796,7 +797,19 @@ public enum TemplateExporterEnum {
             dataModel.put("sclFood", j.get("sclFood"));
             dataModel.put("sclDrinks", j.get("sclDrinks"));
             dataModel.put("sclDateOfs", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclDateOfs"))));
-            dataModel.put("sclRequirementsss", j.get("sclRequirementsss"));
+            dataModel.put("sclRequirementsss", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclRequirementsss"))));
+            dataModel.put("sclConvention", j.get("sclConvention"));
+            dataModel.put("sclJfAddress", j.get("sclJfAddress"));
+            dataModel.put("sclYfAddress", j.get("sclYfAddress"));
+            dataModel.put("sclJfPhone", j.get("sclJfPhone"));
+            dataModel.put("sclYfPhone", j.get("sclYfPhone"));
+            dataModel.put("sclJfContact", j.get("sclJfContact"));
+            dataModel.put("sclYfContact", j.get("sclYfContact"));
+            dataModel.put("sclJfEntrusted", j.get("sclJfEntrusted"));
+            dataModel.put("sclYfEntrusted", j.get("sclYfEntrusted"));
+            dataModel.put("sclJfTime", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclJfTime"))));
+            dataModel.put("sclYfTime", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclYfTime"))));
+            dataModel.put("sclCompany", j.get("sclCompany"));
             return dataModel;
         }
     },
@@ -1019,6 +1032,28 @@ public enum TemplateExporterEnum {
             dataModel.put("infSurf",j.get("infSurf"));
             dataModel.put("infOil",j.get("infOil"));
             dataModel.put("infTeaSurf",j.get("infTeaSurf"));
+            return dataModel;
+        }
+    },
+    //配送服务合同
+    FWHT_38("FWHT_38"){
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+            Map dataModel = new HashMap();
+            DistServiceContractEntity sclLogisticsService = JSONObject.toJavaObject(j, DistServiceContractEntity.class);
+            dataModel.put("clientA",j.get("clientA"));
+            dataModel.put("clientAddress",j.get("clientAddress"));
+            dataModel.put("trusteeB",j.get("trusteeB"));
+            dataModel.put("trusteeAddress",j.get("trusteeAddress"));
+            dataModel.put("designatedAddress",j.get("designatedAddress"));
+            dataModel.put("several",j.get("several"));
+            dataModel.put("inWay",j.get("inWay"));
+            dataModel.put("validityContractA",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("validityContractA"))));
+            dataModel.put("validityContractB",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("validityContractB"))));
+            dataModel.put("clientTelephone",j.get("clientTelephone"));
+            dataModel.put("trusteeTelephone",j.get("trusteeTelephone"));
+            dataModel.put("clientFax",j.get("clientFax"));
+            dataModel.put("trusteeFax",j.get("trusteeFax"));
             return dataModel;
         }
     };

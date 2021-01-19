@@ -99,6 +99,8 @@ public class TemplateSaveUntil {
 	@Autowired
 	private IConfidentialityAgreementService confidentialityAgreementService;
 
+	@Autowired
+	private IDistServiceContractService distributionServiceContractService;
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -354,6 +356,12 @@ public class TemplateSaveUntil {
 				templateSaveUntil.ywbBusinessContractTemplateService.save(ywbBusinessContractTemplateEntity);
 				id = ywbBusinessContractTemplateEntity.getId();
 			}
+			//配送服务合同
+			else if ("FWHT_38".equals(template.getTemplateCode())) {
+				DistServiceContractEntity distributionServiceContractEntity= JSONObject.toJavaObject(j, DistServiceContractEntity.class);
+				templateSaveUntil.distributionServiceContractService.save(distributionServiceContractEntity);
+				id = distributionServiceContractEntity.getId();
+			}
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
@@ -588,6 +596,13 @@ public class TemplateSaveUntil {
 				YwbBusinessContractTemplateEntity ywbBusinessContractTemplateEntity= JSONObject.toJavaObject(j, YwbBusinessContractTemplateEntity.class);
 				ywbBusinessContractTemplateEntity.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.ywbBusinessContractTemplateService.updateById(ywbBusinessContractTemplateEntity);
+			}
+			//配送服务合同
+			else if ("FWHT_38".equals(template.getTemplateCode())) {
+				DistServiceContractEntity distributionServiceContractEntity= JSONObject.toJavaObject(j, DistServiceContractEntity.class);
+				distributionServiceContractEntity.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.distributionServiceContractService.updateById(distributionServiceContractEntity);
+
 			}
 		}
 		return contractFormInfoEntity.getId();

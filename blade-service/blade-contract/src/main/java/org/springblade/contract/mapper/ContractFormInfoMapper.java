@@ -2,6 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.MonthTypeSelect;
@@ -40,7 +41,9 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	List<MonthTypeSelect> monthType(Long createDept, String yearStart);
-
+	List<ContractFormInfoEntity> monthByIdInfo(@Param("createDept")Long createDept,
+											   @Param("yearStart") String yearStart,
+											   @Param("month") String month);
 	IPage<ContractFormInfoEntity> monthTypeFirm(IPage<ContractFormInfoEntity> page, ContractFormInfoEntity contractFormInfo);
 
 	/**

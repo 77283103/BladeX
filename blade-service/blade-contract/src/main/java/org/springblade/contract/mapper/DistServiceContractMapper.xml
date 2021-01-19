@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.DistServiceContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="distributionServiceContractResultMap" type="org.springblade.contract.entity.DistServiceContractEntity">
+        <result column="id" property="id"/>
+        <result column="client_a" property="clientA"/>
+        <result column="client_address" property="clientAddress"/>
+        <result column="trustee_b" property="trusteeB"/>
+        <result column="trustee_address" property="trusteeAddress"/>
+        <result column="designated_address" property="designatedAddress"/>
+        <result column="several" property="several"/>
+        <result column="in_way" property="inWay"/>
+        <result column="validity_contract_a" property="validityContractA"/>
+        <result column="validity_contract_b" property="validityContractB"/>
+        <result column="client_telephone" property="clientTelephone"/>
+        <result column="trustee_telephone" property="trusteeTelephone"/>
+        <result column="client_fax" property="clientFax"/>
+        <result column="trustee_fax" property="trusteeFax"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        client_a,
+        client_address,
+        trustee_b,
+        trustee_address,
+        designated_address,
+        several,
+        in_way,
+        validity_contract_a,
+        validity_contract_b,
+        client_telephone,
+        trustee_telephone,
+        client_fax,
+        trustee_fax,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="distributionServiceContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM distribution_service_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

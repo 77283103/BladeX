@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
 
+import java.util.List;
+
 /**
  * @author xhbbo
  */
@@ -35,4 +37,8 @@ public class MonthTypeSelect extends BaseEntity {
     @ApiModelProperty(value="統計查詢類型(公司)")
     @TableField(exist = false)
     private String company;
+
+    @ApiModelProperty(value = "合同列表信息")
+    @TableField(exist = false)
+    private List<ContractFormInfoEntity> contractFormInfoEntityList;
 }

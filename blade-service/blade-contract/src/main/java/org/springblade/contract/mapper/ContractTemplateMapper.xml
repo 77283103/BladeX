@@ -18,6 +18,7 @@
         <result column="original_template_id" property="originalTemplateId"/>
         <result column="contract_id" property="contractId"/>
         <result column="template_status" property="templateStatus"/>
+        <result column="template_code" property="templateCode"/>
         <result column="authentic_performance_count" property="authenticPerformanceCount"/>
         <result column="completed_contract_count" property="completedContractCount"/>
         <result column="usage_rate" property="usageRate"/>
@@ -46,6 +47,7 @@
         original_template_id,
         contract_id,
         template_status,
+        template_code,
         authentic_performance_count,
         completed_contract_count,
         usage_rate,
@@ -173,4 +175,15 @@
         SET number=#{number}
         WHERE type=#{type}
     </update>
+
+    <!--根据范本id查询范本已完成数量-->
+    <select id="FilterDuplicates" resultMap="templateResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_template
+        WHERE  is_deleted = 0
+          AND name like concat('%',#{templateName},'%')
+          AND template_code = #{templateCode}
+          AND template_status IN (10,20)
+    </select>
 </mapper>

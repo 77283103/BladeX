@@ -68,6 +68,10 @@ public class ExcelSaveUntil {
 	private ICglRawMaterials1Service cglRawMaterials1Service;
 	@Autowired
 	private IMinferiorProductContractService inferiorProductContractService;
+	@Autowired
+	private ISclProductionCategoryService sclProductionCategoryService;
+	@Autowired
+	private IDistServiceContractService distributionServiceContractService;
 	//建一个静态的本类
 	private static ExcelSaveUntil templateSaveUntil;
 
@@ -226,6 +230,18 @@ public class ExcelSaveUntil {
 			InferiorProductContractEntity inferiorProductContract= JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
 			templateSaveUntil.inferiorProductContractService.save(inferiorProductContract);
 			id = inferiorProductContract.getId();
+		}
+		//物流服务合同（一段+调拨运输）
+		else if ("FWHT_25".equals(template.getTemplateCode())) {
+			SclProductionCategoryEntity sclProductionCategory= JSONObject.toJavaObject(j, SclProductionCategoryEntity.class);
+			templateSaveUntil.sclProductionCategoryService.save(sclProductionCategory);
+			id = sclProductionCategory.getId();
+		}
+		//配送服务合同
+		else if ("FWHT_38".equals(template.getTemplateCode())) {
+			DistServiceContractEntity distributionServiceContractEntity= JSONObject.toJavaObject(j, DistServiceContractEntity.class);
+			templateSaveUntil.distributionServiceContractService.save(distributionServiceContractEntity);
+			id = distributionServiceContractEntity.getId();
 		}
 		contractFormInfoEntity.setContractListId(id);
 		templateSaveUntil.contractFormInfoService.saveOrUpdate(contractFormInfoEntity);

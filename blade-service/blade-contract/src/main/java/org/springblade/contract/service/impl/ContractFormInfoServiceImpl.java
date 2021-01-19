@@ -277,7 +277,24 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                 for (MonthTypeSelect t : list) {
                     for (int i = 1; i <= 12; i++) {
                         if (i == t.getMouth()) {
+                            List<ContractFormInfoEntity> formInfoEntityList=new ArrayList<>();
                             monthTypeSelectList.set(i - 1, t);
+                            contractFormInfoMapper.monthByIdInfo(v.getCreateDept(),contractFormInfo.getYearStart(),String.valueOf(i)).forEach(info->{
+                                //将多方起草关联的   相对方存入合同分页显示 获取相对方名称
+                                List<ContractCounterpartEntity> counterpartEntityList = contractCounterpartMapper.selectByIds(info.getId());
+                                if (Func.isNotEmpty(counterpartEntityList)) {
+                                    info.setCounterpart(counterpartEntityList);
+                                    StringBuilder name = new StringBuilder();
+                                    for (ContractCounterpartEntity counterpartEntity : counterpartEntityList) {
+                                        name.append(counterpartEntity.getName());
+                                        name.append(",");
+                                    }
+                                    name.substring(0, name.length());
+                                    info.setCounterpartName(name.toString());
+                                }
+                                formInfoEntityList.add(info);
+                            });
+                            t.setContractFormInfoEntityList(formInfoEntityList);
                         }
                     }
                     t.setCompany(sysClient.getDept(v.getCreateDept()).getData().getDeptName());

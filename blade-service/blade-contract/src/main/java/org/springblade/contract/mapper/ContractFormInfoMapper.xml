@@ -540,6 +540,16 @@
         AND create_dept=#{createDept}
         GROUP BY DATE_FORMAT(info.create_time,'%c')
     </select>
+    <!-- 分页 月度合同集合信息统计-->
+    <select id="monthByIdInfo" resultMap="formInfoResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM `contract_form_info` info
+        WHERE info.is_deleted = 0
+          AND DATE_FORMAT(info.create_time,'%Y')=#{yearStart}
+          AND DATE_FORMAT(info.create_time,'%c')=#{month}
+          AND create_dept=#{createDept}
+    </select>
     <!-- 分页公司類型分頁 -->
     <select id="monthTypeFirm" resultMap="formInfoResultMap">
     SELECT

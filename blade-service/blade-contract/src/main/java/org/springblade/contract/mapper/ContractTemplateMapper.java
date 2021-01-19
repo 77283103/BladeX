@@ -104,4 +104,13 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 */
 	Integer selectByIdTemplateCount();
 
+	/**
+	 *根据范本名称合同范本模板编号筛选是否存在新增重复范本
+	 * @param templateName
+	 * @param templateCode
+	 * @return
+	 */
+	ContractTemplateEntity FilterDuplicates(@Param("templateName") String templateName,
+												  @Param("templateCode") String templateCode);
+
 }
