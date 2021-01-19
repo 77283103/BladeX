@@ -1056,6 +1056,126 @@ public enum TemplateExporterEnum {
             dataModel.put("trusteeFax",j.get("trusteeFax"));
             return dataModel;
         }
+    },
+    //生产项目外包服务合同
+    FWHT_22("FWHT_22"){
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+            Map dataModel = new HashMap();
+            List<Map<String, Object>> list=new ArrayList();
+            List<Map<String, Object>> list1=new ArrayList();
+            List<Map<String, Object>> list2=new ArrayList();
+            List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+            for (TemplateFieldJsonEntity templateField : templateFieldList) {
+                //生产项目外包服务合同关联表1
+                if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT1.equals(templateField.getRelationCode())) {
+                    List<ProductOutServiceContract1ResponseVO> productOutServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract1ResponseVO.class);
+                    for (int i=0;i<productOutServiceContract1ResponseVOList.size();i++) {
+                        JSONObject productOutServiceContract1= JSON.parseObject(JSON.toJSONString(productOutServiceContract1ResponseVOList.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
+                        Map<String, Object> map=new HashMap();
+                        map.put("Num",i+1);
+                        map.put("name",productOutServiceContract1.get("name"));
+                        map.put("unit",productOutServiceContract1.get("unit"));
+                        map.put("unitPrice",productOutServiceContract1.get("unitPrice"));
+                        map.put("content",productOutServiceContract1.get("content"));
+                        list.add(map);
+                    }
+                }
+                //生产项目外包服务合同关联表2
+                if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT2.equals(templateField.getRelationCode())) {
+                    List<ProductOutServiceContract2ResponseVO> productOutServiceContract2ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract2ResponseVO.class);
+                    for (int i=0;i<productOutServiceContract2ResponseVOList.size();i++) {
+                        JSONObject productOutServiceContract2= JSON.parseObject(JSON.toJSONString(productOutServiceContract2ResponseVOList.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
+                        Map<String, Object> map=new HashMap();
+                        map.put("rewardNum",i+1);
+                        map.put("rewardContent",productOutServiceContract2.get("rewardContent"));
+                        map.put("rewardAmount",productOutServiceContract2.get("rewardAmount"));
+                        list1.add(map);
+                    }
+                }
+                //生产项目外包服务合同关联表3
+                if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT3.equals(templateField.getRelationCode())) {
+                    List<ProductOutServiceContract3ResponseVO> productOutServiceContract3ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract3ResponseVO.class);
+                    for (int i=0;i<productOutServiceContract3ResponseVOList.size();i++) {
+                        JSONObject productOutServiceContract3= JSON.parseObject(JSON.toJSONString(productOutServiceContract3ResponseVOList.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
+                        Map<String, Object> map=new HashMap();
+                        map.put("punishNum",i+1);
+                        map.put("punishContent",productOutServiceContract3.get("punishContent"));
+                        map.put("punishAmount",productOutServiceContract3.get("punishAmount"));
+                        list2.add(map);
+                    }
+                }
+            }
+            //主表
+            ProductOutServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, ProductOutServiceContractEntity.class);
+            dataModel.put("proSaler",j.get("proSaler"));
+            dataModel.put("proSalerAddr",j.get("proSalerAddr"));
+            dataModel.put("proBuyer",j.get("proBuyer"));
+            dataModel.put("proBuyerAddr",j.get("proBuyerAddr"));
+            dataModel.put("proTimeStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("proTimeStart"))));
+            dataModel.put("proTimeEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("proTimeEnd"))));
+            dataModel.put("proAmount",j.get("proAmount"));
+            dataModel.put("proAgeRequire",j.get("proAgeRequire"));
+            dataModel.put("proMaxPercent",j.get("proMaxPercent"));
+            dataModel.put("proTimeAmount",j.get("proTimeAmount"));
+            dataModel.put("proBuyerPerson",j.get("proBuyerPerson"));
+            dataModel.put("proBuyerPhone",j.get("proBuyerPhone"));
+            dataModel.put("proLastDayFir",j.get("proLastDayFir"));
+            dataModel.put("proLastDaySec",j.get("proLastDaySec"));
+            dataModel.put("proLastDayThi",j.get("proLastDayThi"));
+            dataModel.put("inPayType",j.get("inPayType"));
+            dataModel.put("proBuyerAccountName",j.get("proBuyerAccountName"));
+            dataModel.put("proBuyerAccountId",j.get("proBuyerAccountId"));
+            dataModel.put("proBuyerAccountBank",j.get("proBuyerAccountBank"));
+            dataModel.put("proBondAmountFir",j.get("proBondAmountFir"));
+            dataModel.put("proLastDayFou",j.get("proLastDayFou"));
+            dataModel.put("proLastDayFiv",j.get("proLastDayFiv"));
+            dataModel.put("proSalerAccoutName",j.get("proSalerAccoutName"));
+            dataModel.put("proSalerAccoutId",j.get("proSalerAccoutId"));
+            dataModel.put("proSalerAccoutBank",j.get("proSalerAccoutBank"));
+            dataModel.put("proBondAmountSec",j.get("proBondAmountSec"));
+            dataModel.put("proBondAmountThi",j.get("proBondAmountThi"));
+            dataModel.put("proBondAmountFou",j.get("proBondAmountFou"));
+            dataModel.put("proBondAmountFiv",j.get("proBondAmountFiv"));
+            dataModel.put("proBondAmountSix",j.get("proBondAmountSix"));
+            dataModel.put("proSupplyArrange",j.get("proSupplyArrange"));
+            dataModel.put("proAnnexFir",j.get("proAnnexFir"));
+            dataModel.put("proAnnexSec",j.get("proAnnexSec"));
+            dataModel.put("list",list);
+            dataModel.put("list1",list1);
+            dataModel.put("list2",list2);
+            return dataModel;
+        }
+    },
+    //设备投放使用协议
+    SBTF_40("SBTF_40"){
+        @Override
+        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+            Map dataModel = new HashMap();
+            DeviceLaunchUseContractEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, DeviceLaunchUseContractEntity.class);
+            dataModel.put("devSaler",j.get("devSaler"));
+            dataModel.put("devSalerAddr",j.get("devSalerAddr"));
+            dataModel.put("devBuyer",j.get("devBuyer"));
+            dataModel.put("devBuyerAddr",j.get("devBuyerAddr"));
+            dataModel.put("devBuyerNum",j.get("devBuyerNum"));
+            dataModel.put("devNumber",j.get("devNumber"));
+            dataModel.put("devNumberInWord",j.get("devNumberInWord"));
+            dataModel.put("devBrand",j.get("devBrand"));
+            dataModel.put("devModel",j.get("devModel"));
+            dataModel.put("devValue",j.get("devValue"));
+            dataModel.put("devBorroStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroStart)"))));
+            dataModel.put("devBorroEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroEnd)"))));
+            dataModel.put("devCode",j.get("devCode"));
+            dataModel.put("devPlace",j.get("devPlace"));
+            dataModel.put("devLeastDate",j.get("devLeastDate"));
+            dataModel.put("devDeposit",j.get("devDeposit"));
+            dataModel.put("devDepositInWord",j.get("devDepositInWord"));
+            dataModel.put("devSalerPerson",j.get("devSalerPerson"));
+            dataModel.put("devSalerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devSalerTime"))));
+            dataModel.put("devBuyerPerson",j.get("devBuyerPerson"));
+            dataModel.put("devBuyerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBuyerTime"))));
+            return dataModel;
+        }
     };
 
     public abstract Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j);

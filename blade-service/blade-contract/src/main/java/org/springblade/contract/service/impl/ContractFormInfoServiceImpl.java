@@ -126,6 +126,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private ContractPerformanceMapper performanceMapper;
     private ContractPerformanceColPayMapper performanceColPayMapper;
     private ICglProofingContract1Service cglProofingContract1Service;
+    private IProductOutServiceContract1Service productOutServiceContract1Service;
+    private IProductOutServiceContract2Service productOutServiceContract2Service;
+    private IProductOutServiceContract3Service productOutServiceContract3Service;
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -1030,8 +1033,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity) {
-		//String _PATH="D:/ftl/";//模板路径
-		String _PATH="/ftl/";//模板路径
+		String _PATH="D:/ftl/";//模板路径
+		//String _PATH="/ftl/";//模板路径
 		// 查查公司有没有申请电子章
 		CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
 		companyInfoEntity.setQueryType("1");
@@ -1146,9 +1149,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 		return entity;
 	}
-
-
-
     /**
      * 范本起草保存
      *
@@ -1501,6 +1501,36 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                     if (CollectionUtil.isNotEmpty(CglProofingContract1List)) {
                         cglProofingContract1Service.saveBatchByRefId(contractFormInfo.getId(), CglProofingContract1List);
                         List<CglProofingContract1ResponseVO> list = cglProofingContract1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*生产项目外包服务合同(关联表1）
+                if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT1.equals(templateField.getRelationCode())) {
+                    List<ProductOutServiceContract1ResponseVO> productOutServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(productOutServiceContract1ResponseVOList)) {
+                        productOutServiceContract1Service.saveBatchByRefId(contractFormInfo.getId(), productOutServiceContract1ResponseVOList);
+                        List<ProductOutServiceContract1ResponseVO> list = productOutServiceContract1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*生产项目外包服务合同(关联表2）
+                if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT2.equals(templateField.getRelationCode())) {
+                    List<ProductOutServiceContract2ResponseVO> productOutServiceContract2ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract2ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(productOutServiceContract2ResponseVOList)) {
+                        productOutServiceContract2Service.saveBatchByRefId(contractFormInfo.getId(), productOutServiceContract2ResponseVOList);
+                        List<ProductOutServiceContract2ResponseVO> list = productOutServiceContract2Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*生产项目外包服务合同(关联表3）
+                if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT3.equals(templateField.getRelationCode())) {
+                    List<ProductOutServiceContract3ResponseVO> productOutServiceContract3ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract3ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(productOutServiceContract3ResponseVOList)) {
+                        productOutServiceContract3Service.saveBatchByRefId(contractFormInfo.getId(), productOutServiceContract3ResponseVOList);
+                        List<ProductOutServiceContract3ResponseVO> list = productOutServiceContract3Service.selectRefList(contractFormInfo.getId());
                         templateField.setTableData(JSONObject.toJSONString(list));
                         templateField.setTableDataList(list);
                     }
