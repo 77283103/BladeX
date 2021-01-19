@@ -260,7 +260,7 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	 * @return
 	 */
 	@Override
-	public ContractTemplateEntity FilterDuplicates(String templateName, String templateCode) {
+	public List<ContractTemplateEntity> FilterDuplicates(String templateName, String templateCode) {
 		return templateMapper.FilterDuplicates(templateName, templateCode);
 	}
 }

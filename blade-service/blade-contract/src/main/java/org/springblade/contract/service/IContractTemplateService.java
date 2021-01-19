@@ -6,6 +6,8 @@ import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.base.BaseService;
 
+import java.util.List;
+
 /**
  * 范本管理 服务类
  *
@@ -57,5 +59,5 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @param templateCode
 	 * @return
 	 */
-	ContractTemplateEntity FilterDuplicates(String templateName, String templateCode);
+	List<ContractTemplateEntity> FilterDuplicates(String templateName, String templateCode);
 }

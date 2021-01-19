@@ -132,8 +132,8 @@ public class ContractTemplateController extends BladeController {
 	@PostMapping("/filterDuplicates")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "根据范本名称合同范本模板编号筛选是否存在新增重复范本", notes = "传入相关参数")
-	public R<ContractTemplateEntity> FilterDuplicates(@Valid @RequestBody ContractTemplateRequestVO template) {
-		ContractTemplateEntity filterDuplicates=templateService.FilterDuplicates(template.getName(),template.getTemplateCode());
+	public R<List<ContractTemplateEntity>> FilterDuplicates(@Valid @RequestBody ContractTemplateRequestVO template) {
+		List<ContractTemplateEntity> filterDuplicates=templateService.FilterDuplicates(template.getName(),template.getTemplateCode());
 		return R.data(filterDuplicates);
 	}
 

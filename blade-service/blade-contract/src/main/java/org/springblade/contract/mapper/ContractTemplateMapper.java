@@ -110,7 +110,7 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 * @param templateCode
 	 * @return
 	 */
-	ContractTemplateEntity FilterDuplicates(@Param("templateName") String templateName,
+	List<ContractTemplateEntity> FilterDuplicates(@Param("templateName") String templateName,
 												  @Param("templateCode") String templateCode);
 
 }
