@@ -107,6 +107,8 @@ public class TemplateSaveUntil {
 	private IProductOutServiceContractService productOutServiceContractService;
 	@Autowired
 	private IDeviceLaunchUseContractService deviceLaunchUseContractService;
+	@Autowired
+	private IBusServiceContractService busServiceContractService;
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -380,6 +382,12 @@ public class TemplateSaveUntil {
 				templateSaveUntil.deviceLaunchUseContractService.save(deviceLaunchUseContract);
 				id = deviceLaunchUseContract.getId();
 			}
+			//班车服务合同
+			else if ("FWHT_51".equals(template.getTemplateCode())) {
+				BusServiceContractEntity busServiceContractEntity= JSONObject.toJavaObject(j, BusServiceContractEntity.class);
+				templateSaveUntil.busServiceContractService.save(busServiceContractEntity);
+				id = busServiceContractEntity.getId();
+			}
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
@@ -632,6 +640,12 @@ public class TemplateSaveUntil {
 				DeviceLaunchUseContractEntity deviceLaunchUseContract= JSONObject.toJavaObject(j, DeviceLaunchUseContractEntity.class);
 				deviceLaunchUseContract.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.deviceLaunchUseContractService.updateById(deviceLaunchUseContract);
+			}
+			//班车服务合同
+			else if ("FWHT_51".equals(template.getTemplateCode())) {
+				BusServiceContractEntity busServiceContractEntity= JSONObject.toJavaObject(j, BusServiceContractEntity.class);
+				busServiceContractEntity.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.busServiceContractService.updateById(busServiceContractEntity);
 			}
 		}
 		return contractFormInfoEntity.getId();

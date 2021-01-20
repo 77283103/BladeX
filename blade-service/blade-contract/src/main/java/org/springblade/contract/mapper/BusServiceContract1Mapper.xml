@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.BusServiceContract1Mapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="busServiceContract1ResultMap" type="org.springblade.contract.entity.BusServiceContract1Entity">
+        <result column="id" property="id"/>
+        <result column="bus_time_a" property="busTimeA"/>
+        <result column="bus_time_b" property="busTimeB"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contract_id" property="contractId"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        bus_time_a,
+        bus_time_b,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        bus_service_contract_id
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="busServiceContract1ResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM bus_service_contract1
+        WHERE is_deleted = 0
+    </select>
+</mapper>

@@ -5,48 +5,45 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="sclLogisticsServiceResultMap" type="org.springblade.contract.entity.SclLogisticsServiceEntity">
         <result column="id" property="id"/>
-        <result column="scl_party_a" property="sclPartyA"/>
-        <result column="scl_party_b" property="sclPartyB"/>
-        <result column="scl_date_of_signing" property="sclDateOfSigning"/>
-        <result column="scl_site" property="sclSite"/>
-        <result column="scl_storage" property="sclStorage"/>
-        <result column="scl_area" property="sclArea"/>
-        <result column="scl_d_day" property="sclDDay"/>
-        <result column="scl_no" property="sclNo"/>
-        <result column="scl_storageee" property="sclStorageee"/>
-        <result column="scl_conditionsa" property="sclConditionsa"/>
-        <result column="scl_number" property="sclNumber"/>
-        <result column="scl_services" property="sclServices"/>
-        <result column="scl_food" property="sclFood"/>
-        <result column="scl_drinks" property="sclDrinks"/>
-        <result column="scl_dairy" property="sclDairy"/>
-        <result column="scl_water" property="sclWater"/>
-        <result column="scl_requirementsp" property="sclRequirementsp"/>
-        <result column="scl_range" property="sclRange"/>
-        <result column="scl_areae" property="sclAreae"/>
-        <result column="scl_requirementse" property="sclRequirementse"/>
-        <result column="scl_contractd" property="sclContractd"/>
-        <result column="scl_second" property="sclSecond"/>
-        <result column="scl_breach" property="sclBreach"/>
-        <result column="scl_provide" property="sclProvide"/>
-        <result column="scl_hours" property="sclHours"/>
-        <result column="scl_morning" property="sclMorning"/>
-        <result column="scl_manifest" property="sclManifest"/>
-        <result column="scl_afternoon" property="sclAfternoon"/>
-        <result column="scl_advance" property="sclAdvance"/>
-        <result column="scl_season" property="sclSeason"/>
-        <result column="scl_return" property="sclReturn"/>
-        <result column="scl_requesta" property="sclRequesta"/>
-        <result column="scl_items" property="sclItems"/>
-        <result column="scl_date" property="sclDate"/>
-        <result column="scl_requirementsddd" property="sclRequirementsddd"/>
-        <result column="scl_third" property="sclThird"/>
-        <result column="scl_requirementsf" property="sclRequirementsf"/>
-        <result column="scl_transfer" property="sclTransfer"/>
-        <result column="scl_date_ofs" property="sclDateOfs"/>
-        <result column="scl_requirementsss" property="sclRequirementsss"/>
-        <result column="scl_standard" property="sclStandard"/>
-        <result column="scl_aread" property="sclAread"/>
+        <result column="partya" property="partya"/>
+        <result column="partyb" property="partyb"/>
+        <result column="date" property="date"/>
+        <result column="site" property="site"/>
+        <result column="storage" property="storage"/>
+        <result column="area" property="area"/>
+        <result column="day" property="day"/>
+        <result column="no" property="no"/>
+        <result column="storageee" property="storageee"/>
+        <result column="conditionsa" property="conditionsa"/>
+        <result column="day1" property="day1"/>
+        <result column="services" property="services"/>
+        <result column="drinks" property="drinks"/>
+        <result column="dairy" property="dairy"/>
+        <result column="dairy1" property="dairy1"/>
+        <result column="requirementsp" property="requirementsp"/>
+        <result column="range" property="range"/>
+        <result column="areae" property="areae"/>
+        <result column="requirementse" property="requirementse"/>
+        <result column="contractd" property="contractd"/>
+        <result column="second" property="second"/>
+        <result column="breach" property="breach"/>
+        <result column="provide" property="provide"/>
+        <result column="hours" property="hours"/>
+        <result column="morning" property="morning"/>
+        <result column="manifest" property="manifest"/>
+        <result column="afternoon" property="afternoon"/>
+        <result column="advance" property="advance"/>
+        <result column="season" property="season"/>
+        <result column="times" property="times"/>
+        <result column="items" property="items"/>
+        <result column="date1" property="date1"/>
+        <result column="requirementsddd" property="requirementsddd"/>
+        <result column="requirementsf" property="requirementsf"/>
+        <result column="transfer" property="transfer"/>
+        <result column="date2" property="date2"/>
+        <result column="requirementsss" property="requirementsss"/>
+        <result column="standard" property="standard"/>
+        <result column="aread" property="aread"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -55,52 +52,86 @@
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
         <result column="contract_id" property="contractId"/>
+        <result column="address" property="address"/>
+        <result column="addressb" property="addressb"/>
+        <result column="telephone" property="telephone"/>
+        <result column="telephoneb" property="telephoneb"/>
+        <result column="contacts" property="contacts"/>
+        <result column="contactsb" property="contactsb"/>
+        <result column="representative" property="representative"/>
+        <result column="representativeb" property="representativeb"/>
+        <result column="agent" property="agent"/>
+        <result column="agentb" property="agentb"/>
+        <result column="date3" property="date3"/>
+        <result column="date4" property="date4"/>
+        <result column="client" property="client"/>
+        <result column="client1" property="client1"/>
+        <result column="client2" property="client2"/>
+        <result column="client3" property="client3"/>
+        <result column="client4" property="client4"/>
+        <result column="client5" property="client5"/>
+        <result column="number" property="number"/>
+        <result column="number1" property="number1"/>
+        <result column="number2" property="number2"/>
+        <result column="number3" property="number3"/>
+        <result column="mail" property="mail"/>
+        <result column="mail1" property="mail1"/>
+        <result column="choice" property="choice"/>
+        <result column="choice1" property="choice1"/>
+        <result column="choice2" property="choice2"/>
+        <result column="other" property="other"/>
+        <result column="date5" property="date5"/>
+        <result column="date6" property="date6"/>
+        <result column="date7" property="date7"/>
+        <result column="date8" property="date8"/>
+        <result column="signature" property="signature"/>
+        <result column="phone" property="phone"/>
+        <result column="postal" property="postal"/>
+        <result column="company" property="company"/>
+        <result column="company1" property="company1"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
-        scl_party_a,
-        scl_party_b,
-        scl_date_of_signing,
-        scl_site,
-        scl_storage,
-        scl_area,
-        scl_d_day,
-        scl_no,
-        scl_storageee,
-        scl_conditionsa,
-        scl_number,
-        scl_services,
-        scl_food,
-        scl_drinks,
-        scl_dairy,
-        scl_water,
-        scl_requirementsp,
-        scl_range,
-        scl_areae,
-        scl_requirementse,
-        scl_contractd,
-        scl_second,
-        scl_breach,
-        scl_provide,
-        scl_hours,
-        scl_morning,
-        scl_manifest,
-        scl_afternoon,
-        scl_advance,
-        scl_season,
-        scl_return,
-        scl_requesta,
-        scl_items,
-        scl_date,
-        scl_requirementsddd,
-        scl_third,
-        scl_requirementsf,
-        scl_transfer,
-        scl_date_ofs,
-        scl_requirementsss,
-        scl_standard,
-        scl_aread,
+        partya,
+        partyb,
+        date,
+        site,
+        storage,
+        area,
+        day,
+        no,
+        storageee,
+        conditionsa,
+        day1,
+        services,
+        drinks,
+        dairy,
+        dairy1,
+        requirementsp,
+        range,
+        areae,
+        requirementse,
+        contractd,
+        second,
+        breach,
+        provide,
+        hours,
+        morning,
+        manifest,
+        afternoon,
+        advance,
+        season,
+        times,
+        items,
+        date1,
+        requirementsddd,
+        requirementsf,
+        transfer,
+        date2,
+        requirementsss,
+        standard,
+        aread,
         status,
         is_deleted,
         create_user,
@@ -108,7 +139,44 @@
         update_user,
         update_time,
         create_dept,
-        contract_id
+        contract_id,
+        address,
+        addressb,
+        telephone,
+        telephoneb,
+        contacts,
+        contactsb,
+        representative,
+        representativeb,
+        agent,
+        agentb,
+        date3,
+        date4,
+        client,
+        client1,
+        client2,
+        client3,
+        client4,
+        client5,
+        number,
+        number1,
+        number2,
+        number3,
+        mail,
+        mail1,
+        choice,
+        choice1,
+        choice2,
+        other,
+        date5,
+        date6,
+        date7,
+        date8,
+        signature,
+        phone,
+        postal,
+        company,
+        company1
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="sclLogisticsServiceResultMap">
