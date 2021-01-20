@@ -1,6 +1,5 @@
 package org.springblade.contract.feign;
 
-import com.sun.xml.internal.bind.v2.model.core.ID;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;

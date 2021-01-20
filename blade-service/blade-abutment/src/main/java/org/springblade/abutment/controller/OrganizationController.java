@@ -165,11 +165,13 @@ public class OrganizationController {
 		for(FileVO fileVO:fileVOs){
 			// 开始上传fastDFS服务器
 			NameValuePair[] nvp = new NameValuePair[5];
+			int index = fileVO.getName().lastIndexOf(".");
+			String fileSuffix=fileVO.getName().substring(index+1);
 			nvp[0] = new NameValuePair("fdFileName", fileVO.getName());//文件名称
-			nvp[1] = new NameValuePair("fileSuffix", "doc");//文件后缀
-			nvp[2] = new NameValuePair("fdKey", "key");//文件key？？
+			nvp[1] = new NameValuePair("fileSuffix", fileSuffix);//文件后缀
+			nvp[2] = new NameValuePair("fdKey", "");//文件key？？
 			nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());//文件大小
-			nvp[4] = new NameValuePair("fileType", "1");//文件类型
+			nvp[4] = new NameValuePair("fileType", "");//文件类型
 			//3.创建trackerServer
 			TrackerServer trackerServer = null;
 			try {
@@ -205,7 +207,7 @@ public class OrganizationController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			String[] fileIds = storageClient.upload_file(bytes, "doc", nvp); // 上传
+			String[] fileIds = storageClient.upload_file(bytes, fileSuffix, nvp); // 上传
 			System.out.println(fileIds);
 		}
 		return R.success("ceshi");

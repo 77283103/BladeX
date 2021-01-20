@@ -52,8 +52,10 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list=new ArrayList();
+			//把json串转换成集合
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
+				//给当前范本的合同关联表设置一个编号 等于编号时循环处理放到list中
 				if (ContractFormInfoTemplateContract.CONTRACT_YWLANEWDISPLAY1.equals(templateField.getRelationCode())) {
 					JSONArray jsonArr = JSON.parseArray(templateField.getTableData());
 					for(int i=0;i<jsonArr.size();i++) {
@@ -66,11 +68,14 @@ public enum TemplateExporterEnum {
 					}
 				}
 			}
+			//这部分处理模板的变量字段
 			dataModel.put("ywlCooperationContent",j.get("ywlCooperationContent"));
+			//日期格式的字段需要DataFormatUtils.systemTimeFormat处理一下
 			dataModel.put("ywlTheStartTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlTheStartTime"))));
 			dataModel.put("ywlEndOfTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlEndOfTime"))));
 			dataModel.put("ywlDisplayFee",j.get("ywlDisplayFee"));
 			dataModel.put("ywlDisplayDfee",j.get("ywlDisplayDfee"));
+			//这里是处理下来选的字段的
 			if("1".equals(j.get("ywlDisplayType"))){
 				dataModel.put("ywlDisplayType","货物");
 			}else{
