@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.OutsourcingAgreementMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="outsourcingAgreementResultMap" type="org.springblade.contract.entity.OutsourcingAgreementEntity">
+        <result column="id" property="id"/>
+        <result column="employer" property="employer"/>
+        <result column="employers_address" property="employersAddress"/>
+        <result column="contractor" property="contractor"/>
+        <result column="address_contractor" property="addressContractor"/>
+        <result column="operation_a" property="operationA"/>
+        <result column="contract_period_a" property="contractPeriodA"/>
+        <result column="contract_period_b" property="contractPeriodB"/>
+        <result column="compensation_much" property="compensationMuch"/>
+        <result column="damages" property="damages"/>
+        <result column="accident_insurance" property="accidentInsurance"/>
+        <result column="contact_personb" property="contactPersonb"/>
+        <result column="contact_information" property="contactInformation"/>
+        <result column="other_standards" property="otherStandards"/>
+        <result column="this_agreement" property="thisAgreement"/>
+        <result column="performance" property="performance"/>
+        <result column="performance_a" property="performanceA"/>
+        <result column="few_days" property="fewDays"/>
+        <result column="exceed
+
+term" property="exceed
+
+term"/>
+        <result column="vatinvoice" property="vatinvoice"/>
+        <result column="delivered_month" property="deliveredMonth"/>
+        <result column="receives_invoice" property="receivesInvoice"/>
+        <result column="contract_operation" property="contractOperation"/>
+        <result column="account_name" property="accountName"/>
+        <result column="account_number" property="accountNumber"/>
+        <result column="bank_deposit" property="bankDeposit"/>
+        <result column="termination_money" property="terminationMoney"/>
+        <result column="compensation" property="compensation"/>
+        <result column="liquidated_damages" property="liquidatedDamages"/>
+        <result column="liquidated_damagesa" property="liquidatedDamagesa"/>
+        <result column="other_agreements" property="otherAgreements"/>
+        <result column="agent_a" property="agentA"/>
+        <result column="agent_b" property="agentB"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        employer,
+        employers_address,
+        contractor,
+        address_contractor,
+        operation_a,
+        contract_period_a,
+        contract_period_b,
+        compensation_much,
+        damages,
+        accident_insurance,
+        contact_personb,
+        contact_information,
+        other_standards,
+        this_agreement,
+        performance,
+        performance_a,
+        few_days,
+        exceed
+
+term,
+        vatinvoice,
+        delivered_month,
+        receives_invoice,
+        contract_operation,
+        account_name,
+        account_number,
+        bank_deposit,
+        termination_money,
+        compensation,
+        liquidated_damages,
+        liquidated_damagesa,
+        other_agreements,
+        agent_a,
+        agent_b,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="outsourcingAgreementResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM outsourcing_agreement
+        WHERE is_deleted = 0
+    </select>
+</mapper>
