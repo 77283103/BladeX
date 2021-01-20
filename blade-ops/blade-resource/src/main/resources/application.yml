@@ -10,3 +10,7 @@ oss:
   access-key: admin
   secret-key: admin123456
   bucket-name: bladex
+  #endpoint: http://10.93.1.43:9000
+  #access-key: ADMIN
+  #secret-key: PASSWORD
+  #bucket-name: bladex
