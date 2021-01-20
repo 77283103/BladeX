@@ -421,7 +421,7 @@ public enum TemplateExporterEnum {
             dataModel.put("mtlHaveHasNot",j.get("mtlHaveHasNot"));
             dataModel.put("mtlProductionStartTime",j.get("mtlProductionStartTime"));
             dataModel.put("mtlProductionCompletionTime",j.get("mtlProductionCompletionTime"));
-//            dataModel.put("mtlSubmitContent ",j.get("mtlSubmitContent"));
+            dataModel.put("mtlSubmitContent ",j.get("mtlSubmitContent"));
             dataModel.put("mtlAcceptance",j.get("mtlAcceptance"));
             dataModel.put("mtlUnpaidTaxRmb",j.get("mtlUnpaidTaxRmb"));
             dataModel.put("mtlRate",j.get("mtlRate"));
