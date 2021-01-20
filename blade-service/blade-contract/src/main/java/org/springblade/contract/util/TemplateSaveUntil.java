@@ -67,6 +67,8 @@ public class TemplateSaveUntil {
 	@Autowired
 	private ISclOutsourcingAgreementService sclOutsourcingAgreementService;
 	@Autowired
+	private IOutsourcingAgreementService outsourcingAgreementService;
+	@Autowired
 	private IYwbEquipmentReleaseService ywbEquipmentReleaseService;
 	@Autowired
 	private IYwbSurveyProjectContractService ywbSurveyProjectContractService;
@@ -278,9 +280,9 @@ public class TemplateSaveUntil {
 			}
 			//作业外包协议
 			else if ("WBXY_27".equals(template.getTemplateCode())) {
-				SclOutsourcingAgreementEntity sclOutsourcingAgreement= JSONObject.toJavaObject(j, SclOutsourcingAgreementEntity.class);
-				templateSaveUntil.sclOutsourcingAgreementService.save(sclOutsourcingAgreement);
-				id = sclOutsourcingAgreement.getId();
+				OutsourcingAgreementEntity outsourcingAgreement= JSONObject.toJavaObject(j, OutsourcingAgreementEntity.class);
+				templateSaveUntil.outsourcingAgreementService.save(outsourcingAgreement);
+				id = outsourcingAgreement.getId();
 			}
 			//设备投放使用协议
 			else if ("SBTF_40".equals(template.getTemplateCode())) {
@@ -531,9 +533,9 @@ public class TemplateSaveUntil {
 			}
 			//作业外包协议
 			else if ("WBXY_27".equals(template.getTemplateCode())) {
-				SclOutsourcingAgreementEntity sclOutsourcingAgreement= JSONObject.toJavaObject(j, SclOutsourcingAgreementEntity.class);
-				sclOutsourcingAgreement.setId(contractFormInfoEntity.getContractListId());
-				templateSaveUntil.sclOutsourcingAgreementService.updateById(sclOutsourcingAgreement);
+				OutsourcingAgreementEntity outsourcingAgreement= JSONObject.toJavaObject(j, OutsourcingAgreementEntity.class);
+				outsourcingAgreement.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.outsourcingAgreementService.updateById(outsourcingAgreement);
 			}
 			//设备投放使用协议
 			else if ("SBTF_40".equals(template.getTemplateCode())) {

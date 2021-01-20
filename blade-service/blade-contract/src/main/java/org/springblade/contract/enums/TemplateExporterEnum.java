@@ -45,7 +45,51 @@ import java.util.stream.Stream;
 @Getter
 @AllArgsConstructor
 public enum TemplateExporterEnum {
-
+	//作业外包协议
+	WBXY_27("WBXY_27"){
+	@Override
+	public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+				Map dataModel = new HashMap();
+				dataModel.put("employer",j.get("employer"));//1
+				dataModel.put("employerAddress",j.get("employerAddress"));//2
+				dataModel.put("contractor",j.get("contractor"));//3
+				dataModel.put("addressContractor",j.get("addressContractor"));//4
+				dataModel.put("operationA",j.get("operationA"));//5
+				dataModel.put("contractPeriodA",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("contractPeriodA"))));//6
+				dataModel.put("contractPeriodB",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("contractPeriodB"))));//7
+				dataModel.put("compensationMuch",j.get("compensationMuch"));//8
+				dataModel.put("damages",j.get("damages"));//9
+				dataModel.put("accidentInsurance",j.get("accidentInsurance"));//10
+				dataModel.put("contactPersonb",j.get("contactPersonb"));//11
+				dataModel.put("contactInformation",j.get("contactInformation"));//12
+				dataModel.put("otherStandards",j.get("otherStandards"));//13
+				dataModel.put("thisAgreement",j.get("thisAgreement"));//14
+				dataModel.put("performance",j.get("performance"));//15
+				dataModel.put("performanceA",j.get("performanceA"));//16
+				dataModel.put("fewDays",j.get("fewDays"));//17
+				dataModel.put("exceedterm",j.get("exceedterm"));//18
+				dataModel.put("vatinvoice",j.get("vatinvoice"));//19
+				dataModel.put("deliveredMonth",j.get("deliveredMonth"));//20
+				dataModel.put("receivesInvoice",j.get("receivesInvoice"));//21
+				dataModel.put("contractOperation",j.get("contractOperation"));//22
+				dataModel.put("accountName",j.get("accountName"));//23
+				dataModel.put("accountNumber",j.get("accountNumber"));//25
+				dataModel.put("bankDeposit",j.get("bankDeposit"));//26
+				dataModel.put("terminationMoney",j.get("terminationMoney"));//27
+				dataModel.put("compensation",j.get("compensation"));//28
+				dataModel.put("liquidatedDamages",j.get("liquidatedDamages"));//29
+				dataModel.put("liquidatedDamagesa",j.get("liquidatedDamagesa"));//30
+				dataModel.put("otherAgreements",j.get("otherAgreements"));//31
+				dataModel.put("employer",j.get("employer"));//32
+				dataModel.put("contractor",j.get("contractor"));//33
+				dataModel.put("agentA",j.get("agentA"));//34
+				dataModel.put("agentB",j.get("agentB"));//35
+				dataModel.put("employerAddress",j.get("employerAddress"));//36
+				dataModel.put("employerAddress",j.get("employerAddress"));//37
+				dataModel.put("employerAddress",j.get("employerAddress"));//38
+				return dataModel;
+			}
+		},
 	//新陈列协议书
 	CLXY_42("CLXY_42"){
 		@Override
