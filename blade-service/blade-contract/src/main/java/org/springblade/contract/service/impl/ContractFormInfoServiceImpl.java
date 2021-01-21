@@ -129,6 +129,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private IProductOutServiceContract1Service productOutServiceContract1Service;
     private IProductOutServiceContract2Service productOutServiceContract2Service;
     private IProductOutServiceContract3Service productOutServiceContract3Service;
+    private IBusServiceContract1Service busServiceContract1Service;
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -1531,6 +1532,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                     if (CollectionUtil.isNotEmpty(productOutServiceContract3ResponseVOList)) {
                         productOutServiceContract3Service.saveBatchByRefId(contractFormInfo.getId(), productOutServiceContract3ResponseVOList);
                         List<ProductOutServiceContract3ResponseVO> list = productOutServiceContract3Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*班车服务合同(关联表1）
+                if (ContractFormInfoTemplateContract.CONTRACT_BUSSERVICECONTRACT1.equals(templateField.getRelationCode())) {
+                    List<BusServiceContract1ResponseVO> busServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), BusServiceContract1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(busServiceContract1ResponseVOList)) {
+                        busServiceContract1Service.saveBatchByRefId(contractFormInfo.getId(), busServiceContract1ResponseVOList);
+                        List<BusServiceContract1ResponseVO> list = busServiceContract1Service.selectRefList(contractFormInfo.getId());
                         templateField.setTableData(JSONObject.toJSONString(list));
                         templateField.setTableDataList(list);
                     }

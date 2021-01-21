@@ -261,6 +261,29 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	 */
 	@Override
 	public List<ContractTemplateEntity> FilterDuplicates(String templateName, String templateCode) {
-		return templateMapper.FilterDuplicates(templateName, templateCode);
+		List<ContractTemplateEntity> templateEntityList= new ArrayList<>();
+		templateMapper.FilterDuplicates(templateName, templateCode).forEach(template->{
+			template.setUsageRate(BigDecimal.valueOf(templateMapper.selectByIdUsageRate(template.getId()).doubleValue())
+					.divide(BigDecimal.valueOf(templateMapper.selectByIdTemplateCount().doubleValue()),4,ROUND_HALF_EVEN).doubleValue()*100+"%");
+			template.setAuthenticPerformanceCount(templateMapper.selectByIdFulfillingCount(template.getId()));
+			template.setCompletedContractCount(templateMapper.selectByIdCompletedCount(template.getId()));
+			//范本所使用过的合同集合
+			List<ContractFormInfoEntity> formInfoEntityList=new ArrayList<>();
+			if (formInfoMapper.getByIdForm(template.getId()).size()>0) {
+				formInfoMapper.getByIdForm(template.getId()).forEach(form->{
+					StringBuilder name = new StringBuilder();
+					for (ContractCounterpartEntity counterpartEntity : contractCounterpartMapper.selectByIds(form.getId())) {
+						name.append(counterpartEntity.getName());
+						name.append(",");
+					}
+					name.substring(0, name.length());
+					form.setCounterpartName(name.toString());
+					formInfoEntityList.add(form);
+				});
+				template.setFormInfoEntityList(formInfoEntityList);
+			}
+			templateEntityList.add(template);
+		});
+		return templateEntityList;
 	}
 }
