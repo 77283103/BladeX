@@ -138,6 +138,7 @@ public class TemplateFieldController extends BladeController {
 			if(templateField.getComponentType()!=null){
 				BeanUtil.copy(templateField,entity);
 				if(Func.isEmpty(entity.getId())){
+
 					templateFieldService.save(entity);
 				}else{
 					templateFieldService.updateById(entity);

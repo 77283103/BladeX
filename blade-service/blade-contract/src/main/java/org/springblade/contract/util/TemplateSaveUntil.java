@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
 @Component
 public class TemplateSaveUntil {
     @Autowired
-    private static IDictBizClient bizClient;
+    private IDictBizClient bizClient;
 	@Autowired
 	private IContractFormInfoService contractFormInfoService;
 	@Autowired
@@ -213,8 +213,12 @@ public class TemplateSaveUntil {
 			//视频制作合同
 			else if ("ZZHT_16".equals(template.getTemplateCode())) {
 				MtlVideoProductionContractEntity mtlVideoProductionContract= JSONObject.toJavaObject(j, MtlVideoProductionContractEntity.class);
-				mtlVideoProductionContract.setMtlHaveHasNot(bizClient.getValue("bond",mtlVideoProductionContract.getMtlHaveHasNot()).getData());
-				mtlVideoProductionContract.setMtlPaymentMethod(bizClient.getValue("mtl_term",mtlVideoProductionContract.getMtlHaveHasNot()).getData());
+				/*if(null!=bizClient.getValue("bond",mtlVideoProductionContract.getMtlHaveHasNot())){
+					mtlVideoProductionContract.setMtlHaveHasNot(bizClient.getValue("bond",mtlVideoProductionContract.getMtlHaveHasNot()).getData());
+				}
+				if(null!=bizClient.getValue("mtl_term",mtlVideoProductionContract.getMtlPaymentMethod())){
+					mtlVideoProductionContract.setMtlPaymentMethod(bizClient.getValue("mtl_term",mtlVideoProductionContract.getMtlHaveHasNot()).getData());
+				}*/
 				templateSaveUntil.mtlVideoProductionContractService.save(mtlVideoProductionContract);
 				id = mtlVideoProductionContract.getId();
 			}
@@ -403,7 +407,7 @@ public class TemplateSaveUntil {
 			else if ("BMXY_01".equals(template.getTemplateCode())) {
 				LyConfidentialityAgreementEntity lyConfidentialityAgreementEntity = JSONObject.toJavaObject(j, LyConfidentialityAgreementEntity.class);
 				lyConfidentialityAgreementEntity.setId(contractFormInfoEntity.getContractListId());
-				templateSaveUntil.lyConfidentialityAgreementService.save(lyConfidentialityAgreementEntity);
+				templateSaveUntil.lyConfidentialityAgreementService.updateById(lyConfidentialityAgreementEntity);
 			}
 			//活动执行合同
 			else if ("HDZX_05".equals(template.getTemplateCode())) {
