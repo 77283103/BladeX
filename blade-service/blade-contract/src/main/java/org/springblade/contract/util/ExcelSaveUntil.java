@@ -76,6 +76,8 @@ public class ExcelSaveUntil {
 	private IProductOutServiceContractService productOutServiceContractService;
 	@Autowired
 	private IDeviceLaunchUseContractService deviceLaunchUseContractService;
+	@Autowired
+	private IBusServiceContractService busServiceContractService;
 	//建一个静态的本类
 	private static ExcelSaveUntil templateSaveUntil;
 
@@ -258,6 +260,12 @@ public class ExcelSaveUntil {
 			DeviceLaunchUseContractEntity deviceLaunchUseContract= JSONObject.toJavaObject(j, DeviceLaunchUseContractEntity.class);
 			templateSaveUntil.deviceLaunchUseContractService.save(deviceLaunchUseContract);
 			id = deviceLaunchUseContract.getId();
+		}
+		//班车服务合同
+		else if ("FWHT_51".equals(template.getTemplateCode())) {
+			BusServiceContractEntity busServiceContractEntity= JSONObject.toJavaObject(j, BusServiceContractEntity.class);
+			templateSaveUntil.busServiceContractService.save(busServiceContractEntity);
+			id = busServiceContractEntity.getId();
 		}
 		contractFormInfoEntity.setContractListId(id);
 		templateSaveUntil.contractFormInfoService.saveOrUpdate(contractFormInfoEntity);

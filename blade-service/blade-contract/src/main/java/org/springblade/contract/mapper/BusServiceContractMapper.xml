@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.BusServiceContractMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="busServiceContractResultMap" type="org.springblade.contract.entity.BusServiceContractEntity">
+        <result column="id" property="id"/>
+        <result column="bus_saler" property="busSaler"/>
+        <result column="bus_saler_addr" property="busSalerAddr"/>
+        <result column="bus_buyer" property="busBuyer"/>
+        <result column="bus_buyer_addr" property="busBuyerAddr"/>
+        <result column="bus_service_contract1_id" property="busServiceContract1Id"/>
+        <result column="bus_service_time_start" property="busServiceTimeStart"/>
+        <result column="bus_service_time_end" property="busServiceTimeEnd"/>
+        <result column="bus_date_require_fir" property="busDateRequireFir"/>
+        <result column="bus_invoice_type" property="busInvoiceType"/>
+        <result column="bus_buyer_account_name" property="busBuyerAccountName"/>
+        <result column="bus_buyer_account_id" property="busBuyerAccountId"/>
+        <result column="bus_buyer_account_bank" property="busBuyerAccountBank"/>
+        <result column="bus_date_require_sec" property="busDateRequireSec"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="infAnnexFir" property="infAnnexFir"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        bus_saler,
+        bus_saler_addr,
+        bus_buyer,
+        bus_buyer_addr,
+        bus_service_contract1_id,
+        bus_service_time_start,
+        bus_service_time_end,
+        bus_date_require_fir,
+        bus_invoice_type,
+        bus_buyer_account_name,
+        bus_buyer_account_id,
+        bus_buyer_account_bank,
+        bus_date_require_sec,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        infAnnexFir
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="busServiceContractResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM bus_service_contract
+        WHERE is_deleted = 0
+    </select>
+</mapper>

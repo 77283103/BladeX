@@ -571,11 +571,9 @@
         count(contract_big_category) AS count,
         dict_value
         FROM `contract_form_info` info,
-        blade_dict_biz biz,
-        blade_dept dept
+        blade_dict_biz biz
         WHERE info.is_deleted = 0
         AND info.contract_big_category = biz.id
-        AND info.create_dept = dept.id
         <if test="contractFormInfo.createDept != null and contractFormInfo.createDept != ''">
             AND info.create_dept=#{contractFormInfo.createDept}
         </if>
