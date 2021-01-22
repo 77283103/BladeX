@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.LaborDispatchMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="laborDispatchResultMap" type="org.springblade.contract.entity.LaborDispatchEntity">
+        <result column="id" property="id"/>
+        <result column="ywb_first_party" property="ywbFirstParty"/>
+        <result column="ywb_address_a" property="ywbAddressA"/>
+        <result column="ywb_party_b" property="ywbPartyB"/>
+        <result column="ywb_address_b" property="ywbAddressB"/>
+        <result column="principal" property="principal"/>
+        <result column="liquidated_damages" property="liquidatedDamages"/>
+        <result column="date" property="date"/>
+        <result column="job" property="job"/>
+        <result column="days" property="days"/>
+        <result column="age" property="age"/>
+        <result column="assessment_day" property="assessmentDay"/>
+        <result column="accounting_date" property="accountingDate"/>
+        <result column="invoice_date" property="invoiceDate"/>
+        <result column="account_name" property="accountName"/>
+        <result column="bank" property="bank"/>
+        <result column="account_number" property="accountNumber"/>
+        <result column="assessment_period" property="assessmentPeriod"/>
+        <result column="return" property="return"/>
+        <result column="dispatch" property="dispatch"/>
+        <result column="reassignment" property="reassignment"/>
+        <result column="application_for_assignment" property="applicationForAssignment"/>
+        <result column="name" property="name"/>
+        <result column="phone" property="phone"/>
+        <result column="payment_period" property="paymentPeriod"/>
+        <result column="late" property="late"/>
+        <result column="absenteeism" property="absenteeism"/>
+        <result column="overdue" property="overdue"/>
+        <result column="lack" property="lack"/>
+        <result column="iiquidated_damages" property="iiquidatedDamages"/>
+        <result column="supplement_five" property="supplementFive"/>
+        <result column="supplement_six" property="supplementSix"/>
+        <result column="payment" property="payment"/>
+        <result column="delayed_payment" property="delayedPayment"/>
+        <result column="relieve" property="relieve"/>
+        <result column="specific_date_start" property="specificDateStart"/>
+        <result column="specific_date_end" property="specificDateEnd"/>
+        <result column="expiration_of_contract" property="expirationOfContract"/>
+        <result column="telephone_a" property="telephoneA"/>
+        <result column="telephone_b" property="telephoneB"/>
+        <result column="address_a" property="addressA"/>
+        <result column="address_b" property="addressB"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        ywb_first_party,
+        ywb_address_a,
+        ywb_party_b,
+        ywb_address_b,
+        principal,
+        liquidated_damages,
+        date,
+        job,
+        days,
+        age,
+        assessment_day,
+        accounting_date,
+        invoice_date,
+        account_name,
+        bank,
+        account_number,
+        assessment_period,
+        return,
+        dispatch,
+        reassignment,
+        application_for_assignment,
+        name,
+        phone,
+        payment_period,
+        late,
+        absenteeism,
+        overdue,
+        lack,
+        iiquidated_damages,
+        supplement_five,
+        supplement_six,
+        payment,
+        delayed_payment,
+        relieve,
+        specific_date_start,
+        specific_date_end,
+        expiration_of_contract,
+        telephone_a,
+        telephone_b,
+        address_a,
+        address_b,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status,
+        is_deleted
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="laborDispatchResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM labor_dispatch
+        WHERE is_deleted = 0
+    </select>
+</mapper>

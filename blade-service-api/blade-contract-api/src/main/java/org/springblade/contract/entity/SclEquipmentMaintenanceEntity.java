@@ -1,25 +1,20 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
-import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -70,38 +65,6 @@ public class SclEquipmentMaintenanceEntity extends BaseEntity {
     @ApiModelProperty(value="维修保养设备的所在地")
 	private String sclHome;
 	/**
-	 * 序号
-	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="序号")
-	private Integer sclSerialNumber;
-	/**
-	 * 设备名称
-	 */
-    @ApiModelProperty(value="设备名称")
-	private String sclDeviceName;
-	/**
-	 * 品牌
-	 */
-    @ApiModelProperty(value="品牌")
-	private String sclBrand;
-	/**
-	 * 型号、规格
-	 */
-    @ApiModelProperty(value="型号、规格")
-	private String sclSpecification;
-	/**
-	 * 数量
-	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="数量")
-	private Integer sclNumberOf;
-	/**
-	 * 其他
-	 */
-    @ApiModelProperty(value="其他")
-	private String sclOther;
-	/**
 	 * 总计人民币（未税）
 	 */
     @ApiModelProperty(value="总计人民币（未税）")
@@ -127,6 +90,11 @@ public class SclEquipmentMaintenanceEntity extends BaseEntity {
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="累计运行时间维修保养：每运行【？】小时进行检修")
 	private Integer sclMaintenancessss;
+	/**
+	 * 质保期为 【？】小时
+	 */
+	@ApiModelProperty(value = "质保期为 【？】小时")
+	private Integer sclGuaranteePeriod;
 	/**
 	 * 单次维修保养：质保期为【？】个月
 	 */
@@ -291,6 +259,43 @@ public class SclEquipmentMaintenanceEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="其他约定事项")
 	private String sclAgreed;
+	/**
+	 * 附件一名称
+	 */
+	@ApiModelProperty(value = "附件一名称")
+	private String sclFujian;
+	/**
+	 * 附件二名称
+	 */
+	@ApiModelProperty(value = "附件二名称")
+	private String sclFujian2;
+	/**
+	 * 附件三名称
+	 */
+	@ApiModelProperty(value = "附件三名称")
+	private String sclFujian3;
+
+	/**
+	 * 联系人甲方
+	 */
+	@ApiModelProperty(value = "附件三名称")
+	private String sclLianxirenjia;
+	/**
+	 * 联系人乙方
+	 */
+	@ApiModelProperty(value = "附件三名称")
+	private String sclLianxirenyi;
+	/**
+	 * 联系电话甲方
+	 */
+	@ApiModelProperty(value = "附件三名称")
+	private String sclLianxielejia;
+
+	/**
+	 * 联系电话乙方
+	 */
+	@ApiModelProperty(value = "附件三名称")
+	private String sclLianxieleyi;
 
 	@ApiModelProperty(value = "设备维修保养合同(关联表）")
 	@TableField(exist = false)

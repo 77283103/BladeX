@@ -908,14 +908,19 @@ public enum TemplateExporterEnum {
                 }
             }
             SclEquipmentMaintenanceEntity sclEquipmentMaintenance = JSONObject.toJavaObject(j, SclEquipmentMaintenanceEntity.class);
-            dataModel.put("sclPatyA",j.get("sclPatyA"));
+			dataModel.put("sclPatyA",contractFormInfoEntity.getSealName());
+			dataModel.put("sclPatyB",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
             dataModel.put("sclPatyBs",j.get("sclPatyBs"));
-            dataModel.put("sclPatyB",j.get("sclPatyB"));
             dataModel.put("sclAddress",j.get("sclAddress"));
             dataModel.put("sclProjectName",j.get("sclProjectName"));
             dataModel.put("sclHome",j.get("sclHome"));
-            dataModel.put("sclTotalRmb",j.get("sclTotalRmb"));
-            dataModel.put("sclCapitalRmb",j.get("sclCapitalRmb"));
+
+			AtomicReference<Double> valuesD= new AtomicReference<>(0D);
+			list.forEach(element->{
+				valuesD.updateAndGet(v -> v + BigDecimal.valueOf(Double.valueOf(element.get("sclPrice").toString())).multiply(BigDecimal.valueOf(Double.valueOf(element.get("sclNumbers").toString()))).doubleValue());
+			});
+            dataModel.put("sclTotalRmb",valuesD);
+            dataModel.put("sclCapitalRmb", MoneyToChiness.tenThousand(String.valueOf(valuesD)));
             dataModel.put("sclNote",j.get("sclNote"));
             dataModel.put("sclEquipment",j.get("sclEquipment"));
             dataModel.put("sclMaintenancessss",j.get("sclMaintenancessss"));
@@ -948,6 +953,14 @@ public enum TemplateExporterEnum {
             dataModel.put("sclStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclStart"))));
             dataModel.put("sclLaste",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclLaste"))));
             dataModel.put("sclCompany",j.get("sclCompany"));
+            dataModel.put("sclAgreed",j.get("sclAgreed"));
+			dataModel.put("sclFujian",j.get("sclFujian"));
+			dataModel.put("sclFujian2",j.get("sclFujian2"));
+			dataModel.put("sclFujian3",j.get("sclFujian3"));
+			dataModel.put("sclLianxirenjia",j.get("sclLianxirenjia"));
+			dataModel.put("sclLianxirenyi",j.get("sclLianxirenyi"));
+			dataModel.put("sclLianxielejia",j.get("sclLianxielejia"));
+			dataModel.put("sclLianxieleyi",j.get("sclLianxieleyi"));
             dataModel.put("list",list);
             return dataModel;
         }
@@ -1474,9 +1487,9 @@ public enum TemplateExporterEnum {
             }
             //主表
             MtbMarketResearchContractEntity mtbMarketResearchContractEntity = JSONObject.toJavaObject(j, MtbMarketResearchContractEntity.class);
-            dataModel.put("patya",j.get("patya"));
-            dataModel.put("patyb",j.get("patyb"));
-            dataModel.put("partyAddress",j.get("partyAddress"));
+			dataModel.put("patya",contractFormInfoEntity.getSealName());
+			dataModel.put("patyb",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
+			dataModel.put("partyAddress",j.get("partyAddress"));
             dataModel.put("patyAddressb",j.get("patyAddressb"));
             dataModel.put("number",j.get("number"));
             dataModel.put("patyPhoneb",j.get("patyPhoneb"));
@@ -1563,7 +1576,57 @@ public enum TemplateExporterEnum {
             dataModel.put("list",list);
             return dataModel;
         }
-    };
+    },
+	//劳务派遣合同
+	LWHT_52("LWHT_52"){
+		@Override
+		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
+			Map dataModel = new HashMap();
+			LaborDispatchEntity laborDispatchEntity = JSONObject.toJavaObject(j, LaborDispatchEntity.class);
+			dataModel.put("ywbFirstParty",contractFormInfoEntity.getSealName());
+			dataModel.put("ywbPartyB",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
+			dataModel.put("ywbAddressA",j.get("ywbAddressA"));
+			dataModel.put("ywbAddressB",j.get("ywbAddressB"));
+			dataModel.put("principal",j.get("principal"));
+			dataModel.put("liquidatedDamages",j.get("liquidatedDamages"));
+			dataModel.put("date",j.get("date"));
+			dataModel.put("job",j.get("job"));
+			dataModel.put("days",j.get("days"));
+			dataModel.put("age",j.get("age"));
+			dataModel.put("assessmentDay",j.get("assessmentDay"));
+			dataModel.put("accountingDate",j.get("accountingDate"));
+			dataModel.put("invoiceDate",j.get("invoiceDate"));
+			dataModel.put("accountName",j.get("accountName"));
+			dataModel.put("bank",j.get("bank"));
+			dataModel.put("accountNumber",j.get("accountNumber"));
+			dataModel.put("assessmentPeriod",j.get("assessmentPeriod"));
+			dataModel.put("returnm",j.get("returnm"));
+			dataModel.put("dispatch",j.get("dispatch"));
+			dataModel.put("reassignment",j.get("reassignment"));
+			dataModel.put("applicationForAssignment",j.get("applicationForAssignment"));
+			dataModel.put("name",j.get("name"));
+			dataModel.put("phone",j.get("phone"));
+			dataModel.put("paymentPeriod",j.get("paymentPeriod"));
+			dataModel.put("late",j.get("late"));
+			dataModel.put("absenteeism",j.get("absenteeism"));
+			dataModel.put("overdue",j.get("overdue"));
+			dataModel.put("lack",j.get("lack"));
+			dataModel.put("iiquidatedDamages",j.get("iiquidatedDamages"));
+			dataModel.put("supplementFive",j.get("supplementFive"));
+			dataModel.put("supplementSix",j.get("supplementSix"));
+			dataModel.put("payment",j.get("payment"));
+			dataModel.put("delayedPayment",j.get("delayedPayment"));
+			dataModel.put("relieve",j.get("relieve"));
+			dataModel.put("specificDateStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDateStart"))));
+			dataModel.put("specificDateEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDateEnd"))));
+			dataModel.put("expirationOfContract",j.get("expirationOfContract"));
+			dataModel.put("addressA",j.get("addressA"));
+			dataModel.put("addressB",j.get("addressB"));
+			dataModel.put("telephoneA",j.get("telephoneA"));
+			dataModel.put("telephoneB",j.get("telephoneB"));
+			return dataModel;
+		}
+	};
 
     public abstract Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j);
 
