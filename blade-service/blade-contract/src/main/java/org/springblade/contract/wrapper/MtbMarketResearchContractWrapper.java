@@ -1,15 +1,10 @@
 package org.springblade.contract.wrapper;
 
-import java.util.Optional;
-
+import org.springblade.contract.entity.MtbMarketResearchContractEntity;
 import org.springblade.contract.vo.MtbMarketResearchContractRequestVO;
 import org.springblade.contract.vo.MtbMarketResearchContractResponseVO;
-import org.springblade.system.user.entity.User;
 import org.springblade.core.mp.support.IEntityWrapper;
-import org.springblade.contract.entity.MtbMarketResearchContractEntity;
 import org.springframework.stereotype.Component;
-import org.springblade.system.cache.SysCache;
-import org.springblade.system.user.cache.UserCache;
 
 
 /**
@@ -42,8 +37,5 @@ public class MtbMarketResearchContractWrapper implements IEntityWrapper<MtbMarke
 
     @Override
     public void selectUserName(MtbMarketResearchContractResponseVO responseVO) {
-        responseVO.setCreateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getCreateUser())).orElse(new User()).getRealName());
-        responseVO.setUpdateUserName(Optional.ofNullable(UserCache.getUser(responseVO.getUpdateUser())).orElse(new User()).getRealName());
-        responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));
-    }
+	}
 }

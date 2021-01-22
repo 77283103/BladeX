@@ -24,7 +24,7 @@ public class CglProofingContract1ServiceImpl extends BaseServiceImpl<CglProofing
 	/**
 	 * 合同关联字段
 	 */
-	private static final String REF_COLUMN_NAME = "contract_id";
+	private static final String REF_COLUMN_NAME = "ref_contract_id";
 	@Override
 	public IPage<CglProofingContract1Entity> pageList(IPage<CglProofingContract1Entity> page, CglProofingContract1Entity cglProofingContract1) {
 		return baseMapper.pageList(page, cglProofingContract1);

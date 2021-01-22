@@ -1,35 +1,26 @@
 package org.springblade.contract.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 
 
 /**
  * 媒体类：市调合同（定性+定量) 实体类
  *
- * @author 王策
- * @date : 2020-12-10 19:37:14
+ * @author 刘是罕
+ * @date : 2021-01-21 11:07:21
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("mtb_market_research_contract")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "MtbMarketResearchContract对象", description = "媒体类：市调合同（定性+定量)")
@@ -40,213 +31,267 @@ public class MtbMarketResearchContractEntity extends BaseEntity {
 	/**
 	 * 甲方
 	 */
-    @ApiModelProperty(value="甲方")
-	private String mtbPatyA;
+	@ApiModelProperty(value = "甲方")
+	private String patya;
 	/**
 	 * 甲方地址
 	 */
-    @ApiModelProperty(value="甲方地址")
-	private String mtbPartyAAddress;
+	@ApiModelProperty(value = "甲方地址")
+	private String partyAddress;
 	/**
 	 * 甲方电话
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="甲方电话")
-	private Integer mtbNumber;
+	@ApiModelProperty(value = "甲方电话")
+	private Integer number;
 	/**
 	 * 甲方传真
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="甲方传真")
-	private Integer mtbPatyAFax;
+	@ApiModelProperty(value = "甲方传真")
+	private Integer patyFax;
 	/**
 	 * 乙方
 	 */
-    @ApiModelProperty(value="乙方")
-	private String mtbPatyB;
+	@ApiModelProperty(value = "乙方")
+	private String patyb;
 	/**
 	 * 乙方地址
 	 */
-    @ApiModelProperty(value="乙方地址")
-	private String mtbPatyBAddress;
+	@ApiModelProperty(value = "乙方地址")
+	private String patyAddressb;
 	/**
 	 * 乙方电话
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="乙方电话")
-	private Integer mtbPatyBPhone;
+	@ApiModelProperty(value = "乙方电话")
+	private Integer patyPhoneb;
 	/**
 	 * 乙方传真
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="乙方传真")
-	private Integer mtbPatyBFax;
+	@ApiModelProperty(value = "乙方传真")
+	private Integer patyFaxb;
 	/**
 	 * 项目名称
 	 */
-    @ApiModelProperty(value="项目名称")
-	private String mtbProjectName;
+	@ApiModelProperty(value = "项目名称")
+	private String projectName;
 	/**
 	 * 附件：【？】项目计划书/报价单（择一）
 	 */
-    @ApiModelProperty(value="附件：【？】项目计划书/报价单（择一）")
-	private String mtbAttachment;
+	@ApiModelProperty(value = "附件：【？】项目计划书/报价单（择一）")
+	private String attachment;
 	/**
 	 * 研究方法
 	 */
-    @ApiModelProperty(value="研究方法")
-	private String mtbResearchMethods;
+	@ApiModelProperty(value = "研究方法")
+	private String research;
+	/**
+	 * 研究方法
+	 */
+	@ApiModelProperty(value = "研究方法")
+	private String methods;
 	/**
 	 * 受访者人数
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="受访者人数")
-	private Integer mtbNumberOfRespondents;
+	@ApiModelProperty(value = "受访者人数")
+	private Integer numberRespondents;
 	/**
-	 * 成果物
+	 * 受访者要求
 	 */
-    @ApiModelProperty(value="成果物")
-	private String mtbResultsContent;
+	@ApiModelProperty(value = "受访者要求")
+	private String requireRespondents;
 	/**
-	 * 时间安排
+	 * 调研简报
 	 */
-    @ApiModelProperty(value="时间安排")
-	private String mtbSchedule;
+	@ApiModelProperty(value = "调研简报")
+	private String results;
 	/**
-	 * 事项
+	 * 调研报告
 	 */
-    @ApiModelProperty(value="事项")
-	private String mtbMatters;
+	@ApiModelProperty(value = "调研报告")
+	private String research1;
+	/**
+	 * 视频录像文件
+	 */
+	@ApiModelProperty(value = "视频录像文件")
+	private String video;
+	/**
+	 * 定性研究现场原始问答记录
+	 */
+	@ApiModelProperty(value = "定性研究现场原始问答记录")
+	private String qualitative;
+	/**
+	 * 定量研究原始数据记录
+	 */
+	@ApiModelProperty(value = "定量研究原始数据记录")
+	private String quantitative1;
+	/**
+	 * 其他
+	 */
+	@ApiModelProperty(value = "其他")
+	private String other;
+	/**
+	 * 其他
+	 */
+	@ApiModelProperty(value = "其他")
+	private String other1;
+	/**
+	 * 其他
+	 */
+	@ApiModelProperty(value = "其他")
+	private String other2;
 	/**
 	 * 总费用：本合同总费用为：未税额人民币
 	 */
-    @ApiModelProperty(value="总费用：本合同总费用为：未税额人民币")
-	private String mtbTotalCost;
+	@ApiModelProperty(value = "总费用：本合同总费用为：未税额人民币")
+	private BigDecimal totalCost;
 	/**
 	 * 税率
 	 */
-    @ApiModelProperty(value="税率")
-	private Double mtbRate;
+	@ApiModelProperty(value = "税率")
+	private Double rate;
 	/**
 	 * 现含税金额人民币
 	 */
-    @ApiModelProperty(value="现含税金额人民币")
-	private BigDecimal mtbTaxAmount;
+	@ApiModelProperty(value = "现含税金额人民币")
+	private BigDecimal amount;
 	/**
-	 * 费用详单
+	 * 乙方承担
 	 */
-    @ApiModelProperty(value="费用详单")
-	private String mtbCostDetails;
+	@ApiModelProperty(value = "乙方承担")
+	private String undertakesb;
 	/**
-	 * 定性研究：执行费用(约人，礼金，设备，场地)
+	 * 甲方承担
 	 */
-    @ApiModelProperty(value="定性研究：执行费用(约人，礼金，设备，场地)")
-	private BigDecimal mtbPerformCostA;
+	@ApiModelProperty(value = "甲方承担")
+	private String undertakesa;
 	/**
-	 * 会议主持
+	 * 元
 	 */
-    @ApiModelProperty(value="会议主持")
-	private BigDecimal mtbPresidedOverBy;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element;
 	/**
-	 * 差旅费
+	 * 元
 	 */
-    @ApiModelProperty(value="差旅费")
-	private BigDecimal mtbTravel;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element1;
 	/**
-	 * 大纲设计，报告撰写
+	 * 元
 	 */
-    @ApiModelProperty(value="大纲设计，报告撰写")
-	private BigDecimal mtbOutlineDesigns;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element2;
 	/**
-	 * 其他
+	 * 元
 	 */
-    @ApiModelProperty(value="其他")
-	private BigDecimal mtbOther;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element3;
 	/**
-	 * 合计
+	 * 元
 	 */
-    @ApiModelProperty(value="合计")
-	private BigDecimal mtbCombined;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element4;
 	/**
-	 * 定量研究：问卷设计、印刷
+	 * 元含税
 	 */
-    @ApiModelProperty(value="定量研究：问卷设计、印刷")
-	private BigDecimal mtbDesignAndPrinting;
+	@ApiModelProperty(value = "元含税")
+	private BigDecimal element5;
 	/**
-	 * 场地费用
+	 * 元
 	 */
-    @ApiModelProperty(value="场地费用")
-	private BigDecimal mtbGreenFees;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element6;
 	/**
-	 * 执行费用（含受访者、礼金等费用）
+	 * 元
 	 */
-    @ApiModelProperty(value="执行费用（含受访者、礼金等费用）")
-	private BigDecimal mtbPerformCost;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element7;
 	/**
-	 * 定量研究：大纲设计、报告撰写
+	 * 元
 	 */
-    @ApiModelProperty(value="定量研究：大纲设计、报告撰写")
-	private BigDecimal mtbOutlineDesign;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element8;
 	/**
-	 * 差旅费用
+	 * 元
 	 */
-    @ApiModelProperty(value="差旅费用")
-	private BigDecimal mtbTravelExpenses;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element9;
 	/**
-	 * 其他
+	 * 元
 	 */
-    @ApiModelProperty(value="其他")
-	private BigDecimal mtbOtherA;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element10;
 	/**
-	 * 合计
+	 * 元
 	 */
-    @ApiModelProperty(value="合计")
-	private String mtdACombined;
+	@ApiModelProperty(value = "元")
+	private BigDecimal element11;
 	/**
-	 * 乙方账户如下：公司名
+	 * 元含税
 	 */
-    @ApiModelProperty(value="乙方账户如下：公司名")
-	private String mtbCompanyName;
+	@ApiModelProperty(value = "元含税")
+	private BigDecimal element12;
+	/**
+	 * 公司名
+	 */
+	@ApiModelProperty(value = "公司名")
+	private String company;
 	/**
 	 * 开户行
 	 */
-    @ApiModelProperty(value="开户行")
-	private String mtbBank;
+	@ApiModelProperty(value = "开户行")
+	private String bank;
 	/**
 	 * 账号
 	 */
-    @ApiModelProperty(value="账号")
-	private String mtbAccount;
+	@ApiModelProperty(value = "账号")
+	private String account;
 	/**
-	 * 函件送达地址：甲方联系地址
+	 * 甲方联系地址
 	 */
-    @ApiModelProperty(value="函件送达地址：甲方联系地址")
-	private String mtbMailDelivery;
-	/**
-	 * 主要联系人
-	 */
-    @ApiModelProperty(value="主要联系人")
-	private String mtbTheContact;
-	/**
-	 * 函件送达地址：乙方联系地址
-	 */
-    @ApiModelProperty(value="函件送达地址：乙方联系地址")
-	private String mtbPatyTheContact;
+	@ApiModelProperty(value = "甲方联系地址")
+	private String contactAddress;
 	/**
 	 * 邮编
 	 */
-    @ApiModelProperty(value="邮编")
-	private String mtbZipCode;
+	@ApiModelProperty(value = "邮编")
+	private String postcode;
+	/**
+	 * 甲方主要联系人
+	 */
+	@ApiModelProperty(value = "甲方主要联系人")
+	private String contact;
 	/**
 	 * 电话号码
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="电话号码")
-	private Integer mtbPhon;
+	@ApiModelProperty(value = "电话号码")
+	private String telephone;
+	/**
+	 * 乙方联系地址
+	 */
+	@ApiModelProperty(value = "乙方联系地址")
+	private String patyContact;
+	/**
+	 * 乙方主要联系人
+	 */
+	@ApiModelProperty(value = "乙方主要联系人")
+	private String contact1;
+	/**
+	 * 邮编
+	 */
+	@ApiModelProperty(value = "邮编")
+	private String postcode1;
+	/**
+	 * 电话号码
+	 */
+	@ApiModelProperty(value = "电话号码")
+	private String phon;
 	/**
 	 * 附件二 【？】调研计划书/报价单（择一）
 	 */
-    @ApiModelProperty(value="附件二 【？】调研计划书/报价单（择一）")
-	private String mtbAnnexIi;
-
+	@ApiModelProperty(value = "附件二 【？】调研计划书/报价单（择一）")
+	private String annex;
+	/**
+	 * 关联子表
+	 */
+    @ApiModelProperty(value = "关联子表")
+	@TableField(exist = false)
+	private List<MtbMarketResearchContract1Entity> mtbMarketResearchContract1EntityList;
 }
