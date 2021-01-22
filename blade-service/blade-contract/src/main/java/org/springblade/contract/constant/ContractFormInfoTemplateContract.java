@@ -7,7 +7,7 @@ public interface ContractFormInfoTemplateContract {
 	//二级联动组件类型
 	String COMPONENT_TYPE_SELECT = "secondSelect";
 	//组件小类型
-	String COMPONENT_TYPE_SMALL = "select,cascader,radio";
+	String COMPONENT_TYPE_SMALL = "select,cascader,radio,selectMany";
 	//字段验证规则
 	String COMPONENT_TYPE_REQUORED = "true";
 	//合同

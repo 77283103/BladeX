@@ -60,7 +60,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 			jo.put("componentType", templateField.getComponentType());
 			jo.put("tips", templateField.getTips());
 			//判断字典code是否为空
-			if("select".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())){
+			if("select".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())||"selectMany".equals(templateField.getComponentType())){
 				tree = dictBizService.getList(templateField.getDicCode());
 				JSONArray array = new JSONArray();
 				//组装字典data
@@ -138,7 +138,7 @@ public class TemplateFieldServiceImpl extends BaseServiceImpl<TemplateFieldMappe
 					required.put("trigger", "change");
 					requiredArray.add(required);
 				}
-				if("select".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())){
+				if("select".equals(templateField.getComponentType())||"radio".equals(templateField.getComponentType())||"selectMany".equals(templateField.getComponentType())){
 					JSONObject required = new JSONObject();
 					required.put("required", true);
 					required.put("message", templateField.getTips());
