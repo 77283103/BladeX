@@ -37,7 +37,7 @@
     <!-- 分页 -->
     <select id="pageList" resultMap="mtbProductionContract1ResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+        <include refid="baseColumnList"></include>
         FROM mtb_production_contract1
         WHERE is_deleted = 0
     </select>
