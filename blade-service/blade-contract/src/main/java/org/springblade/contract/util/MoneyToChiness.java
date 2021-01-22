@@ -9,6 +9,7 @@ public class MoneyToChiness {
 	private static final char[] CN_UPPER_UNIT = "仟佰拾".toCharArray();
 	private static final char[] CN_GROUP = "圆万亿".toCharArray();
 
+	//处理万元
 	public static String tenThousand(String money) {
 		BigDecimal bigDecimal1 = new BigDecimal(money);
 		BigDecimal bigDecimal2 = new BigDecimal(10000);
@@ -16,7 +17,7 @@ public class MoneyToChiness {
 		BigDecimal bigDecimal = new BigDecimal(val);
 		return moneyToChinese(bigDecimal);
 	}
-
+	//处理元的
 	public static String moneyToChinese(BigDecimal IMoney) {
 		if(IMoney.equals(BigDecimal.ZERO)){
 			return "零圆整";
