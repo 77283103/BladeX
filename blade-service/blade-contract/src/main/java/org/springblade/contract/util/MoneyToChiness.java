@@ -8,6 +8,15 @@ public class MoneyToChiness {
 	private static final char[] CN_UPPER_NUMBER = "零壹贰叁肆伍陆柒捌玖".toCharArray();
 	private static final char[] CN_UPPER_UNIT = "仟佰拾".toCharArray();
 	private static final char[] CN_GROUP = "圆万亿".toCharArray();
+
+	public static String tenThousand(String money) {
+		BigDecimal bigDecimal1 = new BigDecimal(money);
+		BigDecimal bigDecimal2 = new BigDecimal(10000);
+		double val = bigDecimal1.multiply(bigDecimal2).doubleValue();
+		BigDecimal bigDecimal = new BigDecimal(val);
+		return moneyToChinese(bigDecimal);
+	}
+
 	public static String moneyToChinese(BigDecimal IMoney) {
 		if(IMoney.equals(BigDecimal.ZERO)){
 			return "零圆整";
