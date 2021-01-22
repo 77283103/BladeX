@@ -466,6 +466,7 @@ public class ContractFormInfoController extends BladeController {
 		}
 		//把json串转换成一个对象
 		ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
+		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
 		//String json = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
 		//导出pdf文件
 		TemplateExportUntil templateExportUntil=new TemplateExportUntil();
