@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.springblade.contract.mapper.MtbProductionContract2Mapper">
+<mapper namespace="org.springblade.contract.mapper.MtbProductionContract3Mapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="mtbProductionContract2ResultMap" type="org.springblade.contract.entity.MtbProductionContract2Entity">
+    <resultMap id="mtbProductionContract3ResultMap" type="org.springblade.contract.entity.MtbProductionContract3Entity">
         <result column="id" property="id"/>
-        <result column="intellectual_property" property="intellectualProperty"/>
-        <result column="small_kind" property="smallKind"/>
-        <result column="service_life" property="serviceLife"/>
-        <result column="use_area" property="useArea"/>
+        <result column="wenjian" property="wenjian"/>
+        <result column="shouchuang" property="shouchuang"/>
+        <result column="wancheng" property="wancheng"/>
+        <result column="createzhe" property="createzhe"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
         <result column="create_time" property="createTime"/>
@@ -17,14 +17,15 @@
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="contract_id" property="contractId"/>
+        <result column="zhiwuorchuang" property="zhiwuorchuang"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
-        intellectual_property,
-        small_kind,
-        service_life,
-        use_area,
+        wenjian,
+        shouchuang,
+        wancheng,
+        createzhe,
         create_user,
         create_dept,
         create_time,
@@ -32,13 +33,14 @@
         update_time,
         status,
         is_deleted,
-        contract_id
+        contract_id,
+        zhiwuorchuang
     </sql>
     <!-- 分页 -->
-    <select id="pageList" resultMap="mtbProductionContract2ResultMap">
+    <select id="pageList" resultMap="mtbProductionContract3ResultMap">
         SELECT
-        <include refid="baseColumnList"></include>
-        FROM mtb_production_contract2
+            <include refid="baseColumnList"></include>
+        FROM mtb_production_contract3
         WHERE is_deleted = 0
     </select>
 </mapper>

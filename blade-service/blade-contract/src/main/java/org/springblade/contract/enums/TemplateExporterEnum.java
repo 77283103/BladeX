@@ -53,112 +53,112 @@ public enum TemplateExporterEnum {
 		@Override
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
-			dataModel.put("sclPartya",j.get("sclPartya"));//1
-			dataModel.put("sclPartyb",j.get("sclPartyb"));//2
-			dataModel.put("date",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));//3
-			dataModel.put("sclSite",j.get("sclSite"));//4
-			dataModel.put("sclStorage",j.get("sclStorage"));//5
-			dataModel.put("sclArea",j.get("sclArea"));//6
-			dataModel.put("sclNo",j.get("sclNo"));//7
-			dataModel.put("sclStorageee",j.get("sclStorageee"));//8
-			dataModel.put("sclConditionsa",j.get("sclConditionsa"));//9
-			dataModel.put("sclNumber",j.get("sclNumber"));//10
-			dataModel.put("sclServices",j.get("sclServices"));//11
-			dataModel.put("sclFood",j.get("sclFood"));//12
-			dataModel.put("sclDrinks",j.get("sclDrinks"));//13
-			dataModel.put("sclDairy",j.get("sclDairy"));//14
-			dataModel.put("sclWater",j.get("sclWater"));//15
-			dataModel.put("sclRequirementsp",j.get("sclRequirementsp"));//16
-			dataModel.put("sclRange",j.get("sclRange"));//17
-			dataModel.put("sclAreae",j.get("sclAreae"));//18
-			dataModel.put("sclRequirementse",j.get("sclRequirementse"));//19
-			dataModel.put("sclContractd",j.get("sclContractd"));//20
-			dataModel.put("sclSecond",j.get("sclSecond"));//21
-			dataModel.put("sclBreach",j.get("sclBreach"));//22
-			dataModel.put("sclProvide",j.get("sclProvide"));//23
-			dataModel.put("sclHours",j.get("sclHours"));//24
-			dataModel.put("sclMorning",j.get("sclMorning"));//25
-			dataModel.put("sclAfternoon",j.get("sclAfternoon"));//26
-			dataModel.put("sclAdvance",j.get("sclAdvance"));//27
-			dataModel.put("sclSeason",j.get("sclSeason"));//28
-			dataModel.put("sclReturn",j.get("sclReturn"));//29
-			dataModel.put("sclRequesta",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclRequesta"))));//30
-			dataModel.put("sclItems",j.get("sclItems"));//31
-			dataModel.put("sclDate",j.get("sclDate"));//32
-			dataModel.put("sclDate1",j.get("sclDate1"));//33
-			dataModel.put("sclDate2",j.get("sclDate2"));//34
-			dataModel.put("sclRequirementsf",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclRequirementsf"))));//35
-			dataModel.put("sclTransfer",j.get("sclTransfer"));//36
-			dataModel.put("sclOfs",j.get("sclOfs"));//37
-			dataModel.put("sclRequirementsss",j.get("sclRequirementsss"));//38
-			dataModel.put("traffic",j.get("traffic"));//39
-			dataModel.put("area",j.get("area"));//40
-			dataModel.put("sclAread",j.get("sclAread"));//41
-			dataModel.put("sclWarehouse",j.get("sclWarehouse"));//42
-			dataModel.put("sclGoods",j.get("sclGoods"));//43
-			dataModel.put("day",j.get("day"));//44
-			dataModel.put("day1",j.get("day1"));//45
-			dataModel.put("day2",j.get("day2"));//46
-			dataModel.put("day3",j.get("day3"));//47
-			dataModel.put("day4",j.get("day4"));//48
-			dataModel.put("sclYuan",j.get("sclYuan"));//49
-			dataModel.put("sclWhole",j.get("sclWhole"));//50
-			dataModel.put("sclLead",j.get("sclLead"));//51
-			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));//52
-			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));//53
-			dataModel.put("sclContract",j.get("sclContract"));//54
-			dataModel.put("day5",j.get("day5"));//55
-			dataModel.put("sclNumber1",j.get("sclNumber1"));//56
-			dataModel.put("sclMultiple",j.get("sclMultiple"));//57
-			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));//58
-			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));//59
-			dataModel.put("sclContaining",j.get("sclContaining"));//60
-			dataModel.put("sclContaining",j.get("sclContaining"));//61
-			dataModel.put("sclNinth",j.get("sclNinth"));//62
-			dataModel.put("startTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("startTimes"))));//63
-			dataModel.put("endTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("endTimes"))));//64
-			dataModel.put("sclCost",j.get("sclCost"));//65
-			dataModel.put("day7",j.get("day7"));//66
-			dataModel.put("sclConditions",j.get("sclConditions"));//67
-			dataModel.put("sclDate3",j.get("sclDate3"));//68
-			dataModel.put("day6",j.get("day6"));//69
-			dataModel.put("sclPartya",j.get("sclPartya"));//70
-			dataModel.put("sclPartyb",j.get("sclPartyb"));//71
-			dataModel.put("address",j.get("address"));//72
-			dataModel.put("addressb",j.get("addressb"));//73
-			dataModel.put("telephone",j.get("telephone"));//74
-			dataModel.put("telephoneb",j.get("telephoneb"));//75
-			dataModel.put("fax",j.get("fax"));//76
-			dataModel.put("faxb",j.get("faxb"));//77
-			dataModel.put("accountNumber",j.get("accountNumber"));//78
-			dataModel.put("accountNumberb",j.get("accountNumberb"));//79
-			dataModel.put("deposit",j.get("deposit"));//80
-			dataModel.put("depositb",j.get("depositb"));//81
-			dataModel.put("date1",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date1"))));//82
-			dataModel.put("date2",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date2"))));//83
-			dataModel.put("client",j.get("client"));//84
-			dataModel.put("client1",j.get("client1"));//85
-			dataModel.put("number",j.get("number"));//86
-			dataModel.put("client2",j.get("client2"));//87
-			dataModel.put("number1",j.get("number1"));//88
-			dataModel.put("client3",j.get("client3"));//89
-			dataModel.put("number2",j.get("number2"));//90
-			dataModel.put("mail",j.get("mail"));//91
-			dataModel.put("shippingSummons",j.get("shippingSummons"));//92
-			dataModel.put("dispatching",j.get("dispatching"));//93
-			dataModel.put("management",j.get("management"));//94
-			dataModel.put("other",j.get("other"));//95
-			dataModel.put("date3",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));//96
-			dataModel.put("date4",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));//97
-			dataModel.put("client4",j.get("client4"));//98
-			dataModel.put("client5",j.get("client5"));//99
-			dataModel.put("number3",j.get("number3"));//100
-			dataModel.put("phone",j.get("phone"));//101
-			dataModel.put("mail1",j.get("mail1"));//102
-			dataModel.put("postalAddress",j.get("postalAddress"));//103
-			dataModel.put("company",j.get("company"));//104
-			dataModel.put("sclPartyb",j.get("sclPartyb"));//105
-			dataModel.put("sclPartyb",j.get("sclPartyb"));//106
+			dataModel.put("sclPartya",j.get("sclPartya"));
+			dataModel.put("sclPartyb",j.get("sclPartyb"));
+			dataModel.put("date",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
+			dataModel.put("sclSite",j.get("sclSite"));
+			dataModel.put("sclStorage",j.get("sclStorage"));
+			dataModel.put("sclArea",j.get("sclArea"));
+			dataModel.put("sclNo",j.get("sclNo"));
+			dataModel.put("sclStorageee",j.get("sclStorageee"));
+			dataModel.put("sclConditionsa",j.get("sclConditionsa"));
+			dataModel.put("sclNumber",j.get("sclNumber"));
+			dataModel.put("sclServices",j.get("sclServices"));
+			dataModel.put("sclFood",j.get("sclFood"));
+			dataModel.put("sclDrinks",j.get("sclDrinks"));
+			dataModel.put("sclDairy",j.get("sclDairy"));
+			dataModel.put("sclWater",j.get("sclWater"));
+			dataModel.put("sclRequirementsp",j.get("sclRequirementsp"));
+			dataModel.put("sclRange",j.get("sclRange"));
+			dataModel.put("sclAreae",j.get("sclAreae"));
+			dataModel.put("sclRequirementse",j.get("sclRequirementse"));
+			dataModel.put("sclContractd",j.get("sclContractd"));
+			dataModel.put("sclSecond",j.get("sclSecond"));
+			dataModel.put("sclBreach",j.get("sclBreach"));
+			dataModel.put("sclProvide",j.get("sclProvide"));
+			dataModel.put("sclHours",j.get("sclHours"));
+			dataModel.put("sclMorning",j.get("sclMorning"));
+			dataModel.put("sclAfternoon",j.get("sclAfternoon"));
+			dataModel.put("sclAdvance",j.get("sclAdvance"));
+			dataModel.put("sclSeason",j.get("sclSeason"));
+			dataModel.put("sclReturn",j.get("sclReturn"));
+			dataModel.put("sclRequesta",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclRequesta"))));
+			dataModel.put("sclItems",j.get("sclItems"));
+			dataModel.put("sclDate",j.get("sclDate"));
+			dataModel.put("sclDate1",j.get("sclDate1"));
+			dataModel.put("sclDate2",j.get("sclDate2"));
+			dataModel.put("sclRequirementsf",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclRequirementsf"))));
+			dataModel.put("sclTransfer",j.get("sclTransfer"));
+			dataModel.put("sclOfs",j.get("sclOfs"));
+			dataModel.put("sclRequirementsss",j.get("sclRequirementsss"));
+			dataModel.put("traffic",j.get("traffic"));
+			dataModel.put("area",j.get("area"));
+			dataModel.put("sclAread",j.get("sclAread"));
+			dataModel.put("sclWarehouse",j.get("sclWarehouse"));
+			dataModel.put("sclGoods",j.get("sclGoods"));
+			dataModel.put("day",j.get("day"));
+			dataModel.put("day1",j.get("day1"));
+			dataModel.put("day2",j.get("day2"));
+			dataModel.put("day3",j.get("day3"));
+			dataModel.put("day4",j.get("day4"));
+			dataModel.put("sclYuan",j.get("sclYuan"));
+			dataModel.put("sclWhole",j.get("sclWhole"));
+			dataModel.put("sclLead",j.get("sclLead"));
+			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));
+			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));
+			dataModel.put("sclContract",j.get("sclContract"));
+			dataModel.put("day5",j.get("day5"));
+			dataModel.put("sclNumber1",j.get("sclNumber1"));
+			dataModel.put("sclMultiple",j.get("sclMultiple"));
+			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));
+			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));
+			dataModel.put("sclContaining",j.get("sclContaining"));
+			dataModel.put("sclContaining",j.get("sclContaining"));
+			dataModel.put("sclNinth",j.get("sclNinth"));
+			dataModel.put("startTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("startTimes"))));
+			dataModel.put("endTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("endTimes"))));
+			dataModel.put("sclCost",j.get("sclCost"));
+			dataModel.put("day7",j.get("day7"));
+			dataModel.put("sclConditions",j.get("sclConditions"));
+			dataModel.put("sclDate3",j.get("sclDate3"));
+			dataModel.put("day6",j.get("day6"));
+			dataModel.put("sclPartya",j.get("sclPartya"));
+			dataModel.put("sclPartyb",j.get("sclPartyb"));
+			dataModel.put("address",j.get("address"));
+			dataModel.put("addressb",j.get("addressb"));
+			dataModel.put("telephone",j.get("telephone"));
+			dataModel.put("telephoneb",j.get("telephoneb"));
+			dataModel.put("fax",j.get("fax"));
+			dataModel.put("faxb",j.get("faxb"));
+			dataModel.put("accountNumber",j.get("accountNumber"));
+			dataModel.put("accountNumberb",j.get("accountNumberb"));
+			dataModel.put("deposit",j.get("deposit"));
+			dataModel.put("depositb",j.get("depositb"));
+			dataModel.put("date1",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date1"))));
+			dataModel.put("date2",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date2"))));
+			dataModel.put("client",j.get("client"));
+			dataModel.put("client1",j.get("client1"));
+			dataModel.put("number",j.get("number"));
+			dataModel.put("client2",j.get("client2"));
+			dataModel.put("number1",j.get("number1"));
+			dataModel.put("client3",j.get("client3"));
+			dataModel.put("number2",j.get("number2"));
+			dataModel.put("mail",j.get("mail"));
+			dataModel.put("shippingSummons",j.get("shippingSummons"));
+			dataModel.put("dispatching",j.get("dispatching"));
+			dataModel.put("management",j.get("management"));
+			dataModel.put("other",j.get("other"));
+			dataModel.put("date3",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));
+			dataModel.put("date4",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));
+			dataModel.put("client4",j.get("client4"));
+			dataModel.put("client5",j.get("client5"));
+			dataModel.put("number3",j.get("number3"));
+			dataModel.put("phone",j.get("phone"));
+			dataModel.put("mail1",j.get("mail1"));
+			dataModel.put("postalAddress",j.get("postalAddress"));
+			dataModel.put("company",j.get("company"));
+			dataModel.put("sclPartyb",j.get("sclPartyb"));
+			dataModel.put("sclPartyb",j.get("sclPartyb"));
 			return dataModel;
 		}
 	},
@@ -794,9 +794,10 @@ public enum TemplateExporterEnum {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list=new ArrayList();
             List<Map<String, Object>> list1=new ArrayList();
+            List<Map<String, Object>> list2=new ArrayList();
             List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
             for (TemplateFieldJsonEntity templateField : templateFieldList) {
-                //视频广告拍摄制作合同 关联表1
+                //平面广告拍摄制作合同 关联表1
                 if (ContractFormInfoTemplateContract.CONTRACT_MTBPRODUCTIONCONTRACT1.equals(templateField.getRelationCode())) {
                     List<MtbProductionContract1ResponseVO> mtbProductionContract1List = JSON.parseArray(templateField.getTableData(), MtbProductionContract1ResponseVO.class);
                     for (int i=0;i<mtbProductionContract1List.size();i++) {
@@ -804,12 +805,12 @@ public enum TemplateExporterEnum {
                         Map<String, Object> map=new HashMap();
                         map.put("formDelivery", mtbProductionContract1.get("formDelivery"));
                         map.put("number", mtbProductionContract1.get("number"));
-                        map.put("contentTheme", mtbProductionContract1.get("contentTheme"));
-                        map.put("requirements", mtbProductionContract1.get("requirements"));
+						map.put("requirements", mtbProductionContract1.get("requirements"));
+						map.put("expenses", mtbProductionContract1.get("expenses"));
                         list.add(map);
                     }
                  }
-                //视频广告拍摄制作合同 关联表2
+                //平面广告拍摄制作合同 关联表2
                 if (ContractFormInfoTemplateContract.CONTRACT_MTBPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
                     List<MtbProductionContract2ResponseVO> mtbProductionContract2List = JSON.parseArray(templateField.getTableData(), MtbProductionContract2ResponseVO.class);
                     for (int i=0;i<mtbProductionContract2List.size();i++) {
@@ -822,8 +823,23 @@ public enum TemplateExporterEnum {
                         list1.add(map);
                     }
                 }
+				//平面广告拍摄制作合同 关联表3
+				if (ContractFormInfoTemplateContract.CONTRACT_MTBPRODUCTIONCONTRACT3.equals(templateField.getRelationCode())) {
+					List<MtbProductionContract3ResponseVO> mtbProductionContract3List = JSON.parseArray(templateField.getTableData(), MtbProductionContract3ResponseVO.class);
+					for (int i=0;i<mtbProductionContract3List.size();i++) {
+						JSONObject mtbProductionContract3= JSON.parseObject(JSON.toJSONString(mtbProductionContract3List.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
+						Map<String, Object> map=new HashMap();
+						map.put("wenjian",mtbProductionContract3.get("wenjian"));
+						map.put("shouchuang",mtbProductionContract3.get("shouchuang"));
+						map.put("wancheng",mtbProductionContract3.get("wancheng"));
+						map.put("createzhe",mtbProductionContract3.get("createzhe"));
+						map.put("zhiwuorchuang",mtbProductionContract3.get("zhiwuorchuang"));
+						list2.add(map);
+					}
+				}
             }
             MtbProductionContractEntity mtbProductionContract = JSONObject.toJavaObject(j, MtbProductionContractEntity.class);
+
             dataModel.put("mtbPatyA",j.get("mtbPatyA"));
             dataModel.put("mtbContactEmail",j.get("mtbContactEmail"));
             dataModel.put("mtbAddress",j.get("mtbAddress"));
@@ -839,17 +855,29 @@ public enum TemplateExporterEnum {
             dataModel.put("mtbAcceptancePersonnel",j.get("mtbAcceptancePersonnel"));
             dataModel.put("mtbUnpaidTaxRmb",j.get("mtbUnpaidTaxRmb"));
             dataModel.put("mtbRate",j.get("mtbRate"));
-            dataModel.put("mtbTaxInclusiveInRmb",j.get("mtbTaxInclusiveInRmb"));
-            dataModel.put("mtbManyItems",j.get("mtbManyItems"));
+            dataModel.put("mtbTaxInclusiveInRmb",j.get("mtbTaxInclusiveInRmb"));//16
+			dataModel.put("mtbCompanyName",j.get("mtbCompanyName"));
+			dataModel.put("mtbBankOfPartyB",j.get("mtbBankOfPartyB"));
+			dataModel.put("mtbPartyAccount",j.get("mtbPartyAccount"));
+			dataModel.put("mtbPortrait",j.get("mtbPortrait"));
+//			dataModel.put("mtbPatyA",j.get("mtbPatyA"));
+//			dataModel.put("mtbPatyB",j.get("mtbPatyB"));
+			dataModel.put("zhichichanquan",j.get("zhichichanquan"));
+//			dataModel.put("mtbPatyA",j.get("mtbPatyA"));
+			dataModel.put("qiandingTime",j.get("qiandingTime"));
+			dataModel.put("hetongbianhao",j.get("hetongbianhao"));
+			dataModel.put("weituo",j.get("weituo"));
+//			dataModel.put("mtbPatyA",j.get("mtbPatyA"));
+			dataModel.put("zhiqiandingTime",j.get("zhiqiandingTime"));
+
+          /*  dataModel.put("mtbManyItems",j.get("mtbManyItems"));
             dataModel.put("mtbLegalTaxInvoice",j.get("mtbLegalTaxInvoice"));
             dataModel.put("mtbPayRmb",j.get("mtbPayRmb"));
-            dataModel.put("mtbAllRemainingMoney",j.get("mtbAllRemainingMoney"));
-            dataModel.put("mtbCompanyName",j.get("mtbCompanyName"));
-            dataModel.put("mtbBankOfPartyB",j.get("mtbBankOfPartyB"));
-            dataModel.put("mtbPartyAccount",j.get("mtbPartyAccount"));
-            dataModel.put("mtbPortrait",j.get("mtbPortrait"));
+            dataModel.put("mtbAllRemainingMoney",j.get("mtbAllRemainingMoney"));*/
+
             dataModel.put("list",list);
             dataModel.put("list1",list1);
+            dataModel.put("list2",list2);
             return dataModel;
         }
     },
