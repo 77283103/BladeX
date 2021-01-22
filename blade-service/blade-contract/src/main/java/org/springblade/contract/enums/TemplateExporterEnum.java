@@ -27,6 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.util.DataFormatUtils;
+import org.springblade.contract.util.MoneyToChiness;
 import org.springblade.contract.vo.*;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -1013,13 +1014,13 @@ public enum TemplateExporterEnum {
             dataModel.put("sclStorage", j.get("sclStorage"));
             dataModel.put("sclArea", j.get("sclArea"));
             dataModel.put("sclNo", j.get("sclNo"));
-            dataModel.put("sclStorageee", j.get("sclStorageee"));
+            dataModel.put("sclStorageee", MoneyToChiness.tenThousand(j.get("sclNo").toString()));
             dataModel.put("sclBail", j.get("sclBail"));
-            dataModel.put("sclStorageee1", j.get("sclStorageee1"));
+            dataModel.put("sclStorageee1", MoneyToChiness.tenThousand(j.get("sclBail").toString()));
             dataModel.put("sclAffiliatedEnterprise", j.get("sclAffiliatedEnterprise"));
-            //dataModel.put("sclContract", j.get("sclContract"));//合同编号
+            dataModel.put("sclContract", "");//合同编号待处理
             dataModel.put("sclDeposit", j.get("sclDeposit"));
-            dataModel.put("sclStorageee2", j.get("sclStorageee2"));
+            dataModel.put("sclStorageee2", MoneyToChiness.tenThousand(j.get("sclDeposit").toString()));
             dataModel.put("sclConditionsa", j.get("sclConditionsa"));
             dataModel.put("sclNumber", j.get("sclNumber"));
             dataModel.put("sclServices", j.get("sclServices"));

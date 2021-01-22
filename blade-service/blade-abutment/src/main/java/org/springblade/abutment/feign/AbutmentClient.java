@@ -124,17 +124,16 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_contract_type("10");
 						//履约信息
 						List <KeepList> keepList=new ArrayList<KeepList>();
-						KeepList keep=new KeepList();
 						List <PayList> payList=new ArrayList<PayList>();
-						PayList pay=new PayList();
 						for(ContractPerformanceEntity performance:entity.getPerformanceList()){
+							KeepList keep=new KeepList();
 							//交易类型
 							switch (performance.getType()) {
 								case "1":
 									keep.setFd_trade_type("有效期交易");
 									break;
 								case "2":
-									keep.setFd_trade_type("安合同量交易");
+									keep.setFd_trade_type("按合同量交易");
 									break;
 								case "3":
 									keep.setFd_trade_type("单次交易");
@@ -150,13 +149,14 @@ public class AbutmentClient implements IAbutmentClient {
 							keepList.add(keep);
 						}
 						for(ContractPerformanceColPayEntity performanceColPay:entity.getPerformanceColPayList()){
+							PayList pay=new PayList();
 							//交易类型
 							switch (performanceColPay.getType()) {
 								case "1":
 									pay.setFd_trade_kind("有效期交易");
 									break;
 								case "2":
-									pay.setFd_trade_kind("安合同量交易");
+									pay.setFd_trade_kind("按合同量交易");
 									break;
 								case "3":
 									pay.setFd_trade_kind("单次交易");
@@ -168,7 +168,7 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 							pay.setFd_p_receipt(performanceColPay.getAcceptanceConditions());
 							pay.setFd_plan_ptime(sdf.format(performanceColPay.getPlanPayTime()));
-							pay.setFd_plan_psum(performanceColPay.getName());
+							pay.setFd_plan_psum(performanceColPay.getPlanPayAmount().toString());
 							payList.add(pay);
 						}
 						formValuesEntity.setFd_keep_list(keepList);
