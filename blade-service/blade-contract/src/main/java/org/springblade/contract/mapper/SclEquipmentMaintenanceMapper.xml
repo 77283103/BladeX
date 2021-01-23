@@ -11,17 +11,12 @@
         <result column="scl_address" property="sclAddress"/>
         <result column="scl_project_name" property="sclProjectName"/>
         <result column="scl_home" property="sclHome"/>
-        <result column="scl_serial_number" property="sclSerialNumber"/>
-        <result column="scl_device_name" property="sclDeviceName"/>
-        <result column="scl_brand" property="sclBrand"/>
-        <result column="scl_specification" property="sclSpecification"/>
-        <result column="scl_number_of" property="sclNumberOf"/>
-        <result column="scl_other" property="sclOther"/>
         <result column="scl_total_rmb" property="sclTotalRmb"/>
         <result column="scl_capital_rmb" property="sclCapitalRmb"/>
         <result column="scl_note" property="sclNote"/>
         <result column="scl_equipment" property="sclEquipment"/>
         <result column="scl_maintenancessss" property="sclMaintenancessss"/>
+        <result column="scl_guarantee_period" property="sclGuaranteePeriod"/>
         <result column="scl_quality" property="sclQuality"/>
         <result column="scl_routine_maintenancess" property="sclRoutineMaintenancess"/>
         <result column="scl_month" property="sclMonth"/>
@@ -59,6 +54,13 @@
         <result column="create_dept" property="createDept"/>
         <result column="scl_company" property="sclCompany"/>
         <result column="scl_agreed" property="sclAgreed"/>
+        <result column="scl_fujian" property="sclFujian"/>
+        <result column="scl_fujian2" property="sclFujian2"/>
+        <result column="scl_fujian3" property="sclFujian3"/>
+        <result column="scl_lianxirenjia" property="sclLianxirenjia"/>
+        <result column="scl_lianxirenyi" property="sclLianxirenyi"/>
+        <result column="scl_lianxielejia" property="sclLianxielejia"/>
+        <result column="scl_lianxieleyi" property="sclLianxieleyi"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -69,17 +71,12 @@
         scl_address,
         scl_project_name,
         scl_home,
-        scl_serial_number,
-        scl_device_name,
-        scl_brand,
-        scl_specification,
-        scl_number_of,
-        scl_other,
         scl_total_rmb,
         scl_capital_rmb,
         scl_note,
         scl_equipment,
         scl_maintenancessss,
+        scl_guarantee_period,
         scl_quality,
         scl_routine_maintenancess,
         scl_month,
@@ -116,7 +113,10 @@
         update_time,
         create_dept,
         scl_company,
-        scl_agreed
+        scl_agreed,
+        scl_fujian,
+        scl_fujian2,
+        scl_fujian3,
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="sclEquipmentMaintenanceResultMap">

@@ -5,47 +5,58 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="mtbMarketResearchContractResultMap" type="org.springblade.contract.entity.MtbMarketResearchContractEntity">
         <result column="id" property="id"/>
-        <result column="mtb_paty_a" property="mtbPatyA"/>
-        <result column="mtb_party_a_address" property="mtbPartyAAddress"/>
-        <result column="mtb_number" property="mtbNumber"/>
-        <result column="mtb_paty_a_fax" property="mtbPatyAFax"/>
-        <result column="mtb_paty_b" property="mtbPatyB"/>
-        <result column="mtb_paty_b_address" property="mtbPatyBAddress"/>
-        <result column="mtb_paty_b_phone" property="mtbPatyBPhone"/>
-        <result column="mtb_paty_b_fax" property="mtbPatyBFax"/>
-        <result column="mtb_project_name" property="mtbProjectName"/>
-        <result column="mtb_attachment" property="mtbAttachment"/>
-        <result column="mtb_research_methods" property="mtbResearchMethods"/>
-        <result column="mtb_number_of_respondents" property="mtbNumberOfRespondents"/>
-        <result column="mtb_results_content" property="mtbResultsContent"/>
-        <result column="mtb_schedule" property="mtbSchedule"/>
-        <result column="mtb_matters" property="mtbMatters"/>
-        <result column="mtb_total_cost" property="mtbTotalCost"/>
-        <result column="mtb_rate" property="mtbRate"/>
-        <result column="mtb_tax_amount" property="mtbTaxAmount"/>
-        <result column="mtb_cost_details" property="mtbCostDetails"/>
-        <result column="mtb_perform_cost_a" property="mtbPerformCostA"/>
-        <result column="mtb_presided_over_by" property="mtbPresidedOverBy"/>
-        <result column="mtb_travel" property="mtbTravel"/>
-        <result column="mtb_outline_designs" property="mtbOutlineDesigns"/>
-        <result column="mtb_other" property="mtbOther"/>
-        <result column="mtb_combined" property="mtbCombined"/>
-        <result column="mtb_design_and_printing" property="mtbDesignAndPrinting"/>
-        <result column="mtb_green_fees" property="mtbGreenFees"/>
-        <result column="mtb_perform_cost" property="mtbPerformCost"/>
-        <result column="mtb_outline_design" property="mtbOutlineDesign"/>
-        <result column="mtb_travel_expenses" property="mtbTravelExpenses"/>
-        <result column="mtb_other_a" property="mtbOtherA"/>
-        <result column="mtd_a_combined" property="mtdACombined"/>
-        <result column="mtb_company_name" property="mtbCompanyName"/>
-        <result column="mtb_bank" property="mtbBank"/>
-        <result column="mtb_account" property="mtbAccount"/>
-        <result column="mtb_mail_delivery" property="mtbMailDelivery"/>
-        <result column="mtb_the_contact" property="mtbTheContact"/>
-        <result column="mtb_paty_the_contact" property="mtbPatyTheContact"/>
-        <result column="mtb_zip_code" property="mtbZipCode"/>
-        <result column="mtb_phon" property="mtbPhon"/>
-        <result column="mtb_annex_ii" property="mtbAnnexIi"/>
+        <result column="patya" property="patya"/>
+        <result column="party_address" property="partyAddress"/>
+        <result column="number" property="number"/>
+        <result column="paty_fax" property="patyFax"/>
+        <result column="patyb" property="patyb"/>
+        <result column="paty_addressb" property="patyAddressb"/>
+        <result column="paty_phoneb" property="patyPhoneb"/>
+        <result column="paty_faxb" property="patyFaxb"/>
+        <result column="project_name" property="projectName"/>
+        <result column="attachment" property="attachment"/>
+        <result column="research" property="research"/>
+        <result column="methods" property="methods"/>
+        <result column="number_respondents" property="numberRespondents"/>
+        <result column="require_respondents" property="requireRespondents"/>
+        <result column="results" property="results"/>
+        <result column="research1" property="research1"/>
+        <result column="video" property="video"/>
+        <result column="qualitative" property="qualitative"/>
+        <result column="quantitative1" property="quantitative1"/>
+        <result column="other" property="other"/>
+        <result column="other1" property="other1"/>
+        <result column="other2" property="other2"/>
+        <result column="total_cost" property="totalCost"/>
+        <result column="rate" property="rate"/>
+        <result column="amount" property="amount"/>
+        <result column="undertakesb" property="undertakesb"/>
+        <result column="undertakesa" property="undertakesa"/>
+        <result column="element" property="element"/>
+        <result column="element1" property="element1"/>
+        <result column="element2" property="element2"/>
+        <result column="element3" property="element3"/>
+        <result column="element4" property="element4"/>
+        <result column="element5" property="element5"/>
+        <result column="element6" property="element6"/>
+        <result column="element7" property="element7"/>
+        <result column="element8" property="element8"/>
+        <result column="element9" property="element9"/>
+        <result column="element10" property="element10"/>
+        <result column="element11" property="element11"/>
+        <result column="element12" property="element12"/>
+        <result column="company" property="company"/>
+        <result column="bank" property="bank"/>
+        <result column="account" property="account"/>
+        <result column="contact_address" property="contactAddress"/>
+        <result column="postcode" property="postcode"/>
+        <result column="contact" property="contact"/>
+        <result column="telephone" property="telephone"/>
+        <result column="paty_contact" property="patyContact"/>
+        <result column="contact1" property="contact1"/>
+        <result column="postcode1" property="postcode1"/>
+        <result column="phon" property="phon"/>
+        <result column="annex" property="annex"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -57,47 +68,58 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
-        mtb_paty_a,
-        mtb_party_a_address,
-        mtb_number,
-        mtb_paty_a_fax,
-        mtb_paty_b,
-        mtb_paty_b_address,
-        mtb_paty_b_phone,
-        mtb_paty_b_fax,
-        mtb_project_name,
-        mtb_attachment,
-        mtb_research_methods,
-        mtb_number_of_respondents,
-        mtb_results_content,
-        mtb_schedule,
-        mtb_matters,
-        mtb_total_cost,
-        mtb_rate,
-        mtb_tax_amount,
-        mtb_cost_details,
-        mtb_perform_cost_a,
-        mtb_presided_over_by,
-        mtb_travel,
-        mtb_outline_designs,
-        mtb_other,
-        mtb_combined,
-        mtb_design_and_printing,
-        mtb_green_fees,
-        mtb_perform_cost,
-        mtb_outline_design,
-        mtb_travel_expenses,
-        mtb_other_a,
-        mtd_a_combined,
-        mtb_company_name,
-        mtb_bank,
-        mtb_account,
-        mtb_mail_delivery,
-        mtb_the_contact,
-        mtb_paty_the_contact,
-        mtb_zip_code,
-        mtb_phon,
-        mtb_annex_ii,
+        patya,
+        party_address,
+        number,
+        paty_fax,
+        patyb,
+        paty_addressb,
+        paty_phoneb,
+        paty_faxb,
+        project_name,
+        attachment,
+        research,
+        methods,
+        number_respondents,
+        require_respondents,
+        results,
+        research1,
+        video,
+        qualitative,
+        quantitative1,
+        other,
+        other1,
+        other2,
+        total_cost,
+        rate,
+        amount,
+        undertakesb,
+        undertakesa,
+        element,
+        element1,
+        element2,
+        element3,
+        element4,
+        element5,
+        element6,
+        element7,
+        element8,
+        element9,
+        element10,
+        element11,
+        element12,
+        company,
+        bank,
+        account,
+        contact_address,
+        postcode,
+        contact,
+        telephone,
+        paty_contact,
+        contact1,
+        postcode1,
+        phon,
+        annex,
         status,
         is_deleted,
         create_user,

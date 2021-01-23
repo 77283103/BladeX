@@ -44,6 +44,8 @@ public interface ContractFormInfoTemplateContract {
 	String CONTRACT_PRODUCTOUTSERVICECONTRACT3 = "ProductOutServiceContract3";
 	//班车服务合同(关联表1)
 	String CONTRACT_BUSSERVICECONTRACT1="BusServiceContract1";
+	//市调合同（定性+定量）(关联表1)
+	String CONTRAT_IMTBMARKETRESEARCHCONTRACT1="IMtbMarketResearchContract1";
 	//平面广告拍摄制作合同 关联表1
 	String CONTRACT_MTBPRODUCTIONCONTRACT1="MtbProductionContract1";
 	//平面广告拍摄制作合同 关联表2
