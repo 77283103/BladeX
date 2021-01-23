@@ -21,7 +21,7 @@
         <result column="dairy" property="dairy"/>
         <result column="dairy1" property="dairy1"/>
         <result column="requirementsp" property="requirementsp"/>
-        <result column="range" property="range"/>
+        <result column="ranges" property="ranges"/>
         <result column="areae" property="areae"/>
         <result column="requirementse" property="requirementse"/>
         <result column="contractd" property="contractd"/>
@@ -32,7 +32,7 @@
         <result column="morning" property="morning"/>
         <result column="manifest" property="manifest"/>
         <result column="afternoon" property="afternoon"/>
-        <result column="advance" property="advance"/>
+        <result column="advancess" property="advancess"/>
         <result column="season" property="season"/>
         <result column="times" property="times"/>
         <result column="items" property="items"/>
@@ -51,7 +51,6 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
-        <result column="contract_id" property="contractId"/>
         <result column="address" property="address"/>
         <result column="addressb" property="addressb"/>
         <result column="telephone" property="telephone"/>
@@ -109,7 +108,7 @@
         dairy,
         dairy1,
         requirementsp,
-        range,
+        ranges,
         areae,
         requirementse,
         contractd,
@@ -120,7 +119,7 @@
         morning,
         manifest,
         afternoon,
-        advance,
+        advancess,
         season,
         times,
         items,
@@ -139,7 +138,6 @@
         update_user,
         update_time,
         create_dept,
-        contract_id,
         address,
         addressb,
         telephone,
