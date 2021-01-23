@@ -143,12 +143,6 @@ public class SclEquipmentMaintenanceEntity extends BaseEntity {
     @ApiModelProperty(value="经乙方维修保养的设备，须在每次维修保养后连续或累计【？】个月内有效、正常运转")
 	private Integer sclCumulative;
 	/**
-	 * 经乙方维修保养的设备，须在每次维修保养后连续或累计【？】个月内有效、正常运转
-	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
-    @ApiModelProperty(value="经乙方维修保养的设备，须在每次维修保养后连续或累计【？】个月内有效、正常运转")
-	private Integer sclCumulatives;
-	/**
 	 * （第四.5项）特别约定：【？】
 	 */
     @ApiModelProperty(value="（第四.5项）特别约定：【？】")
@@ -182,9 +176,8 @@ public class SclEquipmentMaintenanceEntity extends BaseEntity {
 	/**
 	 * 双方同意采用以下第【？】种约定付款
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="双方同意采用以下第【？】种约定付款")
-	private Integer sclSides;
+	private String sclSides;
 	/**
 	 * 款项均以【？】方式支付
 	 */
