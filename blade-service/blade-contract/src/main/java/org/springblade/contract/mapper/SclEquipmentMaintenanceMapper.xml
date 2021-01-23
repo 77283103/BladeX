@@ -25,7 +25,6 @@
         <result column="scl_maintenances" property="sclMaintenances"/>
         <result column="scl_routine" property="sclRoutine"/>
         <result column="scl_cumulative" property="sclCumulative"/>
-        <result column="scl_cumulatives" property="sclCumulatives"/>
         <result column="scl_specifically_agreed" property="sclSpecificallyAgreed"/>
         <result column="scl_contract" property="sclContract"/>
         <result column="scl_party_as" property="sclPartyAs"/>
@@ -85,7 +84,6 @@
         scl_maintenances,
         scl_routine,
         scl_cumulative,
-        scl_cumulatives,
         scl_specifically_agreed,
         scl_contract,
         scl_party_as,

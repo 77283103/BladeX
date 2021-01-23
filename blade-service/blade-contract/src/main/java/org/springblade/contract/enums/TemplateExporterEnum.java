@@ -923,15 +923,44 @@ public enum TemplateExporterEnum {
             dataModel.put("sclCapitalRmb", MoneyToChiness.tenThousand(String.valueOf(valuesD)));
             dataModel.put("sclNote",j.get("sclNote"));
             dataModel.put("sclEquipment",j.get("sclEquipment"));
-            dataModel.put("sclMaintenancessss",j.get("sclMaintenancessss"));
-            dataModel.put("sclGuaranteePeriod",j.get("sclGuaranteePeriod"));
-            dataModel.put("sclQuality",j.get("sclQuality"));
-            dataModel.put("sclRoutineMaintenancess",j.get("sclRoutineMaintenancess"));
-            dataModel.put("sclMonth",j.get("sclMonth"));
-            dataModel.put("sclMaintenance",j.get("sclMaintenance"));
-            dataModel.put("sclPeriod",j.get("sclPeriod"));
-            dataModel.put("sclMaintenances",j.get("sclMaintenances"));
-            dataModel.put("sclRoutine",j.get("sclRoutine"));
+            //1、累计运行时间维修保养
+            if (j.get("sclEquipment").toString().contains("1")){
+                dataModel.put("sclMaintenancessss",j.get("sclMaintenancessss"));
+                dataModel.put("sclGuaranteePeriod",j.get("sclGuaranteePeriod"));
+            }else{
+                dataModel.put("sclMaintenancessss","＿");
+                dataModel.put("sclGuaranteePeriod","＿");
+            }
+            //2、单次维修保养
+            if (j.get("sclEquipment").toString().contains("2")){
+                dataModel.put("sclQuality",j.get("sclQuality"));
+            }else{
+                dataModel.put("sclQuality","＿");
+            }
+            //3、月度维修保养
+            if (j.get("sclEquipment").toString().contains("3")){
+                dataModel.put("sclRoutineMaintenancess",j.get("sclRoutineMaintenancess"));
+                dataModel.put("sclMonth",j.get("sclMonth"));
+            }else{
+                dataModel.put("sclRoutineMaintenancess","＿");
+                dataModel.put("sclMonth","＿");
+            }
+            //4、季度维修保养
+            if (j.get("sclEquipment").toString().contains("4")){
+                dataModel.put("sclMaintenance",j.get("sclMaintenance"));
+                dataModel.put("sclPeriod",j.get("sclPeriod"));
+            }else{
+                dataModel.put("sclMaintenance","＿");
+                dataModel.put("sclPeriod","＿");
+            }
+            //5、年度维修保养
+            if (j.get("sclEquipment").toString().contains("5")){
+                dataModel.put("sclMaintenances",j.get("sclMaintenances"));
+                dataModel.put("sclRoutine",j.get("sclRoutine"));
+            }else{
+                dataModel.put("sclMaintenances","＿");
+                dataModel.put("sclRoutine","＿");
+            }
             dataModel.put("sclCumulative",j.get("sclCumulative"));
             dataModel.put("sclSpecificallyAgreed",j.get("sclSpecificallyAgreed"));
             dataModel.put("sclContract",j.get("sclContract"));
@@ -941,7 +970,11 @@ public enum TemplateExporterEnum {
             dataModel.put("sclMaintenanceq",j.get("sclMaintenanceq"));
             dataModel.put("sclSides",j.get("sclSides"));
             dataModel.put("sclPayment",j.get("sclPayment"));
-            dataModel.put("sclOtherWay",j.get("sclOtherWay"));
+            if (j.get("sclSides").toString().contains("(3)")){
+                dataModel.put("sclOtherWay",j.get("sclOtherWay"));
+            }else{
+                dataModel.put("sclOtherWay","＿");
+            }
             dataModel.put("sclBank",j.get("sclBank"));
             dataModel.put("sclName",j.get("sclName"));
             dataModel.put("sclAccount",j.get("sclAccount"));
