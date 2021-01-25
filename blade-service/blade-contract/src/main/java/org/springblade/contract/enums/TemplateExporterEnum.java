@@ -1548,24 +1548,30 @@ public enum TemplateExporterEnum {
                         BigDecimal.valueOf(null==contractFormInfoEntity.getContactTaxRate()?1:contractFormInfoEntity.getContactTaxRate()+1)
                 ));
             }else {
+				dataModel.put("element","");
+				dataModel.put("element1","");
+				dataModel.put("element2","");
+				dataModel.put("element3","");
+				dataModel.put("element4","");
+				dataModel.put("element5","");
                 dataModel.put("research", "☐");
                 dataModel.put("methods", "☑");
             }
-                dataModel.put("element6",j.get("element6"));
-                dataModel.put("element7",j.get("element7"));
-                dataModel.put("element8",j.get("element8"));
-                dataModel.put("element9",j.get("element9"));
-                dataModel.put("element10",j.get("element10"));
-                dataModel.put("element11",j.get("element11"));
-                dataModel.put("element12",BigDecimal.valueOf(
-                        Double.valueOf("".equals(j.get("element6").toString()) ?"0.0":j.get("element6").toString()).doubleValue()
-                                +Double.valueOf("".equals(j.get("element7").toString()) ?"0.0":j.get("element7").toString()).doubleValue()
-                                +Double.valueOf("".equals(j.get("element8").toString()) ?"0.0":j.get("element8").toString()).doubleValue()
-                                +Double.valueOf("".equals(j.get("element9").toString()) ?"0.0":j.get("element9").toString()).doubleValue()
-                                +Double.valueOf("".equals(j.get("element11").toString()) ?"0.0":j.get("element11").toString()).doubleValue()
-                                +Double.valueOf("".equals(j.get("element10").toString()) ?"0.0":j.get("element10").toString()).doubleValue()).multiply(
-                        BigDecimal.valueOf(null==contractFormInfoEntity.getContactTaxRate()?1:contractFormInfoEntity.getContactTaxRate()+1)
-                ));
+			dataModel.put("element6",j.get("element6"));
+			dataModel.put("element7",j.get("element7"));
+			dataModel.put("element8",j.get("element8"));
+			dataModel.put("element9",j.get("element9"));
+			dataModel.put("element10",j.get("element10"));
+			dataModel.put("element11",j.get("element11"));
+			dataModel.put("element12",BigDecimal.valueOf(
+					Double.valueOf("".equals(j.get("element6").toString()) ?"0.0":j.get("element6").toString()).doubleValue()
+							+Double.valueOf("".equals(j.get("element7").toString()) ?"0.0":j.get("element7").toString()).doubleValue()
+							+Double.valueOf("".equals(j.get("element8").toString()) ?"0.0":j.get("element8").toString()).doubleValue()
+							+Double.valueOf("".equals(j.get("element9").toString()) ?"0.0":j.get("element9").toString()).doubleValue()
+							+Double.valueOf("".equals(j.get("element11").toString()) ?"0.0":j.get("element11").toString()).doubleValue()
+							+Double.valueOf("".equals(j.get("element10").toString()) ?"0.0":j.get("element10").toString()).doubleValue()).multiply(
+					BigDecimal.valueOf(null==contractFormInfoEntity.getContactTaxRate()?1:contractFormInfoEntity.getContactTaxRate()+1)
+			));
             dataModel.put("numberRespondents",j.get("numberRespondents"));
             dataModel.put("requireRespondents",j.get("requireRespondents"));
             //乙方需按照本合同约定的时间安排向甲方以书面的形式提交以下成果物：多选
