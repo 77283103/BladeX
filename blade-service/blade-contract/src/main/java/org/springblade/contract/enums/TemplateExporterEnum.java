@@ -909,7 +909,7 @@ public enum TemplateExporterEnum {
             }
             SclEquipmentMaintenanceEntity sclEquipmentMaintenance = JSONObject.toJavaObject(j, SclEquipmentMaintenanceEntity.class);
 			dataModel.put("sclPatyA",contractFormInfoEntity.getSealName());
-			dataModel.put("sclPatyB",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
+			dataModel.put("sclPatyB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("sclPatyBs",j.get("sclPatyBs"));
             dataModel.put("sclAddress",j.get("sclAddress"));
             dataModel.put("sclProjectName",j.get("sclProjectName"));
@@ -1158,7 +1158,7 @@ public enum TemplateExporterEnum {
             }
             CglProofingContractEntity cglProofingContract = JSONObject.toJavaObject(j, CglProofingContractEntity.class);
             dataModel.put("partyA",contractFormInfoEntity.getSealName());
-            dataModel.put("partyB",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
+            dataModel.put("partyB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			AtomicReference<Double> valuesD= new AtomicReference<>(0D);
             list.forEach(element->{
 					valuesD.updateAndGet(v -> v + Double.valueOf(element.get("totalAmount").toString()));
@@ -1433,23 +1433,30 @@ public enum TemplateExporterEnum {
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
             DeviceLaunchUseContractEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, DeviceLaunchUseContractEntity.class);
-            dataModel.put("devSaler",j.get("devSaler"));
+			dataModel.put("devSaler",contractFormInfoEntity.getSealName());
+			dataModel.put("devBuyer",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("devSalerAddr",j.get("devSalerAddr"));
-            dataModel.put("devBuyer",j.get("devBuyer"));
             dataModel.put("devBuyerAddr",j.get("devBuyerAddr"));
-            dataModel.put("devBuyerNum",j.get("devBuyerNum"));
+            dataModel.put("devBuyerNum",getCounterpart(contractFormInfoEntity).get("legalRepresentative").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("legalRepresentative").get(0));
             dataModel.put("devNumber",j.get("devNumber"));
-            dataModel.put("devNumberInWord",j.get("devNumberInWord"));
+            dataModel.put("devNumberInWord",MoneyToChiness.tenThousand(String.valueOf(j.get("devNumber"))));
+			if ("新投放本次有收押".equals(j.get("newRelease").toString())){
+				dataModel.put("newRelease","☑");
+				dataModel.put("agreementRenewal","☐");
+			}else{
+				dataModel.put("newRelease","☐");
+				dataModel.put("agreementRenewal","☑");
+			}
             dataModel.put("devBrand",j.get("devBrand"));
             dataModel.put("devModel",j.get("devModel"));
             dataModel.put("devValue",j.get("devValue"));
-            dataModel.put("devBorroStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroStart)"))));
-            dataModel.put("devBorroEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroEnd)"))));
+            dataModel.put("devBorroStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroStart"))));
+            dataModel.put("devBorroEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroEnd"))));
             dataModel.put("devCode",j.get("devCode"));
             dataModel.put("devPlace",j.get("devPlace"));
             dataModel.put("devLeastDate",j.get("devLeastDate"));
             dataModel.put("devDeposit",j.get("devDeposit"));
-            dataModel.put("devDepositInWord",j.get("devDepositInWord"));
+            dataModel.put("devDepositInWord",MoneyToChiness.moneyToChinese(BigDecimal.valueOf(Double.valueOf(j.get("devDeposit").toString()))));
             dataModel.put("devSalerPerson",j.get("devSalerPerson"));
             dataModel.put("devSalerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devSalerTime"))));
             dataModel.put("devBuyerPerson",j.get("devBuyerPerson"));
@@ -1505,7 +1512,7 @@ public enum TemplateExporterEnum {
             //主表
             MtbMarketResearchContractEntity mtbMarketResearchContractEntity = JSONObject.toJavaObject(j, MtbMarketResearchContractEntity.class);
 			dataModel.put("patya",contractFormInfoEntity.getSealName());
-			dataModel.put("patyb",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
+			dataModel.put("patyb",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("partyAddress",j.get("partyAddress"));
             dataModel.put("patyAddressb",j.get("patyAddressb"));
             dataModel.put("number",j.get("number"));
@@ -1601,7 +1608,7 @@ public enum TemplateExporterEnum {
 			Map dataModel = new HashMap();
 			LaborDispatchEntity laborDispatchEntity = JSONObject.toJavaObject(j, LaborDispatchEntity.class);
 			dataModel.put("ywbFirstParty",contractFormInfoEntity.getSealName());
-			dataModel.put("ywbPartyB",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
+			dataModel.put("ywbPartyB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("ywbAddressA",j.get("ywbAddressA"));
 			dataModel.put("ywbAddressB",j.get("ywbAddressB"));
 			dataModel.put("principal",j.get("principal"));
@@ -1656,12 +1663,19 @@ public enum TemplateExporterEnum {
         ).findFirst().get();
     }
     /**处理相对方名称**/
-    public static List<String> getCounterpart(ContractFormInfoEntity formInfo){
-		List<String> list=new ArrayList<>();
+    public static Map<String,List<String>> getCounterpart(ContractFormInfoEntity formInfo){
+		Map<String,List<String>> dataModel = new HashMap();
+    	List<String> list=new ArrayList<>();
+		List<String> listLegalRepresentative=new ArrayList<>();
 	    formInfo.getCounterpart().forEach(counterpart->{
 		list.add(counterpart.getName());
 		});
-		return list;
+		formInfo.getCounterpart().forEach(counterpart->{
+			listLegalRepresentative.add(counterpart.getLegalRepresentative());
+		});
+	    dataModel.put("name",list);
+		dataModel.put("legalRepresentative",listLegalRepresentative);
+		return dataModel;
 	}
 	/**处理json串中为null的过滤方法*/
 	private static ValueFilter filter =new ValueFilter() {

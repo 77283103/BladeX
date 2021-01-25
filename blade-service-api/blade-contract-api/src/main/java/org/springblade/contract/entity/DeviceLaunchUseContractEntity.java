@@ -132,5 +132,14 @@ public class DeviceLaunchUseContractEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "乙方签订时间")
 	private Date devBuyerTime;
-
+	/**
+	 * 新投放本次有收押
+	 */
+	@ApiModelProperty(value = "新投放本次有收押")
+	private String newRelease;
+	/**
+	 * 协议续签本次无收押
+	 */
+	@ApiModelProperty(value = "协议续签本次无收押")
+	private String agreementRenewal;
 }
