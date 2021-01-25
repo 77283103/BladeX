@@ -5,6 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="busServiceContractResultMap" type="org.springblade.contract.entity.BusServiceContractEntity">
         <result column="id" property="id"/>
+        <result column="bus_time_a" property="busTimeA"/>
+        <result column="bus_time_b" property="busTimeB"/>
         <result column="bus_saler" property="busSaler"/>
         <result column="bus_saler_addr" property="busSalerAddr"/>
         <result column="bus_buyer" property="busBuyer"/>
@@ -25,11 +27,13 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
-        <result column="infAnnexFir" property="infAnnexFir"/>
+        <result column="inf_annex_fir" property="infAnnexFir"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        bus_time_a,
+        bus_time_b,
         bus_saler,
         bus_saler_addr,
         bus_buyer,
@@ -50,7 +54,7 @@
         update_user,
         update_time,
         create_dept,
-        infAnnexFir
+        inf_annex_fir,
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="busServiceContractResultMap">
