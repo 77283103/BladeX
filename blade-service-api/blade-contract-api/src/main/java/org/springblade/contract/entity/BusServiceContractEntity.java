@@ -1,6 +1,5 @@
 package org.springblade.contract.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,7 +7,6 @@ import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
 
 import java.util.Date;
-import java.util.List;
 
 
 /**
@@ -54,6 +52,16 @@ public class BusServiceContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "关联子表bus_service_contract1标识")
 	private Long busServiceContract1Id;
 	/**
+	 * A线发车时间
+	 */
+	@ApiModelProperty(value = "A线发车时间")
+	private Date busTimeA;
+	/**
+	 * B线发车时间
+	 */
+	@ApiModelProperty(value = "B线发车时间")
+	private Date busTimeB;
+	/**
 	 * 服务期限始
 	 */
 	@ApiModelProperty(value = "服务期限始")
@@ -98,11 +106,4 @@ public class BusServiceContractEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "附件1：报价单")
 	private String infAnnexFir;
-	/**
-	 *服务内容：
-	 */
-	@ApiModelProperty(value = "服务内容：")
-	@TableField(exist = false)
-	private List<BusServiceContract1Entity> busServiceContract1EntityList;
-
 }

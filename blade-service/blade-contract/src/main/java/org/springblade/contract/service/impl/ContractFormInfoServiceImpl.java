@@ -1548,16 +1548,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         templateField.setTableDataList(list);
                     }
                 }
-                //*班车服务合同(关联表1）
-                if (ContractFormInfoTemplateContract.CONTRACT_BUSSERVICECONTRACT1.equals(templateField.getRelationCode())) {
-                    List<BusServiceContract1ResponseVO> busServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), BusServiceContract1ResponseVO.class);
-                    if (CollectionUtil.isNotEmpty(busServiceContract1ResponseVOList)) {
-                        busServiceContract1Service.saveBatchByRefId(contractFormInfo.getId(), busServiceContract1ResponseVOList);
-                        List<BusServiceContract1ResponseVO> list = busServiceContract1Service.selectRefList(contractFormInfo.getId());
-                        templateField.setTableData(JSONObject.toJSONString(list));
-                        templateField.setTableDataList(list);
-                    }
-                }
+//                //*班车服务合同(关联表1）
+//                if (ContractFormInfoTemplateContract.CONTRACT_BUSSERVICECONTRACT1.equals(templateField.getRelationCode())) {
+//                    List<BusServiceContract1ResponseVO> busServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), BusServiceContract1ResponseVO.class);
+//                    if (CollectionUtil.isNotEmpty(busServiceContract1ResponseVOList)) {
+//                        busServiceContract1Service.saveBatchByRefId(contractFormInfo.getId(), busServiceContract1ResponseVOList);
+//                        List<BusServiceContract1ResponseVO> list = busServiceContract1Service.selectRefList(contractFormInfo.getId());
+//                        templateField.setTableData(JSONObject.toJSONString(list));
+//                        templateField.setTableDataList(list);
+//                    }
+//                }
                 //*市调合同（定性+定量）(关联表1）
                 if (ContractFormInfoTemplateContract.CONTRAT_IMTBMARKETRESEARCHCONTRACT1.equals(templateField.getRelationCode())) {
                     List<MtbMarketResearchContract1ResponseVO> mtbMarketResearchContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), MtbMarketResearchContract1ResponseVO.class);

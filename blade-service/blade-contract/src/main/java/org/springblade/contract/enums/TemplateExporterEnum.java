@@ -1462,29 +1462,14 @@ public enum TemplateExporterEnum {
         @Override
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
-            List<Map<String, Object>> list=new ArrayList();
-            List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
-            for (TemplateFieldJsonEntity templateField : templateFieldList) {
-                //生产项目外包服务合同关联表1
-                if (ContractFormInfoTemplateContract.CONTRACT_BUSSERVICECONTRACT1.equals(templateField.getRelationCode())) {
-                    List<BusServiceContract1ResponseVO> busServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), BusServiceContract1ResponseVO.class);
-                    for (int i=0;i<busServiceContract1ResponseVOList.size();i++) {
-                        JSONObject busServiceContract1= JSON.parseObject(JSON.toJSONString(busServiceContract1ResponseVOList.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
-                        Map<String, Object> map=new HashMap();
-                        map.put("name",busServiceContract1.get("name"));
-                        map.put("unit",busServiceContract1.get("unit"));
-                        map.put("unitPrice",busServiceContract1.get("unitPrice"));
-                        map.put("content",busServiceContract1.get("content"));
-                        list.add(map);
-                    }
-                }
-            }
             //主表
             BusServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, BusServiceContractEntity.class);
-            dataModel.put("busSaler",j.get("busSaler"));
+            dataModel.put("busSaler",contractFormInfoEntity.getSealName());
+            dataModel.put("busBuyer",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
             dataModel.put("busSalerAddr",j.get("busSalerAddr"));
-            dataModel.put("busBuyer",j.get("busBuyer"));
             dataModel.put("busBuyerAddr",j.get("busBuyerAddr"));
+            dataModel.put("busTimeA",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busTimeA"))));
+            dataModel.put("busTimeB",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busTimeB"))));
             dataModel.put("busServiceTimeStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busServiceTimeStart"))));
             dataModel.put("busServiceTimeEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busServiceTimeEnd"))));
             dataModel.put("busDateRequireFir",j.get("busDateRequireFir"));
@@ -1494,7 +1479,6 @@ public enum TemplateExporterEnum {
             dataModel.put("busBuyerAccountBank",j.get("busBuyerAccountBank"));
             dataModel.put("busDateRequireSec",j.get("busDateRequireSec"));
             dataModel.put("infAnnexFir",j.get("infAnnexFir"));
-            dataModel.put("list",list);
             return dataModel;
         }
     },
@@ -1576,8 +1560,8 @@ public enum TemplateExporterEnum {
             if (StringUtils.join(j.get("results"),"-").contains("定量研究原始数据记录")){ dataModel.put("quantitative1","☑"); }else{ dataModel.put("quantitative1","☐"); }
             if (StringUtils.join(j.get("results"),"-").contains("其他")){
                 dataModel.put("other","☑");
-                dataModel.put("other1",j.get("other1"));//其他选项的内容：
-                dataModel.put("other2","——");//页面未赋值
+                dataModel.put("other1",j.get("other1"));
+                dataModel.put("other2","——");
             }else{
                 dataModel.put("other","☐");
                 dataModel.put("other1","——");
