@@ -1,5 +1,7 @@
 package org.springblade.contract.util;
 
+import org.springblade.core.tool.utils.Func;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
@@ -11,6 +13,9 @@ public class MoneyToChiness {
 
 	//处理万元
 	public static String tenThousand(String money) {
+		if (Func.isEmpty(money)) {
+			return "";
+		}
 		BigDecimal bigDecimal1 = new BigDecimal(money);
 		BigDecimal bigDecimal2 = new BigDecimal(10000);
 		double val = bigDecimal1.multiply(bigDecimal2).doubleValue();
@@ -19,6 +24,9 @@ public class MoneyToChiness {
 	}
 	//处理元的
 	public static String moneyToChinese(BigDecimal IMoney) {
+		if (Func.isEmpty(IMoney)) {
+			return "";
+		}
 		if(IMoney.equals(BigDecimal.ZERO)){
 			return "零圆整";
 		}

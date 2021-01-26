@@ -106,14 +106,11 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclWhole",j.get("sclWhole"));
 			dataModel.put("sclLead",j.get("sclLead"));
 			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));
-			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));
 			dataModel.put("sclContract",j.get("sclContract"));
 			dataModel.put("day5",j.get("day5"));
 			dataModel.put("sclNumber1",j.get("sclNumber1"));
 			dataModel.put("sclMultiple",j.get("sclMultiple"));
 			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));
-			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));
-			dataModel.put("sclContaining",j.get("sclContaining"));
 			dataModel.put("sclContaining",j.get("sclContaining"));
 			dataModel.put("sclNinth",j.get("sclNinth"));
 			dataModel.put("startTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("startTimes"))));
@@ -123,8 +120,6 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclConditions",j.get("sclConditions"));
 			dataModel.put("sclDate3",j.get("sclDate3"));
 			dataModel.put("day6",j.get("day6"));
-			dataModel.put("sclPartya",j.get("sclPartya"));
-			dataModel.put("sclPartyb",j.get("sclPartyb"));
 			dataModel.put("address",j.get("address"));
 			dataModel.put("addressb",j.get("addressb"));
 			dataModel.put("telephone",j.get("telephone"));
@@ -158,8 +153,6 @@ public enum TemplateExporterEnum {
 			dataModel.put("mail1",j.get("mail1"));
 			dataModel.put("postalAddress",j.get("postalAddress"));
 			dataModel.put("company",j.get("company"));
-			dataModel.put("sclPartyb",j.get("sclPartyb"));
-			dataModel.put("sclPartyb",j.get("sclPartyb"));
 			return dataModel;
 		}
 	},
@@ -183,7 +176,7 @@ public enum TemplateExporterEnum {
 				dataModel.put("otherStandards",j.get("otherStandards"));
 				dataModel.put("thisAgreement",j.get("thisAgreement"));
 				dataModel.put("performance",j.get("performance"));
-				dataModel.put("performanceA",j.get("performanceA"));
+				dataModel.put("performanceA",MoneyToChiness.tenThousand(j.get("performance").toString()));
 				dataModel.put("fewDays",j.get("fewDays"));
 				dataModel.put("exceedterm",j.get("exceedterm"));
 				dataModel.put("vatinvoice",j.get("vatinvoice"));
@@ -198,13 +191,8 @@ public enum TemplateExporterEnum {
 				dataModel.put("liquidatedDamages",j.get("liquidatedDamages"));
 				dataModel.put("liquidatedDamagesa",j.get("liquidatedDamagesa"));
 				dataModel.put("otherAgreements",j.get("otherAgreements"));
-				dataModel.put("employer",j.get("employer"));
-				dataModel.put("contractor",j.get("contractor"));
 				dataModel.put("agentA",j.get("agentA"));
 				dataModel.put("agentB",j.get("agentB"));
-				dataModel.put("employersAddress",j.get("employersAddress"));
-				dataModel.put("employersAddress",j.get("employersAddress"));
-				dataModel.put("employersAddress",j.get("employersAddress"));
 				return dataModel;
 			}
 		},
