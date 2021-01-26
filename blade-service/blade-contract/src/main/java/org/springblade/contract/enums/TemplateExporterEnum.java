@@ -33,10 +33,8 @@ import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
@@ -219,17 +217,22 @@ public enum TemplateExporterEnum {
 				}
 			}
 			//这部分处理模板的变量字段
+			dataModel.put("ywlPatyA",contractFormInfoEntity.getSealName());
+			dataModel.put("ywlPatyB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("ywlCooperationContent",j.get("ywlCooperationContent"));
 			//日期格式的字段需要DataFormatUtils.systemTimeFormat处理一下
-			dataModel.put("ywlTheStartTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlTheStartTime"))));
-			dataModel.put("ywlEndOfTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlEndOfTime"))));
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			dataModel.put("ywlTheStartTime",null==(contractFormInfoEntity.getStartingTime()) ?"":DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("ywlEndOfTime",null==(contractFormInfoEntity.getEndTime()) ?"":DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
 			dataModel.put("ywlDisplayFee",j.get("ywlDisplayFee"));
-			dataModel.put("ywlDisplayDfee",j.get("ywlDisplayDfee"));
+			dataModel.put("ywlDisplayDfee",MoneyToChiness.moneyToChinese(j.get("ywlDisplayFee").toString()));
 			//这里是处理下来选的字段的
 			if("1".equals(j.get("ywlDisplayType"))){
-				dataModel.put("ywlDisplayType","货物");
+				dataModel.put("ywlDisplayType","☑");
+				dataModel.put("ywlDisplayType1","☐");
 			}else{
-				dataModel.put("ywlDisplayType","款项");
+				dataModel.put("ywlDisplayType1","☑");
+				dataModel.put("ywlDisplayType","☐");
 			}
 			dataModel.put("ywlOther",j.get("ywlOther"));
 			dataModel.put("list",list);
@@ -241,15 +244,16 @@ public enum TemplateExporterEnum {
 		@Override
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
-				dataModel.put("ywlPatyA",j.get("ywlPatyA"));
-				dataModel.put("ywlPatyB",j.get("ywlPatyB"));
+				dataModel.put("ywlPatyA",contractFormInfoEntity.getSealName());
+				dataModel.put("ywlPatyB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 				dataModel.put("ywlLocation",j.get("ywlLocation"));
-				dataModel.put("ywlSuspensionStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlSuspensionStart"))));
-				dataModel.put("ywlSuspensionEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlSuspensionEnd"))));
-				dataModel.put("ywlAgreementPeriodStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlAgreementPeriodStart"))));
-				dataModel.put("ywlAgreementPeriodEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywlAgreementPeriodEnd"))));
+				dataModel.put("ywlSuspensionStart",j.get("ywlSuspensionStart"));
+				dataModel.put("ywlSuspensionEnd",j.get("ywlSuspensionEnd"));
+				SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+				dataModel.put("ywlAgreementPeriodStart",null==(contractFormInfoEntity.getStartingTime()) ?"":DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+				dataModel.put("ywlAgreementPeriodEnd",null==(contractFormInfoEntity.getEndTime()) ?"":DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
 				dataModel.put("ywlProductionCosts",j.get("ywlProductionCosts"));
-				dataModel.put("ywlAmountOf",j.get("ywlAmountOf"));
+				dataModel.put("ywlAmountOf",MoneyToChiness.moneyToChinese(j.get("ywlProductionCosts").toString()));
 				dataModel.put("ywlOtherConventions",j.get("ywlOtherConventions"));
 			return dataModel;
 		}
@@ -722,8 +726,8 @@ public enum TemplateExporterEnum {
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
             SclLogisticsServiceEntity sclLogisticsService = JSONObject.toJavaObject(j, SclLogisticsServiceEntity.class);
-            dataModel.put("partya",j.get("partya"));
-            dataModel.put("partyb",j.get("partyb"));
+			dataModel.put("partya",contractFormInfoEntity.getSealName());
+			dataModel.put("partyb",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("date",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
             dataModel.put("site",j.get("site"));
             dataModel.put("storage",j.get("storage"));
@@ -743,13 +747,13 @@ public enum TemplateExporterEnum {
             dataModel.put("requirementse",j.get("requirementse"));
             dataModel.put("contractd",j.get("contractd"));
             dataModel.put("second",j.get("second"));
-            dataModel.put("breach",j.get("breach"));
+			dataModel.put("breach",MoneyToChiness.tenThousand(j.get("second").toString()));
             dataModel.put("provide",j.get("provide"));
             dataModel.put("hours",j.get("hours"));
             dataModel.put("morning",j.get("morning"));
             dataModel.put("manifest",j.get("manifest"));
             dataModel.put("afternoon",j.get("afternoon"));
-            dataModel.put("advance",j.get("advance"));
+            dataModel.put("advancess",j.get("advancess"));
             dataModel.put("season",j.get("season"));
             dataModel.put("times",j.get("times"));
             dataModel.put("items",j.get("items"));
@@ -1469,7 +1473,7 @@ public enum TemplateExporterEnum {
             dataModel.put("devPlace",j.get("devPlace"));
             dataModel.put("devLeastDate",j.get("devLeastDate"));
             dataModel.put("devDeposit",j.get("devDeposit"));
-            dataModel.put("devDepositInWord",MoneyToChiness.moneyToChinese(BigDecimal.valueOf(Double.valueOf(j.get("devDeposit").toString()))));
+            dataModel.put("devDepositInWord",MoneyToChiness.moneyToChinese(j.get("devDeposit").toString()));
             dataModel.put("devSalerPerson",j.get("devSalerPerson"));
             dataModel.put("devSalerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devSalerTime"))));
             dataModel.put("devBuyerPerson",j.get("devBuyerPerson"));

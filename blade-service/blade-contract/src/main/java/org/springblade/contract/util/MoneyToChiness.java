@@ -4,6 +4,7 @@ import org.springblade.core.tool.utils.Func;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 public class MoneyToChiness {
 
@@ -19,14 +20,19 @@ public class MoneyToChiness {
 		BigDecimal bigDecimal1 = new BigDecimal(money);
 		BigDecimal bigDecimal2 = new BigDecimal(10000);
 		double val = bigDecimal1.multiply(bigDecimal2).doubleValue();
-		BigDecimal bigDecimal = new BigDecimal(val);
-		return moneyToChinese(bigDecimal);
+		DecimalFormat format = new DecimalFormat();
+		String str= format.format(val);
+		return moneyToChinese(str);
 	}
+
+
+
 	//处理元的
-	public static String moneyToChinese(BigDecimal IMoney) {
-		if (Func.isEmpty(IMoney)) {
+	public static String moneyToChinese(String  str) {
+		if (Func.isEmpty(str)) {
 			return "";
 		}
+		BigDecimal IMoney = new BigDecimal(str);
 		if(IMoney.equals(BigDecimal.ZERO)){
 			return "零圆整";
 		}

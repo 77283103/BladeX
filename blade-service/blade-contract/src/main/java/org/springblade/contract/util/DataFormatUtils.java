@@ -8,12 +8,13 @@ import java.util.Date;
 
 public class DataFormatUtils {
 
+	private static final String str="null";
     /**
      * 系统时间转年月日操作
      *@param systemTime 系统时间
      */
     public static String systemTimeFormat(String systemTime) {
-    	if("null"==systemTime || Func.isBlank(systemTime)){
+    	if(str==systemTime || Func.isBlank(systemTime)){
 			return "__";
 		}else{
 			systemTime = systemTime.replace("Z", " UTC");
