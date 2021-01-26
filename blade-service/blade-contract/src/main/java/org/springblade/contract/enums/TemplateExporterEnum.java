@@ -683,36 +683,59 @@ public enum TemplateExporterEnum {
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
             CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
-            dataModel.put("cglPartya",j.get("cglPartya"));
-            dataModel.put("cglPartyb",j.get("cglPartyb"));
+            dataModel.put("cglPartya",contractFormInfoEntity.getSealName());
+            dataModel.put("cglPartyb",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("cglActivity",j.get("cglActivity"));
             dataModel.put("cglArea",j.get("cglArea"));
 			dataModel.put("activityName",j.get("activityName"));
             dataModel.put("cglByTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("cglByTime"))));
             dataModel.put("cglAsTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("cglAsTime"))));
-            dataModel.put("scheduling",j.get("scheduling"));
-            dataModel.put("cglPrice",j.get("cglPrice"));
-            dataModel.put("planningScheme",j.get("planningScheme"));
-            dataModel.put("cglTotal",j.get("cglTotal"));
-            dataModel.put("capitalization",j.get("capitalization"));
+            dataModel.put("scheduling",j.get("scheduling"));//附件2
+            dataModel.put("cglPrice",j.get("cglPrice"));//附件3
+            dataModel.put("planningScheme",j.get("planningScheme"));//附件1
+            dataModel.put("cglTotal",contractFormInfoEntity.getContractTaxAmount());
+            dataModel.put("capitalization",MoneyToChiness.moneyToChinese(contractFormInfoEntity.getContractTaxAmount()));
 			dataModel.put("events",j.get("events"));
             dataModel.put("cglPayment",j.get("cglPayment"));
-			dataModel.put("days",j.get("days"));
-            dataModel.put("amount",j.get("amount"));
-            dataModel.put("element",j.get("element"));
-			dataModel.put("amountWords",j.get("amountWords"));
-            dataModel.put("cglProportion",j.get("cglProportion"));
-            dataModel.put("cglLumpSum",j.get("cglLumpSum"));
-            dataModel.put("cglCapitalize",j.get("cglCapitalize"));
-            dataModel.put("other",j.get("other"));
+            if (j.get("cglPayment").toString().contains("2.1分期付款")){
+                dataModel.put("days",j.get("days"));
+                dataModel.put("amount",j.get("amount"));
+                dataModel.put("element",j.get("element"));
+                dataModel.put("amountWords",MoneyToChiness.moneyToChinese(BigDecimal.valueOf(Double.valueOf(j.get("element").toString()))));
+                dataModel.put("cglProportion",j.get("cglProportion"));
+                dataModel.put("cglLumpSum",j.get("cglLumpSum"));
+                dataModel.put("cglCapitalize",MoneyToChiness.moneyToChinese(BigDecimal.valueOf(Double.valueOf(j.get("cglLumpSum").toString()))));
+                dataModel.put("other","——");
+            }else if(j.get("cglPayment").toString().contains("2.2其他方式")){
+                dataModel.put("days","——");
+                dataModel.put("amount","——");
+                dataModel.put("element","——");
+                dataModel.put("amountWords","——");
+                dataModel.put("cglProportion","——");
+                dataModel.put("cglLumpSum","__");
+                dataModel.put("cglCapitalize","__");
+                dataModel.put("other",j.get("other"));
+            }else {
+                dataModel.put("days", "__");
+                dataModel.put("amount", "__");
+                dataModel.put("element", "__");
+                dataModel.put("amountWords", "__");
+                dataModel.put("cglProportion", "__");
+                dataModel.put("cglLumpSum", "__");
+                dataModel.put("cglCapitalize", "__");
+                dataModel.put("other", "__");
+            }
             dataModel.put("cglBank",j.get("cglBank"));
             dataModel.put("cglAccountName",j.get("cglAccountName"));
 			dataModel.put("cglAccount",j.get("cglAccount"));
-            dataModel.put("cglInvoice",j.get("cglInvoice"));
+            dataModel.put("cglInvoice",contractFormInfoEntity.getContactTaxRate());
 			dataModel.put("days1",j.get("days1"));
 			dataModel.put("days2",j.get("days2"));
 			dataModel.put("breachContract",j.get("breachContract"));
-            dataModel.put("four",j.get("four"));
+            dataModel.put("one",j.get("planningScheme"));
+            dataModel.put("two",j.get("scheduling"));
+            dataModel.put("three",j.get("cglPrice"));
+            dataModel.put("four",j.get("cglInspectionStandard"));
             return dataModel;
         }
     },
@@ -1485,7 +1508,7 @@ public enum TemplateExporterEnum {
             //主表
             BusServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, BusServiceContractEntity.class);
             dataModel.put("busSaler",contractFormInfoEntity.getSealName());
-            dataModel.put("busBuyer",getCounterpart(contractFormInfoEntity).size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get(0));
+            dataModel.put("busBuyer",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("busSalerAddr",j.get("busSalerAddr"));
             dataModel.put("busBuyerAddr",j.get("busBuyerAddr"));
             dataModel.put("busTimeA",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busTimeA"))));
