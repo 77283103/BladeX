@@ -106,14 +106,11 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclWhole",j.get("sclWhole"));
 			dataModel.put("sclLead",j.get("sclLead"));
 			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));
-			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));
 			dataModel.put("sclContract",j.get("sclContract"));
 			dataModel.put("day5",j.get("day5"));
 			dataModel.put("sclNumber1",j.get("sclNumber1"));
 			dataModel.put("sclMultiple",j.get("sclMultiple"));
 			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));
-			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));
-			dataModel.put("sclContaining",j.get("sclContaining"));
 			dataModel.put("sclContaining",j.get("sclContaining"));
 			dataModel.put("sclNinth",j.get("sclNinth"));
 			dataModel.put("startTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("startTimes"))));
@@ -123,8 +120,6 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclConditions",j.get("sclConditions"));
 			dataModel.put("sclDate3",j.get("sclDate3"));
 			dataModel.put("day6",j.get("day6"));
-			dataModel.put("sclPartya",j.get("sclPartya"));
-			dataModel.put("sclPartyb",j.get("sclPartyb"));
 			dataModel.put("address",j.get("address"));
 			dataModel.put("addressb",j.get("addressb"));
 			dataModel.put("telephone",j.get("telephone"));
@@ -158,7 +153,6 @@ public enum TemplateExporterEnum {
 			dataModel.put("mail1",j.get("mail1"));
 			dataModel.put("postalAddress",j.get("postalAddress"));
 			dataModel.put("company",j.get("company"));
-			dataModel.put("sclPartyb",j.get("sclPartyb"));
 			dataModel.put("sclPartyb",j.get("sclPartyb"));
 			return dataModel;
 		}
@@ -641,6 +635,20 @@ public enum TemplateExporterEnum {
                         list1.add(map);
                     }
                 }
+				//视频广告拍摄制作合同 关联表3
+				if (ContractFormInfoTemplateContract.CONTRACT_MTLSHOOTINGANDPRODUCTIONCONTRACT3.equals(templateField.getRelationCode())) {
+					List<MtlShootingAndProductionContract3ResponseVO> mtlShootingAndProductionContract3List = JSON.parseArray(templateField.getTableData(), MtlShootingAndProductionContract3ResponseVO.class);
+					for (int i=0;i<mtlShootingAndProductionContract3List.size();i++) {
+						JSONObject mtlShootingAndProductionContract3= JSON.parseObject(JSON.toJSONString(mtlShootingAndProductionContract3List.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
+						Map<String, Object> map=new HashMap();
+						map.put("file",mtlShootingAndProductionContract3.get("file"));
+						map.put("creationTime",mtlShootingAndProductionContract3.get("creationTime"));
+						map.put("completeplace",mtlShootingAndProductionContract3.get("completeplace"));
+						map.put("creator",mtlShootingAndProductionContract3.get("creator"));
+						map.put("employment",mtlShootingAndProductionContract3.get("employment"));
+						list1.add(map);
+					}
+				}
             }
             //主表
             MtlShootingAndProductionContractEntity mtlShootingAndProductionContract = JSONObject.toJavaObject(j, MtlShootingAndProductionContractEntity.class);
@@ -653,12 +661,23 @@ public enum TemplateExporterEnum {
             dataModel.put("mtlAdaptationIssues",j.get("mtlAdaptationIssues"));
             dataModel.put("mtlNameOfAdvertising",j.get("mtlNameOfAdvertising"));
             dataModel.put("mtlContentsOfAdvertisements",j.get("mtlContentsOfAdvertisements"));
-            dataModel.put("mtlProductionStartTime",j.get("mtlProductionStartTime"));
-            dataModel.put("mtlProductionCompletionTime",j.get("mtlProductionCompletionTime"));
+            dataModel.put("mtlHaveHasNot",j.get("mtlHaveHasNot"));
+            dataModel.put("mtlProductionStartTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("mtlProductionStartTime"))));
+            dataModel.put("mtlProductionCompletionTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("mtlProductionCompletionTime"))));
+            dataModel.put("mtlSubmitCheck",j.get("mtlSubmitCheck"));
             dataModel.put("mtlAcceptance",j.get("mtlAcceptance"));
+			dataModel.put("mtlUnpaidTaxRmb",j.get("mtlUnpaidTaxRmb"));
+			dataModel.put("mtlRate",j.get("mtlRate"));
+			dataModel.put("mtlTaxAmountIsRmb",j.get("mtlTaxAmountIsRmb"));
             dataModel.put("mtlCompanyName",j.get("mtlCompanyName"));
             dataModel.put("mtlWhereItIs",j.get("mtlWhereItIs"));
             dataModel.put("mtlAccount",j.get("mtlAccount"));
+			dataModel.put("mtlDubbingUse",j.get("mtlDubbingUse"));
+			dataModel.put("mtlMusicUse",j.get("mtlMusicUse"));
+			dataModel.put("mtlSingerUse",j.get("mtlSingerUse"));
+			dataModel.put("dateSigning",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("dateSigning"))));
+			dataModel.put("jobContent",j.get("jobContent"));
+			dataModel.put("contractNo",contractFormInfoEntity.getContractNumber());
             dataModel.put("list",list);
             dataModel.put("list1",list1);
             return dataModel;
@@ -1538,31 +1557,38 @@ public enum TemplateExporterEnum {
                         +Double.valueOf("".equals(j.get("element4").toString()) ?"0.0":j.get("element4").toString()).doubleValue()).multiply(
                         BigDecimal.valueOf(null==contractFormInfoEntity.getContactTaxRate()?1:contractFormInfoEntity.getContactTaxRate()+1)
                 ));
+				dataModel.put("element6","");
+				dataModel.put("element7","");
+				dataModel.put("element8","");
+				dataModel.put("element9","");
+				dataModel.put("element10","");
+				dataModel.put("element11","");
+				dataModel.put("element12","");
             }else {
-				dataModel.put("element","");
-				dataModel.put("element1","");
-				dataModel.put("element2","");
-				dataModel.put("element3","");
-				dataModel.put("element4","");
-				dataModel.put("element5","");
-                dataModel.put("research", "☐");
-                dataModel.put("methods", "☑");
-            }
-			dataModel.put("element6",j.get("element6"));
-			dataModel.put("element7",j.get("element7"));
-			dataModel.put("element8",j.get("element8"));
-			dataModel.put("element9",j.get("element9"));
-			dataModel.put("element10",j.get("element10"));
-			dataModel.put("element11",j.get("element11"));
-			dataModel.put("element12",BigDecimal.valueOf(
-					Double.valueOf("".equals(j.get("element6").toString()) ?"0.0":j.get("element6").toString()).doubleValue()
-							+Double.valueOf("".equals(j.get("element7").toString()) ?"0.0":j.get("element7").toString()).doubleValue()
-							+Double.valueOf("".equals(j.get("element8").toString()) ?"0.0":j.get("element8").toString()).doubleValue()
-							+Double.valueOf("".equals(j.get("element9").toString()) ?"0.0":j.get("element9").toString()).doubleValue()
-							+Double.valueOf("".equals(j.get("element11").toString()) ?"0.0":j.get("element11").toString()).doubleValue()
-							+Double.valueOf("".equals(j.get("element10").toString()) ?"0.0":j.get("element10").toString()).doubleValue()).multiply(
-					BigDecimal.valueOf(null==contractFormInfoEntity.getContactTaxRate()?1:contractFormInfoEntity.getContactTaxRate()+1)
-			));
+				dataModel.put("research", "☐");
+				dataModel.put("methods", "☑");
+				dataModel.put("element6", j.get("element6"));
+				dataModel.put("element7", j.get("element7"));
+				dataModel.put("element8", j.get("element8"));
+				dataModel.put("element9", j.get("element9"));
+				dataModel.put("element10", j.get("element10"));
+				dataModel.put("element11", j.get("element11"));
+				dataModel.put("element12", BigDecimal.valueOf(
+						Double.valueOf("".equals(j.get("element6").toString()) ? "0.0" : j.get("element6").toString()).doubleValue()
+								+ Double.valueOf("".equals(j.get("element7").toString()) ? "0.0" : j.get("element7").toString()).doubleValue()
+								+ Double.valueOf("".equals(j.get("element8").toString()) ? "0.0" : j.get("element8").toString()).doubleValue()
+								+ Double.valueOf("".equals(j.get("element9").toString()) ? "0.0" : j.get("element9").toString()).doubleValue()
+								+ Double.valueOf("".equals(j.get("element11").toString()) ? "0.0" : j.get("element11").toString()).doubleValue()
+								+ Double.valueOf("".equals(j.get("element10").toString()) ? "0.0" : j.get("element10").toString()).doubleValue()).multiply(
+						BigDecimal.valueOf(null == contractFormInfoEntity.getContactTaxRate() ? 1 : contractFormInfoEntity.getContactTaxRate() + 1)
+				));
+				dataModel.put("element", "");
+				dataModel.put("element1", "");
+				dataModel.put("element2", "");
+				dataModel.put("element3", "");
+				dataModel.put("element4", "");
+				dataModel.put("element5", "");
+			}
             dataModel.put("numberRespondents",j.get("numberRespondents"));
             dataModel.put("requireRespondents",j.get("requireRespondents"));
             //乙方需按照本合同约定的时间安排向甲方以书面的形式提交以下成果物：多选
@@ -1603,6 +1629,7 @@ public enum TemplateExporterEnum {
             dataModel.put("postcode1",j.get("postcode1"));
             dataModel.put("phon",j.get("phon"));
             dataModel.put("annex",j.get("annex"));
+			dataModel.put("annex1",j.get("annex1"));
             dataModel.put("list",list);
             return dataModel;
         }

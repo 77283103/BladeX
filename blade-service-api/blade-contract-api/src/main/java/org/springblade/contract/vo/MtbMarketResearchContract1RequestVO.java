@@ -1,11 +1,14 @@
 package org.springblade.contract.vo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -26,7 +29,8 @@ import java.util.Date;
 public class MtbMarketResearchContract1RequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
-
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value="时间")
 	private Date mtbTime;
 	

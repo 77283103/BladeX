@@ -42,12 +42,12 @@ public class MtbMarketResearchContractEntity extends BaseEntity {
 	 * 甲方电话
 	 */
 	@ApiModelProperty(value = "甲方电话")
-	private Integer number;
+	private String number;
 	/**
 	 * 甲方传真
 	 */
 	@ApiModelProperty(value = "甲方传真")
-	private Integer patyFax;
+	private String patyFax;
 	/**
 	 * 乙方
 	 */
@@ -62,12 +62,12 @@ public class MtbMarketResearchContractEntity extends BaseEntity {
 	 * 乙方电话
 	 */
 	@ApiModelProperty(value = "乙方电话")
-	private Integer patyPhoneb;
+	private String patyPhoneb;
 	/**
 	 * 乙方传真
 	 */
 	@ApiModelProperty(value = "乙方传真")
-	private Integer patyFaxb;
+	private String patyFaxb;
 	/**
 	 * 项目名称
 	 */
@@ -284,10 +284,15 @@ public class MtbMarketResearchContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "电话号码")
 	private String phon;
 	/**
-	 * 附件二 【？】调研计划书/报价单（择一）
+	 * 调研计划书/报价单（择一）
 	 */
-	@ApiModelProperty(value = "附件二 【？】调研计划书/报价单（择一）")
+	@ApiModelProperty(value = "调研计划书/报价单（择一）")
 	private String annex;
+	/**
+	 * 附件二
+	 */
+	@ApiModelProperty(value = "附件二")
+	private String annex1;
 	/**
 	 * 关联子表
 	 */
