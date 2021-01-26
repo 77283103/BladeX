@@ -14,16 +14,8 @@
         <result column="mtl_adaptation_issues" property="mtlAdaptationIssues"/>
         <result column="mtl_name_of_advertising" property="mtlNameOfAdvertising"/>
         <result column="mtl_contents_of_advertisements" property="mtlContentsOfAdvertisements"/>
-        <result column="mtl_delivery_form" property="mtlDeliveryForm"/>
-        <result column="mtl_number_of" property="mtlNumberOf"/>
-        <result column="mtl_content_idea" property="mtlContentIdea"/>
-        <result column="mtl_requirements" property="mtlRequirements"/>
-        <result column="mtl_cost" property="mtlCost"/>
         <result column="mtl_have_has_not" property="mtlHaveHasNot"/>
-        <result column="mtl_property_rights" property="mtlPropertyRights"/>
-        <result column="mtl_small_kind" property="mtlSmallKind"/>
-        <result column="mtl_use_period" property="mtlUsePeriod"/>
-        <result column="mtl_use_area" property="mtlUseArea"/>
+        <result column="mtl_submit_check" property="mtlSubmitCheck"/>
         <result column="mtl_production_start_time" property="mtlProductionStartTime"/>
         <result column="mtl_production_completion_time" property="mtlProductionCompletionTime"/>
         <result column="mtl_unpaid_tax_rmb" property="mtlUnpaidTaxRmb"/>
@@ -33,6 +25,12 @@
         <result column="mtl_where_it_is" property="mtlWhereItIs"/>
         <result column="mtl_account" property="mtlAccount"/>
         <result column="mtl_acceptance" property="mtlAcceptance"/>
+        <result column="mtl_dubbing_use" property="mtlDubbingUse"/>
+        <result column="mtl_music_use" property="mtlMusicUse"/>
+        <result column="mtl_singer_use" property="mtlSingerUse"/>
+        <result column="date_signing" property="dateSigning"/>
+        <result column="job_content" property="jobContent"/>
+        <result column="contract_no" property="contractNo"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -53,25 +51,23 @@
         mtl_adaptation_issues,
         mtl_name_of_advertising,
         mtl_contents_of_advertisements,
-        mtl_delivery_form,
-        mtl_number_of,
-        mtl_content_idea,
-        mtl_requirements,
-        mtl_cost,
         mtl_have_has_not,
-        mtl_property_rights,
-        mtl_small_kind,
-        mtl_use_period,
-        mtl_use_area,
         mtl_production_start_time,
         mtl_production_completion_time,
         mtl_unpaid_tax_rmb,
+         mtl_submit_check,
         mtl_rate,
         mtl_tax_amount_is_rmb,
         mtl_company_name,
         mtl_where_it_is,
         mtl_account,
         mtl_acceptance,
+        mtl_music_use,
+        mtl_singer_use,
+        mtl_dubbing_use,
+        date_signing,
+        job_content,
+        contract_no,
         status,
         is_deleted,
         create_user,

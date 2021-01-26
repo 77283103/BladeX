@@ -108,6 +108,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private IMtlAdaptationContract2Service mtlAdaptationContract2Service;
     private IMtlShootingAndProductionContract1Service mtlShootingAndProductionContract1Service;
     private IMtlShootingAndProductionContract2Service mtlShootingAndProductionContract2Service;
+    private IMtlShootingAndProductionContract3Service mtlShootingAndProductionContract3Service;
     private ISclProjectOutsourcing1Service sclProjectOutsourcing1Service;
     private ISclEquipmentMaintenance1Service sclEquipmentMaintenance1Service;
     private IMtbProductionContract1Service mtbProductionContract1Service;
@@ -1364,6 +1365,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                     if (CollectionUtil.isNotEmpty(mtlShootingAndProductionContract2List)) {
                         mtlShootingAndProductionContract2Service.saveBatchByRefId(contractFormInfo.getId(), mtlShootingAndProductionContract2List);
                         List<MtlShootingAndProductionContract2ResponseVO> list = mtlShootingAndProductionContract2Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
+                //*视频广告拍摄制作合同 广告完成形式关联表3
+                if (ContractFormInfoTemplateContract.CONTRACT_MTLSHOOTINGANDPRODUCTIONCONTRACT3.equals(templateField.getRelationCode())) {
+                    List<MtlShootingAndProductionContract3ResponseVO> mtlShootingAndProductionContract3List = JSON.parseArray(templateField.getTableData(), MtlShootingAndProductionContract3ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(mtlShootingAndProductionContract3List)) {
+                        mtlShootingAndProductionContract3Service.saveBatchByRefId(contractFormInfo.getId(), mtlShootingAndProductionContract3List);
+                        List<MtlShootingAndProductionContract3ResponseVO> list = mtlShootingAndProductionContract3Service.selectRefList(contractFormInfo.getId());
                         templateField.setTableData(JSONObject.toJSONString(list));
                         templateField.setTableDataList(list);
                     }

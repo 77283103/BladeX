@@ -57,6 +57,7 @@
         <result column="postcode1" property="postcode1"/>
         <result column="phon" property="phon"/>
         <result column="annex" property="annex"/>
+        <result column="annex1" property="annex1"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -120,6 +121,7 @@
         postcode1,
         phon,
         annex,
+        annex1,
         status,
         is_deleted,
         create_user,

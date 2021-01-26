@@ -1,25 +1,18 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -84,58 +77,12 @@ public class MtlShootingAndProductionContractEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="广告内容")
 	private String mtlContentsOfAdvertisements;
-	/**
-	 * 交付形式
-	 */
-    @ApiModelProperty(value="交付形式")
-	private String mtlDeliveryForm;
-	/**
-	 * 数量
-	 */
-    @ApiModelProperty(value="数量")
-	private String mtlNumberOf;
-	/**
-	 * 内容主旨
-	 */
-    @ApiModelProperty(value="内容主旨")
-	private String mtlContentIdea;
-	/**
-	 * 要求（语言、规格、精度等）
-	 */
-    @ApiModelProperty(value="要求（语言、规格、精度等）")
-	private String mtlRequirements;
-	/**
-	 * 费用（元，含税）
-	 */
-    @ApiModelProperty(value="费用（元，含税）")
-	private BigDecimal mtlCost;
+
 	/**
 	 * 作品中【？】（有/未）涉及第三方知识产权、肖像权
 	 */
     @ApiModelProperty(value="作品中【？】（有/未）涉及第三方知识产权、肖像权")
 	private String mtlHaveHasNot;
-	/**
-	 * 第三方知识产权
-	 */
-    @ApiModelProperty(value="第三方知识产权")
-	private String mtlPropertyRights;
-	/**
-	 * 小样
-	 */
-    @ApiModelProperty(value="小样")
-	private String mtlSmallKind;
-	/**
-	 * 使用期限
-	 */
-    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
-    @ApiModelProperty(value="使用期限")
-	private Date mtlUsePeriod;
-	/**
-	 * 使用区域
-	 */
-    @ApiModelProperty(value="使用区域")
-	private String mtlUseArea;
 	/**
 	 * 拍摄开始时间
 	 */
@@ -150,6 +97,16 @@ public class MtlShootingAndProductionContractEntity extends BaseEntity {
     @JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value="拍摄完成时间")
 	private Date mtlProductionCompletionTime;
+	/**
+	 * 应同时提交以下内容
+	 */
+	@ApiModelProperty(value="拍摄完成时间")
+    private String mtlSubmitCheck;
+	/**
+	 * 上述广告作品给甲方指定人员【？】验收
+	 */
+	@ApiModelProperty(value="上述广告作品给甲方指定人员【？】验收")
+	private String mtlAcceptance;
 	/**
 	 * 本广告制作合同价款为(未税额人民币)
 	 */
@@ -180,12 +137,40 @@ public class MtlShootingAndProductionContractEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="账号")
 	private String mtlAccount;
-	/**
-	 * 上述广告作品给甲方指定人员【？】验收
-	 */
-    @ApiModelProperty(value="上述广告作品给甲方指定人员【？】验收")
-	private String mtlAcceptance;
 
+	/**
+	 * 配音员VO  *  年的使用权
+	 */
+	@ApiModelProperty(value="配音员VO  *  年的使用权")
+	private String mtlDubbingUse;
+
+	/**
+	 * 音乐词  *  年使用权
+	 */
+	@ApiModelProperty(value="音乐词  *  年使用权")
+	private String mtlMusicUse;
+
+	/**
+	 * 歌手演唱  *  年的使用权
+	 */
+	@ApiModelProperty(value="歌手演唱  *  年的使用权")
+	private String mtlSingerUse;
+
+	/**
+	 * 签订日期
+	 */
+	@ApiModelProperty(value = "签订日期")
+	private Date dateSigning;
+	/**
+	 * 工作内容
+	 */
+	@ApiModelProperty(value = "工作内容")
+	private String jobContent;
+	/**
+	 * 合同编号
+	 */
+	@ApiModelProperty(value = "合同编号")
+	private String contractNo;
 	/**
 	 * 视频广告拍摄制作合同1
 	 */
@@ -199,5 +184,11 @@ public class MtlShootingAndProductionContractEntity extends BaseEntity {
 	@ApiModelProperty(value="视频广告拍摄制作合同关联表2")
 	@TableField(exist = false)
 	private List<MtlShootingAndProductionContract2Entity> mtlShootingAndProductionContract2EntityList;
+	/**
+	 * 知识产权权利确认书(模板)
+	 */
+	@ApiModelProperty(value="知识产权权利确认书(模板)")
+	@TableField(exist = false)
+	private List<MtlShootingAndProductionContract3Entity> mtlShootingAndProductionContract3EntityList;
 
 }

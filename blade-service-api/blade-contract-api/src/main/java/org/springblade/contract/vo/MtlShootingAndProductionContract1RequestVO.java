@@ -1,19 +1,10 @@
 package org.springblade.contract.vo;
 
-import lombok.ToString;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import org.springblade.core.tool.utils.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import org.springblade.core.mp.base.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+import lombok.ToString;
+import org.springblade.contract.entity.MtlShootingAndProductionContract1Entity;
 
 
 /**
@@ -30,7 +21,7 @@ import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 @Setter
 @ToString
 @ApiModel(description = "媒体类：视频广告拍摄制作合同关联表请求对象")
-public class MtlShootingAndProductionContract1RequestVO extends BaseEntity{
+public class MtlShootingAndProductionContract1RequestVO extends MtlShootingAndProductionContract1Entity {
 
 	private static final long serialVersionUID = 1L;
 
