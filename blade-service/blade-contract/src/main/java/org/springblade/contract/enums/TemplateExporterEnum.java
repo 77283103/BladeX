@@ -698,17 +698,17 @@ public enum TemplateExporterEnum {
             dataModel.put("cglPrice",j.get("cglPrice"));//附件3
             dataModel.put("planningScheme",j.get("planningScheme"));//附件1
             dataModel.put("cglTotal",contractFormInfoEntity.getContractTaxAmount());
-            dataModel.put("capitalization",MoneyToChiness.moneyToChinese(contractFormInfoEntity.getContractTaxAmount()));
+            dataModel.put("capitalization",MoneyToChiness.moneyToChinese(contractFormInfoEntity.getContractTaxAmount().toString()));
 			dataModel.put("events",j.get("events"));
             dataModel.put("cglPayment",j.get("cglPayment"));
             if (j.get("cglPayment").toString().contains("2.1分期付款")){
                 dataModel.put("days",j.get("days"));
                 dataModel.put("amount",j.get("amount"));
                 dataModel.put("element",j.get("element"));
-                dataModel.put("amountWords",MoneyToChiness.moneyToChinese(BigDecimal.valueOf(Double.valueOf(j.get("element").toString()))));
+                dataModel.put("amountWords",MoneyToChiness.moneyToChinese(j.get("element").toString()));
                 dataModel.put("cglProportion",j.get("cglProportion"));
                 dataModel.put("cglLumpSum",j.get("cglLumpSum"));
-                dataModel.put("cglCapitalize",MoneyToChiness.moneyToChinese(BigDecimal.valueOf(Double.valueOf(j.get("cglLumpSum").toString()))));
+                dataModel.put("cglCapitalize",MoneyToChiness.moneyToChinese(j.get("cglLumpSum").toString()));
                 dataModel.put("other","——");
             }else if(j.get("cglPayment").toString().contains("2.2其他方式")){
                 dataModel.put("days","——");
