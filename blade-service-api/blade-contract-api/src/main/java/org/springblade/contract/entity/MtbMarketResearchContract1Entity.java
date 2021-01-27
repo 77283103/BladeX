@@ -32,8 +32,8 @@ public class MtbMarketResearchContract1Entity extends BaseEntity {
 	/**
 	 * 时间
 	 */
-	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATETIME)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATETIME)
 	@ApiModelProperty(value = "时间")
 	private Date mtbTime;
 	/**

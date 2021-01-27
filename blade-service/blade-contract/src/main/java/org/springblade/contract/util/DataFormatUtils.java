@@ -32,6 +32,26 @@ public class DataFormatUtils {
 	}
 
 	/**
+	 * 格林尼治时间转年月日操作
+	 *@param systemTime 系统时间
+	 */
+	public static String GLNZTimeFormat(String systemTime) {
+		if(str==systemTime || Func.isBlank(systemTime)){
+			return "__";
+		}else{
+			String format1 = null;
+			try {
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				Date date = new Date(systemTime);
+				format1 = format.format(date);
+			} catch (Exception ignored) {
+			}
+			return systemTimeFormat(format1);
+		}
+	}
+
+
+	/**
 	 * 系统时间转时分操作
 	 *@param systemTime 系统时间
 	 */

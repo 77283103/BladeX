@@ -1499,10 +1499,10 @@ public enum TemplateExporterEnum {
                 if (ContractFormInfoTemplateContract.CONTRAT_IMTBMARKETRESEARCHCONTRACT1.equals(templateField.getRelationCode())) {
                     List<MtbMarketResearchContract1ResponseVO> mtbMarketResearchContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), MtbMarketResearchContract1ResponseVO.class);
                     for (int i=0;i<mtbMarketResearchContract1ResponseVOList.size();i++) {
-                        JSONObject mtbProductionContract= JSON.parseObject(JSON.toJSONString(mtbMarketResearchContract1ResponseVOList.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
+                        //JSONObject mtbProductionContract= JSON.parseObject(JSON.toJSONString(mtbMarketResearchContract1ResponseVOList.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
                         Map<String, Object> map=new HashMap();
-                        map.put("mtbTime",DataFormatUtils.systemTimeFormat(String.valueOf(mtbProductionContract.get("mtbTime"))));
-                        map.put("mtbMatter",mtbProductionContract.get("mtbMatter"));
+                        map.put("mtbTime",null==mtbMarketResearchContract1ResponseVOList.get(i).getMtbTime()?"":DataFormatUtils.GLNZTimeFormat(String.valueOf(mtbMarketResearchContract1ResponseVOList.get(i).getMtbTime())));
+                        map.put("mtbMatter",null==mtbMarketResearchContract1ResponseVOList.get(i).getMtbMatter()?"":mtbMarketResearchContract1ResponseVOList.get(i).getMtbMatter());
                         list.add(map);
                     }
                 }
