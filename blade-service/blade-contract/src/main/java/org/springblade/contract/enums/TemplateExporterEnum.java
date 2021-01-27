@@ -1038,54 +1038,6 @@ public enum TemplateExporterEnum {
             return dataModel;
         }
     },
-    //下脚品买卖合同模版-废弃
-    FQHT_26("FQHT_26"){
-        @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
-            Map dataModel = new HashMap();
-            SclContractTemplateEntity sclLogisticsService = JSONObject.toJavaObject(j, SclContractTemplateEntity.class);
-            dataModel.put("sclPartyA",j.get("sclPartyA"));
-            dataModel.put("sclPartyB",j.get("sclPartyB"));
-            dataModel.put("sclPatyB",j.get("sclPatyB"));
-            dataModel.put("sclMonth",j.get("sclMonth"));
-            dataModel.put("sclDay",j.get("sclDay"));
-            dataModel.put("sclSite",j.get("sclSite"));
-            dataModel.put("sclStorage",j.get("sclStorage"));
-            dataModel.put("sclArea",j.get("sclArea"));
-            dataModel.put("sclNo",j.get("sclNo"));
-            dataModel.put("sclStorageee",j.get("sclStorageee"));
-            dataModel.put("sclConditionsa",j.get("sclConditionsa"));
-            dataModel.put("sclNumber",j.get("sclNumber"));
-            dataModel.put("sclServices",j.get("sclServices"));
-            dataModel.put("sclFood",j.get("sclFood"));
-            dataModel.put("sclDrinks",j.get("sclDrinks"));
-            dataModel.put("sclDairy",j.get("sclDairy"));
-            dataModel.put("sclWater",j.get("sclWater"));
-            dataModel.put("sclRequirementsp",j.get("sclRequirementsp"));
-            dataModel.put("sclRange",j.get("sclRange"));
-            dataModel.put("sclAreae",j.get("sclAreae"));
-            dataModel.put("sclRequirementse",j.get("sclRequirementse"));
-            dataModel.put("sclContractd",j.get("sclContract"));
-            dataModel.put("sclProvide",j.get("sclProvide"));
-            dataModel.put("sclSecond",j.get("sclSecond"));
-            dataModel.put("sclHours",j.get("sclHours"));
-            dataModel.put("sclBreach",j.get("sclBreach"));
-            dataModel.put("sclMorning",j.get("sclMorning"));
-            dataModel.put("sclAfternoon",j.get("sclAfternoon"));
-            dataModel.put("sclAdvance",j.get("sclAdvance"));
-            dataModel.put("sclSeason",j.get("sclSeason"));
-            dataModel.put("sclReturn",j.get("sclReturn"));
-            dataModel.put("sclLiquidatedDamages",j.get("sclLiquidatedDamages"));
-            dataModel.put("sclSenDamages",j.get("sclSenDamages"));
-            dataModel.put("sclEngDamages",j.get("sclEngDamages"));
-            dataModel.put("sclStartTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclStartTimes"))));
-            dataModel.put("sclEndTimes", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclEndTimes"))));
-            dataModel.put("sclRequesta",j.get("sclRequesta"));
-            dataModel.put("sclItems",j.get("sclItems"));
-            dataModel.put("sclDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclDate"))));
-            return dataModel;
-        }
-    },
     //物流服务合同（一段+调拨运输）
     FWHT_25("FWHT_25") {
         @Override
@@ -1311,22 +1263,21 @@ public enum TemplateExporterEnum {
         @Override
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
-            InferiorProductContractEntity inferiorProductContract = JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
-            dataModel.put("infSaler",j.get("infSaler"));
+			dataModel.put("infSaler",contractFormInfoEntity.getSealName());
+			dataModel.put("infBuyer",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("infSalerAddr",j.get("infSalerAddr"));
-            dataModel.put("infBuyer",j.get("infBuyer"));
             dataModel.put("infBuyerAddr",j.get("infBuyerAddr"));
             dataModel.put("infTypeFir",j.get("infTypeFir"));
             dataModel.put("infWeekStart",j.get("infWeekStart"));
             dataModel.put("infWeekEnd",j.get("infWeekEnd"));
-            dataModel.put("infTimeStart",j.get("infTimeStart"));
-            dataModel.put("infTimeEnd",j.get("infTimeEnd"));
+            dataModel.put("infTimeStart",DataFormatUtils.systemTimeFormatH(j.get("infTimeStart").toString()));
+            dataModel.put("infTimeEnd",DataFormatUtils.systemTimeFormatH(j.get("infTimeEnd").toString()));
             dataModel.put("infSortAddr",j.get("infSortAddr"));
             dataModel.put("infLeastAmount",j.get("infLeastAmount"));
             dataModel.put("infTimeAmount",j.get("infTimeAmount"));
             dataModel.put("infLoadAddr",j.get("infLoadAddr"));
             dataModel.put("infAppointAmount",j.get("infAppointAmount"));
-            dataModel.put("infCap",j.get("infCap"));
+            dataModel.put("infCap",MoneyToChiness.moneyToChinese(j.get("infAppointAmount").toString()));
             dataModel.put("infTimeLeastFir",j.get("infTimeLeastFir"));
             dataModel.put("infTimeLeastSec",j.get("infTimeLeastSec"));
             dataModel.put("infSalerAccoutName",j.get("infSalerAccoutName"));
@@ -1342,9 +1293,10 @@ public enum TemplateExporterEnum {
             dataModel.put("infBreachAmountSec",j.get("infBreachAmountSec"));
             dataModel.put("infBreachAmountThi",j.get("infBreachAmountThi"));
             dataModel.put("infBreachAmountFou",j.get("infBreachAmountFou"));
-            dataModel.put("infContractStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("infContractStart"))));
-            dataModel.put("infContractEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("infContractEnd"))));
-            dataModel.put("infContractNum",j.get("infContractNum"));
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			dataModel.put("infContractStart",null==(contractFormInfoEntity.getStartingTime()) ?"":DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("infContractEnd",null==(contractFormInfoEntity.getEndTime()) ?"":DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
+			dataModel.put("infContractNum",j.get("infContractNum"));
             dataModel.put("infSalerPhone",j.get("infSalerPhone"));
             dataModel.put("infBuyerPhone",j.get("infBuyerPhone"));
             dataModel.put("infSalerPerson",j.get("infSalerPerson"));

@@ -10,6 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Component
 public class TemplateSaveUntil {
@@ -348,9 +351,19 @@ public class TemplateSaveUntil {
 			}
 			//下脚品买卖合同模版
 			else if ("MMHT_26".equals(template.getTemplateCode())) {
+				//时间处理有问题
+				/*SimpleDateFormat format =  new SimpleDateFormat("HH:mm:ss");
+				try {
+					Date date1 = format.parse(j.get("infTimeStart").toString());
+					j.put("infTimeStart",date1);
+					Date date2 = format.parse(j.get("infTimeEnd").toString());
+					j.put("infTimeEnd",date2);
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
 				InferiorProductContractEntity inferiorProductContract= JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
 				templateSaveUntil.inferiorProductContractService.save(inferiorProductContract);
-				id = inferiorProductContract.getId();
+				id = inferiorProductContract.getId();*/
 			}
 			//广告制作安装合同模板
 			else if ("GGZZ_04".equals(template.getTemplateCode())) {
