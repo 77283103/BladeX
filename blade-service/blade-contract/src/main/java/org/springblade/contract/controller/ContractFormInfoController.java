@@ -40,6 +40,7 @@ import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.entity.FileEntity;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
@@ -77,7 +78,7 @@ public class ContractFormInfoController extends BladeController {
 	private IContractBondPlanService contractBondPlanService;
 	private ContractFormInfoMapper formInfoMapper;
 	private IDictBizClient bizClient;
-
+	private IFileClient fileClient;
 	private static final Integer CHANGE_CONTRACT_ID = -1;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
@@ -441,6 +442,7 @@ public class ContractFormInfoController extends BladeController {
 			TemplateExportUntil templateExportUntil=new TemplateExportUntil();
 			FileVO filevo=templateExportUntil.templateSave(contractFormInfoEntity,template,contractFormInfoEntity.getJson(),j);
 			contractFormInfoEntity.setContractStatus("20");
+			contractFormInfoEntity.setTextFile(filevo.getId()+",");
 			contractFormInfoEntity.setTextFilePdf(filevo.getId()+",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
@@ -458,19 +460,25 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "合同预览", notes = "template")
 	@Transactional(rollbackFor = Exception.class)
 	public R<FileVO> contractBrowse(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo){
-		TemplateRequestVO template=contractFormInfo.getTemplate();
-		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
-		JSONObject j = new JSONObject();
-		for (TemplateFieldEntity templateField : templateFieldList) {
-			j.put(templateField.getFieldName(), templateField.getFieldValue());
+		FileVO files=null;
+		if(Func.isEmpty(contractFormInfo.getTextFile())){
+			TemplateRequestVO template=contractFormInfo.getTemplate();
+			List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
+			JSONObject j = new JSONObject();
+			for (TemplateFieldEntity templateField : templateFieldList) {
+				j.put(templateField.getFieldName(), templateField.getFieldValue());
+			}
+			//把json串转换成一个对象
+			ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
+			BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
+			//String json = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
+			//导出pdf文件
+			TemplateExportUntil templateExportUntil=new TemplateExportUntil();
+			files=templateExportUntil.templateSave(contractFormInfoEntity,template,template.getJson(),j);
+		}else{
+			List<FileVO> list=fileClient.getByIds(contractFormInfo.getTextFile()).getData();
+			files=list.get(0);
 		}
-		//把json串转换成一个对象
-		ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
-		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
-		//String json = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
-		//导出pdf文件
-		TemplateExportUntil templateExportUntil=new TemplateExportUntil();
-		FileVO files=templateExportUntil.templateSave(contractFormInfoEntity,template,template.getJson(),j);
 		return R.data(files);
 	}
 
