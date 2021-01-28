@@ -695,18 +695,18 @@ public enum TemplateExporterEnum {
         @Override
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
-            CglActivityExecutionContractEntity cglActivityExecutionContract = JSONObject.toJavaObject(j, CglActivityExecutionContractEntity.class);
             dataModel.put("cglPartya",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
             dataModel.put("cglPartyb",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("cglActivity",j.get("cglActivity"));
             dataModel.put("cglArea",j.get("cglArea"));
 			dataModel.put("activityName",j.get("activityName"));
-            dataModel.put("cglByTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("cglByTime"))));
-            dataModel.put("cglAsTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("cglAsTime"))));
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			dataModel.put("cglByTime",null==(contractFormInfoEntity.getStartingTime()) ?"":DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("cglAsTime",null==(contractFormInfoEntity.getEndTime()) ?"":DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
             dataModel.put("scheduling",j.get("scheduling"));//附件2
             dataModel.put("cglPrice",j.get("cglPrice"));//附件3
             dataModel.put("planningScheme",j.get("planningScheme"));//附件1
-            dataModel.put("cglTotal",Func.isNull(contractFormInfoEntity.getContractTaxAmount())?"":contractFormInfoEntity.getContractTaxAmount());
+            dataModel.put("cglTotal",contractFormInfoEntity.getContractAmount());
             dataModel.put("capitalization",MoneyToChiness.moneyToChinese(Func.isNull(contractFormInfoEntity.getContractTaxAmount())?"":contractFormInfoEntity.getContractTaxAmount().toString()));
 			dataModel.put("events",j.get("events"));
             dataModel.put("cglPayment",j.get("cglPayment"));
@@ -1172,14 +1172,14 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list=new ArrayList();
-			dataModel.put("pontactPartyB","");
+			dataModel.put("pontactPartyB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("productNameA",j.get("productNameA"));
 			dataModel.put("productContentA",j.get("productContentA"));
 			dataModel.put("productNameB",j.get("productNameB"));
 			dataModel.put("productContentB",j.get("productContentB"));
 			dataModel.put("otherEnterprises",j.get("otherEnterprises"));
 			dataModel.put("otherAgreements",j.get("otherAgreements"));
-			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate)"))));
+			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate"))));
 			return dataModel;
 		}
 	},
