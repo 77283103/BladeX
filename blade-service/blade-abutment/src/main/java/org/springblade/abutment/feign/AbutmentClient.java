@@ -209,7 +209,13 @@ public class AbutmentClient implements IAbutmentClient {
 					//合同主旨
 					formValuesEntity.setFd_main(entity.getContractName());
 					//申请用公章全称
-					formValuesEntity.setFd_offical_seal(entity.getSealName());
+					R<List<DictBiz>> application_seal = bizClient.getList("application_seal");
+					List<DictBiz> dataSeal = application_seal.getData();
+					dataSeal.forEach(bz -> {
+						if ((bz.getDictValue()).equals(entity.getSealName())) {
+							formValuesEntity.setFd_offical_seal(bz.getDictKey());
+						}
+					});
 					//相对方名称
 					formValuesEntity.setFd_full_name(entity.getCounterpart().get(0).getName());
 					//合同负责人
