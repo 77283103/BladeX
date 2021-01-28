@@ -642,7 +642,7 @@ public enum TemplateExporterEnum {
 						JSONObject mtlShootingAndProductionContract3= JSON.parseObject(JSON.toJSONString(mtlShootingAndProductionContract3List.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
 						Map<String, Object> map=new HashMap();
 						map.put("file",mtlShootingAndProductionContract3.get("file"));
-						map.put("creationTime",mtlShootingAndProductionContract3.get("creationTime"));
+						map.put("creationTime",DataFormatUtils.GLNZTimeFormat(String.valueOf(mtlShootingAndProductionContract3.get("creationTime"))));
 						map.put("completeplace",mtlShootingAndProductionContract3.get("completeplace"));
 						map.put("creator",mtlShootingAndProductionContract3.get("creator"));
 						map.put("employment",mtlShootingAndProductionContract3.get("employment"));
@@ -666,9 +666,9 @@ public enum TemplateExporterEnum {
             dataModel.put("mtlProductionCompletionTime",Func.isNull(contractFormInfoEntity.getEndTime())?"":DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
 			//2.乙方制作的作品被甲方全部确认后，应同时提交以下内容（勾选）：
 			StringBuilder mtlTerm=new StringBuilder();
-			if(j.get("mtlSubmitCheck").toString().contains("1")){ mtlTerm.append("(1)");}
-			if(j.get("mtlSubmitCheck").toString().contains("2")){ mtlTerm.append("(2)");}
-			if(j.get("mtlSubmitCheck").toString().contains("3")){ mtlTerm.append("(3)");}
+			if(j.get("mtlSubmitCheck").toString().contains("1")){ mtlTerm.append("(1),");}
+			if(j.get("mtlSubmitCheck").toString().contains("2")){ mtlTerm.append("(2),");}
+			if(j.get("mtlSubmitCheck").toString().contains("3")){ mtlTerm.append("(3),");}
 			if(j.get("mtlSubmitCheck").toString().contains("4")){ mtlTerm.append("(4)");}
 			dataModel.put("mtlSubmitCheck",mtlTerm.toString());
             dataModel.put("mtlAcceptance",j.get("mtlAcceptance"));
