@@ -90,5 +90,8 @@ public class DeviceLaunchUseContractRequestVO extends BaseEntity {
 	
     @ApiModelProperty(value="乙方签订时间")
 	private Date devBuyerTime;
+
+	@ApiModelProperty(value = "其他约定")
+	private String otherAgreements;
 	
 }

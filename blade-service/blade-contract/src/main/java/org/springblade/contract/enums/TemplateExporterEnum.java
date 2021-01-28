@@ -1430,7 +1430,7 @@ public enum TemplateExporterEnum {
             dataModel.put("devBuyerAddr",j.get("devBuyerAddr"));
             dataModel.put("devBuyerNum",getCounterpart(contractFormInfoEntity).get("legalRepresentative").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("legalRepresentative").get(0));
             dataModel.put("devNumber",j.get("devNumber"));
-            dataModel.put("devNumberInWord",MoneyToChiness.tenThousand(String.valueOf(j.get("devNumber"))));
+            dataModel.put("devNumberInWord",MoneyToChiness.moneyToChinese(String.valueOf(j.get("devNumber"))));
 			if ("新投放本次有收押".equals(j.get("newRelease").toString())){
 				dataModel.put("newRelease","☑");
 				dataModel.put("agreementRenewal","☐");
@@ -1444,14 +1444,39 @@ public enum TemplateExporterEnum {
             dataModel.put("devBorroStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroStart"))));
             dataModel.put("devBorroEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroEnd"))));
             dataModel.put("devCode",j.get("devCode"));
-            dataModel.put("devPlace",j.get("devPlace"));
+			//设备投放勾选
+			StringBuilder  putEquipment=new StringBuilder();
+			if(j.get("putEquipment").toString().contains("1")){ putEquipment.append("☑冰箱,"); }else{ putEquipment.append("☐冰箱,"); }
+			if(j.get("putEquipment").toString().contains("2")){ putEquipment.append("☑水冷柜（卧柜）,"); }else{ putEquipment.append("☐水冷柜（卧柜）,"); }
+			if(j.get("putEquipment").toString().contains("3")){ putEquipment.append("☑冰桶,"); }else{ putEquipment.append("☐冰桶,"); }
+			if(j.get("putEquipment").toString().contains("4")){ putEquipment.append("☑风幕柜,"); }else{ putEquipment.append("☐风幕柜,"); }
+			if(j.get("putEquipment").toString().contains("5")){ putEquipment.append("☑热饮机,"); }else{ putEquipment.append("☐热饮机,"); }
+			if(j.get("putEquipment").toString().contains("6")){ putEquipment.append("☑冷热一体机"); }else{ putEquipment.append("☐冷热一体机"); }
+            dataModel.put("putEquipment",putEquipment.toString());
+			//设备摆放位置勾选
+			StringBuilder  devPlace=new StringBuilder();
+			if(j.get("devPlace").toString().contains("1")){ devPlace.append("☑第一层,"); }else{ devPlace.append("☐第一层,"); }
+			if(j.get("devPlace").toString().contains("2")){ devPlace.append("☑第二层,"); }else{ devPlace.append("☐第二层,"); }
+			if(j.get("devPlace").toString().contains("3")){ devPlace.append("☑第三层,"); }else{ devPlace.append("☐第三层,"); }
+			if(j.get("devPlace").toString().contains("4")){ devPlace.append("☑第四层,"); }else{ devPlace.append("☐第四层,"); }
+			if(j.get("devPlace").toString().contains("5")){ devPlace.append("☑第五层,"); }else{ devPlace.append("☐第五层,"); }
+			if(j.get("devPlace").toString().contains("6")){ devPlace.append("☑第六层,"); }else{ devPlace.append("☐第六层,"); }
+			dataModel.put("devPlace",devPlace.toString());
+            //设备投放值
+			StringBuilder  devPlaceValue=new StringBuilder();
+			for (int i = 1; i <=6 ; i++) {
+				if(j.get("devPlace").toString().contains(String.valueOf(i))){ devPlaceValue.append("第"+i+"层,"); }
+			}
+            dataModel.put("devPlaceValue",Func.isBlank(devPlaceValue.toString())?"":devPlaceValue.toString().substring(0,devPlaceValue.length()-1));
             dataModel.put("devLeastDate",j.get("devLeastDate"));
             dataModel.put("devDeposit",j.get("devDeposit"));
             dataModel.put("devDepositInWord",MoneyToChiness.moneyToChinese(j.get("devDeposit").toString()));
-            dataModel.put("devSalerPerson",j.get("devSalerPerson"));
-            dataModel.put("devSalerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devSalerTime"))));
-            dataModel.put("devBuyerPerson",j.get("devBuyerPerson"));
-            dataModel.put("devBuyerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBuyerTime"))));
+// 签约人    dataModel.put("devSalerPerson",j.get("devSalerPerson"));
+// 签订时间  dataModel.put("devSalerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devSalerTime"))));
+// 负责人    dataModel.put("devBuyerPerson",j.get("devBuyerPerson"));
+// 签订时间  dataModel.put("devBuyerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBuyerTime"))));
+            dataModel.put("otherAgreements",j.get("otherAgreements"));
+
             return dataModel;
         }
     },
