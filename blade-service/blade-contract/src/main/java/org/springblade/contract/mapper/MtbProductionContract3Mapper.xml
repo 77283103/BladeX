@@ -5,10 +5,10 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="mtbProductionContract3ResultMap" type="org.springblade.contract.entity.MtbProductionContract3Entity">
         <result column="id" property="id"/>
-        <result column="wenjian" property="wenjian"/>
-        <result column="shouchuang" property="shouchuang"/>
-        <result column="wancheng" property="wancheng"/>
-        <result column="createzhe" property="createzhe"/>
+        <result column="wen_jian" property="wenJian"/>
+        <result column="shou_chuang" property="shouChuang"/>
+        <result column="wan_cheng" property="wanCheng"/>
+        <result column="create_zhe" property="createZhe"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
         <result column="create_time" property="createTime"/>
@@ -17,15 +17,15 @@
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="contract_id" property="contractId"/>
-        <result column="zhiwuorchuang" property="zhiwuorchuang"/>
+        <result column="zhi_wu_chuang" property="zhiWuChuang"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
-        wenjian,
-        shouchuang,
-        wancheng,
-        createzhe,
+        wen_jian,
+        shou_chuang,
+        wan_cheng,
+        create_zhe,
         create_user,
         create_dept,
         create_time,
@@ -34,7 +34,7 @@
         status,
         is_deleted,
         contract_id,
-        zhiwuorchuang
+        zhi_wu_chuang
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="mtbProductionContract3ResultMap">

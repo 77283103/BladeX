@@ -28,22 +28,22 @@ public class MtbProductionContract3Entity extends BaseEntity {
 	 * 文件
 	 */
 	@ApiModelProperty(value = "文件")
-	private String wenjian;
+	private String wenJian;
 	/**
 	 * 首次创建时间
 	 */
 	@ApiModelProperty(value = "首次创建时间")
-	private String shouchuang;
+	private String shouChuang;
 	/**
 	 * 完成地点
 	 */
 	@ApiModelProperty(value = "完成地点")
-	private String wancheng;
+	private String wanCheng;
 	/**
 	 * 创作者
 	 */
 	@ApiModelProperty(value = "创作者")
-	private String createzhe;
+	private String createZhe;
 	/**
 	 * 合同ID
 	 */
@@ -53,6 +53,6 @@ public class MtbProductionContract3Entity extends BaseEntity {
 	 * 职务作品or委托创作
 	 */
 	@ApiModelProperty(value = "职务作品or委托创作")
-	private String zhiwuorchuang;
+	private String zhiWuChuang;
 
 }

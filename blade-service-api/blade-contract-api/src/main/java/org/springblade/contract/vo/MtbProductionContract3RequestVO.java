@@ -25,21 +25,21 @@ public class MtbProductionContract3RequestVO extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
     @ApiModelProperty(value="文件")
-	private String wenjian;
+	private String wenJian;
 
     @ApiModelProperty(value="首次创建时间")
-	private String shouchuang;
+	private String shouChuang;
 
     @ApiModelProperty(value="完成地点")
-	private String wancheng;
+	private String wanCheng;
 
     @ApiModelProperty(value="创作者")
-	private String createzhe;
+	private String createZhe;
 
     @ApiModelProperty(value="合同ID")
 	private Long contractId;
 
     @ApiModelProperty(value="职务作品or委托创作")
-	private String zhiwuorchuang;
+	private String zhiWuChuang;
 
 }

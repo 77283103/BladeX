@@ -1,23 +1,13 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -104,6 +94,11 @@ public class MtbProductionContractEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "甲方验收人员")
 	private String mtbAcceptancePersonnel;
+	/**
+	 * 乙方制作的广告作品被甲方全部确认后，应同时提交以下内容（勾选）：
+	 */
+	@ApiModelProperty(value = "乙方制作的广告作品被甲方全部确认后，应同时提交以下内容（勾选）：")
+	private String mtbSubmitContent;
 	/**
 	 * 本广告制作合同价款为未税额人民币
 	 */
