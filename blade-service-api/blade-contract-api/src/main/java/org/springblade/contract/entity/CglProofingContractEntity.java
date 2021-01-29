@@ -45,10 +45,15 @@ public class CglProofingContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "元")
 	private BigDecimal element;
 	/**
-	 * 日期
+	 * 起始日期
 	 */
-	@ApiModelProperty(value = "日期")
+	@ApiModelProperty(value = "起始日期")
 	private Date date;
+	/**
+	 * 截至日期
+	 */
+	@ApiModelProperty(value = "截至日期")
+	private Date date2;
 	/**
 	 * 元
 	 */

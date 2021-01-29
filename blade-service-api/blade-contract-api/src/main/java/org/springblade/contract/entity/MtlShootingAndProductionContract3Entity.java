@@ -1,6 +1,7 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
@@ -9,6 +10,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -36,6 +39,8 @@ public class MtlShootingAndProductionContract3Entity extends BaseEntity {
     /**
      * 创作时间
      */
+    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value = "创作时间")
     private Date creationTime;
     /**

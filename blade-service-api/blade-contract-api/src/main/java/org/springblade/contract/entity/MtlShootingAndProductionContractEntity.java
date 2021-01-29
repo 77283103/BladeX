@@ -177,7 +177,6 @@ public class MtlShootingAndProductionContractEntity extends BaseEntity {
 	@ApiModelProperty(value="视频广告拍摄制作合同关联表1")
 	@TableField(exist = false)
 	private List<MtlShootingAndProductionContract1Entity> mtlShootingAndProductionContract1EntityList;
-
 	/**
 	 * 视频广告拍摄制作合同2
 	 */

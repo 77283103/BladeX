@@ -83,10 +83,15 @@ public class DeviceLaunchUseContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "资产编码")
 	private String devCode;
 	/**
+	 * 设备摆放位置勾选
+	 */
+	@ApiModelProperty(value = "设备摆放位置勾选")
+	private String devPlace;
+	/**
 	 * 设备摆放位置
 	 */
 	@ApiModelProperty(value = "设备摆放位置")
-	private String devPlace;
+	private String devPlaceValue;
 	/**
 	 * 设备借用有效期始
 	 */
@@ -142,4 +147,15 @@ public class DeviceLaunchUseContractEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "协议续签本次无收押")
 	private String agreementRenewal;
+	/**
+	 * 其他约定
+	 */
+	@ApiModelProperty(value = "其他约定")
+	private String otherAgreements;
+
+	/**
+	 * 设备投放
+	 */
+	@ApiModelProperty(value = "设备投放")
+	private String putEquipment;
 }

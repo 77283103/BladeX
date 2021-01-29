@@ -17,6 +17,7 @@
         <result column="dev_value" property="devValue"/>
         <result column="dev_code" property="devCode"/>
         <result column="dev_place" property="devPlace"/>
+        <result column="dev_place_value" property="devPlaceValue"/>
         <result column="dev_borro_start" property="devBorroStart"/>
         <result column="dev_borro_end" property="devBorroEnd"/>
         <result column="dev_least_date" property="devLeastDate"/>
@@ -35,6 +36,8 @@
         <result column="create_dept" property="createDept"/>
         <result column="new_release" property="newRelease"/>
         <result column="agreement_renewal" property="agreementRenewal"/>
+        <result column="other_agreements" property="otherAgreements"/>
+        <result column="put_equipment" property="putEquipment"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -51,6 +54,7 @@
         dev_value,
         dev_code,
         dev_place,
+        dev_place_value,
         dev_borro_start,
         dev_borro_end,
         dev_least_date,
@@ -68,7 +72,9 @@
         update_time,
         create_dept,
         new_release,
-        agreement_renewal
+        agreement_renewal,
+        other_agreements,
+        put_equipment
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="deviceLaunchUseContractResultMap">

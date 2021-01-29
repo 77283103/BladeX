@@ -18,6 +18,7 @@
         <result column="mtb_shooting_start_time" property="mtbShootingStartTime"/>
         <result column="mtb_shooting_completion_time" property="mtbShootingCompletionTime"/>
         <result column="mtb_acceptance_personnel" property="mtbAcceptancePersonnel"/>
+        <result column="mtb_submit_content" property="mtbSubmitContent"/>
         <result column="mtb_unpaid_tax_rmb" property="mtbUnpaidTaxRmb"/>
         <result column="mtb_rate" property="mtbRate"/>
         <result column="mtb_tax_inclusive_in_rmb" property="mtbTaxInclusiveInRmb"/>
@@ -58,6 +59,7 @@
         mtb_shooting_start_time,
         mtb_shooting_completion_time,
         mtb_acceptance_personnel,
+        mtb_submit_content,
         mtb_unpaid_tax_rmb,
         mtb_rate,
         mtb_tax_inclusive_in_rmb,
