@@ -22,6 +22,7 @@ public class MoneyToChiness {
 		double val = bigDecimal1.multiply(bigDecimal2).doubleValue();
 		DecimalFormat format = new DecimalFormat();
 		String str= format.format(val);
+		str = str.replace(",","");
 		return moneyToChinese(str);
 	}
 
