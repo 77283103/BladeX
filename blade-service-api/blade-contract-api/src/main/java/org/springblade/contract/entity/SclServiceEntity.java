@@ -499,6 +499,11 @@ public class SclServiceEntity extends BaseEntity {
 	@ApiModelProperty(value = "其它")
 	private String other;
 	/**
+	 * 其它内容
+	 */
+	@ApiModelProperty(value = "其它内容")
+	private String otherContent;
+	/**
 	 * 委托期间
 	 */
 	@ApiModelProperty(value = "委托期间")
