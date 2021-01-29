@@ -54,6 +54,12 @@
         <result column="update_time" property="updateTime"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
+        <result column="file1" property="file1"/>
+        <result column="file2" property="file2"/>
+        <result column="file3" property="file3"/>
+        <result column="file4" property="file4"/>
+        <result column="file5" property="file5"/>
+
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -105,7 +111,12 @@
         update_user,
         update_time,
         status,
-        is_deleted
+        is_deleted,
+        file1,
+        file2,
+        file3,
+        file4,
+        file5
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="laborDispatchResultMap">

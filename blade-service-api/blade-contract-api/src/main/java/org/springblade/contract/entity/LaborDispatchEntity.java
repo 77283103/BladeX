@@ -231,5 +231,30 @@ public class LaborDispatchEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "乙方地址")
 	private String addressB;
+	/**
+	 * 附件一
+	 */
+	@ApiModelProperty(value = "附件一")
+	private String file1;
+	/**
+	 * 附件二
+	 */
+	@ApiModelProperty(value = "附件二")
+	private String file2;
+	/**
+	 * 附件三
+	 */
+	@ApiModelProperty(value = "附件三")
+	private String file3;
+	/**
+	 * 附件四
+	 */
+	@ApiModelProperty(value = "附件四")
+	private String file4;
+	/**
+	 * 附件五
+	 */
+	@ApiModelProperty(value = "附件五")
+	private String file5;
 
 }

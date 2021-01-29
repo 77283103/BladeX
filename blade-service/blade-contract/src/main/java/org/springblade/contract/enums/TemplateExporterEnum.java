@@ -1239,21 +1239,25 @@ public enum TemplateExporterEnum {
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
             YwbBusinessContractTemplateEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, YwbBusinessContractTemplateEntity.class);
-            dataModel.put("ywbLessors",j.get("ywbLessors"));
+			dataModel.put("ywbTenantry",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
+			dataModel.put("ywbLessors",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("ywbCertificate",j.get("ywbCertificate"));
             dataModel.put("ywbAddress",j.get("ywbAddress"));
-            dataModel.put("ywbTenantry",j.get("ywbTenantry"));
             dataModel.put("ywbCertificateB",j.get("ywbCertificateB"));
             dataModel.put("ywbResidence",j.get("ywbResidence"));
             dataModel.put("ywbAgrees",j.get("ywbAgrees"));
             dataModel.put("ywbBuiltupArea",j.get("ywbBuiltupArea"));
             dataModel.put("ywbBetweenA",j.get("ywbBetweenA"));
             dataModel.put("ywbPartyRoom",j.get("ywbPartyRoom"));
-			dataModel.put("ywbTermStart",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywbTermStart)"))));
-			dataModel.put("ywbTermEnd",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("ywbTermEnd)"))));
-            dataModel.put("ywbShall",j.get("ywbShall"));
+			dataModel.put("ywbTermStart",Func.isNull(contractFormInfoEntity.getStartingTime())?"":DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("ywbTermEnd",Func.isNull(contractFormInfoEntity.getEndTime())?"":DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
+            dataModel.put("ywbShall",Func.isNull(contractFormInfoEntity.getEndTime())?"":DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
             dataModel.put("ywbJiaofu",j.get("ywbJiaofu"));
+            //第三条、租金及相关费用支付
             dataModel.put("ywbRequirement",j.get("ywbRequirement"));
+            if (j.get("ywbPayment").toString().contains("1")){
+				dataModel.put("ywbPayment",j.get("ywbPayment"));
+			}
 			dataModel.put("ywbPayment",j.get("ywbPayment"));
             dataModel.put("ywbTotalrent",j.get("ywbTotalrent"));
 			dataModel.put("ywbShuilv",j.get("ywbShuilv"));
@@ -1343,15 +1347,15 @@ public enum TemplateExporterEnum {
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
             DistServiceContractEntity sclLogisticsService = JSONObject.toJavaObject(j, DistServiceContractEntity.class);
-            dataModel.put("clientA",j.get("clientA"));
+			dataModel.put("clientA",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
+			dataModel.put("trusteeB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("clientAddress",j.get("clientAddress"));
-            dataModel.put("trusteeB",j.get("trusteeB"));
             dataModel.put("trusteeAddress",j.get("trusteeAddress"));
             dataModel.put("designatedAddress",j.get("designatedAddress"));
             dataModel.put("several",j.get("several"));
             dataModel.put("inWay",j.get("inWay"));
-            dataModel.put("validityContractA",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("validityContractA"))));
-            dataModel.put("validityContractB",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("validityContractB"))));
+            dataModel.put("validityContractA",Func.isNull(contractFormInfoEntity.getStartingTime())?"":DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())));
+            dataModel.put("validityContractB",Func.isNull(contractFormInfoEntity.getEndTime())?"":DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
             dataModel.put("clientTelephone",j.get("clientTelephone"));
             dataModel.put("trusteeTelephone",j.get("trusteeTelephone"));
             dataModel.put("clientFax",j.get("clientFax"));
@@ -1455,7 +1459,7 @@ public enum TemplateExporterEnum {
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
             DeviceLaunchUseContractEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, DeviceLaunchUseContractEntity.class);
-			dataModel.put("devSaler",contractFormInfoEntity.getSealName());
+			dataModel.put("devSaler",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
 			dataModel.put("devBuyer",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("devSalerAddr",j.get("devSalerAddr"));
             dataModel.put("devBuyerAddr",j.get("devBuyerAddr"));
@@ -1518,7 +1522,7 @@ public enum TemplateExporterEnum {
             Map dataModel = new HashMap();
             //主表
             BusServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, BusServiceContractEntity.class);
-            dataModel.put("busSaler",contractFormInfoEntity.getSealName());
+            dataModel.put("busSaler",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
             dataModel.put("busBuyer",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("busSalerAddr",j.get("busSalerAddr"));
             dataModel.put("busBuyerAddr",j.get("busBuyerAddr"));
@@ -1558,7 +1562,7 @@ public enum TemplateExporterEnum {
             }
             //主表
             MtbMarketResearchContractEntity mtbMarketResearchContractEntity = JSONObject.toJavaObject(j, MtbMarketResearchContractEntity.class);
-			dataModel.put("patya",contractFormInfoEntity.getSealName());
+			dataModel.put("patya",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
 			dataModel.put("patyb",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("partyAddress",j.get("partyAddress"));
             dataModel.put("patyAddressb",j.get("patyAddressb"));
@@ -1668,7 +1672,7 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
 			LaborDispatchEntity laborDispatchEntity = JSONObject.toJavaObject(j, LaborDispatchEntity.class);
-			dataModel.put("ywbFirstParty",contractFormInfoEntity.getSealName());
+			dataModel.put("ywbFirstParty",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
 			dataModel.put("ywbPartyB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("ywbAddressA",j.get("ywbAddressA"));
 			dataModel.put("ywbAddressB",j.get("ywbAddressB"));
