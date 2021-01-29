@@ -51,6 +51,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "合同负责人")
 	private String personContract;
+
+	/**
+	 * 合同负责人
+	 */
+	@ApiModelProperty(value = "合同负责人")
+	private String personCodeContract;
 	/**
 	 * 合同期限
 	 */

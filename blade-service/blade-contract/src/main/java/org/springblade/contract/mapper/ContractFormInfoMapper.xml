@@ -33,6 +33,7 @@
         <result column="contract_template_id" property="contractTemplateId"/>
         <result column="share" property="share"/>
         <result column="person_contract" property="personContract"/>
+        <result column="person_code_contract" property="personCodeContract"/>
         <result column="contract_period" property="contractPeriod"/>
         <result column="starting_time" property="startingTime"/>
         <result column="end_time" property="endTime"/>
@@ -92,6 +93,7 @@
         contract_small_category,
         share,
         person_contract,
+        person_code_contract,
         contract_period,
         starting_time,
         end_time,
@@ -151,6 +153,7 @@
         a.contract_small_category,
         a.share,
         a.person_contract,
+        a.person_code_contract,
         a.contract_period,
         a.starting_time,
         a.end_time,

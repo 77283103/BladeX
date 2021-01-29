@@ -72,6 +72,7 @@ public class AbutmentClient implements IAbutmentClient {
 			pushEkpEntity.setFdTemplateId(fdTemplateId);
 			if(entity != null) {
 				//17090089是登录人的编号
+				//entity.getPersonCodeContract()
 				if(StrUtil.isNotEmpty("17090089") && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
 					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 					DocCreatorEntity docCreatorEntity = new DocCreatorEntity();

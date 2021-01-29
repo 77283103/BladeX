@@ -19,6 +19,7 @@ package org.springblade.system.user.vo;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springblade.system.user.entity.User;
@@ -64,4 +65,24 @@ public class SelectUserVO implements Serializable {
 	 */
 	private String email;
 
+	/**
+	 * 厂别代号
+	 */
+	private String factNo;
+	/**
+	 * 厂别名称
+	 */
+	private String factName;
+	/**
+	 * 部门代号
+	 */
+	private String deptNo;
+	/**
+	 * 部门名称
+	 */
+	private String deptNm;
+	/**
+	 * 来源厂别
+	 */
+	private String laiYuan;
 }

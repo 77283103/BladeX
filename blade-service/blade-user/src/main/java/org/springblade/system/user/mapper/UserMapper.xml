@@ -16,6 +16,11 @@
         <result column="landline" property="landline"/>
         <result column="birthday" property="birthday"/>
         <result column="sex" property="sex"/>
+        <result column="fact_no" property="factNo"/>
+        <result column="fact_name" property="factName"/>
+        <result column="dept_no" property="deptNo"/>
+        <result column="dept_nm" property="deptNm"/>
+        <result column="lai_yuan" property="laiYuan"/>
         <result column="is_enable" property="isEnable"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
