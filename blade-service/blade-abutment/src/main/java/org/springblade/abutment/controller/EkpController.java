@@ -3,6 +3,7 @@ package org.springblade.abutment.controller;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
+import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.common.annotation.AutoLog;
 import org.springblade.abutment.entity.ContractSubmit;
 import org.springblade.abutment.entity.OrganizationEntity;
+import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.contract.entity.ContractFormInfoEntity;
@@ -21,10 +23,8 @@ import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,6 +46,7 @@ import java.util.Map;
 @AllArgsConstructor
 public class EkpController {
 	IContractClient contractClient;
+	IESealService eSealService;
 	/**
 	 * epk通过后返回给合同平台合同状态
 	 * @return
@@ -58,4 +59,22 @@ public class EkpController {
 		Long id=Long.valueOf(contractSubmit.getContractId());
 		return R.data(contractClient.saveContractFormInfo(id,status));
 	}
+
+
+	/**
+	 * 批量导入
+	 */
+	@GetMapping("/eToken")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "获取token", notes = "")
+	public R<String> eToken() {
+		String token=null;
+		try {
+			token = eSealService.getToken();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return R.data(token);
+	}
+
 }

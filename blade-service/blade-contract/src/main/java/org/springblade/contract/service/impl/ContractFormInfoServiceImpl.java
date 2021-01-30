@@ -3,6 +3,7 @@ package org.springblade.contract.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import feign.form.ContentType;
 import lombok.AllArgsConstructor;
@@ -20,9 +21,11 @@ import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
 import org.springblade.contract.util.AsposeWordToPdfUtils;
 import org.springblade.contract.util.ExcelSaveUntil;
+import org.springblade.contract.util.RedisCacheUtil;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.mp.support.Condition;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
@@ -31,6 +34,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.cache.SysCache;
+import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
@@ -42,6 +46,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -98,7 +103,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private ContractRawMaterialsMapper contractRawMaterialsMapper;
 
     private ContractTemplateMapper contractTemplateMapper;
-
+	@Resource
+	private RedisCacheUtil redisCacheUtil;
     private ContractChangeMapper changeMapper;
     private IYwlANewDisplay1Service ywlANewDisplay1Service;
     private ICglCategorySalesContracts1Service cglCategorySalesContracts1Service;
@@ -1150,7 +1156,21 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			//epk流程接口
 			entity.setTextFilePdf(uploadFileVoList.get(0).getId());
 			EkpVo ekpVo=abutmentClient.sendEkpFormPost(entity).getData();
-			entity.setRelContractId(ekpVo.getDoc_info());
+			if(ekpVo!=null){
+				entity.setRelContractId(ekpVo.getDoc_info());
+				//处理编号
+				/*QueryWrapper<ContractFormInfoEntity> queryWrapper = Condition.getQueryWrapper(entity)
+					.ne("contract_number","")
+					.orderByAsc("create_time");
+				List<ContractFormInfoEntity> list = this.list(queryWrapper);
+				if(list.size()>0){
+					redisCacheUtil.selectTaskNo(list.get(0).getContractNumber());
+				}else{
+					redisCacheUtil.selectTaskNo("");
+				}*/
+
+			}
+
 		}
 		return entity;
 	}

@@ -511,4 +511,17 @@ public class AbutmentClient implements IAbutmentClient {
 		}
 		return R.data(companyInfoVo);
 	}
+
+	@Override
+	@GetMapping(E_SEAL_TOKEN)
+	public R<String> token() {
+		String token=null;
+		try {
+			token = eSealService.getToken();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return R.data(token);
+	}
+
 }

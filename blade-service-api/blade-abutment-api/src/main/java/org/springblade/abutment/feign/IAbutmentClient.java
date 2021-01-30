@@ -35,6 +35,7 @@ public interface IAbutmentClient {
 	String E_SEAL_SINGLE_SIGN_MULTI = API_PREFIX + E_SEAL + "/multiSign";
 	String E_SEAL_READ_SIGNED = API_PREFIX + E_SEAL + "/readSigned";
 	String E_SEAL_COMPANY_INFO = API_PREFIX + E_SEAL + "/queryCompanyInfo";
+	String E_SEAL_TOKEN = API_PREFIX + E_SEAL + "/token";
 
 
 	/**
@@ -108,4 +109,11 @@ public interface IAbutmentClient {
 	 */
     @GetMapping(E_SEAL_COMPANY_INFO)
 	R<CompanyInfoVo> queryCompanyInfo(CompanyInfoEntity entity);
+
+	/**
+	 * 获取电子签章token
+	 * @return
+	 */
+	@GetMapping(E_SEAL_TOKEN)
+	R<String> token();
 }

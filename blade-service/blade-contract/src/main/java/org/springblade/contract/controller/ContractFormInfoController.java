@@ -22,6 +22,7 @@ import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.*;
+import org.springblade.contract.util.RedisCacheUtil;
 import org.springblade.contract.util.TemplateExportUntil;
 import org.springblade.contract.util.TemplateSaveUntil;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
@@ -51,6 +52,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -91,7 +93,6 @@ public class ContractFormInfoController extends BladeController {
 	private static final String CONTRACT_ARCHIVE_STATUS = "110";
 	private static final String CONTRACT_ASSESSMENT_STATUS = "100";
 	private static final String ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS = "130";
-
 	/**
 	 * 详情
 	 */
