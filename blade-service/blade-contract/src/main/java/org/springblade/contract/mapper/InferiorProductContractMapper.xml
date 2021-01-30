@@ -37,6 +37,7 @@
         <result column="inf_breach_amount_fou" property="infBreachAmountFou"/>
         <result column="inf_contract_start" property="infContractStart"/>
         <result column="inf_contract_end" property="infContractEnd"/>
+        <result column="inf_contract_sum" property="infContractSum"/>
         <result column="inf_contract_num" property="infContractNum"/>
         <result column="inf_saler_phone" property="infSalerPhone"/>
         <result column="inf_buyer_phone" property="infBuyerPhone"/>
@@ -81,6 +82,7 @@
         inf_breach_amount_fou,
         inf_contract_start,
         inf_contract_end,
+        inf_contract_sum,
         inf_contract_num,
         inf_saler_phone,
         inf_buyer_phone,

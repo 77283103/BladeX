@@ -201,6 +201,11 @@ public class InferiorProductContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "合同期限结束")
 	private Date infContractEnd;
 	/**
+	 * 本合同一式份
+	 */
+	@ApiModelProperty(value = "本合同一式份")
+	private String infContractSum;
+	/**
 	 * 甲乙双方各执
 	 */
 	@ApiModelProperty(value = "甲乙双方各执")

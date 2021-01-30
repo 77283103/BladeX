@@ -40,9 +40,8 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	/**
 	 * 出租方证件类型及编号
 	 */
-	@JsonSerialize(nullsUsing = NullSerializer.class)
 	@ApiModelProperty(value="出租方证件类型及编号")
-	private Integer ywbCertificate;
+	private String ywbCertificate;
 	/**
 	 * 出租房住所地
 	 */
@@ -77,7 +76,7 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	 * 共多少间
 	 */
 	@ApiModelProperty(value="共多少间")
-	private String ywbBetweenA;
+	private String ywbBetweena;
 	/**
 	 * 给乙方作为什么用房
 	 */
@@ -151,12 +150,12 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	 * 租赁期内甲方承担的费用含
 	 */
 	@ApiModelProperty(value="租赁期内甲方承担的费用含")
-	private BigDecimal ywbTerminclude;
+	private String ywbTerminclude;
 	/**
 	 * 租赁期内乙方承担的费用含
 	 */
 	@ApiModelProperty(value="租赁期内乙方承担的费用含")
-	private BigDecimal ywbPeriod;
+	private String ywbPeriod;
 	/**
 	 * 第五.2项时间要求
 	 */
@@ -216,7 +215,7 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	 */
 	@JsonSerialize(nullsUsing = NullSerializer.class)
 	@ApiModelProperty(value="租金税率")
-	private Integer ywbShuilv;
+	private BigDecimal ywbShuilv;
 	/**
 	 * 租金金额
 	 */
