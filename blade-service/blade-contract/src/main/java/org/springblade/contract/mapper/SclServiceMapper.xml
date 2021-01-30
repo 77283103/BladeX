@@ -106,6 +106,7 @@
         <result column="dispatching" property="dispatching"/>
         <result column="management" property="management"/>
         <result column="other" property="other"/>
+        <result column="other_content" property="otherContent"/>
         <result column="date3" property="date3"/>
         <result column="date4" property="date4"/>
         <result column="client4" property="client4"/>
@@ -221,6 +222,7 @@
         dispatching,
         management,
         other,
+        other_content,
         date3,
         date4,
         client4,
