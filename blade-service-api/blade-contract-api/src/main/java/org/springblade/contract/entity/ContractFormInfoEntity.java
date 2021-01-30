@@ -200,6 +200,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "变更合同ID")
 	@JsonSerialize(using = ToStringSerializer.class)
 	private Long changeContractId;
+
+	/**
+	 * 对应ekp的Id
+	 */
+	@ApiModelProperty(value = "对应ekp的Id")
+	private String relContractId;
 	/**
 	 * 合同节点状态
 	 */

@@ -92,8 +92,16 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclTransfer",j.get("sclTransfer"));
 			dataModel.put("sclOfs",j.get("sclOfs"));
 			dataModel.put("sclRequirementsss",j.get("sclRequirementsss"));
-			dataModel.put("traffic",j.get("traffic"));
-			dataModel.put("area",j.get("area"));
+			if ("1".equals(j.get("traffic"))) {
+				dataModel.put("traffic","☑");
+				dataModel.put("area","☐");
+			}else if ("2".equals(j.get("traffic"))) {
+				dataModel.put("traffic","☐");
+				dataModel.put("area","☑");
+			}else {
+				dataModel.put("traffic","☐");
+				dataModel.put("area","☐");
+			}
 			dataModel.put("sclAread",j.get("sclAread"));
 			dataModel.put("sclWarehouse",j.get("sclWarehouse"));
 			dataModel.put("sclGoods",j.get("sclGoods"));
@@ -103,7 +111,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("day3",j.get("day3"));
 			dataModel.put("day4",j.get("day4"));
 			dataModel.put("sclYuan",j.get("sclYuan"));
-			dataModel.put("sclWhole",j.get("sclWhole"));
+			dataModel.put("sclWhole",MoneyToChiness.moneyToChinese(j.get("sclYuan").toString()));
 			dataModel.put("sclLead",j.get("sclLead"));
 			dataModel.put("sclRequirementsd",j.get("sclRequirementsd"));
 			dataModel.put("sclContract",j.get("sclContract"));
@@ -113,8 +121,8 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclRequirementsa",j.get("sclRequirementsa"));
 			dataModel.put("sclContaining",j.get("sclContaining"));
 			dataModel.put("sclNinth",j.get("sclNinth"));
-			dataModel.put("startTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("startTimes"))));
-			dataModel.put("endTimes",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("endTimes"))));
+			dataModel.put("startTimes",Func.isNull(contractFormInfoEntity.getStartingTime())?"":DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
+			dataModel.put("endTimes",Func.isNull(contractFormInfoEntity.getEndTime())?"":DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
 			dataModel.put("sclCost",j.get("sclCost"));
 			dataModel.put("day7",j.get("day7"));
 			dataModel.put("sclConditions",j.get("sclConditions"));
@@ -131,7 +139,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("deposit",j.get("deposit"));
 			dataModel.put("depositb",j.get("depositb"));
 			dataModel.put("date1",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date1"))));
-			dataModel.put("date2",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date2"))));
+			dataModel.put("date2",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date1"))));
 			dataModel.put("client",j.get("client"));
 			dataModel.put("client1",j.get("client1"));
 			dataModel.put("number",j.get("number"));
@@ -140,10 +148,33 @@ public enum TemplateExporterEnum {
 			dataModel.put("client3",j.get("client3"));
 			dataModel.put("number2",j.get("number2"));
 			dataModel.put("mail",j.get("mail"));
-			dataModel.put("shippingSummons",j.get("shippingSummons"));
-			dataModel.put("dispatching",j.get("dispatching"));
-			dataModel.put("management",j.get("management"));
-			dataModel.put("other",j.get("other"));
+			if ("1".equals(j.get("shippingSummons"))) {
+				dataModel.put("shippingSummons","☑");
+				dataModel.put("dispatching","☐");
+				dataModel.put("management","☐");
+				dataModel.put("other","☐");
+			}else if ("2".equals(j.get("shippingSummons"))) {
+				dataModel.put("shippingSummons","☐");
+				dataModel.put("dispatching","☑");
+				dataModel.put("management","☐");
+				dataModel.put("other","☐");
+			}else if ("3".equals(j.get("shippingSummons"))) {
+				dataModel.put("shippingSummons","☐");
+				dataModel.put("dispatching","☐");
+				dataModel.put("management","☑");
+				dataModel.put("other","☐");
+			}else if ("4".equals(j.get("shippingSummons"))) {
+				dataModel.put("shippingSummons","☐");
+				dataModel.put("dispatching","☐");
+				dataModel.put("management","☐");
+				dataModel.put("other","☑");
+			}else {
+				dataModel.put("shippingSummons","☐");
+				dataModel.put("dispatching","☐");
+				dataModel.put("management","☐");
+				dataModel.put("other","☐");
+			}
+			dataModel.put("otherContent",j.get("otherContent"));
 			dataModel.put("date3",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));
 			dataModel.put("date4",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));
 			dataModel.put("client4",j.get("client4"));
@@ -1210,7 +1241,11 @@ public enum TemplateExporterEnum {
 			dataModel.put("ownershipSubject",j.get("ownershipSubject"));
 			dataModel.put("blankField",j.get("blankField"));
 			dataModel.put("otherAgreements",j.get("otherAgreements"));
-			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate)"))));
+			dataModel.put("fcUsingRange",j.get("fcUsingRange"));
+			dataModel.put("fbUsingRange",j.get("fbUsingRange"));
+			dataModel.put("scUsingRange",j.get("scUsingRange"));
+			dataModel.put("sbUsingRange",j.get("sbUsingRange"));
+			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate"))));
 			return dataModel;
 		}
 	},
