@@ -1150,6 +1150,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			//epk流程接口
 			entity.setTextFilePdf(uploadFileVoList.get(0).getId());
 			EkpVo ekpVo=abutmentClient.sendEkpFormPost(entity).getData();
+			entity.setRelContractId(ekpVo.getDoc_info());
 		}
 		return entity;
 	}

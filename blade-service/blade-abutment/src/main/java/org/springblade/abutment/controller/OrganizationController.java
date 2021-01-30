@@ -152,7 +152,7 @@ public class OrganizationController {
 		return R.data(organizationList);
 	}*/
 	/**
-	 * 获取组织及人员增量信息
+	 * 文件上传方法测试
 	 *
 	 * @return
 	 */
@@ -161,7 +161,8 @@ public class OrganizationController {
 	@ApiOperation(value = "获取组织及人员信息的接口")
 	public R fastFile() throws IOException, MyException {
 
-		List<FileVO> fileVOs=fileClient.getByIds("1351469422220513281").getData();
+		List<FileVO> fileVOs=fileClient.getByIds("1351411563624841217").getData();
+		String[] fileIds = new String[0];
 		for(FileVO fileVO:fileVOs){
 			// 开始上传fastDFS服务器
 			NameValuePair[] nvp = new NameValuePair[5];
@@ -207,10 +208,11 @@ public class OrganizationController {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			String[] fileIds = storageClient.upload_file(bytes, fileSuffix, nvp); // 上传
-			System.out.println(fileIds);
+			// 上传
+			fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+			System.out.println(fileIds[0]);
 		}
-		return R.success("ceshi");
+		return R.data(fileIds);
 	}
 	/**
 	 * 获取组织及人员增量信息

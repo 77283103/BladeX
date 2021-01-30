@@ -42,6 +42,7 @@
         <result column="days" property="days"/>
         <result column="extension" property="extension"/>
         <result column="counterpart_person" property="counterpartPerson"/>
+        <result column="rel_contract_id" property="relContractId"/>
         <result column="telephone_person" property="telephonePerson"/>
         <result column="address_person" property="addressPerson"/>
         <result column="email_person" property="emailPerson"/>
@@ -78,6 +79,7 @@
         other_information,
         change_category,
         change_contract_id,
+        rel_contract_id,
         contract_status,
         submit_status,
         contract_soure,
@@ -138,6 +140,7 @@
         a.other_information,
         a.change_category,
         a.change_contract_id,
+        a.rel_contract_id,
         a.contract_status,
         a.submit_status,
         a.contract_soure,
