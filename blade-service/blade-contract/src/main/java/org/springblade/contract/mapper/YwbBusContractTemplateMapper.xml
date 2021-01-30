@@ -13,7 +13,7 @@
         <result column="ywb_residence" property="ywbResidence"/>
         <result column="ywb_agrees" property="ywbAgrees"/>
         <result column="ywb_builtup_area" property="ywbBuiltupArea"/>
-        <result column="ywb_between_a" property="ywbBetweenA"/>
+        <result column="ywb_betweena" property="ywbBetweena"/>
         <result column="ywb_party_room" property="ywbPartyRoom"/>
         <result column="ywb_term_start" property="ywbTermStart"/>
         <result column="ywb_shall" property="ywbShall"/>
@@ -72,7 +72,7 @@
         ywb_residence,
         ywb_agrees,
         ywb_builtup_area,
-        ywb_between_a,
+        ywb_betweena,
         ywb_party_room,
         ywb_term_start,
         ywb_shall,

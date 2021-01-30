@@ -47,6 +47,26 @@ public class ConfidentialityAgreementEntity extends BaseEntity {
 	@ApiModelProperty(value = "涉及知识产权、保密信息内容")
 	private String contentsInformation;
 	/**
+	 * 乙方使用范围/权限
+	 */
+	@ApiModelProperty(value = "乙方使用范围/权限1")
+	private String fbUsingRange;
+	/**
+	 *  丙方使用范围
+	 */
+	@ApiModelProperty(value = " 丙方使用范围1")
+	private String fcUsingRange;
+	/**
+	 * 乙方使用范围/权限2
+	 */
+	@ApiModelProperty(value = "乙方使用范围/权限2")
+	private String sbUsingRange;
+	/**
+	 *  丙方使用范围2
+	 */
+	@ApiModelProperty(value = " 丙方使用范围2")
+	private String scUsingRange;
+	/**
 	 * 涉及产品的名称2
 	 */
 	@ApiModelProperty(value = "涉及产品的名称2")

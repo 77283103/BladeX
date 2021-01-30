@@ -15,6 +15,10 @@
         <result column="blank_field" property="blankField"/>
         <result column="other_agreements" property="otherAgreements"/>
         <result column="specific_date" property="specificDate"/>
+        <result column="fb_using_range" property="fbUsingRange"/>
+        <result column="fc_using_range" property="fcUsingRange"/>
+        <result column="sb_using_range" property="sbUsingRange"/>
+        <result column="sc_using_range" property="scUsingRange"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -28,7 +32,9 @@
         ownership_subject,
         blank_field,
         other_agreements,
-        specific_date
+        specific_date,
+        fb_using_range,
+        fc_using_range
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="confidentialityAgreementResultMap">

@@ -32,7 +32,7 @@ public class YwbBusinessContractTemplateRequestVO extends BaseEntity {
 	private String ywbLessors;
 	
     @ApiModelProperty(value="出租方证件类型及编号")
-	private Integer ywbCertificate;
+	private String ywbCertificate;
 	
     @ApiModelProperty(value="出租房住所地")
 	private String ywbAddress;
