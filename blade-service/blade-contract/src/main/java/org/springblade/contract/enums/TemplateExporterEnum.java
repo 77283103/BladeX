@@ -1229,7 +1229,11 @@ public enum TemplateExporterEnum {
 			dataModel.put("ownershipSubject",j.get("ownershipSubject"));
 			dataModel.put("blankField",j.get("blankField"));
 			dataModel.put("otherAgreements",j.get("otherAgreements"));
-			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate)"))));
+			dataModel.put("fcUsingRange",j.get("fcUsingRange"));
+			dataModel.put("fbUsingRange",j.get("fbUsingRange"));
+			dataModel.put("scUsingRange",j.get("scUsingRange"));
+			dataModel.put("sbUsingRange",j.get("sbUsingRange"));
+			dataModel.put("specificDate",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate"))));
 			return dataModel;
 		}
 	},
