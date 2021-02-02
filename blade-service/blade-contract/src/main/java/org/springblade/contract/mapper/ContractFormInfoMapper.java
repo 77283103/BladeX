@@ -188,6 +188,12 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	List<ContractFormInfoEntity> getChooseList();
 
 	/**
+	 * 编号查询
+	 * @return list
+	 */
+	List<ContractFormInfoEntity> selectByContractNumber(@Param("contractFormInfo") ContractFormInfoEntity contractFormInfo);
+
+	/**
 	 *
 	 * @return
 	 */

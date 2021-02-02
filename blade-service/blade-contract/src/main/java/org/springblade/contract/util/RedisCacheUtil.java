@@ -8,42 +8,43 @@ import javax.annotation.Resource;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class RedisCacheUtil {
 	@Resource
 	RedisTemplate<String, Object> redisTemplate;
 	//设置6自增6位，用于补全操作
-	private static final String STR_FORMAT = "000000";
+	private static final String STR_FORMAT = "0000";
 
-	public  String selectTaskNo(String thisCode) {
-		if("".equals(thisCode)){
-
-		}
+	public  String selectTaskNo(String thisCode,String FLCode,String GSCode) {
 		Long increment=null;
-		String thisDate = thisCode.substring(4, 8);
-		//格式：T+yyyymmddHHmiss+6位流水
-		StringBuffer sbuffer = new StringBuffer();
-		sbuffer.append("T");
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-		String incKey = "T" + dateFormat.format(new Date());
-		if(!dateFormat.format(new Date()).equals(thisDate)){
-			redisTemplate.delete(incKey);
-		}else{
-			RedisAtomicLong entityIdCounter = new RedisAtomicLong(incKey, redisTemplate.getConnectionFactory());
+		//格式：子公司编号原则代号（取4位）+合同类型（取2位）+年月（取4位）+自然流水根据月度流水（取4位）
+		StringBuilder sbuffer = new StringBuilder();
+		sbuffer.append(GSCode);
+		sbuffer.append(FLCode);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMM");
+		sbuffer.append(dateFormat.format(new Date()));
+		if("".equals(thisCode)){
+			RedisAtomicLong entityIdCounter = new RedisAtomicLong(FLCode+dateFormat.format(new Date()), redisTemplate.getConnectionFactory());
 			increment = entityIdCounter.getAndIncrement();
-
+		}else{
+			String thisDate = thisCode.substring(4,12);
+			if(!(FLCode+dateFormat.format(new Date())).equals(thisDate)){
+				redisTemplate.delete(thisDate);
+				RedisAtomicLong entityIdCounter = new RedisAtomicLong(FLCode+dateFormat.format(new Date()), redisTemplate.getConnectionFactory());
+				increment = entityIdCounter.getAndIncrement();
+			}else{
+				RedisAtomicLong entityIdCounter = new RedisAtomicLong(thisDate, redisTemplate.getConnectionFactory());
+				increment = entityIdCounter.getAndIncrement();
+			}
 		}
 		//初始设置过期时间
 		/*if ((null == increment || increment.longValue() == 0) && 1 > 0) {
 			//设置自增值过期时间，liveTime 过期时间；TimeUnit.DAYS 过期时间单位，我这边设置为天
 			entityIdCounter.expire(1, TimeUnit.DAYS);
 		}*/
-		if (increment == 0) {
+		if (increment >= 0) {
 			increment = increment + 1;
-		} else if (increment > 999999){
-			increment = 1L;
 		}
 		//位数不够，前面补0
 		DecimalFormat df = new DecimalFormat(STR_FORMAT);

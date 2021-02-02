@@ -159,4 +159,13 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	Integer selectSigningCount(String contractBigCategory);
+
+
+	/**
+	 * 查询有编号的合同
+	 * @param entity
+	 * @return
+	 */
+	List<ContractFormInfoEntity>  selectByContractNumber(ContractFormInfoEntity entity);
+
 }
