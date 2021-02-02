@@ -95,7 +95,5 @@ public class FormValuesEntity implements Serializable {
 	private List<KeepList> fd_keep_list;
 	@ApiModelProperty(value = "单据内容:收付款清单")
 	private List<PayList> fd_pay_list;
-	@ApiModelProperty(value = "单据内容:合同附件集合")
-	private List<Attachment> fd_attachment;
 
 }

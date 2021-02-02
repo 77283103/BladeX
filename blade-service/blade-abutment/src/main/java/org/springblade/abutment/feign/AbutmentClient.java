@@ -361,63 +361,6 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_email(entity.getEmailPerson());
 					//相对方联系地址
 					formValuesEntity.setFd_address(entity.getAddressPerson());
-					//处理合同附件
-					List<FileVO> fileVOs=fileClient.getByIds(entity.getAttachedFiles()).getData();
-					String[] fileIds = new String[0];
-					List<Attachment> listAttachment=new ArrayList<Attachment>();
-					for(FileVO fileVO:fileVOs){
-						// 开始上传fastDFS服务器
-						Attachment attachment=new Attachment();
-						NameValuePair[] nvp = new NameValuePair[5];
-						int index = fileVO.getName().lastIndexOf(".");
-						String fileSuffix=fileVO.getName().substring(index+1);
-						nvp[0] = new NameValuePair("fdFileName", fileVO.getName());//文件名称
-						nvp[1] = new NameValuePair("fileSuffix", fileSuffix);//文件后缀
-						nvp[2] = new NameValuePair("fdKey", "");//文件key？？
-						nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());//文件大小
-						nvp[4] = new NameValuePair("fileType", "");//文件类型
-						//3.创建trackerServer
-						TrackerServer trackerServer = null;
-						try {
-							trackerServer = trackerClient.getConnection();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-						// 4、创建一个 StorageServer 的引用，值为 null
-						StorageServer storageServer = null;
-						// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
-						StorageClient storageClient = new StorageClient(trackerServer, storageServer);
-						InputStream in =null;
-						BufferedInputStream bin =null;
-						ByteArrayOutputStream baos = null;
-						BufferedOutputStream bout =null;
-						byte[] bytes=null;
-						try {
-							URL url = new URL(fileVO.getLink());
-							URLConnection conn = url.openConnection();
-							in = conn.getInputStream();
-							bin = new  BufferedInputStream(in);
-							baos = new ByteArrayOutputStream();
-							bout = new BufferedOutputStream(baos);
-							byte[] buffer = new byte[1024];
-							int len = bin.read(buffer);
-							while(len != -1){
-								bout.write(buffer, 0, len);
-								len = bin.read(buffer);
-							}
-							//刷新此输出流并强制写出所有缓冲的输出字节
-							bout.flush();
-							bytes = baos.toByteArray();
-							// 上传
-							fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
-						} catch (IOException | MyException e) {
-							e.printStackTrace();
-						}
-						attachment.setFilename(fileVO.getName());
-						attachment.setFilePath(fileIds[0]+'/'+fileIds[1]);
-						listAttachment.add(attachment);
-					}
-					formValuesEntity.setFd_attachment(listAttachment);
 					pushEkpEntity.setFormValues(formValuesEntity);
 					//依据id
 					/*if (!Func.isEmpty(entity.getAccording().get(0).getFileId())) {
@@ -425,6 +368,63 @@ public class AbutmentClient implements IAbutmentClient {
 						//pushEkpEntity.setDocSubject("1762642a34c79442253858b4b2aab793");
 					}*/
 					try {
+						//处理合同附件
+						List<FileVO> fileVOs=fileClient.getByIds(entity.getAttachedFiles()).getData();
+						String[] fileIds = new String[0];
+						List<Attachment> listAttachment=new ArrayList<>();
+						for(FileVO fileVO:fileVOs){
+							// 开始上传fastDFS服务器
+							Attachment attachment=new Attachment();
+							NameValuePair[] nvp = new NameValuePair[5];
+							int index = fileVO.getName().lastIndexOf(".");
+							String fileSuffix=fileVO.getName().substring(index+1);
+							nvp[0] = new NameValuePair("fdFileName", fileVO.getName());//文件名称
+							nvp[1] = new NameValuePair("fileSuffix", fileSuffix);//文件后缀
+							nvp[2] = new NameValuePair("fdKey", "");//文件key？？
+							nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());//文件大小
+							nvp[4] = new NameValuePair("fileType", "");//文件类型
+							//3.创建trackerServer
+							TrackerServer trackerServer = null;
+							try {
+								trackerServer = trackerClient.getConnection();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							// 4、创建一个 StorageServer 的引用，值为 null
+							StorageServer storageServer = null;
+							// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+							StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+							InputStream in =null;
+							BufferedInputStream bin =null;
+							ByteArrayOutputStream baos = null;
+							BufferedOutputStream bout =null;
+							byte[] bytes=null;
+							try {
+								URL url = new URL(fileVO.getLink());
+								URLConnection conn = url.openConnection();
+								in = conn.getInputStream();
+								bin = new  BufferedInputStream(in);
+								baos = new ByteArrayOutputStream();
+								bout = new BufferedOutputStream(baos);
+								byte[] buffer = new byte[1024];
+								int len = bin.read(buffer);
+								while(len != -1){
+									bout.write(buffer, 0, len);
+									len = bin.read(buffer);
+								}
+								//刷新此输出流并强制写出所有缓冲的输出字节
+								bout.flush();
+								bytes = baos.toByteArray();
+								// 上传
+								fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+							} catch (IOException | MyException e) {
+								e.printStackTrace();
+							}
+							attachment.setFilename(fileVO.getName());
+							attachment.setFilePath(fileIds[0]+'/'+fileIds[1]);
+							listAttachment.add(attachment);
+						}
+						pushEkpEntity.setFd_attachment(listAttachment);
 						pushEkpEntity.setToken(ekpService.getToken());
 						pushEkpEntity.setDocSubject(entity.getContractName());
 						pushEkpEntity.setFdTemplateId("176212613bf6f84e6bf1ad942cbb8344");

@@ -1068,29 +1068,36 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				List<FileVO> fileVO=fileClient.getByIds(entity.getTextFile()).getData();
 				String newFileDoc="";
 				String newFilePdf="";
+				String suffix="";
 				//doc转为pdf
 				if(CollectionUtil.isNotEmpty(fileVO)){
 					newFileDoc=fileVO.get(0).getLink();
 					int index = fileVO.get(0).getName().lastIndexOf(".");
-					newFilePdf=_PATH+fileVO.get(0).getName().substring(0,index)+".pdf";
-					AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
+					suffix=fileVO.get(0).getName().substring(index,fileVO.get(0).getName().length()-1);
+					//判断是否为pdf文件，pdf文件不需要转换
+					if(!"pdf".equals(suffix)){
+						newFilePdf=_PATH+fileVO.get(0).getName().substring(0,index)+".pdf";
+						AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
+						filePDF = new File(newFilePdf);
+						R<FileVO> filePDFVO = null;
+						try {
+							MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
+								ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
+							filePDFVO=fileClient.save(multipartFile);
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						/* 上传文件 */
+						assert filePDFVO != null;
+						entity.setTextFilePdf(filePDFVO.getData().getId()+",");
+					}else{
+						filePDF = new File(newFileDoc);
+					}
 				}
-				filePDF = new File(newFilePdf);
-				R<FileVO> filePDFVO = null;
-				try {
-					MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
-						ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
-					filePDFVO=fileClient.save(multipartFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				/* 上传文件 */
-				assert filePDFVO != null;
-				entity.setTextFilePdf(filePDFVO.getData().getId()+",");
 			}else{
 				filePDF = new File(entity.getFilePDF());
 			}
-			// 入参是个file文件,怎么获取这个file文件? 这样获取对不对?
+			// 入参是个file文件
 			List<File> files = new ArrayList<File>();
 			files.add(filePDF);
 			uploadFileEntity.setFile(files);

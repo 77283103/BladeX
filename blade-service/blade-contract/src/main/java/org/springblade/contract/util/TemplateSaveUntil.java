@@ -361,8 +361,10 @@ public class TemplateSaveUntil {
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}*/
-				j.put("infTimeStart","");
-				j.put("infTimeEnd","");
+				//j.put("infTimeStart","");
+				//j.put("infTimeEnd","");
+				j.put("infTimeStart",DataFormatUtils.SFFormatGLNZ(j.get("infTimeStart").toString()));
+				j.put("infTimeEnd",DataFormatUtils.SFFormatGLNZ(j.get("infTimeEnd").toString()));
 				InferiorProductContractEntity inferiorProductContract= JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
 				templateSaveUntil.inferiorProductContractService.save(inferiorProductContract);
 				id = inferiorProductContract.getId();
@@ -628,8 +630,9 @@ public class TemplateSaveUntil {
 			}
 			//下脚品买卖合同模版
 			else if ("MMHT_26".equals(template.getTemplateCode())) {
-				j.put("infTimeStart","");
-				j.put("infTimeEnd","");
+
+				j.put("infTimeStart",DataFormatUtils.SFFormatGLNZ(j.get("infTimeStart").toString()));
+				j.put("infTimeEnd",DataFormatUtils.SFFormatGLNZ(j.get("infTimeEnd").toString()));
 				InferiorProductContractEntity inferiorProductContract= JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
 				inferiorProductContract.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.inferiorProductContractService.updateById(inferiorProductContract);
