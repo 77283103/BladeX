@@ -72,4 +72,21 @@ public class DataFormatUtils {
 			return now;
 		}
 	}
+
+	/**
+	 * 时分转格林尼治时间
+	 *@param systemTime 系统时间
+	 */
+	public static Date SFFormatGLNZ(String systemTime) {
+		Date date = null;
+		if (!str.equals(systemTime) && !Func.isBlank(systemTime)) {
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+			try {
+				date = format.parse(systemTime);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+		}
+		return date;
+	}
 }

@@ -1,8 +1,10 @@
 package org.springblade.abutment.entity;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * KEP接口传输的入参
@@ -13,5 +15,6 @@ public class PushEkpEntity implements Serializable {
     private DocCreatorEntity docCreator;
     private String docSubject;
     private String token;
+	private List<Attachment> fd_attachment;
     private FormValuesEntity formValues;
 }
