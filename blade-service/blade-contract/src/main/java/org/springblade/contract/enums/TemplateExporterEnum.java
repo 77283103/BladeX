@@ -1384,16 +1384,20 @@ public enum TemplateExporterEnum {
             dataModel.put("infSalerAddr",j.get("infSalerAddr"));
             dataModel.put("infBuyerAddr",j.get("infBuyerAddr"));
             dataModel.put("infTypeFir",j.get("infTypeFir"));
+            //周选择
             dataModel.put("infWeekStart",j.get("infWeekStart"));
             dataModel.put("infWeekEnd",j.get("infWeekEnd"));
+            //时间选择
             dataModel.put("infTimeStart",DataFormatUtils.systemTimeFormatH(j.get("infTimeStart").toString()));
             dataModel.put("infTimeEnd",DataFormatUtils.systemTimeFormatH(j.get("infTimeEnd").toString()));
             dataModel.put("infSortAddr",j.get("infSortAddr"));
             dataModel.put("infLeastAmount",j.get("infLeastAmount"));
             dataModel.put("infTimeAmount",j.get("infTimeAmount"));
             dataModel.put("infLoadAddr",j.get("infLoadAddr"));
-            dataModel.put("infAppointAmount",j.get("infAppointAmount"));
-            dataModel.put("infCap",MoneyToChiness.moneyToChinese(j.get("infAppointAmount").toString()));
+            //履约保证金相关
+			String planPayAmount=String.valueOf(contractFormInfoEntity.getContractBond().size()==0?"":contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount());
+            dataModel.put("infAppointAmount",planPayAmount);
+            dataModel.put("infCap",MoneyToChiness.tenThousand(planPayAmount));
             dataModel.put("infTimeLeastFir",j.get("infTimeLeastFir"));
             dataModel.put("infTimeLeastSec",j.get("infTimeLeastSec"));
             dataModel.put("infSalerAccoutName",j.get("infSalerAccoutName"));
@@ -1405,8 +1409,8 @@ public enum TemplateExporterEnum {
             dataModel.put("infTimeLeastThi",j.get("infTimeLeastThi"));
             dataModel.put("infSalerMail",j.get("infSalerMail"));
             dataModel.put("infBuyerMail",j.get("infBuyerMail"));
-            dataModel.put("infBreachAmountFir",j.get("infBreachAmountFir"));
-            dataModel.put("infBreachAmountSec",j.get("infBreachAmountSec"));
+            dataModel.put("infBreachAmountFir",planPayAmount);
+            dataModel.put("infBreachAmountSec",planPayAmount);
             dataModel.put("infBreachAmountThi",j.get("infBreachAmountThi"));
             dataModel.put("infBreachAmountFou",j.get("infBreachAmountFou"));
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -1419,9 +1423,9 @@ public enum TemplateExporterEnum {
             dataModel.put("infSalerPerson",j.get("infSalerPerson"));
             dataModel.put("infBuyerPerson",j.get("infBuyerPerson"));
             //承诺书（废面、废油、废茶渣项目需填写此项，一般下脚品填写“无”即可）
-            dataModel.put("infSurf","无");
-            dataModel.put("infOil","无");
-            dataModel.put("infTeaSurf","无");
+            dataModel.put("infSurf",j.get("infSurf"));
+            dataModel.put("infOil",j.get("infOil"));
+            dataModel.put("infTeaSurf",j.get("infTeaSurf"));
             return dataModel;
         }
     },
