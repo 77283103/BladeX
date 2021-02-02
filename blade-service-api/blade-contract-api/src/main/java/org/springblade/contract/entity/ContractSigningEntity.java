@@ -132,4 +132,8 @@ public class ContractSigningEntity extends BaseEntity {
     @TableField(exist = false)
     private List<ContractSigningArchiveEntity> signingArchiveEntityList;
 
+	@TableField(exist = false)
+	@ApiModelProperty(value="关联归档目录文件")
+	private String signingArchiveJson;
+
 }

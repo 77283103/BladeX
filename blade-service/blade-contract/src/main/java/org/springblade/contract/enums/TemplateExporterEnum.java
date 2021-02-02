@@ -54,8 +54,8 @@ public enum TemplateExporterEnum {
 		@Override
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
-			dataModel.put("sclPartya",j.get("sclPartya"));
-			dataModel.put("sclPartyb",j.get("sclPartyb"));
+			dataModel.put("sclPartya",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
+			dataModel.put("sclPartyb",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("date",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
 			dataModel.put("sclSite",j.get("sclSite"));
 			dataModel.put("sclStorage",j.get("sclStorage"));
@@ -250,7 +250,7 @@ public enum TemplateExporterEnum {
 				}
 			}
 			//这部分处理模板的变量字段
-			dataModel.put("ywlPatyA",contractFormInfoEntity.getSealName());
+			dataModel.put("ywlPatyA",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
 			dataModel.put("ywlPatyB",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("ywlCooperationContent",j.get("ywlCooperationContent"));
 			//日期格式的字段需要DataFormatUtils.systemTimeFormat处理一下
@@ -1254,7 +1254,7 @@ public enum TemplateExporterEnum {
         @Override
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
             Map dataModel = new HashMap();
-           // YwbBusinessContractTemplateEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, YwbBusinessContractTemplateEntity.class);
+            YwbBusinessContractTemplateEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, YwbBusinessContractTemplateEntity.class);
 			dataModel.put("ywbTenantry",Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
 			dataModel.put("ywbLessors",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("ywbCertificate",j.get("ywbCertificate"));

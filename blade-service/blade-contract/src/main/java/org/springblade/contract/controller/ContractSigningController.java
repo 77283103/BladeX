@@ -2,44 +2,44 @@ package org.springblade.contract.controller;
 
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.metadata.WriteSheet;
-import io.swagger.annotations.Api;
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
-
-import org.springblade.contract.entity.*;
+import org.springblade.contract.entity.ContractCounterpartEntity;
+import org.springblade.contract.entity.ContractSealUsingInfoEntity;
+import org.springblade.contract.entity.ContractSigningArchiveEntity;
+import org.springblade.contract.entity.ContractSigningEntity;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.service.*;
-import org.springblade.contract.vo.*;
-import org.springblade.contract.wrapper.ContractRelieveWrapper;
-import org.springblade.contract.wrapper.ContractSealUsingInfoWrapper;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.vo.ContractSigningArchiveRequestVO;
+import org.springblade.contract.vo.ContractSigningRequestVO;
+import org.springblade.contract.vo.ContractSigningResponseVO;
 import org.springblade.contract.wrapper.ContractSigningArchiveWrapper;
-import org.springblade.core.log.exception.ServiceException;
-import org.springblade.core.secure.BladeUser;
-import org.springblade.core.secure.utils.AuthUtil;
-import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.contract.wrapper.ContractSigningWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
-
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
-import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.contract.wrapper.ContractSigningWrapper;
-
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -103,7 +103,7 @@ public class ContractSigningController extends BladeController {
     @ApiOperation(value = "新增", notes = "传入contractSigning")
     @PreAuth("hasPermission('contract:signing:add')")
     @Transactional(rollbackFor = Exception.class)
-    public R<ContractSigningEntity> save(@Valid @RequestBody ContractSigningResponseVO contractSigning) {
+    public R<ContractSigningEntity> save(@Valid @RequestBody ContractSigningRequestVO contractSigning) {
         ContractSigningEntity entity = new ContractSigningEntity();
         BeanUtil.copy(contractSigning,entity);
         contractSigningService.save(entity);
@@ -116,11 +116,12 @@ public class ContractSigningController extends BladeController {
             String contractStatus = CONTRACT_SIGNING_SAVE_STATUS;
             contractFormInfoService.updateExportStatus(contractStatus, contractSigning.getContractId());
         }
-        contractSigning.getSigningArchiveEntityList().forEach(signingArchive -> {
+        List<ContractSigningArchiveEntity> signingArchiveList= JSONObject.parseArray(contractSigning.getSigningArchiveJson(),ContractSigningArchiveEntity.class);
+        signingArchiveList.forEach(signingArchive -> {
             if (Func.isNotEmpty(signingArchive.getId())){
                 signingArchive.setId(null);
             }
-            signingArchive.setSigningId(contractSigning.getId());
+            signingArchive.setSigningId(contractSigning.getContractId());
             signingArchiveService.save(signingArchive);
         });
         return R.data(entity);
@@ -133,8 +134,8 @@ public class ContractSigningController extends BladeController {
     @ApiOperationSupport(order = 3)
     @ApiOperation(value = "新增", notes = "signingArchive")
     @PreAuth("hasPermission('contract:signing:adds')")
-    public R save(@Valid @RequestBody ContractSigningArchiveResponseVO signingArchive) {
-        return R.status(signingArchiveService.save(ContractSigningArchiveWrapper.build().PVEntity(signingArchive)));
+    public R save(@Valid @RequestBody ContractSigningArchiveRequestVO signingArchive) {
+        return R.status(signingArchiveService.save(ContractSigningArchiveWrapper.build().QVEntity(signingArchive)));
     }
     /**
      * 修改
@@ -143,11 +144,11 @@ public class ContractSigningController extends BladeController {
     @ApiOperationSupport(order = 4)
     @ApiOperation(value = "修改", notes = "传入contractSigning")
     @PreAuth("hasPermission('contract:signing:update')")
-    public R update(@Valid @RequestBody ContractSigningResponseVO contractSigning) {
+    public R update(@Valid @RequestBody ContractSigningRequestVO contractSigning) {
         if (Func.isEmpty(contractSigning.getId())) {
             throw new ServiceException("id不能为空");
         }
-        return R.status(contractSigningService.updateById(ContractSigningWrapper.build().PVEntity(contractSigning)));
+        return R.status(contractSigningService.updateById(ContractSigningWrapper.build().QVEntity(contractSigning)));
     }
 
 

@@ -1,19 +1,12 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
-import org.springblade.core.tool.utils.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import java.util.Date;
 
 
 /**
@@ -24,11 +17,12 @@ import java.util.Date;
  */
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @TableName("contract_signing_archive")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "ContractSigningArchive对象", description = "合同签订关联表")
 public class ContractSigningArchiveEntity extends BaseEntity {
-
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -52,5 +46,4 @@ public class ContractSigningArchiveEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="名称")
 	private String name;
-
 }

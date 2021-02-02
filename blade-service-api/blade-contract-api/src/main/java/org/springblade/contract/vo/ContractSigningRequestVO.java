@@ -1,23 +1,20 @@
 package org.springblade.contract.vo;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import lombok.ToString;
-import lombok.Getter;
-import lombok.Setter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import java.util.List;
-
-import org.springblade.contract.entity.ContractSigningArchiveEntity;
-import org.springblade.core.tool.utils.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import org.springblade.core.mp.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springblade.contract.entity.ContractSigningArchiveEntity;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -98,4 +95,7 @@ public class ContractSigningRequestVO extends BaseEntity{
 
 	@ApiModelProperty(value="关联归档目录文件")
 	private List<ContractSigningArchiveEntity> signingArchiveEntityList;
+
+	@ApiModelProperty(value="关联归档目录文件")
+	private String signingArchiveJson;
 }
