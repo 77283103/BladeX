@@ -614,4 +614,14 @@
             AND DATE_FORMAT(info.create_time,'%Y') BETWEEN #{yearStart} and #{yearEnd}
         </if>
     </select>
+
+    <!--根據支付類型計算合同金額-->
+    <select id="selectByContractNumber" resultMap="formInfoResultMap">
+        SELECT <include refid="baseColumnList"/>
+        FROM `contract_form_info` info
+        WHERE info.is_deleted = 0
+        AND info.contract_big_category=#{contractFormInfo.contractBigCategory}
+        AND info.contract_number != ''
+        ORDER BY info.create_time Desc
+    </select>
 </mapper>

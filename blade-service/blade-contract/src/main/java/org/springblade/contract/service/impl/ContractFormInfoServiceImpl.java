@@ -34,6 +34,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.cache.SysCache;
+import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.feign.IDictBizClient;
@@ -1159,18 +1160,29 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			if(ekpVo!=null){
 				entity.setRelContractId(ekpVo.getDoc_info());
 				//处理编号
-				/*QueryWrapper<ContractFormInfoEntity> queryWrapper = Condition.getQueryWrapper(entity)
-					.ne("contract_number","")
-					.orderByAsc("create_time");
-				List<ContractFormInfoEntity> list = this.list(queryWrapper);
+				List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);
+				final String[] FLCode = {null};
+				R<List<DictBiz>> HTDL = bizClient.getList("HTDL");
+				List<DictBiz> dataBiz = HTDL.getData();
+				dataBiz.forEach(bz -> {
+					if ((bz.getId().toString()).equals(entity.getContractBigCategory())) {
+						FLCode[0] =bz.getRemark();
+					}
+				});
+				final String[] GSCode = {null};
+				R<List<DictBiz>> seal = bizClient.getList("application_seal");
+				dataBiz = seal.getData();
+				dataBiz.forEach(bz -> {
+					if ((bz.getDictValue()).equals(entity.getSealName())) {
+						GSCode[0] =bz.getRemark();
+					}
+				});
 				if(list.size()>0){
-					redisCacheUtil.selectTaskNo(list.get(0).getContractNumber());
+					entity.setContractNumber(redisCacheUtil.selectTaskNo(list.get(0).getContractNumber(),FLCode[0],GSCode[0]));
 				}else{
-					redisCacheUtil.selectTaskNo("");
-				}*/
-
+					entity.setContractNumber(redisCacheUtil.selectTaskNo("",FLCode[0],GSCode[0]));
+				}
 			}
-
 		}
 		return entity;
 	}
@@ -1674,4 +1686,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     public List<ContractFormInfoEntity> getChooseList() {
         return contractFormInfoMapper.getChooseList();
     }
+
+	/**
+	 * 查询有编号的合同
+	 *
+	 * @return list
+	 */
+	@Override
+	public List<ContractFormInfoEntity> selectByContractNumber(ContractFormInfoEntity entity) {
+		return contractFormInfoMapper.selectByContractNumber(entity);
+	}
+
 }

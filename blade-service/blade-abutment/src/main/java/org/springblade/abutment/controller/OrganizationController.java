@@ -17,6 +17,7 @@ import org.csource.fastdfs.StorageServer;
 import org.csource.fastdfs.TrackerClient;
 import org.csource.fastdfs.TrackerServer;
 import org.springblade.abutment.common.annotation.AutoLog;
+import org.springblade.abutment.entity.Attachment;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrganizationVo;
@@ -159,12 +160,14 @@ public class OrganizationController {
 	@PostMapping("/fastFile")
 	@AutoLog
 	@ApiOperation(value = "获取组织及人员信息的接口")
-	public R fastFile() throws IOException, MyException {
+	public R<List<Attachment>> fastFile() throws IOException, MyException {
 
 		List<FileVO> fileVOs=fileClient.getByIds("1351411563624841217").getData();
 		String[] fileIds = new String[0];
+		List<Attachment> listAttachment=new ArrayList<Attachment>();
 		for(FileVO fileVO:fileVOs){
 			// 开始上传fastDFS服务器
+			Attachment attachment=new Attachment();
 			NameValuePair[] nvp = new NameValuePair[5];
 			int index = fileVO.getName().lastIndexOf(".");
 			String fileSuffix=fileVO.getName().substring(index+1);
@@ -210,9 +213,12 @@ public class OrganizationController {
 			}
 			// 上传
 			fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+			attachment.setFilename(fileVO.getName());
+			attachment.setFilePath(fileIds[0]+'/'+fileIds[1]);
+			listAttachment.add(attachment);
 			System.out.println(fileIds[0]);
 		}
-		return R.data(fileIds);
+		return R.data(listAttachment);
 	}
 	/**
 	 * 获取组织及人员增量信息

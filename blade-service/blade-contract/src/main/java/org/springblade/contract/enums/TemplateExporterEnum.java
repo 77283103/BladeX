@@ -54,8 +54,8 @@ public enum TemplateExporterEnum {
 		@Override
 		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json,JSONObject j) {
 			Map dataModel = new HashMap();
-			dataModel.put("sclPartya",j.get("sclPartya"));
-			dataModel.put("sclPartyb",j.get("sclPartyb"));
+			dataModel.put("sclPartya",contractFormInfoEntity.getSealName());
+			dataModel.put("sclPartyb",getCounterpart(contractFormInfoEntity).get("name").size()<=0?"未选择相对方":getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("date",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
 			dataModel.put("sclSite",j.get("sclSite"));
 			dataModel.put("sclStorage",j.get("sclStorage"));
@@ -1393,7 +1393,7 @@ public enum TemplateExporterEnum {
             dataModel.put("infTimeAmount",j.get("infTimeAmount"));
             dataModel.put("infLoadAddr",j.get("infLoadAddr"));
             dataModel.put("infAppointAmount",j.get("infAppointAmount"));
-            dataModel.put("infCap",MoneyToChiness.moneyToChinese(j.get("infAppointAmount").toString()));
+            dataModel.put("infCap",MoneyToChiness.tenThousand(j.get("infAppointAmount").toString()));
             dataModel.put("infTimeLeastFir",j.get("infTimeLeastFir"));
             dataModel.put("infTimeLeastSec",j.get("infTimeLeastSec"));
             dataModel.put("infSalerAccoutName",j.get("infSalerAccoutName"));

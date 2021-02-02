@@ -1,19 +1,17 @@
 package org.springblade.contract.controller;
 
-import cn.hutool.http.HttpUtil;
-import cn.hutool.json.JSONUtil;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractBondPlanEntity;
@@ -36,12 +34,10 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.*;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.resource.entity.FileEntity;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
@@ -81,6 +77,8 @@ public class ContractFormInfoController extends BladeController {
 	private ContractFormInfoMapper formInfoMapper;
 	private IDictBizClient bizClient;
 	private IFileClient fileClient;
+	@Resource
+	private RedisCacheUtil redisCacheUtil;
 	private static final Integer CHANGE_CONTRACT_ID = -1;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
@@ -406,7 +404,7 @@ public class ContractFormInfoController extends BladeController {
 			contractBondService.saveBond(list, contractFormInfo.getId());
 		}
 		/*保存依据信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())&&contractFormInfo.getAccording().get(0)!=null) {
 			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
 			if (Func.isEmpty(contractAccording.getId())) {

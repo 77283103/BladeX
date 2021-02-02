@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.StorageClient;
 import org.csource.fastdfs.StorageServer;
@@ -32,8 +33,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.io.BufferedInputStream;
-import java.io.InputStream;
+import java.io.*;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,11 @@ public class AbutmentClient implements IAbutmentClient {
 	private IDictBizClient bizClient;
 	@Autowired
 	private IContractClient contractClient;
+	@Autowired
+	private IFileClient fileClient;
+	@Autowired
+	private TrackerClient trackerClient;
+
 //	@Autowired
 //	private TrackerClient trackerClient;
 	@Value("${api.ekp.fdTemplateId}")
@@ -73,7 +80,7 @@ public class AbutmentClient implements IAbutmentClient {
 			if(entity != null) {
 				//17090089是登录人的编号
 				//entity.getPersonCodeContract()
-				if(StrUtil.isNotEmpty("17090089") && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
+				if(StrUtil.isNotEmpty(entity.getPersonCodeContract()) && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
 					SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd");
 					DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 					//人员编号
@@ -89,18 +96,17 @@ public class AbutmentClient implements IAbutmentClient {
 					//formValuesEntity.setFd_accord_id("1762642a34c79442253858b4b2aab793");
 					//合同id
 					formValuesEntity.setFd_contract_id(entity.getId().toString());
-					//合同文件名称  需要查询出来 TextFile是null
-					formValuesEntity.setFd_contract_name(entity.getContractListName());
-					/*List<FileVO> fileVO=fileClient.getByIds(entity.getTextFile()).getData();
-					if(fileVO.size()>0){
-						formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
-					}*/
 					//pdf的id
 					formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
-					//pdf的id
+					//合同的url
 					formValuesEntity.setFd_contract_url("");
 					//合同起草流程类型
 					if("10".equals(entity.getContractSoure())||"20".equals(entity.getContractSoure())){
+						//合同附件名称
+						List<FileVO> fileVO=fileClient.getByIds(entity.getTextFile()).getData();
+						if(fileVO.size()>0){
+							formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
+						}
 						if("10".equals(entity.getContractSoure())){
 							formValuesEntity.setFd_contract_type("10");
 							//合同方对应关系
@@ -175,6 +181,8 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_keep_list(keepList);
 						formValuesEntity.setFd_pay_list(payList);
 					}else if("30".equals(entity.getContractSoure())){
+						//合同文件名称  需要查询出来 TextFile是null
+						formValuesEntity.setFd_contract_name(entity.getContractListName());
 						if(StrUtil.isNotEmpty(entity.getOtherInformation())){
 							formValuesEntity.setFd_contract_type("30");
 						}else{
@@ -220,7 +228,7 @@ public class AbutmentClient implements IAbutmentClient {
 					//相对方名称
 					formValuesEntity.setFd_full_name(entity.getCounterpart().get(0).getName());
 					//合同负责人
-					formValuesEntity.setFd_emplno("08048200");
+					formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
 					//合同份数
 					formValuesEntity.setFd_copies(entity.getShare());
 					//合同期限
@@ -353,7 +361,63 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_email(entity.getEmailPerson());
 					//相对方联系地址
 					formValuesEntity.setFd_address(entity.getAddressPerson());
-
+					//处理合同附件
+					List<FileVO> fileVOs=fileClient.getByIds(entity.getAttachedFiles()).getData();
+					String[] fileIds = new String[0];
+					List<Attachment> listAttachment=new ArrayList<Attachment>();
+					for(FileVO fileVO:fileVOs){
+						// 开始上传fastDFS服务器
+						Attachment attachment=new Attachment();
+						NameValuePair[] nvp = new NameValuePair[5];
+						int index = fileVO.getName().lastIndexOf(".");
+						String fileSuffix=fileVO.getName().substring(index+1);
+						nvp[0] = new NameValuePair("fdFileName", fileVO.getName());//文件名称
+						nvp[1] = new NameValuePair("fileSuffix", fileSuffix);//文件后缀
+						nvp[2] = new NameValuePair("fdKey", "");//文件key？？
+						nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());//文件大小
+						nvp[4] = new NameValuePair("fileType", "");//文件类型
+						//3.创建trackerServer
+						TrackerServer trackerServer = null;
+						try {
+							trackerServer = trackerClient.getConnection();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+						// 4、创建一个 StorageServer 的引用，值为 null
+						StorageServer storageServer = null;
+						// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+						StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+						InputStream in =null;
+						BufferedInputStream bin =null;
+						ByteArrayOutputStream baos = null;
+						BufferedOutputStream bout =null;
+						byte[] bytes=null;
+						try {
+							URL url = new URL(fileVO.getLink());
+							URLConnection conn = url.openConnection();
+							in = conn.getInputStream();
+							bin = new  BufferedInputStream(in);
+							baos = new ByteArrayOutputStream();
+							bout = new BufferedOutputStream(baos);
+							byte[] buffer = new byte[1024];
+							int len = bin.read(buffer);
+							while(len != -1){
+								bout.write(buffer, 0, len);
+								len = bin.read(buffer);
+							}
+							//刷新此输出流并强制写出所有缓冲的输出字节
+							bout.flush();
+							bytes = baos.toByteArray();
+							// 上传
+							fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+						} catch (IOException | MyException e) {
+							e.printStackTrace();
+						}
+						attachment.setFilename(fileVO.getName());
+						attachment.setFilePath(fileIds[0]+'/'+fileIds[1]);
+						listAttachment.add(attachment);
+					}
+					formValuesEntity.setFd_attachment(listAttachment);
 					pushEkpEntity.setFormValues(formValuesEntity);
 					//依据id
 					/*if (!Func.isEmpty(entity.getAccording().get(0).getFileId())) {
@@ -366,22 +430,6 @@ public class AbutmentClient implements IAbutmentClient {
 						pushEkpEntity.setFdTemplateId("176212613bf6f84e6bf1ad942cbb8344");
 						if (StrUtil.isNotEmpty(pushEkpEntity.getToken())) {
 							ekpVo = ekpService.pushData(pushEkpEntity);
-
-							// 开始上传fastDFS服务器
-
-							NameValuePair[] nvp = new NameValuePair[5];
-							/*nvp[0]=new NameValuePair("fdFileName",fdFileName);//文件名称
-							nvp[1]=new NameValuePair("fileSuffix",fileSuffix);//文件后缀
-							nvp[2]=new NameValuePair("fdKey",fdKey);//文件key？？
-							nvp[3]=new NameValuePair("fdFileSize",String.valueOf(fdFileSize));//文件大小
-							nvp[4]=new NameValuePair("fileType",fileType);//文件类型
-							//3.创建trackerServer
-							TrackerServer trackerServer = trackerClient.getConnection();
-							// 4、创建一个 StorageServer 的引用，值为 null
-							StorageServer storageServer = null;
-							// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
-							StorageClient storageClient = new StorageClient(trackerServer, storageServer);
-							String[] fileIds = storageClient.upload_file(fileByte,fileSuffix,nvp); // 上传*/
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
