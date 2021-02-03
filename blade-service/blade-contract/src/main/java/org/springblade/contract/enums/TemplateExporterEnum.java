@@ -198,8 +198,8 @@ public enum TemplateExporterEnum {
             dataModel.put("addressContractor", j.get("addressContractor"));
             dataModel.put("operationA", j.get("operationA"));
             //承包期限
-            dataModel.put("contractPeriodA", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
-            dataModel.put("contractPeriodB", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(contractFormInfoEntity.getEndTime().toString()));
+            dataModel.put("contractPeriodA", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
+            dataModel.put("contractPeriodB", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
             dataModel.put("compensationMuch", j.get("compensationMuch"));
             dataModel.put("damages", j.get("damages"));
             dataModel.put("accidentInsurance", j.get("accidentInsurance"));
