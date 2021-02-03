@@ -144,6 +144,7 @@
         <foreach collection="codes" item="code" open="and code in (" separator="," close=")">
             #{code}
         </foreach>
+        ORDER BY sort
     </select>
 
     <select id="pageList" resultMap="dictResultMap">

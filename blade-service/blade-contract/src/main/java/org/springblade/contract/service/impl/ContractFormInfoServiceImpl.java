@@ -48,10 +48,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
+import java.io.*;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -101,7 +100,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
     private ContractRelieveMapper relieveMapper;
 
-    private ContractRawMaterialsMapper contractRawMaterialsMapper;
 
     private ContractTemplateMapper contractTemplateMapper;
 	@Resource
@@ -130,16 +128,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private ISclConstructionProject2Service sclConstructionProject2Service;
     private ISclConstructionProject3Service sclConstructionProject3Service;
     private ICglSalesContract1Service cglSalesContract1Service;
-    private IContractBondPlanService contractBondPlanService;
-    private IContractBondService contractBondService;
-    private ContractPerformanceMapper performanceMapper;
-    private ContractPerformanceColPayMapper performanceColPayMapper;
     private ICglProofingContract1Service cglProofingContract1Service;
     private IProductOutServiceContract1Service productOutServiceContract1Service;
     private IProductOutServiceContract2Service productOutServiceContract2Service;
     private IProductOutServiceContract3Service productOutServiceContract3Service;
     private IMtbMarketResearchContract1Service iMtbMarketResearchContract1Service;
-    private IBusServiceContract1Service busServiceContract1Service;
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
     private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -1073,7 +1066,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				if(CollectionUtil.isNotEmpty(fileVO)){
 					newFileDoc=fileVO.get(0).getLink();
 					int index = fileVO.get(0).getName().lastIndexOf(".");
-					suffix=fileVO.get(0).getName().substring(index,fileVO.get(0).getName().length()-1);
+					suffix=fileVO.get(0).getName().substring(index+1,fileVO.get(0).getName().length());
 					//判断是否为pdf文件，pdf文件不需要转换
 					if(!"pdf".equals(suffix)){
 						newFilePdf=_PATH+fileVO.get(0).getName().substring(0,index)+".pdf";
@@ -1091,7 +1084,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 						assert filePDFVO != null;
 						entity.setTextFilePdf(filePDFVO.getData().getId()+",");
 					}else{
-						filePDF = new File(newFileDoc);
+						filePDF = new File(_PATH+fileVO.get(0).getName().substring(0,index)+".pdf");
+						//建立输出字节流
+						FileOutputStream fos = null;
+						try {
+							fos = new FileOutputStream(filePDF);
+							fos.write(AsposeWordToPdfUtils.getUrlFileData(newFileDoc));
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+
+
 					}
 				}
 			}else{
