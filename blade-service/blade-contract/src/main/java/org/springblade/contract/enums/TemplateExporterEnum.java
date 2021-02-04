@@ -211,16 +211,23 @@ public enum TemplateExporterEnum {
             if (contractFormInfoEntity.getContractBond().size()<=0){
                 dataModel.put("performance", "");
                 dataModel.put("performanceA", "");
-            }else if(contractFormInfoEntity.getContractBond().size()>=1){
+            }else if(contractFormInfoEntity.getContractBond().size()==1){
                 if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("1")){
                     dataModel.put("performance", "_");
                     dataModel.put("performanceA", "_");
                 }else if(contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("0")){
-                    String planPayAmount = String.valueOf(contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount());
+                    String planPayAmount = String.valueOf(contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount().divide(BigDecimal.valueOf(10000)));
                     dataModel.put("performance", planPayAmount);
                     dataModel.put("performanceA",  MoneyToChiness.tenThousand(planPayAmount));
                 }
-            }
+            }else if (contractFormInfoEntity.getContractBond().size()>=2){
+            AtomicReference<Double> valuesD = new AtomicReference<>(0D);
+            contractFormInfoEntity.getContractBond().forEach(element -> {
+                valuesD.updateAndGet(v -> v + Double.valueOf(String.valueOf(element.getPlanPayAmount().divide(BigDecimal.valueOf(10000)))));
+            });
+            dataModel.put("performance", valuesD);
+            dataModel.put("performanceA",  MoneyToChiness.tenThousand(valuesD.toString()));
+        }
             dataModel.put("fewDays", j.get("fewDays"));
             dataModel.put("exceedterm", j.get("exceedterm"));
             dataModel.put("vatinvoice", j.get("vatinvoice"));
@@ -1305,7 +1312,7 @@ public enum TemplateExporterEnum {
             dataModel.put("ywbResidence", j.get("ywbResidence"));
             dataModel.put("ywbAgrees", j.get("ywbAgrees"));
             dataModel.put("ywbBuiltupArea", j.get("ywbBuiltupArea"));
-            dataModel.put("ywbBetweena", j.get("ywbBetweena"));
+            dataModel.put("ywbRooms", j.get("ywbRooms"));
             dataModel.put("ywbPartyRoom", j.get("ywbPartyRoom"));
             dataModel.put("ywbTermStart", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())));
             dataModel.put("ywbTermEnd", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
@@ -1321,10 +1328,10 @@ public enum TemplateExporterEnum {
             dataModel.put("ywbShuilv", j.get("ywbShuilv"));
             if (j.get("ywbPayment").toString().contains("1")) {
                 BigDecimal sum = BigDecimal.valueOf(Double.valueOf(String.valueOf(j.get("ywbStandard"))))
-                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString()) + 1))
+                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString())/100 + 1))
                         .multiply(BigDecimal.valueOf(getMonthDiff(
-                                DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())),
-                                DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())))));
+                                DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getStartingTime())),
+                                DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getEndTime())))));
                 dataModel.put("ywbPayment", "☑月/☐季/☐半年/☐年");
                 dataModel.put("ywbZujinjine", sum);
                 //租金金额大写
@@ -1332,10 +1339,10 @@ public enum TemplateExporterEnum {
             }
             if (j.get("ywbPayment").toString().contains("2")) {
                 BigDecimal sum = BigDecimal.valueOf(Double.valueOf(String.valueOf(j.get("ywbStandard"))))
-                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString()) + 1))
+                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString())/100 + 1))
                         .multiply(BigDecimal.valueOf(getMonthDiff(
-                                DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())),
-                                DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime()))
+                                DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getStartingTime())),
+                                DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getEndTime()))
                         ) / 3));
                 dataModel.put("ywbPayment", "☐月/☑季/☐半年/☐年");
                 dataModel.put("ywbZujinjine", sum);
@@ -1343,10 +1350,10 @@ public enum TemplateExporterEnum {
             }
             if (j.get("ywbPayment").toString().contains("3")) {
                 BigDecimal sum = BigDecimal.valueOf(Double.valueOf(String.valueOf(j.get("ywbStandard"))))
-                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString()) + 1))
+                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString())/100 + 1))
                         .multiply(BigDecimal.valueOf(getMonthDiff(
-                                DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())),
-                                DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime()))
+                                DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getStartingTime())),
+                                DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getEndTime()))
                         ) / 6));
                 dataModel.put("ywbPayment", "☐月/☐季/☑半年/☐年");
                 dataModel.put("ywbZujinjine", sum);
@@ -1354,16 +1361,16 @@ public enum TemplateExporterEnum {
             }
             if (j.get("ywbPayment").toString().contains("4")) {
                 BigDecimal sum = BigDecimal.valueOf(Double.valueOf(String.valueOf(j.get("ywbStandard"))))
-                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString()) + 1))
+                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString())/100 + 1))
                         .multiply(BigDecimal.valueOf(getMonthDiff(
-                                DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())),
-                                DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime()))
+                                DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getStartingTime())),
+                                DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getEndTime()))
                         ) / 12));
                 dataModel.put("ywbPayment", "☐月/☐季/☐半年/☑年");
                 dataModel.put("ywbZujinjine", sum);
                 dataModel.put("ywbZujinjined", MoneyToChiness.moneyToChinese(sum.toString()));
             }
-            if (j.get("ywbPayment").toString().contains("")) {
+            if (j.get("ywbPayment").toString().equals("")) {
                 dataModel.put("ywbPayment", "☐月/☐季/☐半年/☐年");
                 dataModel.put("ywbZujinjine", " ");
                 dataModel.put("ywbZujinjined", " ");
@@ -1381,7 +1388,7 @@ public enum TemplateExporterEnum {
             if (j.get("ywbBankRemittance").toString().contains("4")) {
                 dataModel.put("ywbBankRemittance", "☐月/☐季/☐半年/☑年");
             }
-            if (j.get("ywbBankRemittance").toString().contains("")) {
+            if (j.get("ywbBankRemittance").equals("")) {
                 dataModel.put("ywbBankRemittance", "☐月/☐季/☐半年/☐年");
             }
             //3、租金支付时间：
@@ -1390,7 +1397,7 @@ public enum TemplateExporterEnum {
             //4、押金：
             dataModel.put("ywbShallRmba", j.get("ywbShallRmba"));
             dataModel.put("ywbShallCapitali", MoneyToChiness.moneyToChinese(j.get("ywbShallRmba").toString()));
-            dataModel.put("ywbDamagesA", j.get("ywbDamagesA"));
+            dataModel.put("ywbProportion", j.get("ywbProportion"));
             //5、租赁期内的因使用租赁物而产生的下列费用中 甲方承担：
             StringBuilder putEquipment = new StringBuilder();
             if (j.get("ywbTerminclude").toString().contains("1")) {
@@ -1411,7 +1418,7 @@ public enum TemplateExporterEnum {
             if (j.get("ywbTerminclude").toString().contains("6")) {
                 putEquipment.append("(6) ");
             }
-            if (j.get("ywbTerminclude").toString().contains("")) {
+            if (j.get("ywbTerminclude").equals("[]")) {
                 putEquipment.append("————");
             }
             dataModel.put("ywbTerminclude", putEquipment.toString());
@@ -1435,17 +1442,17 @@ public enum TemplateExporterEnum {
             if (j.get("ywbPeriod").toString().contains("6")) {
                 ywbPeriod.append("(6) ");
             }
-            if (j.get("ywbPeriod").toString().contains("")) {
+            if (j.get("ywbPeriod").equals("[]")) {
                 ywbPeriod.append("————");
             }
             dataModel.put("ywbPeriod", ywbPeriod.toString());
-            dataModel.put("ywbRequirementA", j.get("ywbRequirementA"));
-            dataModel.put("ywbCompensationA", j.get("ywbCompensationA"));
+            dataModel.put("ywbRequirementaes", j.get("ywbRequirementaes"));
+            dataModel.put("ywbCompensationaes", j.get("ywbCompensationaes"));
             dataModel.put("ywbTimeRequirement", j.get("ywbTimeRequirement"));
             dataModel.put("ywbAgreements", j.get("ywbAgreements"));
             dataModel.put("ywbHmcopies", j.get("ywbHmcopies"));
-            dataModel.put("ywbHmcopiesA", j.get("ywbHmcopiesA"));
-            dataModel.put("ywbHmcopiesB", j.get("ywbHmcopiesB"));
+            dataModel.put("ywbHmcopiesaes", j.get("ywbHmcopiesaes"));
+            dataModel.put("ywbHmcopiesbes", j.get("ywbHmcopiesbes"));
             dataModel.put("ywbQianmingjia", j.get("ywbQianmingjia"));
             dataModel.put("ywbQianmingyi", j.get("ywbQianmingyi"));
             dataModel.put("ywbQianmingdai", j.get("ywbQianmingdai"));
@@ -1492,12 +1499,21 @@ public enum TemplateExporterEnum {
                     dataModel.put("infBreachAmountFir", "_");
                     dataModel.put("infBreachAmountSec", "_");
                 }else if(contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("0")){
-                    String planPayAmount = String.valueOf(contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount());
+                    String planPayAmount = String.valueOf(contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount().divide(BigDecimal.valueOf(10000)));
                     dataModel.put("infAppointAmount", planPayAmount);
                     dataModel.put("infCap",  MoneyToChiness.tenThousand(planPayAmount));
                     dataModel.put("infBreachAmountFir", planPayAmount);
                     dataModel.put("infBreachAmountSec", planPayAmount);
                 }
+            }else if (contractFormInfoEntity.getContractBond().size()>=2){
+                AtomicReference<Double> valuesD = new AtomicReference<>(0D);
+                contractFormInfoEntity.getContractBond().forEach(element -> {
+                    valuesD.updateAndGet(v -> v + Double.valueOf(String.valueOf(element.getPlanPayAmount().divide(BigDecimal.valueOf(10000)))));
+                });
+                dataModel.put("infAppointAmount", valuesD);
+                dataModel.put("infCap",  MoneyToChiness.tenThousand(String.valueOf(valuesD)));
+                dataModel.put("infBreachAmountFir", valuesD);
+                dataModel.put("infBreachAmountSec", valuesD);
             }
             dataModel.put("infTimeLeastFir", j.get("infTimeLeastFir"));
             dataModel.put("infTimeLeastSec", j.get("infTimeLeastSec"));
@@ -2014,37 +2030,41 @@ public enum TemplateExporterEnum {
      * @return 如果d1>d2返回 月数差 否则返回0
      */
     @SneakyThrows
-    public static int getMonthDiff(String d1, String d2) {
-        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-        //使用SimpleDateFormat的parse()方法生成Date
-        Date date1 = sf.parse(d1);
-        Date date2 = sf.parse(d2);
-        Calendar c1 = Calendar.getInstance();
-        Calendar c2 = Calendar.getInstance();
-        c1.setTime(date1);
-        c2.setTime(date2);
-        if (c1.getTimeInMillis() < c2.getTimeInMillis()) {
+    public static int getMonthDiff(String d2, String d1) {
+        if (d1.contains("__")||d2.contains("__")){
             return 0;
+        }else {
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            //使用SimpleDateFormat的parse()方法生成Date
+            Date date1 = sf.parse(d1);
+            Date date2 = sf.parse(d2);
+            Calendar c1 = Calendar.getInstance();
+            Calendar c2 = Calendar.getInstance();
+            c1.setTime(date1);
+            c2.setTime(date2);
+            if (c1.getTimeInMillis() < c2.getTimeInMillis()) {
+                return 0;
+            }
+            int year1 = c1.get(Calendar.YEAR);
+            int year2 = c2.get(Calendar.YEAR);
+            int month1 = c1.get(Calendar.MONTH);
+            int month2 = c2.get(Calendar.MONTH);
+            int day1 = c1.get(Calendar.DAY_OF_MONTH);
+            int day2 = c2.get(Calendar.DAY_OF_MONTH);
+            // 获取年的差值 假设 d1 = 2015-8-16 d2 = 2011-9-30
+            int yearInterval = year1 - year2;
+            // 如果 d1的 月-日 小于 d2的 月-日 那么 yearInterval-- 这样就得到了相差的年数
+            if (month1 < month2 || month1 == month2 && day1 < day2) {
+                yearInterval--;
+            }
+            // 获取月数差值
+            int monthInterval = (month1 + 12) - month2;
+            if (day1 < day2) {
+                monthInterval--;
+            }
+            monthInterval %= 12;
+            return yearInterval * 12 + monthInterval;
         }
-        int year1 = c1.get(Calendar.YEAR);
-        int year2 = c2.get(Calendar.YEAR);
-        int month1 = c1.get(Calendar.MONTH);
-        int month2 = c2.get(Calendar.MONTH);
-        int day1 = c1.get(Calendar.DAY_OF_MONTH);
-        int day2 = c2.get(Calendar.DAY_OF_MONTH);
-        // 获取年的差值 假设 d1 = 2015-8-16 d2 = 2011-9-30
-        int yearInterval = year1 - year2;
-        // 如果 d1的 月-日 小于 d2的 月-日 那么 yearInterval-- 这样就得到了相差的年数
-        if (month1 < month2 || month1 == month2 && day1 < day2) {
-            yearInterval--;
-        }
-        // 获取月数差值
-        int monthInterval = (month1 + 12) - month2;
-        if (day1 < day2) {
-            monthInterval--;
-        }
-        monthInterval %= 12;
-        return yearInterval * 12 + monthInterval;
     }
 
     /**

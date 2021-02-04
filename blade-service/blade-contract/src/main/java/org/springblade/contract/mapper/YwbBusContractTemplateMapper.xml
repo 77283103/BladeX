@@ -13,7 +13,7 @@
         <result column="ywb_residence" property="ywbResidence"/>
         <result column="ywb_agrees" property="ywbAgrees"/>
         <result column="ywb_builtup_area" property="ywbBuiltupArea"/>
-        <result column="ywb_betweena" property="ywbBetweena"/>
+        <result column="ywb_rooms" property="ywbRooms"/>
         <result column="ywb_party_room" property="ywbPartyRoom"/>
         <result column="ywb_term_start" property="ywbTermStart"/>
         <result column="ywb_shall" property="ywbShall"/>
@@ -26,16 +26,16 @@
         <result column="ywb_hmdbf_previous" property="ywbHmdbfPrevious"/>
         <result column="ywb_shall_capitali" property="ywbShallCapitali"/>
         <result column="ywb_shall_rmba" property="ywbShallRmba"/>
-        <result column="ywb_damages_a" property="ywbDamagesA"/>
+        <result column="ywb_proportion" property="ywbProportion"/>
         <result column="ywb_terminclude" property="ywbTerminclude"/>
         <result column="ywb_period" property="ywbPeriod"/>
-        <result column="ywb_requirement_a" property="ywbRequirementA"/>
-        <result column="ywb_compensation_a" property="ywbCompensationA"/>
+        <result column="ywb_requirementaes" property="ywbRequirementaes"/>
+        <result column="ywb_compensationaes" property="ywbCompensationaes"/>
         <result column="ywb_time_requirement" property="ywbTimeRequirement"/>
         <result column="ywb_agreements" property="ywbAgreements"/>
         <result column="ywb_hmcopies" property="ywbHmcopies"/>
-        <result column="ywb_hmcopies_a" property="ywbHmcopiesA"/>
-        <result column="ywb_hmcopies_b" property="ywbHmcopiesB"/>
+        <result column="ywb_hmcopiesaes" property="ywbHmcopiesaes"/>
+        <result column="ywb_hmcopiesbes" property="ywbHmcopiesbes"/>
         <result column="ywb_attachments" property="ywbAttachments"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
@@ -72,7 +72,7 @@
         ywb_residence,
         ywb_agrees,
         ywb_builtup_area,
-        ywb_betweena,
+        ywb_rooms,
         ywb_party_room,
         ywb_term_start,
         ywb_shall,
@@ -85,16 +85,16 @@
         ywb_hmdbf_previous,
         ywb_shall_capitali,
         ywb_shall_rmba,
-        ywb_damages_a,
+        ywb_proportion,
         ywb_terminclude,
         ywb_period,
-        ywb_requirement_a,
-        ywb_compensation_a,
+        ywb_requirementaes,
+        ywb_compensationaes,
         ywb_time_requirement,
         ywb_agreements,
         ywb_hmcopies,
-        ywb_hmcopies_a,
-        ywb_hmcopies_b,
+        ywb_hmcopiesaes,
+        ywb_hmcopiesaes,
         ywb_attachments,
         create_user,
         create_dept,

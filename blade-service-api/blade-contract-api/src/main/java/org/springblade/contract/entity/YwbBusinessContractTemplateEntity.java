@@ -76,7 +76,7 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	 * 共多少间
 	 */
 	@ApiModelProperty(value="共多少间")
-	private String ywbBetweena;
+	private String ywbRooms;
 	/**
 	 * 给乙方作为什么用房
 	 */
@@ -145,7 +145,7 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	 * 违约金比例
 	 */
 	@ApiModelProperty(value="违约金比例")
-	private Double ywbDamagesA;
+	private String ywbProportion;
 	/**
 	 * 租赁期内甲方承担的费用含
 	 */
@@ -161,12 +161,12 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	 */
 	@JsonSerialize(nullsUsing = NullSerializer.class)
 	@ApiModelProperty(value="第五.2项时间要求")
-	private Integer ywbRequirementA;
+	private Integer ywbRequirementaes;
 	/**
 	 * 百分比作为解约补偿金
 	 */
 	@ApiModelProperty(value="百分比作为解约补偿金")
-	private Double ywbCompensationA;
+	private String ywbCompensationaes;
 	/**
 	 * 第九.4项时间要求
 	 */
@@ -187,12 +187,12 @@ public class YwbBusinessContractTemplateEntity extends BaseEntity {
 	 * 其中甲方执几 份
 	 */
 	@ApiModelProperty(value="其中甲方执几 份")
-	private String ywbHmcopiesA;
+	private String ywbHmcopiesaes;
 	/**
 	 * 其中乙方执几 份
 	 */
 	@ApiModelProperty(value="其中乙方执几 份")
-	private String ywbHmcopiesB;
+	private String ywbHmcopiesbes;
 	/**
 	 * 本合同及附件
 	 */

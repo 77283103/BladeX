@@ -53,7 +53,7 @@ public class YwbBusinessContractTemplateRequestVO extends BaseEntity {
 	private String ywbBuiltupArea;
 	
     @ApiModelProperty(value="共多少间")
-	private String ywbBetweenA;
+	private String ywbRooms;
 	
     @ApiModelProperty(value="给乙方作为什么用房")
 	private String ywbPartyRoom;
