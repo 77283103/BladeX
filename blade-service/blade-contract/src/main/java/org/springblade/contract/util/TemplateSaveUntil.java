@@ -10,14 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 @Component
 public class TemplateSaveUntil {
-    @Autowired
-    private IDictBizClient bizClient;
+    /*@Autowired
+    private IDictBizClient bizClient;*/
 	@Autowired
 	private IContractFormInfoService contractFormInfoService;
 	@Autowired
@@ -124,6 +121,8 @@ public class TemplateSaveUntil {
 	}
 
 	public static Long templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO template, JSONObject j) {
+		String infTimeStart="";
+		String infTimeEnd="";
 		Long id = null;
 		if (Func.isEmpty(contractFormInfoEntity.getId())) {
 			contractFormInfoEntity.setContractSoure("30");
@@ -351,23 +350,15 @@ public class TemplateSaveUntil {
 			}
 			//下脚品买卖合同模版
 			else if ("MMHT_26".equals(template.getTemplateCode())) {
-				//时间处理有问题
-				/*SimpleDateFormat format =  new SimpleDateFormat("HH:mm:ss");
-				try {
-					Date date1 = format.parse(j.get("infTimeStart").toString());
-					j.put("infTimeStart",date1);
-					Date date2 = format.parse(j.get("infTimeEnd").toString());
-					j.put("infTimeEnd",date2);
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}*/
-				//j.put("infTimeStart","");
-				//j.put("infTimeEnd","");
+				infTimeStart=j.get("infTimeStart").toString();
+				infTimeEnd=j.get("infTimeStart").toString();
 				j.put("infTimeStart",DataFormatUtils.SFFormatGLNZ(j.get("infTimeStart").toString()));
 				j.put("infTimeEnd",DataFormatUtils.SFFormatGLNZ(j.get("infTimeEnd").toString()));
 				InferiorProductContractEntity inferiorProductContract= JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
 				templateSaveUntil.inferiorProductContractService.save(inferiorProductContract);
 				id = inferiorProductContract.getId();
+				j.put("infTimeStart",infTimeStart);
+				j.put("infTimeEnd",infTimeEnd);
 			}
 			//广告制作安装合同模板
 			else if ("GGZZ_04".equals(template.getTemplateCode())) {
@@ -630,12 +621,15 @@ public class TemplateSaveUntil {
 			}
 			//下脚品买卖合同模版
 			else if ("MMHT_26".equals(template.getTemplateCode())) {
-
+				infTimeStart=j.get("infTimeStart").toString();
+				infTimeEnd=j.get("infTimeStart").toString();
 				j.put("infTimeStart",DataFormatUtils.SFFormatGLNZ(j.get("infTimeStart").toString()));
 				j.put("infTimeEnd",DataFormatUtils.SFFormatGLNZ(j.get("infTimeEnd").toString()));
 				InferiorProductContractEntity inferiorProductContract= JSONObject.toJavaObject(j, InferiorProductContractEntity.class);
 				inferiorProductContract.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.inferiorProductContractService.updateById(inferiorProductContract);
+				j.put("infTimeStart",infTimeStart);
+				j.put("infTimeEnd",infTimeEnd);
 			}
 			//广告制作安装合同模板
 			else if ("GGZZ_04".equals(template.getTemplateCode())) {
