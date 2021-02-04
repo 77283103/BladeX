@@ -57,77 +57,112 @@ public enum TemplateExporterEnum {
             dataModel.put("sclPartya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
             dataModel.put("sclPartyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("date", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
+            //签订地点
             dataModel.put("sclSite", j.get("sclSite"));
+            //仓储地点：
             dataModel.put("sclStorage", j.get("sclStorage"));
-            dataModel.put("sclArea", j.get("sclArea"));
-            dataModel.put("sclNo", j.get("sclNo"));
+            //仓储面积
             dataModel.put("sclStorageee", j.get("sclStorageee"));
+            //仓库要求：其他条件
             dataModel.put("sclConditionsa", j.get("sclConditionsa"));
+            //仓储作业要求-1
             dataModel.put("sclNumber", j.get("sclNumber"));
+            //仓储作业要求-5
             dataModel.put("sclServices", j.get("sclServices"));
+            //产品收货标准-5
             dataModel.put("sclFood", j.get("sclFood"));
             dataModel.put("sclDrinks", j.get("sclDrinks"));
             dataModel.put("sclDairy", j.get("sclDairy"));
             dataModel.put("sclWater", j.get("sclWater"));
+            // 车辆要求： -4
             dataModel.put("sclRequirementsp", j.get("sclRequirementsp"));
+            //、运力要求：-1
             dataModel.put("sclRange", j.get("sclRange"));
+            // 出货作业：-1
             dataModel.put("sclAreae", j.get("sclAreae"));
+            // 出货作业：-2
             dataModel.put("sclRequirementse", j.get("sclRequirementse"));
             dataModel.put("sclContractd", j.get("sclContractd"));
             dataModel.put("sclSecond", j.get("sclSecond"));
             dataModel.put("sclBreach", j.get("sclBreach"));
+            // 出货作业：-5
             dataModel.put("sclProvide", j.get("sclProvide"));
             dataModel.put("sclHours", j.get("sclHours"));
-            dataModel.put("sclMorning", j.get("sclMorning"));
-            dataModel.put("sclAfternoon", j.get("sclAfternoon"));
+            dataModel.put("sclMorning", DataFormatUtils.systemTimeFormatH(j.get("sclMorning").toString()));
+            dataModel.put("sclAfternoon", DataFormatUtils.systemTimeFormatH(j.get("sclAfternoon").toString()));
             dataModel.put("sclAdvance", j.get("sclAdvance"));
             dataModel.put("sclSeason", j.get("sclSeason"));
+            // 退货作业-1
             dataModel.put("sclReturn", j.get("sclReturn"));
-            dataModel.put("sclRequesta", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclRequesta"))));
+            //票据签收及货款回收要求-1
+            dataModel.put("sclRequesta", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("sclRequesta"))));
             dataModel.put("sclItems", j.get("sclItems"));
+            //票据签收及货款回收要求-2
             dataModel.put("sclDate", j.get("sclDate"));
+            //票据签收及货款回收要求-3
             dataModel.put("sclDate1", j.get("sclDate1"));
             dataModel.put("sclDate2", j.get("sclDate2"));
+            //信息反馈及报表要求-1
             dataModel.put("sclRequirementsf", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclRequirementsf"))));
             dataModel.put("sclTransfer", j.get("sclTransfer"));
+            //信息反馈及报表要求-3
             dataModel.put("sclOfs", j.get("sclOfs"));
+            //信息反馈及报表要求-4
             dataModel.put("sclRequirementsss", j.get("sclRequirementsss"));
+            //物流服务项目及费用计算标准（未税价）：
             if ("1".equals(j.get("traffic"))) {
                 dataModel.put("traffic", "☑");
                 dataModel.put("area", "☐");
+                dataModel.put("sclAread","_");
             } else if ("2".equals(j.get("traffic"))) {
                 dataModel.put("traffic", "☐");
                 dataModel.put("area", "☑");
+                dataModel.put("sclAread", j.get("sclAread"));
             } else {
                 dataModel.put("traffic", "☐");
                 dataModel.put("area", "☐");
+                dataModel.put("sclAread","_");
             }
-            dataModel.put("sclAread", j.get("sclAread"));
+            //、行销品仓储费用：
             dataModel.put("sclWarehouse", j.get("sclWarehouse"));
+            //配送费计算方式：
             dataModel.put("sclGoods", j.get("sclGoods"));
+            //服务范围、物流服务项目及费用的计算标准：
             dataModel.put("day", j.get("day"));
             dataModel.put("day1", j.get("day1"));
             dataModel.put("day2", j.get("day2"));
             dataModel.put("day3", j.get("day3"));
             dataModel.put("day4", j.get("day4"));
+            //、保证金条款
             dataModel.put("sclYuan", j.get("sclYuan"));
             dataModel.put("sclWhole", MoneyToChiness.moneyToChinese(j.get("sclYuan").toString()));
             dataModel.put("sclLead", j.get("sclLead"));
+            //违约责任-1
             dataModel.put("sclRequirementsd", j.get("sclRequirementsd"));
+            //违约责任-3
             dataModel.put("sclContract", j.get("sclContract"));
             dataModel.put("day5", j.get("day5"));
+            //违约责任-5
             dataModel.put("sclNumber1", j.get("sclNumber1"));
+            //违约责任-7
             dataModel.put("sclMultiple", j.get("sclMultiple"));
             dataModel.put("sclRequirementsa", j.get("sclRequirementsa"));
+            //违约责任-8
             dataModel.put("sclContaining", j.get("sclContaining"));
+            //违约责任-9
             dataModel.put("sclNinth", j.get("sclNinth"));
+            //合同变更、解除和终止条款约定-1
             dataModel.put("startTimes", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
             dataModel.put("endTimes", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
+            //特别约定事项-2
             dataModel.put("sclCost", j.get("sclCost"));
             dataModel.put("day7", j.get("day7"));
             dataModel.put("sclConditions", j.get("sclConditions"));
+            //特别约定事项-3
             dataModel.put("sclDate3", j.get("sclDate3"));
+            //特别约定事项-4
             dataModel.put("day6", j.get("day6"));
+            //（以下无正文）
             dataModel.put("address", j.get("address"));
             dataModel.put("addressb", j.get("addressb"));
             dataModel.put("telephone", j.get("telephone"));
@@ -138,8 +173,7 @@ public enum TemplateExporterEnum {
             dataModel.put("accountNumberb", j.get("accountNumberb"));
             dataModel.put("deposit", j.get("deposit"));
             dataModel.put("depositb", j.get("depositb"));
-            dataModel.put("date1", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date1"))));
-            dataModel.put("date2", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date1"))));
+            //附件4-<乙方授权委托书1>
             dataModel.put("client", j.get("client"));
             dataModel.put("client1", j.get("client1"));
             dataModel.put("number", j.get("number"));
@@ -153,37 +187,44 @@ public enum TemplateExporterEnum {
                 dataModel.put("dispatching", "☐");
                 dataModel.put("management", "☐");
                 dataModel.put("other", "☐");
+                dataModel.put("otherContent", "");
             } else if ("2".equals(j.get("shippingSummons"))) {
                 dataModel.put("shippingSummons", "☐");
                 dataModel.put("dispatching", "☑");
                 dataModel.put("management", "☐");
                 dataModel.put("other", "☐");
+                dataModel.put("otherContent", "");
             } else if ("3".equals(j.get("shippingSummons"))) {
                 dataModel.put("shippingSummons", "☐");
                 dataModel.put("dispatching", "☐");
                 dataModel.put("management", "☑");
                 dataModel.put("other", "☐");
+                dataModel.put("otherContent", "");
             } else if ("4".equals(j.get("shippingSummons"))) {
                 dataModel.put("shippingSummons", "☐");
                 dataModel.put("dispatching", "☐");
                 dataModel.put("management", "☐");
                 dataModel.put("other", "☑");
+                dataModel.put("otherContent", j.get("otherContent"));
             } else {
                 dataModel.put("shippingSummons", "☐");
                 dataModel.put("dispatching", "☐");
                 dataModel.put("management", "☐");
                 dataModel.put("other", "☐");
+                dataModel.put("otherContent","");
             }
-            dataModel.put("otherContent", j.get("otherContent"));
             dataModel.put("date3", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));
             dataModel.put("date4", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));
+            ////附件4-<乙方授权委托书2>
             dataModel.put("client4", j.get("client4"));
             dataModel.put("client5", j.get("client5"));
             dataModel.put("number3", j.get("number3"));
             dataModel.put("phone", j.get("phone"));
             dataModel.put("mail1", j.get("mail1"));
             dataModel.put("postalAddress", j.get("postalAddress"));
-            dataModel.put("company", j.get("company"));
+            //厂商承诺书-此致
+            dataModel.put("company", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+
             return dataModel;
         }
     },

@@ -7,7 +7,6 @@ import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
 import java.util.Date;
 
 
@@ -177,7 +176,7 @@ public class SclServiceEntity extends BaseEntity {
 	 * 时间
 	 */
 	@ApiModelProperty(value = "时间")
-	private Date sclRequesta;
+	private String sclRequesta;
 	/**
 	 * 日
 	 */
