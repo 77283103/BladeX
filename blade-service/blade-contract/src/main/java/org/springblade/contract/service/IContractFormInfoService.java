@@ -6,6 +6,8 @@ import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.mp.base.BaseService;
+import org.springblade.core.tool.api.R;
+import org.springblade.resource.vo.FileVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -167,5 +169,12 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	List<ContractFormInfoEntity>  selectByContractNumber(ContractFormInfoEntity entity);
+
+	/**
+	 * 判断电子签章
+	 * @param entity
+	 * @return
+	 */
+	R singleSignIsNot(ContractFormInfoRequestVO entity, FileVO file);
 
 }

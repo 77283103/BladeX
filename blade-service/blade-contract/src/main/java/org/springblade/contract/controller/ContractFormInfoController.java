@@ -5,17 +5,14 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.contract.entity.ContractAccordingEntity;
-import org.springblade.contract.entity.ContractBondEntity;
-import org.springblade.contract.entity.ContractBondPlanEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
@@ -51,7 +48,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -77,6 +74,7 @@ public class ContractFormInfoController extends BladeController {
 	private ContractFormInfoMapper formInfoMapper;
 	private IDictBizClient bizClient;
 	private IFileClient fileClient;
+	private IAbutmentClient abutmentClient;
 	@Resource
 	private RedisCacheUtil redisCacheUtil;
 	private static final Integer CHANGE_CONTRACT_ID = -1;
@@ -232,17 +230,7 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
 
-	/**
-	 * 判断电子签章是否存在
-	 */
-	@PostMapping("/singleSignIsNot")
-	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
-	@Transactional(rollbackFor = Exception.class)
-	public String singleSignIsNot(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
-		String url = "";
-		return url;
-	}
+
 
 	/**
 	 * 独立起草新增
@@ -450,6 +438,27 @@ public class ContractFormInfoController extends BladeController {
 		contractFormInfoService.updateById(contractFormInfoEntity);
 		return R.data(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 	}
+
+	/**
+	 * 判断电子签章和关键字是否存在
+	 * @return
+	 */
+	@PostMapping("/singleSignIsNot")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "判断电子签章是否存在", notes = "传入contractFormInfo")
+	@Transactional(rollbackFor = Exception.class)
+	public R singleSignIsNot(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		FileVO files=null;
+		if("30".equals(contractFormInfo.getContractSoure())){
+			R<FileVO> file=contractBrowse(contractFormInfo);
+			files=file.getData();
+		}else if("10".equals(contractFormInfo.getContractSoure())){
+			List<FileVO> fileVO = fileClient.getByIds(contractFormInfo.getTextFile()).getData();
+			files=fileVO.get(0);
+		}
+		return contractFormInfoService.singleSignIsNot(contractFormInfo,files);
+	}
+
 
 	/**
 	 * 合同预览

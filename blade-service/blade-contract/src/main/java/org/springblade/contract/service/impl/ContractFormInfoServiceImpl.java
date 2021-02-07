@@ -3,10 +3,12 @@ package org.springblade.contract.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import feign.form.ContentType;
 import lombok.AllArgsConstructor;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.util.PDFTextStripper;
 import org.springblade.abutment.entity.CompanyInfoEntity;
 import org.springblade.abutment.entity.UploadFileEntity;
 import org.springblade.abutment.feign.IAbutmentClient;
@@ -25,7 +27,6 @@ import org.springblade.contract.util.RedisCacheUtil;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.core.mp.support.Condition;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
@@ -35,7 +36,6 @@ import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.entity.DictBiz;
-import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
@@ -50,7 +50,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.*;
 import java.math.BigDecimal;
-import java.nio.file.Files;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -140,6 +139,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
     private static final Long DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE = 1323239469884764161L;
     private static final Integer AMOUNT_RATIO_VALUE = 100;
     private static final String CONTRACT_CHANGE_REVIEW = "10";
+	private static final String _PATH="D:/ftl/";//模板路径
+	//private static final String _PATH="/ftl/";//模板路径
 
     @Override
     public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
@@ -1037,8 +1038,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity) {
-		String _PATH="D:/ftl/";//模板路径
-		//String _PATH="/ftl/";//模板路径
 		// 查查公司有没有申请电子章
 		CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
 		companyInfoEntity.setQueryType("1");
@@ -1707,4 +1706,74 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return contractFormInfoMapper.selectByContractNumber(entity);
 	}
 
+
+	/**
+	 * 判断电子签章
+	 *
+	 * @return list
+	 */
+	@Override
+	public R singleSignIsNot(ContractFormInfoRequestVO contractFormInfo,FileVO fileVO) {
+		if("1".equals(contractFormInfo.getContractForm())){
+			for (ContractCounterpartEntity counterpart : contractFormInfo.getCounterpart()) {
+				// 查查公司有没有申请电子章
+				CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
+				companyInfoEntity.setQueryType("1");
+				// 企业信用代码  从相对方里面来  需要修改
+				companyInfoEntity.setOrganCode(counterpart.getUnifiedSocialCreditCode());
+				// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
+				CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+				if (companyInfoVo == null) {
+					companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+				}
+
+				if (!"0".equals(companyInfoVo.getAvailable())) {
+					return R.data(1,counterpart.getName(),"失败");
+				}
+			}
+		}
+		String newFileDoc = "";
+		String newFilePdf = "";
+		String suffix = "";
+		File filePDF=null;
+		//doc转为pdf
+		if(!Func.isEmpty(fileVO)){
+			newFileDoc=fileVO.getLink();
+			int index = fileVO.getName().lastIndexOf(".");
+			suffix=fileVO.getName().substring(index+1,fileVO.getName().length());
+			//判断是否为pdf文件，pdf文件不需要转换
+			if(!"pdf".equals(suffix)){
+				newFilePdf=_PATH+fileVO.getName().substring(0,index)+".pdf";
+				AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
+				filePDF = new File(newFilePdf);
+			}else{
+				filePDF = new File(_PATH+fileVO.getName().substring(0,index)+".pdf");
+				//建立输出字节流
+				FileOutputStream fos = null;
+				try {
+					fos = new FileOutputStream(filePDF);
+					fos.write(AsposeWordToPdfUtils.getUrlFileData(newFileDoc));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			try {
+				InputStream input  = new FileInputStream(filePDF);
+				// 新建一个PDF解析器对象
+				PDFParser parser = new PDFParser(input);
+				parser.parse();
+				PDDocument document = parser.getPDDocument();
+				int pageCount = document.getNumberOfPages();
+				PDFTextStripper stripper = new PDFTextStripper();
+				String text = stripper.getText(document);
+				int az = text.indexOf("甲方（签章）");
+				int bz = text.indexOf("乙方（签章）");
+				int ay = text.indexOf("甲方(签章)");
+				int by = text.indexOf("乙方(签章)");
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return R.data(2,"缺失关键字","失败");
+	}
 }

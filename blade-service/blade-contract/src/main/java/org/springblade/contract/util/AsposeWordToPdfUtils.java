@@ -56,6 +56,7 @@ public class AsposeWordToPdfUtils {
             e.printStackTrace();
         }
     }
+
 	//获取链接地址文件的byte数据
 	public static byte[] getUrlFileData(String fileUrl) throws Exception
 	{

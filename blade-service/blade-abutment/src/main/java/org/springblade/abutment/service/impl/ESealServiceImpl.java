@@ -20,6 +20,7 @@ import org.apache.http.util.EntityUtils;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.vo.*;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -85,7 +86,10 @@ public class ESealServiceImpl implements IESealService {
         }
         JSONObject companyInfoJson = JSONUtil.parseObj(HttpUtil.createPost(companyInfoEntity.getQueryType().equals("1") ? this.orgInfoByCodeUrl : this.orgInfoBySysUidUrl).body(param.toString(),"application/json").header("token", token).execute().body());
         log.info(companyInfoJson.toString());
-        return companyInfoJson == null ? null : companyInfoJson.getStr("code").equals("0") ? companyInfoJson.getJSONObject("data").get("company", CompanyInfoVo.class) : null;
+		CompanyInfoVo companyInfoVo=new CompanyInfoVo();
+		companyInfoVo.setOrganCode(companyInfoJson.get("code").toString());
+		return companyInfoJson == null ? null : companyInfoVo;
+		//return companyInfoJson == null ? null : companyInfoJson.getStr("code").equals("0") ? companyInfoJson.getJSONObject("data").get("company", CompanyInfoVo.class) : null;
     }
 
     @Override

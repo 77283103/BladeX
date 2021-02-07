@@ -107,4 +107,22 @@ public class DataFormatUtils {
 		}
 		return date;
 	}
+
+	/**
+	 * 时间戳转换成"yyyy年MM月dd日"格式
+	 *@param time 系统时间
+	 */
+	public static String timeStamp2Date(String time) {
+		Long timeLong = Long.parseLong(time);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date;
+		try {
+			date = sdf.parse(sdf.format(timeLong));
+			sdf.format(date);
+			return new SimpleDateFormat("yyyy年MM月dd日").format(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return "__";
+		}
+	}
 }

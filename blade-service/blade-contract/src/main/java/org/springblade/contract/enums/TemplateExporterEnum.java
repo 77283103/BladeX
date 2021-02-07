@@ -711,7 +711,7 @@ public enum TemplateExporterEnum {
                         JSONObject mtlShootingAndProductionContract3 = JSON.parseObject(JSON.toJSONString(mtlShootingAndProductionContract3List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
                         Map<String, Object> map = new HashMap();
                         map.put("file", mtlShootingAndProductionContract3.get("file"));
-                        map.put("creationTime", DataFormatUtils.GLNZTimeFormat(String.valueOf(mtlShootingAndProductionContract3.get("creationTime"))));
+                        map.put("creationTime", DataFormatUtils.timeStamp2Date(String.valueOf(mtlShootingAndProductionContract3.get("creationTime"))));
                         map.put("completeplace", mtlShootingAndProductionContract3.get("completeplace"));
                         map.put("creator", mtlShootingAndProductionContract3.get("creator"));
                         map.put("employment", mtlShootingAndProductionContract3.get("employment"));
@@ -957,7 +957,7 @@ public enum TemplateExporterEnum {
                         JSONObject mtbProductionContract3 = JSON.parseObject(JSON.toJSONString(mtbProductionContract3List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
                         Map<String, Object> map = new HashMap();
                         map.put("wenJian", mtbProductionContract3.get("wenJian"));
-                        map.put("shouChuang", mtbProductionContract3.get("shouChuang"));
+						map.put("shouChuang", DataFormatUtils.timeStamp2Date(String.valueOf(mtbProductionContract3.get("shouChuang"))));
                         map.put("wanCheng", mtbProductionContract3.get("wanCheng"));
                         map.put("createZhe", mtbProductionContract3.get("createZhe"));
                         map.put("zhiWuChuang", mtbProductionContract3.get("zhiWuChuang"));

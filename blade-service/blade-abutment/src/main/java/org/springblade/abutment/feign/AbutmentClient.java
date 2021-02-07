@@ -4,6 +4,10 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.pdfbox.io.RandomAccessRead;
+import org.apache.pdfbox.pdfparser.PDFParser;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.text.PDFTextStripper;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.StorageClient;
@@ -34,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.SimpleDateFormat;
@@ -109,26 +115,17 @@ public class AbutmentClient implements IAbutmentClient {
 						}
 						if("10".equals(entity.getContractSoure())){
 							formValuesEntity.setFd_contract_type("10");
-							//合同方对应关系
-							if("甲".equals(entity.getContractRoles())){
-								formValuesEntity.setFd_onetoone("乙");
-							}else if("乙".equals(entity.getContractRoles())){
-								formValuesEntity.setFd_onetoone("甲");
-							}else{
-								formValuesEntity.setFd_onetoone("乙");
-							}
-						}
-						if("20".equals(entity.getContractSoure())){
+						}else{
 							formValuesEntity.setFd_contract_type("40");
-							String[] arrays = {"乙", "丙", "丁", "戊", "己"};
-							JSONObject s=new JSONObject();
-							s.put("甲","统一集团");
-							for(int i=0;i<entity.getCounterpart().size();i++){
-								s.put(arrays[i],entity.getCounterpart().get(i).getUnifiedSocialCreditCode());
-							}
-							formValuesEntity.setFd_onetoone(s.toJSONString());
 						}
-						formValuesEntity.setFd_contract_type("10");
+						//合同方对应关系
+						if("甲".equals(entity.getContractRoles())){
+							formValuesEntity.setFd_onetoone("1");
+						}else if("乙".equals(entity.getContractRoles())){
+							formValuesEntity.setFd_onetoone("2");
+						}else{
+							formValuesEntity.setFd_onetoone("3");
+						}
 						//履约信息
 						List <KeepList> keepList=new ArrayList<KeepList>();
 						List <PayList> payList=new ArrayList<PayList>();
@@ -190,11 +187,22 @@ public class AbutmentClient implements IAbutmentClient {
 						}
 						R<String> code=contractClient.getByTemplateId(entity.getContractTemplateId());
 						if("FWZL_36".equals(code.getData())){
-							formValuesEntity.setFd_onetoone("甲");
+							formValuesEntity.setFd_onetoone("2");
 						}else{
-							formValuesEntity.setFd_onetoone("乙");
+							formValuesEntity.setFd_onetoone("1");
 						}
 					}
+					fileText(entity.getTextFilePdf());
+						/*if("20".equals(entity.getContractSoure())){
+							formValuesEntity.setFd_contract_type("40");
+							String[] arrays = {"1", "2", "3", "4", "5"};
+							JSONObject s=new JSONObject();
+							s.put("1","统一集团");
+							for(int i=0;i<entity.getCounterpart().size();i++){
+								s.put(arrays[i],entity.getCounterpart().get(i).getUnifiedSocialCreditCode());
+							}
+							formValuesEntity.setFd_onetoone(s.toJSONString());
+						}*/
 					//合同主旨
 					formValuesEntity.setFd_main(entity.getContractName());
 					//合同大类
@@ -437,6 +445,38 @@ public class AbutmentClient implements IAbutmentClient {
 				}
 			}
 		return R.data(ekpVo);
+	}
+
+	public String fileText(String pdfId) {
+		StringBuilder downLoadUrl = new StringBuilder();
+		downLoadUrl.append("http://sa.pec.com.cn:9080/common/file/downloadSinged?id=").append(pdfId).append("&token=").append(token().getData());
+		URL url = null;
+		int HttpResult;
+		URLConnection urlconn = null;
+		JSONObject resultJson = new JSONObject();
+		try {
+			url = new URL(downLoadUrl.toString());
+			urlconn = url.openConnection();
+			urlconn.setConnectTimeout(5 * 1000);
+			urlconn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+			urlconn.connect();
+			HttpURLConnection httpconn = (HttpURLConnection) urlconn;
+			HttpResult = httpconn.getResponseCode();
+			if (HttpResult == HttpURLConnection.HTTP_OK) {
+				InputStream inputStream = urlconn.getInputStream();
+				PDFParser parser = new PDFParser((RandomAccessRead) inputStream);
+				parser.parse();
+				PDDocument document = parser.getPDDocument();
+				int pageCount = document.getNumberOfPages();
+				PDFTextStripper stripper = new PDFTextStripper();
+				String text = stripper.getText(document);
+				resultJson.put("text", text);
+				resultJson.put("pages", pageCount > 1 ? "y" : "n");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return resultJson.toString();
 	}
 
 	@Override
