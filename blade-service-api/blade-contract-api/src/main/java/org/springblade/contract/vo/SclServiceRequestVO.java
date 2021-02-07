@@ -1,22 +1,14 @@
 package org.springblade.contract.vo;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import lombok.Getter;
-import lombok.Setter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import org.springblade.core.tool.utils.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import org.springblade.core.mp.base.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 
 
 /**
@@ -125,7 +117,7 @@ public class SclServiceRequestVO extends BaseEntity {
 	private String sclReturn;
 
 	@ApiModelProperty(value="时间")
-	private Date sclRequesta;
+	private String sclRequesta;
 
 	@ApiModelProperty(value="日")
 	private String sclItems;
