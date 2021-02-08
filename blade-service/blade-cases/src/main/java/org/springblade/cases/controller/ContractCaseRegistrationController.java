@@ -81,9 +81,13 @@ public class ContractCaseRegistrationController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractCaseRegistration")
 	@PreAuth("hasPermission('contractCaseRegistation:contractCaseRegistration:add')")
 	public R save(@Valid @RequestBody ContractCaseRegistrationResponseVO contractCaseRegistration) {
-		String caseStatus=CONTRACT_CASE_REGISTRATION_SAVE;
-		contractCaseRegistration.setCaseStatus(caseStatus);
-		return R.status(contractCaseRegistrationService.save(ContractCaseRegistrationWrapper.build().PVEntity(contractCaseRegistration)));
+		if (Func.isNotEmpty(contractCaseRegistration.getId())){
+			contractCaseRegistrationService.updateById(ContractCaseRegistrationWrapper.build().PVEntity(contractCaseRegistration));
+		}else {
+			contractCaseRegistration.setCaseStatus(CONTRACT_CASE_REGISTRATION_SAVE);
+			contractCaseRegistrationService.save(ContractCaseRegistrationWrapper.build().PVEntity(contractCaseRegistration));
+		}
+		return R.status(true);
 	}
 
 	/**
@@ -94,8 +98,7 @@ public class ContractCaseRegistrationController extends BladeController {
 	@ApiOperation(value = "提交", notes = "传入contractCaseRegistration")
 	@PreAuth("hasPermission('contractCaseRegistation:contractCaseRegistration:submit')")
 	public R submit(@Valid @RequestBody ContractCaseRegistrationResponseVO contractCaseRegistration) {
-		String caseStatus=CONTRACT_CASE_REGISTRATION_SUBMIT;
-		contractCaseRegistration.setCaseStatus(caseStatus);
+		contractCaseRegistration.setCaseStatus(CONTRACT_CASE_REGISTRATION_SUBMIT);
 		return R.status(contractCaseRegistrationService.save(ContractCaseRegistrationWrapper.build().PVEntity(contractCaseRegistration)));
 	}
 
@@ -110,8 +113,7 @@ public class ContractCaseRegistrationController extends BladeController {
 	    if (Func.isEmpty(contractCaseRegistration.getId())){
             throw new ServiceException("id不能为空");
         }
-		String caseStatus=CONTRACT_CASE_REGISTRATION_SUBMIT;
-		contractCaseRegistration.setCaseStatus(caseStatus);
+		contractCaseRegistration.setCaseStatus(CONTRACT_CASE_REGISTRATION_SUBMIT);
 		return R.status(contractCaseRegistrationService.updateById(ContractCaseRegistrationWrapper.build().PVEntity(contractCaseRegistration)));
 	}
 

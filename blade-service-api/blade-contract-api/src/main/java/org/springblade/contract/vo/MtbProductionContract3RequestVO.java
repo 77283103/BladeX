@@ -1,10 +1,16 @@
 package org.springblade.contract.vo;
 
-import lombok.*;
-import lombok.EqualsAndHashCode;
-import org.springblade.core.mp.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 /**
  * 媒体类：平面广告拍摄制作合同（关联表2） 请求模型VO
@@ -27,8 +33,10 @@ public class MtbProductionContract3RequestVO extends BaseEntity {
     @ApiModelProperty(value="文件")
 	private String wenJian;
 
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value="首次创建时间")
-	private String shouChuang;
+	private Date shouChuang;
 
     @ApiModelProperty(value="完成地点")
 	private String wanCheng;

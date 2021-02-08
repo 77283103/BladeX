@@ -1,20 +1,14 @@
 package org.springblade.cases.vo;
 
+import io.swagger.annotations.ApiModel;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import lombok.EqualsAndHashCode;
-import org.springblade.cases.entity.ContractCaseClosedEntity;
-import org.springblade.cases.entity.ContractCaseHandlingEntity;
 import org.springblade.cases.entity.ContractCaseRegistrationEntity;
-import io.swagger.annotations.ApiModel;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.vo.ContractFormInfoResponseVO;
-import org.springblade.core.tool.api.R;
 import org.springblade.resource.vo.FileVO;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -40,7 +34,7 @@ public class ContractCaseRegistrationResponseVO extends ContractCaseRegistration
 	/**
 	 *  合同信息
 	 */
-	private ContractFormInfoEntity infoEntity;
+	private List<ContractFormInfoEntity> infoEntity;
 
 	/**
 	 * 合同状态

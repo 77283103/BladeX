@@ -59,9 +59,11 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 		List<ContractCaseRegistrationResponseVO> recordList = new ArrayList<>();
 		/*为每个对象，设置合同信息*/
 		for(ContractCaseRegistrationResponseVO v : records){
+			List<ContractFormInfoEntity> list =new ArrayList<>();
 			ContractFormInfoEntity infoEntity= contractClient.getById(v.getAssociatedContract()).getData();
+			list.add(infoEntity);
 			if (Func.isNotEmpty(infoEntity)) {
-				v.setInfoEntity(infoEntity);
+				v.setInfoEntity(list);
 				v.setContractStatus(infoEntity.getContractStatus());
 				v.setCurrencyCategory(infoEntity.getCurrencyCategory());
 				v.setContractStatus(infoEntity.getContractStatus());
@@ -82,9 +84,10 @@ public class ContractCaseRegistrationServiceImpl extends BaseServiceImpl<Contrac
 		ContractCaseRegistrationEntity registrationEntity=baseMapper.selectById(id);
 		ContractCaseRegistrationResponseVO registrationResponseVO= ContractCaseRegistrationWrapper.build().entityPV(registrationEntity);
 		if (Func.notNull(registrationEntity.getAssociatedContract())){
+			List<ContractFormInfoEntity> list =new ArrayList<>();
 			ContractFormInfoResponseVO contractFormInfo=contractClient.getById(registrationEntity.getAssociatedContract()).getData();
-			registrationResponseVO.setInfoEntity(contractFormInfo);
-
+			list.add(contractFormInfo);
+			registrationResponseVO.setInfoEntity(list);
 		}
 		//将处理信息返回vo
 		if (Func.isEmpty(registrationResponseVO.getHandlingEntity())) {

@@ -99,7 +99,7 @@ public enum TemplateExporterEnum {
             dataModel.put("sclItems", j.get("sclItems"));
             //票据签收及货款回收要求-2
             dataModel.put("sclDate", j.get("sclDate"));
-            //票据签收及货款回收要求-3
+            //票据签收及货款回收要求-36
             dataModel.put("sclDate1", j.get("sclDate1"));
             dataModel.put("sclDate2", j.get("sclDate2"));
             //信息反馈及报表要求-1
@@ -1176,19 +1176,23 @@ public enum TemplateExporterEnum {
             dataModel.put("sclStorage", j.get("sclStorage"));
             //乳饮
             dataModel.put("sclArea", j.get("sclArea"));
+            //保证金履行方式一
             dataModel.put("sclNo", j.get("sclNo"));
             dataModel.put("sclStorageee", MoneyToChiness.tenThousand(j.get("sclNo").toString()));
+            //保证金履行方式二
             dataModel.put("sclBail", j.get("sclBail"));
             dataModel.put("sclStorageee1", MoneyToChiness.tenThousand(j.get("sclBail").toString()));
+            //保证金履行方式三
             dataModel.put("sclAffiliatedEnterprise", j.get("sclAffiliatedEnterprise"));
             dataModel.put("sclContract", "");//合同编号待处理
             dataModel.put("sclDeposit", j.get("sclDeposit"));
             dataModel.put("sclStorageee2", MoneyToChiness.tenThousand(j.get("sclDeposit").toString()));
+            //运费结算相关
             dataModel.put("sclConditionsa", j.get("sclConditionsa"));
             dataModel.put("sclNumber", j.get("sclNumber"));
             dataModel.put("sclServices", j.get("sclServices"));
             dataModel.put("sclFood", j.get("sclFood"));
-            //这里是处理下来选的字段的
+            //这里是处理下拉选的字段的
             if ("1".equals(j.get("sclDrinks"))) {
                 dataModel.put("sclDrinks", "☑中石化☐中石油");
             } else if ("2".equals(j.get("sclDrinks"))) {
