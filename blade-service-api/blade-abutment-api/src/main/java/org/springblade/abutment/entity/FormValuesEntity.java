@@ -11,6 +11,10 @@ import java.util.List;
  */
 @Data
 public class FormValuesEntity implements Serializable {
+	@ApiModelProperty(value = "签章关键字")
+	private String fd_keyword;
+	@ApiModelProperty(value = "是否多页合同")
+	private String fd_multipage;
 	@ApiModelProperty(value = "合同方对应关系")
 	private String fd_onetoone;
 	@ApiModelProperty(value = "单据内容:乙方电话(必填)")
