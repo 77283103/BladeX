@@ -452,7 +452,7 @@ public class ContractFormInfoController extends BladeController {
 		if("30".equals(contractFormInfo.getContractSoure())){
 			R<FileVO> file=contractBrowse(contractFormInfo);
 			files=file.getData();
-		}else if("10".equals(contractFormInfo.getContractSoure())){
+		}else if("10".equals(contractFormInfo.getContractSoure())||"20".equals(contractFormInfo.getContractSoure())){
 			List<FileVO> fileVO = fileClient.getByIds(contractFormInfo.getTextFile()).getData();
 			files=fileVO.get(0);
 		}

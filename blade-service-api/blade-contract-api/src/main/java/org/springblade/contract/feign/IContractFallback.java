@@ -1,6 +1,7 @@
 package org.springblade.contract.feign;
 
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.tool.api.R;
@@ -36,7 +37,7 @@ public class IContractFallback implements IContractClient {
 	}
 
 	@Override
-	public R<String> getByTemplateId(Long id) {
+	public R<ContractTemplateEntity> getByTemplateId(Long id) {
 		return R.fail("更新模板json信息失败！");
 	}
 }

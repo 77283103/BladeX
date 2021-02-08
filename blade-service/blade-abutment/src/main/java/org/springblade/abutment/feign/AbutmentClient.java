@@ -1,13 +1,10 @@
 package org.springblade.abutment.feign;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.pdfbox.util.PDFTextStripper;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.StorageClient;
@@ -20,9 +17,7 @@ import org.springblade.abutment.service.IDocService;
 import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.service.IEkpService;
 import org.springblade.abutment.vo.*;
-import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractPerformanceColPayEntity;
-import org.springblade.contract.entity.ContractPerformanceEntity;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -180,59 +175,50 @@ public class AbutmentClient implements IAbutmentClient {
 					}else if("30".equals(entity.getContractSoure())){
 						//合同文件名称  需要查询出来 TextFile是null
 						formValuesEntity.setFd_contract_name(entity.getContractListName());
-						if(StrUtil.isNotEmpty(entity.getOtherInformation())){
-							formValuesEntity.setFd_contract_type("30");
-						}else{
+						R<ContractTemplateEntity> templateEntity=contractClient.getByTemplateId(entity.getContractTemplateId());
+						if("0".equals(templateEntity.getData().getUsageRecord())){
 							formValuesEntity.setFd_contract_type("20");
+						}else{
+							formValuesEntity.setFd_contract_type("30");
 						}
-						R<String> code=contractClient.getByTemplateId(entity.getContractTemplateId());
-						if("FWZL_36".equals(code.getData())){
+						if("FWZL_36".equals(templateEntity.getData().getTemplateCode())){
 							formValuesEntity.setFd_onetoone("2");
 						}else{
 							formValuesEntity.setFd_onetoone("1");
 						}
 					}
-					fileText(entity.getTextFilePdf());
-						/*if("20".equals(entity.getContractSoure())){
-							formValuesEntity.setFd_contract_type("40");
-							String[] arrays = {"1", "2", "3", "4", "5"};
-							JSONObject s=new JSONObject();
-							s.put("1","统一集团");
-							for(int i=0;i<entity.getCounterpart().size();i++){
-								s.put(arrays[i],entity.getCounterpart().get(i).getUnifiedSocialCreditCode());
-							}
-							formValuesEntity.setFd_onetoone(s.toJSONString());
-						}*/
+					//处理签章关键字 和多页合同
+					formValuesEntity=fileText(formValuesEntity,entity);
 					//合同主旨
 					formValuesEntity.setFd_main(entity.getContractName());
 					//合同大类
 					R<List<DictBiz>> contract_HTDL = bizClient.getList("HTDL");
 					List<DictBiz> dataBiz = contract_HTDL.getData();
-					dataBiz.forEach(bz -> {
-						if ((bz.getId().toString()).equals(entity.getContractBigCategory())) {
-							formValuesEntity.setFd_broad(bz.getDictKey());
+					for(DictBiz dictBiz:dataBiz){
+						if ((dictBiz.getId().toString()).equals(entity.getContractBigCategory())) {
+							formValuesEntity.setFd_broad(dictBiz.getDictKey());
 						}
-					});
+					}
 					//合同中类
 					formValuesEntity.setFd_secondary(entity.getContractListName());
 					//合同小类
 					R<List<DictBiz>> contract_HTXL = bizClient.getList("HTXL");
 					List<DictBiz> dataHTXLBiz = contract_HTXL.getData();
-					dataHTXLBiz.forEach(bz -> {
-						if ((bz.getId().toString()).equals(entity.getContractSmallCategory())) {
-							formValuesEntity.setFd_small(bz.getDictKey());
+					for(DictBiz dictBiz:dataHTXLBiz){
+						if ((dictBiz.getId().toString()).equals(entity.getContractSmallCategory())) {
+							formValuesEntity.setFd_small(dictBiz.getDictKey());
 						}
-					});
+					}
 					//合同主旨
 					formValuesEntity.setFd_main(entity.getContractName());
 					//申请用公章全称
 					R<List<DictBiz>> application_seal = bizClient.getList("application_seal");
 					List<DictBiz> dataSeal = application_seal.getData();
-					dataSeal.forEach(bz -> {
-						if ((bz.getDictValue()).equals(entity.getSealName())) {
-							formValuesEntity.setFd_offical_seal(bz.getDictKey());
+					for(DictBiz dictBiz:dataSeal){
+						if ((dictBiz.getDictValue()).equals(entity.getSealName())) {
+							formValuesEntity.setFd_offical_seal(dictBiz.getDictKey());
 						}
-					});
+					}
 					//相对方名称
 					formValuesEntity.setFd_full_name(entity.getCounterpart().get(0).getName());
 					//合同负责人
@@ -321,11 +307,11 @@ public class AbutmentClient implements IAbutmentClient {
 					//币种
 					R<List<DictBiz>> contract_bz = bizClient.getList("bz");
 					List<DictBiz> databz = contract_bz.getData();
-					databz.forEach(bz -> {
-						if (bz.getDictKey().equals(entity.getCurrencyCategory())) {
-							formValuesEntity.setFd_currency(bz.getDictValue());
+					for(DictBiz dictBiz:databz){
+						if ((dictBiz.getDictKey()).equals(entity.getCurrencyCategory())) {
+							formValuesEntity.setFd_currency(dictBiz.getDictValue());
 						}
-					});
+					}
 					//是否延期条款
 					if("0".equals(entity.getExtension())){
 						formValuesEntity.setFd_automatic("1");
@@ -370,14 +356,9 @@ public class AbutmentClient implements IAbutmentClient {
 					//相对方联系地址
 					formValuesEntity.setFd_address(entity.getAddressPerson());
 					pushEkpEntity.setFormValues(formValuesEntity);
-					//依据id
-					/*if (!Func.isEmpty(entity.getAccording().get(0).getFileId())) {
-						pushEkpEntity.setDocSubject(entity.getAccording().get(0).getFileId());
-						//pushEkpEntity.setDocSubject("1762642a34c79442253858b4b2aab793");
-					}*/
 					try {
 						//处理合同附件
-						List<FileVO> fileVOs=fileClient.getByIds(entity.getAttachedFiles()).getData();
+						/*List<FileVO> fileVOs=fileClient.getByIds(entity.getAttachedFiles()).getData();
 						String[] fileIds = new String[0];
 						List<Attachment> listAttachment=new ArrayList<>();
 						for(FileVO fileVO:fileVOs){
@@ -432,7 +413,7 @@ public class AbutmentClient implements IAbutmentClient {
 							attachment.setFilePath(fileIds[0]+'/'+fileIds[1]);
 							listAttachment.add(attachment);
 						}
-						pushEkpEntity.setFd_attachment(listAttachment);
+						pushEkpEntity.setFd_attachment(listAttachment);*/
 						pushEkpEntity.setToken(ekpService.getToken());
 						pushEkpEntity.setDocSubject(entity.getContractName());
 						pushEkpEntity.setFdTemplateId("176212613bf6f84e6bf1ad942cbb8344");
@@ -447,13 +428,12 @@ public class AbutmentClient implements IAbutmentClient {
 		return R.data(ekpVo);
 	}
 
-	public String fileText(String pdfId) {
+	public FormValuesEntity fileText(FormValuesEntity formValuesEntity,ContractFormInfoEntity entity) {
 		StringBuilder downLoadUrl = new StringBuilder();
-		downLoadUrl.append("http://sa.pec.com.cn:9080/common/file/downloadSinged?id=").append(pdfId).append("&token=").append(token().getData());
+		downLoadUrl.append("http://sa.pec.com.cn:9080/common/file/downloadSinged?id=").append(entity.getTextFilePdf()).append("&token=").append(token().getData());
 		URL url = null;
 		int HttpResult;
 		URLConnection urlconn = null;
-		JSONObject resultJson = new JSONObject();
 		try {
 			url = new URL(downLoadUrl.toString());
 			urlconn = url.openConnection();
@@ -464,19 +444,50 @@ public class AbutmentClient implements IAbutmentClient {
 			HttpResult = httpconn.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK) {
 				InputStream inputStream = urlconn.getInputStream();
-				PDFParser parser = new PDFParser((RandomAccessRead) inputStream);
+				PDFParser parser = new PDFParser(inputStream);
 				parser.parse();
 				PDDocument document = parser.getPDDocument();
 				int pageCount = document.getNumberOfPages();
 				PDFTextStripper stripper = new PDFTextStripper();
 				String text = stripper.getText(document);
-				resultJson.put("text", text);
-				resultJson.put("pages", pageCount > 1 ? "y" : "n");
+				formValuesEntity.setFd_multipage(pageCount > 1 ? "y" : "n");
+				int az = text.indexOf("甲方（签章）");
+				int bz = text.indexOf("乙方（签章）");
+				int ay = text.indexOf("甲方(签章)");
+				int by = text.indexOf("乙方(签章)");
+				JSONObject s=new JSONObject();
+				String[] arrays;
+				if((-1!=az&&-1!=bz)){
+					if("1".equals(formValuesEntity.getFd_onetoone())){
+						arrays = new String[]{"乙", "丙", "丁"};
+						s.put("统一集团","甲方（签章）");
+					}else{
+						arrays = new String[]{"甲", "丙", "丁"};
+						s.put("统一集团","乙方（签章）");
+					}
+					for (int i=0;i<entity.getCounterpart().size();i++) {
+						s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方（签章）");
+					}
+					formValuesEntity.setFd_keyword(s.toJSONString());
+				}else if((-1!=ay&&-1!=by)){
+					if("1".equals(formValuesEntity.getFd_onetoone())){
+						arrays = new String[]{"乙", "丙", "丁"};
+						s.put("统一集团","甲方(签章)");
+					}else{
+						arrays = new String[]{"甲", "丙", "丁"};
+						s.put("统一集团","乙方(签章)");
+					}
+					for (int i=0;i<entity.getCounterpart().size();i++) {
+						s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方(签章)");
+					}
+					formValuesEntity.setFd_keyword(s.toJSONString());
+				}
+
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return resultJson.toString();
+		return formValuesEntity;
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package org.springblade.contract.feign;
 
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.launch.constant.AppConstant;
@@ -65,5 +66,5 @@ public interface IContractClient {
 	 * @return
 	 */
 	@GetMapping(TEMPLATE_GET_ID)
-	R<String> getByTemplateId(@RequestParam("id") Long id);
+	R<ContractTemplateEntity> getByTemplateId(@RequestParam("id") Long id);
 }

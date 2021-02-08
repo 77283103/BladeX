@@ -173,6 +173,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	/**
 	 * 判断电子签章
 	 * @param entity
+	 * @param file
 	 * @return
 	 */
 	R singleSignIsNot(ContractFormInfoRequestVO entity, FileVO file);

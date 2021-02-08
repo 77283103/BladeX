@@ -85,9 +85,9 @@ public class ContractClient implements IContractClient{
 
 	@Override
 	@GetMapping(TEMPLATE_GET_ID)
-	public R<String> getByTemplateId(Long id) {
+	public R<ContractTemplateEntity> getByTemplateId(Long id) {
 		ContractTemplateEntity templateFieldEntity=templateService.getById(id);
-		return R.data(templateFieldEntity.getTemplateCode());
+		return R.data(templateFieldEntity);
 	}
 
 
