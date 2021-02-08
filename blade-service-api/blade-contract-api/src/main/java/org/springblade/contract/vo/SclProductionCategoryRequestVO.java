@@ -4,7 +4,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.contract.entity.SclProductionCategoryEntity;
 
 
 /**
@@ -21,7 +21,7 @@ import org.springblade.core.mp.base.BaseEntity;
 @Setter
 @ToString
 @ApiModel(description = "生产类：物流服务合同（一段+调拨运输请求对象")
-public class SclProductionCategoryRequestVO extends BaseEntity{
+public class SclProductionCategoryRequestVO extends SclProductionCategoryEntity {
 
 	private static final long serialVersionUID = 1L;
 

@@ -1,10 +1,15 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.*;
-import org.springblade.core.mp.base.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
+
+import java.util.Date;
 
 
 /**
@@ -19,7 +24,7 @@ import io.swagger.annotations.ApiModelProperty;
 @AllArgsConstructor
 @TableName("mtb_production_contract3")
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "MtbProductionContract3对象", description = "媒体类：平面广告拍摄制作合同（关联表2）")
+@ApiModel(value = "MtbProductionContract3对象", description = "媒体类：平面广告拍摄制作合同（关联表3）")
 public class MtbProductionContract3Entity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
@@ -32,8 +37,10 @@ public class MtbProductionContract3Entity extends BaseEntity {
 	/**
 	 * 首次创建时间
 	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	@ApiModelProperty(value = "首次创建时间")
-	private String shouChuang;
+	private Date shouChuang;
 	/**
 	 * 完成地点
 	 */

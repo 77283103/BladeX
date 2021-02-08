@@ -77,7 +77,7 @@
             AND case_id like concat('%',#{contractCaseRegistration.caseId},'%')
         </if>
         <if test="contractCaseRegistration.caseRelatedUnit != null and contractCaseRegistration.caseRelatedUnit != ''">
-            AND case_related_unit like concat('%',#{contractCaseRegistration.caseRelatedUnit},'%')
+            AND case_related_unit =#{contractCaseRegistration.caseRelatedUnit}
         </if>
         <if test="contractCaseRegistration.caseType != null and contractCaseRegistration.caseType != ''">
             AND case_type = #{contractCaseRegistration.caseType}
@@ -85,7 +85,6 @@
         <if test="contractCaseRegistration.caseTargetAmount != null and contractCaseRegistration.caseTargetAmount != ''">
             AND case_target_amount =#{contractCaseRegistration.caseTargetAmount}
         </if>
-
         <if test="contractCaseRegistration.caseStatus != null and contractCaseRegistration.caseStatus != ''">
             <foreach collection="contractCaseRegistration.code" item="case_status" open="and case_status in (" separator="," close=")">
                 #{case_status}

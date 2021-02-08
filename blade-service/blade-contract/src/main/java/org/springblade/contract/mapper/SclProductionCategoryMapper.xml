@@ -46,11 +46,17 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
+        <result column="bond_choose_one" property="bondChooseOne"/>
+        <result column="bond_choose_tow" property="bondChooseTow"/>
+        <result column="bond_choose_three" property="bondChooseThree"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
         scl_party_a,
+        bond_choose_one,
+        bond_choose_tow,
+        bond_choose_three,
         scl_party_b,
         scl_date_of_signing,
         scl_site,

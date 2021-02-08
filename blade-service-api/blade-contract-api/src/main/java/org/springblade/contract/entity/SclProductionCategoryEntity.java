@@ -217,5 +217,19 @@ public class SclProductionCategoryEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="公司名称")
 	private String sclCompany;
-
+	/**
+	 * 保证金缴纳方案一
+	 */
+	@ApiModelProperty(value="保证金缴纳方案一")
+	private String bondChooseOne;
+	/**
+	 * 保证金缴纳方案二
+	 */
+	@ApiModelProperty(value="保证金缴纳方案二")
+	private String bondChooseTow;
+	/**
+	 * 保证金缴纳方案三
+	 */
+	@ApiModelProperty(value="保证金缴纳方案三")
+	private String bondChooseThree;
 }
