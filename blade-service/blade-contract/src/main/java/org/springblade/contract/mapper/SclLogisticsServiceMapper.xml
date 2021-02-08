@@ -79,6 +79,7 @@
         <result column="choice1" property="choice1"/>
         <result column="choice2" property="choice2"/>
         <result column="other" property="other"/>
+        <result column="other_content" property="otherContent"/>
         <result column="date5" property="date5"/>
         <result column="date6" property="date6"/>
         <result column="date7" property="date7"/>
@@ -166,6 +167,7 @@
         choice1,
         choice2,
         other,
+        other_content,
         date5,
         date6,
         date7,

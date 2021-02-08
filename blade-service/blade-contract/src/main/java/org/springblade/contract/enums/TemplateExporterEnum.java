@@ -113,7 +113,7 @@ public enum TemplateExporterEnum {
             if ("1".equals(j.get("traffic"))) {
                 dataModel.put("traffic", "☑");
                 dataModel.put("area", "☐");
-                dataModel.put("sclAread","_");
+                dataModel.put("sclAread", "_");
             } else if ("2".equals(j.get("traffic"))) {
                 dataModel.put("traffic", "☐");
                 dataModel.put("area", "☑");
@@ -121,7 +121,7 @@ public enum TemplateExporterEnum {
             } else {
                 dataModel.put("traffic", "☐");
                 dataModel.put("area", "☐");
-                dataModel.put("sclAread","_");
+                dataModel.put("sclAread", "_");
             }
             //、行销品仓储费用：
             dataModel.put("sclWarehouse", j.get("sclWarehouse"));
@@ -211,7 +211,7 @@ public enum TemplateExporterEnum {
                 dataModel.put("dispatching", "☐");
                 dataModel.put("management", "☐");
                 dataModel.put("other", "☐");
-                dataModel.put("otherContent","");
+                dataModel.put("otherContent", "");
             }
             dataModel.put("date3", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));
             dataModel.put("date4", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));
@@ -249,26 +249,26 @@ public enum TemplateExporterEnum {
             dataModel.put("otherStandards", j.get("otherStandards"));
             dataModel.put("thisAgreement", j.get("thisAgreement"));
             //履约保证金相关
-            if (contractFormInfoEntity.getContractBond().size()<=0){
+            if (contractFormInfoEntity.getContractBond().size() <= 0) {
                 dataModel.put("performance", "");
                 dataModel.put("performanceA", "");
-            }else if(contractFormInfoEntity.getContractBond().size()==1){
-                if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("1")){
+            } else if (contractFormInfoEntity.getContractBond().size() == 1) {
+                if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("1")) {
                     dataModel.put("performance", "_");
                     dataModel.put("performanceA", "_");
-                }else if(contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("0")){
+                } else if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("0")) {
                     String planPayAmount = String.valueOf(contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount().divide(BigDecimal.valueOf(10000)));
                     dataModel.put("performance", planPayAmount);
-                    dataModel.put("performanceA",  MoneyToChiness.tenThousand(planPayAmount));
+                    dataModel.put("performanceA", MoneyToChiness.tenThousand(planPayAmount));
                 }
-            }else if (contractFormInfoEntity.getContractBond().size()>=2){
-            AtomicReference<Double> valuesD = new AtomicReference<>(0D);
-            contractFormInfoEntity.getContractBond().forEach(element -> {
-                valuesD.updateAndGet(v -> v + Double.valueOf(String.valueOf(element.getPlanPayAmount().divide(BigDecimal.valueOf(10000)))));
-            });
-            dataModel.put("performance", valuesD);
-            dataModel.put("performanceA",  MoneyToChiness.tenThousand(valuesD.toString()));
-        }
+            } else if (contractFormInfoEntity.getContractBond().size() >= 2) {
+                AtomicReference<Double> valuesD = new AtomicReference<>(0D);
+                contractFormInfoEntity.getContractBond().forEach(element -> {
+                    valuesD.updateAndGet(v -> v + Double.valueOf(String.valueOf(element.getPlanPayAmount().divide(BigDecimal.valueOf(10000)))));
+                });
+                dataModel.put("performance", valuesD);
+                dataModel.put("performanceA", MoneyToChiness.tenThousand(valuesD.toString()));
+            }
             dataModel.put("fewDays", j.get("fewDays"));
             dataModel.put("exceedterm", j.get("exceedterm"));
             dataModel.put("vatinvoice", j.get("vatinvoice"));
@@ -879,12 +879,18 @@ public enum TemplateExporterEnum {
             dataModel.put("partya", contractFormInfoEntity.getSealName());
             dataModel.put("partyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("date", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
+            //签订地点
             dataModel.put("site", j.get("site"));
+            //甲方依据《中华人民共和国招标投标法》对
             dataModel.put("storage", j.get("storage"));
+            //中标的物流线路为：
             dataModel.put("area", j.get("area"));
-            dataModel.put("no", j.get("no"));
-            dataModel.put("storageee", j.get("storageee"));
-            dataModel.put("conditionsa", j.get("conditionsa"));
+            //正常单
+            dataModel.put("no", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("no"))));
+            //加单
+            dataModel.put("storageee",DataFormatUtils.systemTimeFormat(String.valueOf( j.get("storageee"))));
+            //加急单
+            dataModel.put("conditionsa", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("conditionsa"))));
             dataModel.put("day", j.get("day"));
             dataModel.put("day1", j.get("day1"));
             dataModel.put("services", j.get("services"));
@@ -927,6 +933,7 @@ public enum TemplateExporterEnum {
             dataModel.put("agentb", j.get("agentb"));
             dataModel.put("date3", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));
             dataModel.put("date4", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));
+            //附件2 乙方授权委托书-1
             dataModel.put("client", j.get("client"));
             dataModel.put("client1", j.get("client1"));
             dataModel.put("client2", j.get("client2"));
@@ -935,13 +942,44 @@ public enum TemplateExporterEnum {
             dataModel.put("number1", j.get("number1"));
             dataModel.put("number", j.get("number"));
             dataModel.put("mail", j.get("mail"));
-            dataModel.put("choice", j.get("choice"));
-            dataModel.put("choice1", j.get("choice1"));
-            dataModel.put("choice2", j.get("choice2"));
-            dataModel.put("other", j.get("other"));
+            //委托事项：（请在以下方框内打勾）
+            if ("1".equals(j.get("choice"))) {
+                dataModel.put("choice", "☑");
+                dataModel.put("choice1", "☐");
+                dataModel.put("choice2", "☐");
+                dataModel.put("other", "☐");
+                dataModel.put("otherContent", "");
+            } else if ("2".equals(j.get("choice"))) {
+                dataModel.put("choice", "☐");
+                dataModel.put("choice1", "☑");
+                dataModel.put("choice2", "☐");
+                dataModel.put("other", "☐");
+                dataModel.put("otherContent", "");
+            } else if ("3".equals(j.get("choice"))) {
+                dataModel.put("choice", "☐");
+                dataModel.put("choice1", "☐");
+                dataModel.put("choice2", "☑");
+                dataModel.put("other", "☐");
+                dataModel.put("otherContent", "");
+            } else if ("4".equals(j.get("choice"))) {
+                dataModel.put("choice", "☐");
+                dataModel.put("choice1", "☐");
+                dataModel.put("choice2", "☐");
+                dataModel.put("other", "☑");
+                dataModel.put("otherContent", j.get("otherContent"));
+            } else {
+                dataModel.put("choice", "☐");
+                dataModel.put("choice1", "☐");
+                dataModel.put("choice2", "☐");
+                dataModel.put("other", "☐");
+                dataModel.put("otherContent", "");
+            }
+            //委托期间：
             dataModel.put("date5", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date5"))));
             dataModel.put("date6", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date6"))));
-            dataModel.put("signature", j.get("signature"));
+            // 乙方（签章）
+            dataModel.put("signature", "🥇");
+            //乙方授权委托书-2
             dataModel.put("client4", j.get("client4"));
             dataModel.put("client5", j.get("client5"));
             dataModel.put("number3", j.get("number3"));
@@ -998,7 +1036,7 @@ public enum TemplateExporterEnum {
                         JSONObject mtbProductionContract3 = JSON.parseObject(JSON.toJSONString(mtbProductionContract3List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
                         Map<String, Object> map = new HashMap();
                         map.put("wenJian", mtbProductionContract3.get("wenJian"));
-						map.put("shouChuang", DataFormatUtils.timeStamp2Date(String.valueOf(mtbProductionContract3.get("shouChuang"))));
+                        map.put("shouChuang", DataFormatUtils.timeStamp2Date(String.valueOf(mtbProductionContract3.get("shouChuang"))));
                         map.put("wanCheng", mtbProductionContract3.get("wanCheng"));
                         map.put("createZhe", mtbProductionContract3.get("createZhe"));
                         map.put("zhiWuChuang", mtbProductionContract3.get("zhiWuChuang"));
@@ -1177,16 +1215,61 @@ public enum TemplateExporterEnum {
             //乳饮
             dataModel.put("sclArea", j.get("sclArea"));
             //保证金履行方式一
-            dataModel.put("sclNo", j.get("sclNo"));
-            dataModel.put("sclStorageee", MoneyToChiness.tenThousand(j.get("sclNo").toString()));
-            //保证金履行方式二
-            dataModel.put("sclBail", j.get("sclBail"));
-            dataModel.put("sclStorageee1", MoneyToChiness.tenThousand(j.get("sclBail").toString()));
-            //保证金履行方式三
-            dataModel.put("sclAffiliatedEnterprise", j.get("sclAffiliatedEnterprise"));
-            dataModel.put("sclContract", "");//合同编号待处理
-            dataModel.put("sclDeposit", j.get("sclDeposit"));
-            dataModel.put("sclStorageee2", MoneyToChiness.tenThousand(j.get("sclDeposit").toString()));
+            switch (j.get("bondChooseOne").toString()) {
+                case "1":
+                    dataModel.put("bondChooseOne", "☑");
+                    dataModel.put("sclNo", j.get("sclNo"));
+                    dataModel.put("sclStorageee", MoneyToChiness.tenThousand(j.get("sclNo").toString()));
+                    dataModel.put("bondChooseTow", "☐");
+                    dataModel.put("sclBail", "/");
+                    dataModel.put("sclStorageee1", "/");
+                    dataModel.put("bondChooseThree", "☐");
+                    dataModel.put("sclAffiliatedEnterprise", "/");
+                    dataModel.put("sclContract", "/");
+                    dataModel.put("sclDeposit", "/");
+                    dataModel.put("sclStorageee2", "/");
+                    break;
+                    //保证金履行方式二
+                case "2":
+                    dataModel.put("bondChooseOne", "☐");
+                    dataModel.put("sclNo", "/");
+                    dataModel.put("sclStorageee", "/");
+                    dataModel.put("bondChooseTow", "☑");
+                    dataModel.put("sclBail", j.get("sclBail"));
+                    dataModel.put("sclStorageee1", MoneyToChiness.tenThousand(j.get("sclBail").toString()));
+                    dataModel.put("bondChooseThree", "☐");
+                    dataModel.put("sclAffiliatedEnterprise", "/");
+                    dataModel.put("sclContract", "/");
+                    dataModel.put("sclDeposit", "/");
+                    dataModel.put("sclStorageee2", "/");
+                    break;
+                case "3":
+                    dataModel.put("bondChooseOne", "☐");
+                    dataModel.put("sclNo", "/");
+                    dataModel.put("sclStorageee", "/");
+                    dataModel.put("bondChooseTow", "☐");
+                    dataModel.put("sclBail", "/");
+                    dataModel.put("sclStorageee1", "/");
+                    dataModel.put("bondChooseThree", "☑");
+                    dataModel.put("sclAffiliatedEnterprise", j.get("sclAffiliatedEnterprise"));
+                    dataModel.put("sclContract", j.get("sclContract"));
+                    dataModel.put("sclDeposit", j.get("sclDeposit"));
+                    dataModel.put("sclStorageee2", MoneyToChiness.tenThousand(j.get("sclDeposit").toString()));
+                    break;
+                case "":
+                    dataModel.put("bondChooseOne", "☐");
+                    dataModel.put("sclNo", "/");
+                    dataModel.put("sclStorageee", "/");
+                    dataModel.put("bondChooseTow", "☐");
+                    dataModel.put("sclBail", "/");
+                    dataModel.put("sclStorageee1", "/");
+                    dataModel.put("bondChooseThree", "☐");
+                    dataModel.put("sclAffiliatedEnterprise", "/");
+                    dataModel.put("sclContract", "/");
+                    dataModel.put("sclDeposit", "/");
+                    dataModel.put("sclStorageee2", "/");
+                    break;
+            }
             //运费结算相关
             dataModel.put("sclConditionsa", j.get("sclConditionsa"));
             dataModel.put("sclNumber", j.get("sclNumber"));
@@ -1373,7 +1456,7 @@ public enum TemplateExporterEnum {
             dataModel.put("ywbShuilv", j.get("ywbShuilv"));
             if (j.get("ywbPayment").toString().contains("1")) {
                 BigDecimal sum = BigDecimal.valueOf(Double.valueOf(String.valueOf(j.get("ywbStandard"))))
-                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString())/100 + 1))
+                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString()) / 100 + 1))
                         .multiply(BigDecimal.valueOf(getMonthDiff(
                                 DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getStartingTime())),
                                 DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getEndTime())))));
@@ -1384,7 +1467,7 @@ public enum TemplateExporterEnum {
             }
             if (j.get("ywbPayment").toString().contains("2")) {
                 BigDecimal sum = BigDecimal.valueOf(Double.valueOf(String.valueOf(j.get("ywbStandard"))))
-                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString())/100 + 1))
+                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString()) / 100 + 1))
                         .multiply(BigDecimal.valueOf(getMonthDiff(
                                 DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getStartingTime())),
                                 DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getEndTime()))
@@ -1395,7 +1478,7 @@ public enum TemplateExporterEnum {
             }
             if (j.get("ywbPayment").toString().contains("3")) {
                 BigDecimal sum = BigDecimal.valueOf(Double.valueOf(String.valueOf(j.get("ywbStandard"))))
-                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString())/100 + 1))
+                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString()) / 100 + 1))
                         .multiply(BigDecimal.valueOf(getMonthDiff(
                                 DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getStartingTime())),
                                 DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getEndTime()))
@@ -1406,7 +1489,7 @@ public enum TemplateExporterEnum {
             }
             if (j.get("ywbPayment").toString().contains("4")) {
                 BigDecimal sum = BigDecimal.valueOf(Double.valueOf(String.valueOf(j.get("ywbStandard"))))
-                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString())/100 + 1))
+                        .multiply(BigDecimal.valueOf(Double.valueOf(j.get("ywbShuilv").toString()) / 100 + 1))
                         .multiply(BigDecimal.valueOf(getMonthDiff(
                                 DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getStartingTime())),
                                 DataFormatUtils.GLNZTimeFormatBar(String.valueOf(contractFormInfoEntity.getEndTime()))
@@ -1532,31 +1615,31 @@ public enum TemplateExporterEnum {
             dataModel.put("infTimeAmount", j.get("infTimeAmount"));
             dataModel.put("infLoadAddr", j.get("infLoadAddr"));
             //履约保证金相关
-            if (contractFormInfoEntity.getContractBond().size()<=0){
+            if (contractFormInfoEntity.getContractBond().size() <= 0) {
                 dataModel.put("infAppointAmount", "");
                 dataModel.put("infCap", "");
                 dataModel.put("infBreachAmountFir", "");
                 dataModel.put("infBreachAmountSec", "");
-            }else if(contractFormInfoEntity.getContractBond().size()>=1){
-                if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("1")){
+            } else if (contractFormInfoEntity.getContractBond().size() >= 1) {
+                if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("1")) {
                     dataModel.put("infAppointAmount", "_");
                     dataModel.put("infCap", "_");
                     dataModel.put("infBreachAmountFir", "_");
                     dataModel.put("infBreachAmountSec", "_");
-                }else if(contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("0")){
+                } else if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("0")) {
                     String planPayAmount = String.valueOf(contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount().divide(BigDecimal.valueOf(10000)));
                     dataModel.put("infAppointAmount", planPayAmount);
-                    dataModel.put("infCap",  MoneyToChiness.tenThousand(planPayAmount));
+                    dataModel.put("infCap", MoneyToChiness.tenThousand(planPayAmount));
                     dataModel.put("infBreachAmountFir", planPayAmount);
                     dataModel.put("infBreachAmountSec", planPayAmount);
                 }
-            }else if (contractFormInfoEntity.getContractBond().size()>=2){
+            } else if (contractFormInfoEntity.getContractBond().size() >= 2) {
                 AtomicReference<Double> valuesD = new AtomicReference<>(0D);
                 contractFormInfoEntity.getContractBond().forEach(element -> {
                     valuesD.updateAndGet(v -> v + Double.valueOf(String.valueOf(element.getPlanPayAmount().divide(BigDecimal.valueOf(10000)))));
                 });
                 dataModel.put("infAppointAmount", valuesD);
-                dataModel.put("infCap",  MoneyToChiness.tenThousand(String.valueOf(valuesD)));
+                dataModel.put("infCap", MoneyToChiness.tenThousand(String.valueOf(valuesD)));
                 dataModel.put("infBreachAmountFir", valuesD);
                 dataModel.put("infBreachAmountSec", valuesD);
             }
@@ -2076,9 +2159,9 @@ public enum TemplateExporterEnum {
      */
     @SneakyThrows
     public static int getMonthDiff(String d2, String d1) {
-        if (d1.contains("__")||d2.contains("__")){
+        if (d1.contains("__") || d2.contains("__")) {
             return 0;
-        }else {
+        } else {
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             //使用SimpleDateFormat的parse()方法生成Date
             Date date1 = sf.parse(d1);

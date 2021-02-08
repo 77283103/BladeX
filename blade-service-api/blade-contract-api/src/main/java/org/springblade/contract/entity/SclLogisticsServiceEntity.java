@@ -1,25 +1,19 @@
 package org.springblade.contract.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.fasterxml.jackson.databind.ser.std.NullSerializer;
-import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
-import java.time.LocalTime;
-import java.util.Date;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -387,6 +381,11 @@ public class SclLogisticsServiceEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="其它")
 	private String other;
+	/**
+	 * 其它内容
+	 */
+	@ApiModelProperty(value="其它内容")
+	private String otherContent;
 	/**
 	 * 日期
 	 */
