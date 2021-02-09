@@ -54,7 +54,7 @@ public class SclLogisticsServiceRequestVO extends BaseEntity {
 	private String no;
 
     @ApiModelProperty(value="加单")
-	private Integer storageee;
+	private String storageee;
 
     @ApiModelProperty(value="加急单")
 	private String conditionsa;
@@ -66,10 +66,10 @@ public class SclLogisticsServiceRequestVO extends BaseEntity {
 	private String services;
 
     @ApiModelProperty(value="其他要求：【？】")
-	private Integer drinks;
+	private String drinks;
 
     @ApiModelProperty(value="配送")
-	private Integer dairy;
+	private String dairy;
 
     @ApiModelProperty(value="日常配送量")
 	private Double dairy1;

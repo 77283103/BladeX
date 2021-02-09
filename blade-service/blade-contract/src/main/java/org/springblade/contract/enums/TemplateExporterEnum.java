@@ -876,7 +876,7 @@ public enum TemplateExporterEnum {
         public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             SclLogisticsServiceEntity sclLogisticsService = JSONObject.toJavaObject(j, SclLogisticsServiceEntity.class);
-            dataModel.put("partya", contractFormInfoEntity.getSealName());
+            dataModel.put("partya", Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
             dataModel.put("partyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
             dataModel.put("date", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
             //签订地点
@@ -886,41 +886,61 @@ public enum TemplateExporterEnum {
             //中标的物流线路为：
             dataModel.put("area", j.get("area"));
             //正常单
-            dataModel.put("no", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("no"))));
+            dataModel.put("no", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("no"))));
             //加单
-            dataModel.put("storageee",DataFormatUtils.systemTimeFormat(String.valueOf( j.get("storageee"))));
+            dataModel.put("storageee",DataFormatUtils.systemTimeFormatH(String.valueOf( j.get("storageee"))));
             //加急单
-            dataModel.put("conditionsa", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("conditionsa"))));
+            dataModel.put("conditionsa", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("conditionsa"))));
+            //3、 货物的配送-7
             dataModel.put("day", j.get("day"));
+            //3、 货物的配送-8
             dataModel.put("day1", j.get("day1"));
+            //乙方人员配备及车辆配置要求-2
             dataModel.put("services", j.get("services"));
+            //乙方人员配备及车辆配置要求-4
             dataModel.put("drinks", j.get("drinks"));
+            //1、甲方的权利和义务-4
             dataModel.put("dairy", j.get("dairy"));
+            //1、甲方的权利和义务-7
             dataModel.put("dairy1", j.get("dairy1"));
             dataModel.put("requirementsp", j.get("requirementsp"));
+            //1、甲方的权利和义务-8
             dataModel.put("range", j.get("range"));
+            //1、甲方的权利和义务-9
             dataModel.put("areae", j.get("areae"));
             dataModel.put("requirementse", j.get("requirementse"));
-            dataModel.put("contractd", j.get("contractd"));
+            //1、甲方的权利和义务-17
+            dataModel.put("contractd", DataFormatUtils.systemTimeFormatH(j.get("contractd").toString()));
+            //七、担保条款
             dataModel.put("second", j.get("second"));
             dataModel.put("breach", MoneyToChiness.tenThousand(j.get("second").toString()));
             dataModel.put("provide", j.get("provide"));
+            //八、物流费用计算标准（未税价）及付款时间：1-1
             dataModel.put("hours", j.get("hours"));
             dataModel.put("morning", j.get("morning"));
             dataModel.put("manifest", j.get("manifest"));
             dataModel.put("afternoon", j.get("afternoon"));
+            //九、违约责任-1-1
             dataModel.put("advancess", j.get("advancess"));
+            //九、违约责任-1-2
             dataModel.put("season", j.get("season"));
+            //九、违约责任-2-4
             dataModel.put("times", j.get("times"));
+            //九、违约责任-2-5
             dataModel.put("items", j.get("items"));
+            //九、违约责任-2-9
             dataModel.put("date1", j.get("date1"));
             dataModel.put("requirementsddd", j.get("requirementsddd"));
+            //九、违约责任-2-12
             dataModel.put("requirementsf", j.get("requirementsf"));
             dataModel.put("transfer", j.get("transfer"));
-            dataModel.put("requirementsss", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("requirementsss"))));
-            dataModel.put("date2", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date2"))));
+            //十二、合同的有效期限
+            dataModel.put("requirementsss", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
+            dataModel.put("date2", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
             dataModel.put("standard", j.get("standard"));
+            //十五、特别约定
             dataModel.put("aread", j.get("aread"));
+            //（以下无正文）
             dataModel.put("address", j.get("address"));
             dataModel.put("addressb", j.get("addressb"));
             dataModel.put("telephone", j.get("telephone"));
@@ -931,8 +951,6 @@ public enum TemplateExporterEnum {
             dataModel.put("representativeb", j.get("representativeb"));
             dataModel.put("agent", j.get("agent"));
             dataModel.put("agentb", j.get("agentb"));
-            dataModel.put("date3", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));
-            dataModel.put("date4", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));
             //附件2 乙方授权委托书-1
             dataModel.put("client", j.get("client"));
             dataModel.put("client1", j.get("client1"));
@@ -988,8 +1006,9 @@ public enum TemplateExporterEnum {
             dataModel.put("postal", j.get("postal"));
             dataModel.put("date7", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date7"))));
             dataModel.put("date8", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date8"))));
-            dataModel.put("company", j.get("company"));
-            dataModel.put("company1", j.get("company1"));
+            //附件:8：厂商承诺书
+            dataModel.put("company",  Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
+            dataModel.put("company1", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
             return dataModel;
         }
     },

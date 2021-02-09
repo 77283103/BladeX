@@ -22,11 +22,7 @@
         <result column="performance" property="performance"/>
         <result column="performance_a" property="performanceA"/>
         <result column="few_days" property="fewDays"/>
-        <result column="exceed
-
-term" property="exceed
-
-term"/>
+        <result column="exceedterm" property="exceedterm"/>
         <result column="vatinvoice" property="vatinvoice"/>
         <result column="delivered_month" property="deliveredMonth"/>
         <result column="receives_invoice" property="receivesInvoice"/>
@@ -69,9 +65,7 @@ term"/>
         performance,
         performance_a,
         few_days,
-        exceed
-
-term,
+        exceedterm,
         vatinvoice,
         delivered_month,
         receives_invoice,

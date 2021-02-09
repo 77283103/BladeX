@@ -130,6 +130,18 @@
             <artifactId>jempbox</artifactId>
             <version>1.8.16</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.12</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>2.0.12</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

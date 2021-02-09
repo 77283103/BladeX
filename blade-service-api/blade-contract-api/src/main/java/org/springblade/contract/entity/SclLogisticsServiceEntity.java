@@ -81,7 +81,7 @@ public class SclLogisticsServiceEntity extends BaseEntity {
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="加单")
-	private Integer storageee;
+	private String storageee;
 	/**
 	 * 加急单
 	 */
@@ -103,13 +103,13 @@ public class SclLogisticsServiceEntity extends BaseEntity {
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="其他要求：【？】")
-	private Integer drinks;
+	private String drinks;
 	/**
 	 * 配送
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="配送")
-	private Integer dairy;
+	private String dairy;
 	/**
 	 * 日常配送量
 	 */
