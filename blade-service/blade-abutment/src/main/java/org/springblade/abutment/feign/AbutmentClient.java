@@ -2,10 +2,9 @@ package org.springblade.abutment.feign;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.text.PDFTextStripper;
+import org.apache.pdfbox.util.PDFTextStripper;
 import org.csource.fastdfs.TrackerClient;
 import org.json.simple.JSONObject;
 import org.springblade.abutment.entity.*;
@@ -443,7 +442,7 @@ public class AbutmentClient implements IAbutmentClient {
 			HttpResult = httpconn.getResponseCode();
 			if (HttpResult == HttpURLConnection.HTTP_OK) {
 				InputStream inputStream = urlconn.getInputStream();
-				PDFParser parser = new PDFParser((RandomAccessRead) inputStream);
+				PDFParser parser = new PDFParser(inputStream);
 				parser.parse();
 				PDDocument document = parser.getPDDocument();
 				int pageCount = document.getNumberOfPages();
