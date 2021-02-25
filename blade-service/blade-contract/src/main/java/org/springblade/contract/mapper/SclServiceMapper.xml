@@ -117,6 +117,8 @@
         <result column="postal_address" property="postalAddress"/>
         <result column="company" property="company"/>
         <result column="day7" property="day7"/>
+        <result column="image" property="image"/>
+        <result column="annex" property="annex"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -232,7 +234,9 @@
         mail1,
         postal_address,
         company,
-        day7
+        day7,
+        image,
+        annex
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="sclServiceResultMap">
