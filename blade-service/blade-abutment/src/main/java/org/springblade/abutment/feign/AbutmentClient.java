@@ -5,7 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
+import org.csource.common.MyException;
+import org.csource.common.NameValuePair;
+import org.csource.fastdfs.StorageClient;
+import org.csource.fastdfs.StorageServer;
 import org.csource.fastdfs.TrackerClient;
+import org.csource.fastdfs.TrackerServer;
 import org.json.simple.JSONObject;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.IDocService;
@@ -30,8 +35,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -91,7 +95,9 @@ public class AbutmentClient implements IAbutmentClient {
 					//乙方电话
 					formValuesEntity.setFd_b_number("13361615656");
 					//乙方税籍编号
-					formValuesEntity.setFd_b_taxno("91360823092907952B");
+					for (int i=0;i<entity.getCounterpart().size();i++) {
+						formValuesEntity.setFd_b_taxno(entity.getCounterpart().get(i).getUnifiedSocialCreditCode());
+					}
 					//formValuesEntity.setFd_accord_id("1762642a34c79442253858b4b2aab793");
 					//合同id
 					formValuesEntity.setFd_contract_id(entity.getId().toString());
@@ -356,62 +362,64 @@ public class AbutmentClient implements IAbutmentClient {
 					pushEkpEntity.setFormValues(formValuesEntity);
 					try {
 						//处理合同附件
-						/*List<FileVO> fileVOs=fileClient.getByIds(entity.getAttachedFiles()).getData();
-						String[] fileIds = new String[0];
-						List<Attachment> listAttachment=new ArrayList<>();
-						for(FileVO fileVO:fileVOs){
-							// 开始上传fastDFS服务器
-							Attachment attachment=new Attachment();
-							NameValuePair[] nvp = new NameValuePair[5];
-							int index = fileVO.getName().lastIndexOf(".");
-							String fileSuffix=fileVO.getName().substring(index+1);
-							nvp[0] = new NameValuePair("fdFileName", fileVO.getName());//文件名称
-							nvp[1] = new NameValuePair("fileSuffix", fileSuffix);//文件后缀
-							nvp[2] = new NameValuePair("fdKey", "");//文件key？？
-							nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());//文件大小
-							nvp[4] = new NameValuePair("fileType", "");//文件类型
-							//3.创建trackerServer
-							TrackerServer trackerServer = null;
-							try {
-								trackerServer = trackerClient.getConnection();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-							// 4、创建一个 StorageServer 的引用，值为 null
-							StorageServer storageServer = null;
-							// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
-							StorageClient storageClient = new StorageClient(trackerServer, storageServer);
-							InputStream in =null;
-							BufferedInputStream bin =null;
-							ByteArrayOutputStream baos = null;
-							BufferedOutputStream bout =null;
-							byte[] bytes=null;
-							try {
-								URL url = new URL(fileVO.getLink());
-								URLConnection conn = url.openConnection();
-								in = conn.getInputStream();
-								bin = new  BufferedInputStream(in);
-								baos = new ByteArrayOutputStream();
-								bout = new BufferedOutputStream(baos);
-								byte[] buffer = new byte[1024];
-								int len = bin.read(buffer);
-								while(len != -1){
-									bout.write(buffer, 0, len);
-									len = bin.read(buffer);
+						if(!Func.isEmpty(entity.getAttachedFiles())){
+							List<FileVO> fileVOs=fileClient.getByIds(entity.getAttachedFiles()).getData();
+							String[] fileIds = new String[0];
+							List<Attachment> listAttachment=new ArrayList<>();
+							for(FileVO fileVO:fileVOs){
+								// 开始上传fastDFS服务器
+								Attachment attachment=new Attachment();
+								NameValuePair[] nvp = new NameValuePair[5];
+								int index = fileVO.getName().lastIndexOf(".");
+								String fileSuffix=fileVO.getName().substring(index+1);
+								nvp[0] = new NameValuePair("fdFileName", fileVO.getName());//文件名称
+								nvp[1] = new NameValuePair("fileSuffix", fileSuffix);//文件后缀
+								nvp[2] = new NameValuePair("fdKey", "");//文件key？？
+								nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());//文件大小
+								nvp[4] = new NameValuePair("fileType", "");//文件类型
+								//3.创建trackerServer
+								TrackerServer trackerServer = null;
+								try {
+									trackerServer = trackerClient.getConnection();
+								} catch (IOException e) {
+									e.printStackTrace();
 								}
-								//刷新此输出流并强制写出所有缓冲的输出字节
-								bout.flush();
-								bytes = baos.toByteArray();
-								// 上传
-								fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
-							} catch (IOException | MyException e) {
-								e.printStackTrace();
+								// 4、创建一个 StorageServer 的引用，值为 null
+								StorageServer storageServer = null;
+								// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+								StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+								InputStream in =null;
+								BufferedInputStream bin =null;
+								ByteArrayOutputStream baos = null;
+								BufferedOutputStream bout =null;
+								byte[] bytes=null;
+								try {
+									URL url = new URL(fileVO.getLink());
+									URLConnection conn = url.openConnection();
+									in = conn.getInputStream();
+									bin = new  BufferedInputStream(in);
+									baos = new ByteArrayOutputStream();
+									bout = new BufferedOutputStream(baos);
+									byte[] buffer = new byte[1024];
+									int len = bin.read(buffer);
+									while(len != -1){
+										bout.write(buffer, 0, len);
+										len = bin.read(buffer);
+									}
+									//刷新此输出流并强制写出所有缓冲的输出字节
+									bout.flush();
+									bytes = baos.toByteArray();
+									// 上传
+									fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+								} catch (IOException | MyException e) {
+									e.printStackTrace();
+								}
+								attachment.setFilename(fileVO.getName());
+								attachment.setFilePath(fileIds[0]+'/'+fileIds[1]);
+								listAttachment.add(attachment);
 							}
-							attachment.setFilename(fileVO.getName());
-							attachment.setFilePath(fileIds[0]+'/'+fileIds[1]);
-							listAttachment.add(attachment);
+							pushEkpEntity.setFd_attachment(listAttachment);
 						}
-						pushEkpEntity.setFd_attachment(listAttachment);*/
 						pushEkpEntity.setToken(ekpService.getToken());
 						pushEkpEntity.setDocSubject(entity.getContractName());
 						pushEkpEntity.setFdTemplateId("176212613bf6f84e6bf1ad942cbb8344");

@@ -12,6 +12,7 @@ import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -25,8 +26,13 @@ import java.util.*;
 @Component
 public class TemplateExportUntil {
 
-	private static String _PATH="D:/ftl/";//模板路径
-	//private static String _PATH="/ftl/";//模板路径
+	private static  String ftlPath;
+
+	@Value("${api.file.ftlPath}")
+	public  void setFtlPath(String ftlPath) {
+		TemplateExportUntil.ftlPath = ftlPath;
+	}
+	//private static String ftlPath="/ftl/";//模板路径
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
 	@Autowired
@@ -42,7 +48,7 @@ public class TemplateExportUntil {
 		Configuration configuration = new Configuration();
 		// 第二步：设置模板文件所在的路径。
 		try {
-			configuration.setDirectoryForTemplateLoading( ResourceUtils.getFile(_PATH));
+			configuration.setDirectoryForTemplateLoading( ResourceUtils.getFile(ftlPath));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -66,10 +72,10 @@ public class TemplateExportUntil {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = df.format(new Date());
 		//String newFileDoc="D:/ftl/"+templateVO.getTemplateCode()+date+".doc";
-		String newFileDoc=_PATH+templateVO.getTemplateCode()+date+".doc";
+		String newFileDoc=ftlPath+templateVO.getTemplateCode()+date+".doc";
 		// 设置生成pdf的文档名称
 		//String newFilePdf="D:/ftl/"+templateVO.getTemplateCode()+date+".pdf";
-		String newFilePdf=_PATH+templateVO.getTemplateCode()+date+".pdf";
+		String newFilePdf=ftlPath+templateVO.getTemplateCode()+date+".pdf";
 		//File outFile = new File(newFileDoc);
 		File outFile=null;
 		try {
@@ -94,12 +100,20 @@ public class TemplateExportUntil {
 			out.close();
 			//doc转为pdf
 			AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
-			//File filePDF = new File(newFilePdf);
+			File fileDoc = new File(newFileDoc);
 			File filePDF=ResourceUtils.getFile(newFilePdf);
 			MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
 				ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
 			/* 上传文件 */
 			R<FileVO> fileVO=templateExportUntil.fileClient.save(multipartFile);
+			if(fileDoc.exists()) {
+				fileDoc.delete();
+				System.out.println("删除成功");
+			}
+			/*if(filePDF.exists()) {
+				filePDF.delete();
+				System.out.println("删除成功");
+			}*/
 			files=fileVO.getData();
 			files.setDomain(newFilePdf);
 		} catch (TemplateException | IOException e) {

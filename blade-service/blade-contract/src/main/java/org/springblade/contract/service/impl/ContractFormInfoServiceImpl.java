@@ -4,6 +4,14 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import feign.form.ContentType;
 import lombok.AllArgsConstructor;
 import org.apache.pdfbox.pdfparser.PDFParser;
@@ -21,9 +29,7 @@ import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
-import org.springblade.contract.util.AsposeWordToPdfUtils;
-import org.springblade.contract.util.ExcelSaveUntil;
-import org.springblade.contract.util.RedisCacheUtil;
+import org.springblade.contract.util.*;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -42,6 +48,7 @@ import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,6 +70,10 @@ import java.util.*;
 @Service
 @AllArgsConstructor
 public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInfoMapper, ContractFormInfoEntity> implements IContractFormInfoService {
+	//@Value("${api.file.ftlPath}")
+	//模板路径
+	//private String ftlPath;
+	private static final String ftlPath="D:/ftl/";//模板路径
 	private IFileClient fileClient;
 
 	private ISysClient sysClient;
@@ -139,8 +150,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private static final Long DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE = 1323239469884764161L;
 	private static final Integer AMOUNT_RATIO_VALUE = 100;
 	private static final String CONTRACT_CHANGE_REVIEW = "10";
-	private static final String _PATH = "D:/ftl/";//模板路径
-	//private static final String _PATH="/ftl/";//模板路径
 
 	@Override
 	public IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo) {
@@ -1033,7 +1042,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 * 电子签章业务处理
 	 *
 	 * @param entity 合同信息
-	 * @return 返回统计状态
+	 * @return 状态
 	 */
 	@Override
 	public ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity) {
@@ -1042,6 +1051,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		UploadFileEntity uploadFileEntity = new UploadFileEntity();
 		//查询合同正文
 		File filePDF = null;
+		//加编号的合同正文
+		File fileBH = null;
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+		String date = df.format(new Date());
 		//独立起草的pdf处理
 		if ("10".equals(entity.getContractSoure()) || "20".equals(entity.getContractSoure())) {
 			List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
@@ -1055,7 +1068,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				suffix = fileVO.get(0).getName().substring(index + 1, fileVO.get(0).getName().length());
 				//判断是否为pdf文件，pdf文件不需要转换
 				if (!"pdf".equals(suffix)) {
-					newFilePdf = _PATH + fileVO.get(0).getName().substring(0, index) + ".pdf";
+					newFilePdf = ftlPath + fileVO.get(0).getName().substring(0, index) +date+ ".pdf";
 					AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 					filePDF = new File(newFilePdf);
 					R<FileVO> filePDFVO = null;
@@ -1070,88 +1083,40 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					assert filePDFVO != null;
 					entity.setTextFilePdf(filePDFVO.getData().getId() + ",");
 				} else {
-					filePDF = new File(_PATH + fileVO.get(0).getName().substring(0, index) + ".pdf");
+					filePDF = new File(ftlPath + fileVO.get(0).getName().substring(0, index) +date+ ".pdf");
 					//建立输出字节流
 					FileOutputStream fos = null;
 					try {
 						fos = new FileOutputStream(filePDF);
 						fos.write(AsposeWordToPdfUtils.getUrlFileData(newFileDoc));
+						fos.close();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
+
 				}
 			}
 		} else {
 			filePDF = new File(entity.getFilePDF());
 		}
-		// 入参是个file文件
-		List<File> files = new ArrayList<File>();
-		files.add(filePDF);
-		uploadFileEntity.setFile(files);
-		// 默认是不合并,该上传几个文件就几个文件
-		uploadFileEntity.setIsMerge("0");
-		// 调用上传方法 另外需要注意 接口里自动进行了获取token的动作, 现在的获取地址和账号密码都是测试的,正式使用需要修改这些内容,修改位置在blade-abutment的resources.application里
-		List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
-		// 上传合同文件 结束
-		// 盖章方法  开始 问题:这里直接盖章吗?????????? 如果不在这里的话, 把它挪到对应地方
-		// 这里用的是单个盖章, 批量盖章需要短信验证
-			/*List<SingleSignVo> singleSignVoList = new ArrayList<SingleSignVo>();
-			for(UploadFileVo uploadFileVo:uploadFileVoList){
-				SingleSignEntity singleSignEntity = new SingleSignEntity();
-				// 企业信用代码  问题：从哪取？？？？不知道从哪取所以放了个空串,但这个是必填项
-				singleSignEntity.setIdno("91360823092907952B");
-				// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
-				singleSignEntity.setSignType("Key");
-				// 文档信息
-				FileInfoEntity fileInfoEntity = new FileInfoEntity();
-				// 给哪个文档盖章(上传后返回的文档id)
-				fileInfoEntity.setId(uploadFileVo.getId());
-				// 显不显示E签宝logo,false是不显示
-				fileInfoEntity.setShowImage(false);
-				// 盖完章之后文件叫什么名字 可以不填
-				//fileInfoEntity.setFileName(null);
-				// 如果是加密文档的话,需要输入密码, 没有的话不填
-				//fileInfoEntity.setOwnerPassword(null);
-				singleSignEntity.setFileBean(fileInfoEntity);
-				// 签章位置信息,除骑缝签章外必填
-				SignPosEntity signPosEntity = new SignPosEntity();
-				// 给哪页盖章 用逗号间隔页码 如 1,2,3 当前是关键字签章,所以不用填
-				//signPosEntity.setPosPage(null);
-				// 盖章坐标x 不填就是0 关键字的话坐标中心点是关键字
-				//signPosEntity.setPosX(0f);
-				// 盖章坐标y 不填就是0 关键字的话坐标中心点是关键字
-				//signPosEntity.setPosY(0f);
-				// 只有关键字签章的时候采用,输入关键字
-				signPosEntity.setKey("盖章");
-				// 章大小 可以不填,不填最大显示159,小于159按实际大小走,大于159只显示159大小
-				//signPosEntity.setWidth(0f);
-				// 是否二维码签署 骑缝和多页不生效
-				//signPosEntity.setQrcodeSign(false);
-				// 是不是作废,如果需要签作废章就选true
-				//signPosEntity.setCacellingSign(false);
-				// 显示签署时间,印章大于92才能显示
-				//signPosEntity.setAddSignTime(false);
-				singleSignEntity.setSignPos(signPosEntity);
-				// 如果签完一种章需要签另一种的话,就可以天
-				AutoSignEntity autoSignEntity = new AutoSignEntity();
-				// 企业信用代码 这个代码是为了定位章  如果要盖别单位的章就得填别单位的,不然就和上面填一样
-				autoSignEntity.setIdno(singleSignEntity.getIdno());
-				// 盖章类型 盖什么章??Single：单页签章,Multi：多页签章,Edges：签骑缝章,Key：关键字签章,一次只能盖一种章!
-				autoSignEntity.setSignType("Edges");;
-				//autoSignEntity.setKey("");
-				// 和上面那个一样,设定盖章位置
-				//SignPosEntity autoSignPosEntity = new SignPosEntity();
-				//autoSignEntity.setSignPos(autoSignPosEntity);
-				singleSignEntity.setAutoSign(autoSignEntity);
-				// 返回的内容里有个filePath,是个ID,这个id可以用来下载或者在线查看盖完章的文件
-				singleSignVoList.add(abutmentClient.singleSignPost(singleSignEntity).getData()); //接口通了
-			}*/
-		// 盖章方法  结束
-		//epk流程接口
-		entity.setTextFilePdf(uploadFileVoList.get(0).getId());
-		EkpVo ekpVo = abutmentClient.sendEkpFormPost(entity).getData();
-		if (ekpVo != null) {
-			entity.setRelContractId(ekpVo.getDoc_info());
+		InputStream in = null;
+		try {
+			in=new FileInputStream(filePDF);
+			String fileId=AsposeWordToPdfUtils.addWaterMak(in,"统一集团",filePDF.getName(),null);
+			String url=AsposeWordToPdfUtils.downloadFile(fileId);
+			System.out.println(url);
+			//建立输出字节流
+			FileOutputStream fos = null;
+			try {
+				fos = new FileOutputStream(filePDF);
+				fos.write(AsposeWordToPdfUtils.getUrlFileData(url));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//断言 不能为null
+			assert fos != null;
+			fos.close();
+			in.close();
 			//处理编号
 			List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);
 			final String[] FLCode = {null};
@@ -1175,6 +1140,27 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			} else {
 				entity.setContractNumber(redisCacheUtil.selectTaskNo("", FLCode[0], GSCode[0]));
 			}
+			String BH=ftlPath + "BH-"+date+filePDF.getName();
+			AsposeWordToPdfUtils.addWaterMark(filePDF.getPath(),BH,entity.getContractNumber());
+			fileBH = new File(BH);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		// 入参是个file文件
+		List<File> files = new ArrayList<File>();
+		files.add(fileBH);
+		uploadFileEntity.setFile(files);
+		// 默认是不合并,该上传几个文件就几个文件
+		uploadFileEntity.setIsMerge("0");
+		// 调用上传方法 另外需要注意 接口里自动进行了获取token的动作, 现在的获取地址和账号密码都是测试的,正式使用需要修改这些内容,修改位置在blade-abutment的resources.application里
+		List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
+		// 上传合同文件 结束
+		//epk流程接口
+		entity.setTextFilePdf(uploadFileVoList.get(0).getId());
+		EkpVo ekpVo = abutmentClient.sendEkpFormPost(entity).getData();
+		if (ekpVo != null) {
+			entity.setRelContractId(ekpVo.getDoc_info());
+
 		}
 		return entity;
 	}
@@ -1698,22 +1684,23 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public R singleSignIsNot(ContractFormInfoRequestVO contractFormInfo, FileVO fileVO) {
-		if ("1".equals(contractFormInfo.getContractForm())) {
-			for (ContractCounterpartEntity counterpart : contractFormInfo.getCounterpart()) {
-				// 查查公司有没有申请电子章
-				CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
-				companyInfoEntity.setQueryType("1");
-				// 企业信用代码  从相对方里面来  需要修改
-				companyInfoEntity.setOrganCode(counterpart.getUnifiedSocialCreditCode());
-				// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
-				CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
-				if (companyInfoVo == null) {
-					companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
-				}
-				//不等于0就是没有电子签章
-				if (!"0".equals(companyInfoVo.getOrganCode())) {
-					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体合同");
-				}
+		for (ContractCounterpartEntity counterpart : contractFormInfo.getCounterpart()) {
+			// 查查公司有没有申请电子章
+			CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
+			companyInfoEntity.setQueryType("1");
+			// 企业信用代码  从相对方里面来  需要修改
+			companyInfoEntity.setOrganCode(counterpart.getUnifiedSocialCreditCode());
+			// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
+			CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+			if (companyInfoVo == null) {
+				companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+			}
+			//不等于0就是没有电子签章
+			if((!"0".equals(companyInfoVo.getOrganCode()))&&("1".equals(contractFormInfo.getContractForm()))) {
+					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
+			}
+			if(("0".equals(companyInfoVo.getOrganCode()))&&("2".equals(contractFormInfo.getContractForm()))){
+				return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子签章内部用印");
 			}
 		}
 		String newFileDoc = "";
@@ -1725,13 +1712,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			newFileDoc = fileVO.getLink();
 			int index = fileVO.getName().lastIndexOf(".");
 			suffix = fileVO.getName().substring(index + 1, fileVO.getName().length());
+			SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+			String date = df.format(new Date());
 			//判断是否为pdf文件，pdf文件不需要转换
 			if (!"pdf".equals(suffix)) {
-				newFilePdf = _PATH + fileVO.getName().substring(0, index) + ".pdf";
+				//设置日期格式
+
+				newFilePdf = ftlPath + fileVO.getName().substring(0, index) + date + ".pdf";
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 				filePDF = new File(newFilePdf);
 			} else {
-				filePDF = new File(_PATH + fileVO.getName().substring(0, index) + ".pdf");
+				filePDF = new File(ftlPath + fileVO.getName().substring(0, index) + date + ".pdf");
 				//建立输出字节流
 				FileOutputStream fos = null;
 				try {
@@ -1739,10 +1730,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					fos.write(AsposeWordToPdfUtils.getUrlFileData(newFileDoc));
 				} catch (Exception e) {
 					e.printStackTrace();
+				}finally{
+					try {
+						if (fos != null) {
+							fos.close();
+						}
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 			}
+			InputStream input = null;
 			try {
-				InputStream input = new FileInputStream(filePDF);
+				input = new FileInputStream(filePDF);
 				// 新建一个PDF解析器对象
 				PDFParser parser = new PDFParser(input);
 				parser.parse();
@@ -1758,6 +1758,14 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
+			}finally{
+				try {
+					if (input != null) {
+						input.close();
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
 			return R.data(0, "成功", "成功");
 		} else {

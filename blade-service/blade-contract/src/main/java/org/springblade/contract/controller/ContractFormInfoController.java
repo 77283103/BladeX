@@ -483,6 +483,7 @@ public class ContractFormInfoController extends BladeController {
 			//导出pdf文件
 			TemplateExportUntil templateExportUntil=new TemplateExportUntil();
 			files=templateExportUntil.templateSave(contractFormInfoEntity,template,template.getJson(),j);
+
 		}else{
 			List<FileVO> list=fileClient.getByIds(contractFormInfo.getTextFile()).getData();
 			files=list.get(0);
