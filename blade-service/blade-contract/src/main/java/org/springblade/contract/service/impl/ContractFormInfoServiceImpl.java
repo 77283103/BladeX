@@ -73,7 +73,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	//@Value("${api.file.ftlPath}")
 	//模板路径
 	//private String ftlPath;
-	private static final String ftlPath="D:/ftl/";//模板路径
+	//private static final String ftlPath="D:/ftl/";//模板路径
+	private static final String ftlPath="/ftl/";//模板路径
 	private IFileClient fileClient;
 
 	private ISysClient sysClient;
@@ -1071,17 +1072,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					newFilePdf = ftlPath + fileVO.get(0).getName().substring(0, index) +date+ ".pdf";
 					AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 					filePDF = new File(newFilePdf);
-					R<FileVO> filePDFVO = null;
-					try {
-						MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
-							ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
-						filePDFVO = fileClient.save(multipartFile);
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-					/* 上传文件 */
-					assert filePDFVO != null;
-					entity.setTextFilePdf(filePDFVO.getData().getId() + ",");
 				} else {
 					filePDF = new File(ftlPath + fileVO.get(0).getName().substring(0, index) +date+ ".pdf");
 					//建立输出字节流
@@ -1140,12 +1130,23 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			} else {
 				entity.setContractNumber(redisCacheUtil.selectTaskNo("", FLCode[0], GSCode[0]));
 			}
-			String BH=ftlPath + "BH-"+date+filePDF.getName();
+			String BH=ftlPath + "BH-"+filePDF.getName();
 			AsposeWordToPdfUtils.addWaterMark(filePDF.getPath(),BH,entity.getContractNumber());
 			fileBH = new File(BH);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		/*R<FileVO> filePDFVO = null;
+		try {
+			MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
+				ContentType.MULTIPART.toString(), new FileInputStream(fileBH));
+			filePDFVO = fileClient.save(multipartFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		*//* 上传文件 *//*
+		assert filePDFVO != null;
+		entity.setTextFilePdf(filePDFVO.getData().getId() + ",");*/
 		// 入参是个file文件
 		List<File> files = new ArrayList<File>();
 		files.add(fileBH);

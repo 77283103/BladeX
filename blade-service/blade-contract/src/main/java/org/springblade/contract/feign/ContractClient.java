@@ -73,12 +73,16 @@ public class ContractClient implements IContractClient{
 		if(Func.isEmpty(contractFormInfo.getId())){
 			return R.fail("合同信息不存在");
 		}
-		if("1".equals(contractFormInfo.getContractForm())){
-			contractFormInfo.setContractStatus("110");
-		}else{
-			contractFormInfo.setContractStatus("50");
+		if("30".equals(contractFormInfo.getSubmitStatus())){
+			if("1".equals(contractFormInfo.getContractForm())){
+				contractFormInfo.setContractStatus("60");
+			}else if("3".equals(contractFormInfo.getContractForm())){
+				contractFormInfo.setContractStatus("50");
+			}else{
+				contractFormInfo.setContractStatus("30");
+			}
 		}
-		contractFormInfo.setContractStatus(status);
+		contractFormInfo.setSubmitStatus(status);
 		formInfoService.saveOrUpdate(contractFormInfo);
 		return R.success("审核成功");
 	}

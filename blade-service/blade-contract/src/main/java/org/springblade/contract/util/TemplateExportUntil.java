@@ -106,7 +106,7 @@ public class TemplateExportUntil {
 			fos.close();
 			out.close();
 			// 测试代码
-			String fileName1 = "D:/VMware/附件一.docx";
+			/*String fileName1 = "D:/VMware/附件一.docx";
 			String fileName2 = "D:/VMware/附件二.docx";
 			String fileName3 = "D:/VMware/附件三.docx";
 			//多文本合并
@@ -132,7 +132,7 @@ public class TemplateExportUntil {
 			//判断是否有需要添加或覆盖的图片
 			if (!Func.isNull(dataModel.get("image"))&& Func.isNoneBlank(dataModel.get("image").toString())){
 				newFileDoc=replaceImages.replaceImage(newFileDoc,dataModel);
-			}
+			}*/
 			//doc转为pdf
 			AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
 			File fileDoc = new File(newFileDoc);
