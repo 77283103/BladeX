@@ -103,7 +103,7 @@ public enum TemplateExporterEnum {
             dataModel.put("sclDate1", j.get("sclDate1"));
             dataModel.put("sclDate2", j.get("sclDate2"));
             //信息反馈及报表要求-1
-            dataModel.put("sclRequirementsf", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclRequirementsf"))));
+            dataModel.put("sclRequirementsf",j.get("sclRequirementsf"));
             dataModel.put("sclTransfer", j.get("sclTransfer"));
             //信息反馈及报表要求-3
             dataModel.put("sclOfs", j.get("sclOfs"));
@@ -182,37 +182,43 @@ public enum TemplateExporterEnum {
             dataModel.put("client3", j.get("client3"));
             dataModel.put("number2", j.get("number2"));
             dataModel.put("mail", j.get("mail"));
-            if ("1".equals(j.get("shippingSummons"))) {
-                dataModel.put("shippingSummons", "☑");
-                dataModel.put("dispatching", "☐");
-                dataModel.put("management", "☐");
-                dataModel.put("other", "☐");
-                dataModel.put("otherContent", "");
-            } else if ("2".equals(j.get("shippingSummons"))) {
-                dataModel.put("shippingSummons", "☐");
-                dataModel.put("dispatching", "☑");
-                dataModel.put("management", "☐");
-                dataModel.put("other", "☐");
-                dataModel.put("otherContent", "");
-            } else if ("3".equals(j.get("shippingSummons"))) {
-                dataModel.put("shippingSummons", "☐");
-                dataModel.put("dispatching", "☐");
-                dataModel.put("management", "☑");
-                dataModel.put("other", "☐");
-                dataModel.put("otherContent", "");
-            } else if ("4".equals(j.get("shippingSummons"))) {
-                dataModel.put("shippingSummons", "☐");
-                dataModel.put("dispatching", "☐");
-                dataModel.put("management", "☐");
-                dataModel.put("other", "☑");
-                dataModel.put("otherContent", j.get("otherContent"));
-            } else {
-                dataModel.put("shippingSummons", "☐");
-                dataModel.put("dispatching", "☐");
-                dataModel.put("management", "☐");
-                dataModel.put("other", "☐");
-                dataModel.put("otherContent", "");
-            }
+            //委托事项：（请在以下方框内打勾）
+            dataModel.put("shippingSummons", j.get("shippingSummons").toString().contains("1")?"☑":"☐");
+            dataModel.put("dispatching", j.get("shippingSummons").toString().contains("2")?"☑":"☐");
+            dataModel.put("management", j.get("shippingSummons").toString().contains("3")?"☑":"☐");
+            dataModel.put("other", j.get("shippingSummons").toString().contains("4")?"☑":"☐");
+            dataModel.put("otherContent",j.get("shippingSummons").toString().contains("4")?j.get("otherContent"):"");
+//            if ("1".equals(j.get("shippingSummons"))) {
+//                dataModel.put("shippingSummons", "☑");
+//                dataModel.put("dispatching", "☐");
+//                dataModel.put("management", "☐");
+//                dataModel.put("other", "☐");
+//                dataModel.put("otherContent", "");
+//            } else if ("2".equals(j.get("shippingSummons"))) {
+//                dataModel.put("shippingSummons", "☐");
+//                dataModel.put("dispatching", "☑");
+//                dataModel.put("management", "☐");
+//                dataModel.put("other", "☐");
+//                dataModel.put("otherContent", "");
+//            } else if ("3".equals(j.get("shippingSummons"))) {
+//                dataModel.put("shippingSummons", "☐");
+//                dataModel.put("dispatching", "☐");
+//                dataModel.put("management", "☑");
+//                dataModel.put("other", "☐");
+//                dataModel.put("otherContent", "");
+//            } else if ("4".equals(j.get("shippingSummons"))) {
+//                dataModel.put("shippingSummons", "☐");
+//                dataModel.put("dispatching", "☐");
+//                dataModel.put("management", "☐");
+//                dataModel.put("other", "☑");
+//                dataModel.put("otherContent", j.get("otherContent"));
+//            } else {
+//                dataModel.put("shippingSummons", "☐");
+//                dataModel.put("dispatching", "☐");
+//                dataModel.put("management", "☐");
+//                dataModel.put("other", "☐");
+//                dataModel.put("otherContent", "");
+//            }
             dataModel.put("date3", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));
             dataModel.put("date4", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));
             ////附件4-<乙方授权委托书2>
@@ -224,7 +230,10 @@ public enum TemplateExporterEnum {
             dataModel.put("postalAddress", j.get("postalAddress"));
             //厂商承诺书-此致
             dataModel.put("company", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
-
+            //拼接附件
+            dataModel.put("annex",j.get("annex"));
+            //《出货传票》及《出货传票交接清单》样式
+            dataModel.put("image",j.get("image"));
             return dataModel;
         }
     },
@@ -935,8 +944,8 @@ public enum TemplateExporterEnum {
             dataModel.put("requirementsf", j.get("requirementsf"));
             dataModel.put("transfer", j.get("transfer"));
             //十二、合同的有效期限
-            dataModel.put("requirementsss", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
-            dataModel.put("date2", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
+            dataModel.put("date2", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
+            dataModel.put("requirementsss", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
             dataModel.put("standard", j.get("standard"));
             //十五、特别约定
             dataModel.put("aread", j.get("aread"));
@@ -961,37 +970,43 @@ public enum TemplateExporterEnum {
             dataModel.put("number", j.get("number"));
             dataModel.put("mail", j.get("mail"));
             //委托事项：（请在以下方框内打勾）
-            if ("1".equals(j.get("choice"))) {
-                dataModel.put("choice", "☑");
-                dataModel.put("choice1", "☐");
-                dataModel.put("choice2", "☐");
-                dataModel.put("other", "☐");
-                dataModel.put("otherContent", "");
-            } else if ("2".equals(j.get("choice"))) {
-                dataModel.put("choice", "☐");
-                dataModel.put("choice1", "☑");
-                dataModel.put("choice2", "☐");
-                dataModel.put("other", "☐");
-                dataModel.put("otherContent", "");
-            } else if ("3".equals(j.get("choice"))) {
-                dataModel.put("choice", "☐");
-                dataModel.put("choice1", "☐");
-                dataModel.put("choice2", "☑");
-                dataModel.put("other", "☐");
-                dataModel.put("otherContent", "");
-            } else if ("4".equals(j.get("choice"))) {
-                dataModel.put("choice", "☐");
-                dataModel.put("choice1", "☐");
-                dataModel.put("choice2", "☐");
-                dataModel.put("other", "☑");
-                dataModel.put("otherContent", j.get("otherContent"));
-            } else {
-                dataModel.put("choice", "☐");
-                dataModel.put("choice1", "☐");
-                dataModel.put("choice2", "☐");
-                dataModel.put("other", "☐");
-                dataModel.put("otherContent", "");
-            }
+            dataModel.put("choice", j.get("choice").toString().contains("1")?"☑":"☐");
+            dataModel.put("choice1", j.get("choice").toString().contains("2")?"☑":"☐");
+            dataModel.put("choice2", j.get("choice").toString().contains("3")?"☑":"☐");
+            dataModel.put("other", j.get("choice").toString().contains("4")?"☑":"☐");
+            dataModel.put("otherContent",j.get("choice").toString().contains("4")?j.get("otherContent"):"");
+            //委托事项：（请在以下方框内打勾）
+//            if ("1".equals(j.get("choice"))) {
+//                dataModel.put("choice", "☑");
+//                dataModel.put("choice1", "☐");
+//                dataModel.put("choice2", "☐");
+//                dataModel.put("other", "☐");
+//                dataModel.put("otherContent", "");
+//            } else if ("2".equals(j.get("choice"))) {
+//                dataModel.put("choice", "☐");
+//                dataModel.put("choice1", "☑");
+//                dataModel.put("choice2", "☐");
+//                dataModel.put("other", "☐");
+//                dataModel.put("otherContent", "");
+//            } else if ("3".equals(j.get("choice"))) {
+//                dataModel.put("choice", "☐");
+//                dataModel.put("choice1", "☐");
+//                dataModel.put("choice2", "☑");
+//                dataModel.put("other", "☐");
+//                dataModel.put("otherContent", "");
+//            } else if ("4".equals(j.get("choice"))) {
+//                dataModel.put("choice", "☐");
+//                dataModel.put("choice1", "☐");
+//                dataModel.put("choice2", "☐");
+//                dataModel.put("other", "☑");
+//                dataModel.put("otherContent", j.get("otherContent"));
+//            } else {
+//                dataModel.put("choice", "☐");
+//                dataModel.put("choice1", "☐");
+//                dataModel.put("choice2", "☐");
+//                dataModel.put("other", "☐");
+//                dataModel.put("otherContent", "");
+//            }
             //委托期间：
             dataModel.put("date5", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date5"))));
             dataModel.put("date6", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date6"))));

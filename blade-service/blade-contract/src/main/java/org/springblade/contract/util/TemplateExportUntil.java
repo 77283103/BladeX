@@ -8,6 +8,7 @@ import freemarker.template.TemplateException;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.enums.TemplateExporterEnum;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -21,7 +22,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.PostConstruct;
 import java.io.*;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class TemplateExportUntil {
@@ -35,6 +39,9 @@ public class TemplateExportUntil {
 	//private static String ftlPath="/ftl/";//模板路径
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
+//	private static MergeWordDocument mergeWordDocument;
+	private static ReplaceImages replaceImages;
+	private static MagerUtils magerUtils;
 	@Autowired
 	private IFileClient fileClient;
 	//初始化
@@ -98,6 +105,34 @@ public class TemplateExportUntil {
 			oWriter.close();
 			fos.close();
 			out.close();
+			// 测试代码
+			String fileName1 = "D:/VMware/附件一.docx";
+			String fileName2 = "D:/VMware/附件二.docx";
+			String fileName3 = "D:/VMware/附件三.docx";
+			//多文本合并
+			try {
+				//MagerUtils.mergeDoc(fileName1,fileName2,fileName3);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			//判断是否存在需要拼接的附件
+			if(!Func.isNull(dataModel.get("annex"))&& Func.isNoneBlank(dataModel.get("annex").toString())){
+				//newFileDoc=mergeWordDocument.SplicingWord(newFileDoc,dataModel);
+				//获取模板中的附件
+				R<List<FileVO>> result = fileClient.getByIds(String.valueOf(dataModel.get("annex")));
+				String finalNewFileDoc = newFileDoc;
+				result.getData().forEach(file -> {
+					try {
+						MagerUtils.mergeDoc(finalNewFileDoc,file.getLink());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				});
+			}
+			//判断是否有需要添加或覆盖的图片
+			if (!Func.isNull(dataModel.get("image"))&& Func.isNoneBlank(dataModel.get("image").toString())){
+				newFileDoc=replaceImages.replaceImage(newFileDoc,dataModel);
+			}
 			//doc转为pdf
 			AsposeWordToPdfUtils.doc2pdf(newFileDoc,newFilePdf);
 			File fileDoc = new File(newFileDoc);
@@ -119,7 +154,6 @@ public class TemplateExportUntil {
 		} catch (TemplateException | IOException e) {
 			e.printStackTrace();
 		}
-
 		return files;
 	}
 }

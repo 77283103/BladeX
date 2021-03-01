@@ -201,7 +201,7 @@ public class SclServiceEntity extends BaseEntity {
 	 * 时间
 	 */
 	@ApiModelProperty(value = "时间")
-	private Date sclRequirementsf;
+	private String sclRequirementsf;
 	/**
 	 * 数据传送：【？】（乙方对应数据接口）
 	 */
@@ -553,4 +553,14 @@ public class SclServiceEntity extends BaseEntity {
 	@ApiModelProperty(value = "日")
 	private String day7;
 
+	/**
+	 * 拼接附件
+	 */
+	@ApiModelProperty(value = "拼接附件")
+	private String annex;
+	/**
+	 * 《出货传票》及《出货传票交接清单》样式
+	 */
+	@ApiModelProperty(value = "《出货传票》及《出货传票交接清单》样式")
+	private String image;
 }

@@ -341,5 +341,11 @@ public class SclServiceRequestVO extends BaseEntity {
 	@ApiModelProperty(value="日")
 	private String day7;
 
+	@ApiModelProperty(value = "拼接附件")
+	private String annex;
+
+	@ApiModelProperty(value = "《出货传票》及《出货传票交接清单》样式")
+	private String image;
+
 }
 

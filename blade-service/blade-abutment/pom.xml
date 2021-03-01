@@ -131,7 +131,6 @@
             <version>1.8.16</version>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -146,11 +145,23 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
             </plugin>
         </plugins>
+        <!--引入本地资源-->
+        <!--<filters>
+            <filter>${project.basedir}/lib/WEB-INF/sso-config.properties</filter>
+        </filters>
+        <resources>
+            <resource>
+                <directory>lib</directory>
+                <targetPath>BOOT-INF/lib/</targetPath>
+                <includes>
+                    <include>**/*.jar</include>
+                </includes>
+            </resource>
+        </resources>-->
     </build>
-
 </project>
 
