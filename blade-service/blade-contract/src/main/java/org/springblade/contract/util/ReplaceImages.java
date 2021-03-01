@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,7 @@ import java.util.Map;
  * Java 使用新图片替换 Word 文档中的现有图片
  */
 @AllArgsConstructor
+@Component
 public class ReplaceImages {
     private IFileClient fileClient;
 

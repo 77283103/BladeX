@@ -43,10 +43,9 @@ public interface LauncherConstant {
 	String NACOS_DEV_ADDR = "localhost:8848";
 
 	/**
-	 * nacos prod 地址
+	 * nacos prod 地址 用户名 密码 毛命名空间ID
 	 */
-	String NACOS_PROD_ADDR = "172.30.0.48:8848";
-
+	String NACOS_PROD_ADDR = "10.96.115.190:8848";
 	/**
 	 * nacos test 地址
 	 */
@@ -158,7 +157,6 @@ public interface LauncherConstant {
 				return NACOS_DEV_ADDR;
 		}
 	}
-
 	/**
 	 * 动态获取sentinel地址
 	 *
@@ -226,5 +224,4 @@ public interface LauncherConstant {
 				return ELK_DEV_ADDR;
 		}
 	}
-
 }

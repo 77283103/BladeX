@@ -29,11 +29,11 @@ import java.util.Map;
 @Component
 public class TemplateExportUntil {
 
-	private static String _PATH="D:/ftl/";//模板路径
-	//private static String _PATH="/ftl/";//模板路径
+	//private static String _PATH="D:/ftl/";//模板路径
+	private static String _PATH="/ftl/";//模板路径
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
-	private static MergeWordDocument mergeWordDocument;
+//	private static MergeWordDocument mergeWordDocument;
 	private static ReplaceImages replaceImages;
 	private static MagerUtils magerUtils;
 	@Autowired
@@ -73,7 +73,7 @@ public class TemplateExportUntil {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = df.format(new Date());
 		//String newFileDoc="D:/ftl/"+templateVO.getTemplateCode()+date+".doc";
-		String newFileDoc=_PATH+templateVO.getTemplateCode()+date+".doc";
+		String newFileDoc=_PATH+templateVO.getTemplateCode()+date+".docx";
 		// 设置生成pdf的文档名称
 		//String newFilePdf="D:/ftl/"+templateVO.getTemplateCode()+date+".pdf";
 		String newFilePdf=_PATH+templateVO.getTemplateCode()+date+".pdf";
@@ -100,12 +100,12 @@ public class TemplateExportUntil {
 			fos.close();
 			out.close();
 			// 测试代码
-			//String fileName1 = "D:/VMware/附件一.docx";
-			//String fileName2 = "D:/VMware/附件二.docx";
-			//String fileName3 = "D:/VMware/附件三.docx";
+			String fileName1 = "D:/VMware/附件一.docx";
+			String fileName2 = "D:/VMware/附件二.docx";
+			String fileName3 = "D:/VMware/附件三.docx";
 			//多文本合并
 			try {
-				//MagerUtils.mergeDoc(newFileDoc,fileName1,fileName2,fileName3);
+				//MagerUtils.mergeDoc(fileName1,fileName2,fileName3);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

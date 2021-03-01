@@ -26,7 +26,7 @@ public class MagerUtils {
      */
     public static void mergeDoc(String... filepaths) throws Exception {
         // 需要配置导出文件路径 记得替换为自己电脑的路径
-        OutputStream dest = new FileOutputStream(filepaths[0]);
+        OutputStream dest = new FileOutputStream("D:/VMware/附件拼接.docx");
         List<CTBody> ctBodyList = new ArrayList<>();
         List<XWPFDocument> srcDocuments = new ArrayList<>();
         for (String filepath : filepaths) {
@@ -53,7 +53,7 @@ public class MagerUtils {
 
     public static void mergeDocx(String... filepaths) throws Exception {
         // 需要配置导出文件路径 记得替换为自己电脑的路径
-        OutputStream dest = new FileOutputStream(filepaths[0]);
+        OutputStream dest = new FileOutputStream("D:/VMware/附件拼接.docx");
         List<XWPFDocument> srcDocuments = new ArrayList<>();
         XWPFDocument doc = null;
         for (String filepath : filepaths) {

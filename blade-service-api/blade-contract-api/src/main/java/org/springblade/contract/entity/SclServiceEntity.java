@@ -201,7 +201,7 @@ public class SclServiceEntity extends BaseEntity {
 	 * 时间
 	 */
 	@ApiModelProperty(value = "时间")
-	private Date sclRequirementsf;
+	private String sclRequirementsf;
 	/**
 	 * 数据传送：【？】（乙方对应数据接口）
 	 */
