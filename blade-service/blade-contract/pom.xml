@@ -45,27 +45,11 @@
             <version>2.5.0.RELEASE</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-user-api</artifactId>
-            <version>2.5.0.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
         <!--excel导出-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
             <version>2.1.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>3.17</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.17</version>
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
@@ -94,12 +78,6 @@
             <groupId>org.springblade</groupId>
             <artifactId>blade-system</artifactId>
             <version>2.5.0.RELEASE</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.5.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>

@@ -51,7 +51,7 @@ public class BladePasswordEncoderFactories {
 	public static PasswordEncoder createDelegatingPasswordEncoder() {
 		String encodingId = "blade";
 		Map<String, PasswordEncoder> encoders = new HashMap<>(16);
-		encoders.put(encodingId, new BladePasswordEncoder());
+		encoders.put(encodingId, BladeNoOpPasswordEncoder.getInstance());
 		encoders.put("bcrypt", new BCryptPasswordEncoder());
 		encoders.put("noop", BladeNoOpPasswordEncoder.getInstance());
 		encoders.put("pbkdf2", new Pbkdf2PasswordEncoder());

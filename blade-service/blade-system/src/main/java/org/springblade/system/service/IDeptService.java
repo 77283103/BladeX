@@ -140,4 +140,7 @@ public interface IDeptService extends BaseService<Dept> {
 	 */
 	String getAncestors(Long ancestorIds);
 
+
+	boolean saveBatchDept(List<Dept> deptList);
+
 }

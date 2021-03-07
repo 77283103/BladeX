@@ -78,4 +78,9 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
 		return null;
 	}
 
+	@Override
+	public boolean saveBatchPost(List<Post> postList) {
+		return postMapper.saveBatchPost(postList);
+	}
+
 }

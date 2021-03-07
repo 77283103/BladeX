@@ -83,7 +83,11 @@ public class SysClient implements ISysClient {
 	@Override
 	@GetMapping(DEPT_NAME)
 	public R<String> getDeptName(Long id) {
-		return R.data(deptService.getById(id).getDeptName());
+		if(deptService.getById(id)==null){
+			return R.data(null);
+		}else{
+			return R.data(deptService.getById(id).getDeptName());
+		}
 	}
 
 	@Override
@@ -181,14 +185,14 @@ public class SysClient implements ISysClient {
 	@PostMapping(SAVE_DEPT_API)
 	public R<Boolean> saveOrUpdateBatchDept(List<Dept> dept) {
 		CacheUtil.clear(SYS_CACHE);
-		return R.data(deptService.saveOrUpdateBatch(dept));
+		return R.data(deptService.saveBatchDept(dept));
 	}
 
 	@Override
 	@PostMapping(SAVE_POST_API)
 	public R<Boolean> saveOrUpdateBatchPost(List<Post> post) {
 		CacheUtil.clear(SYS_CACHE);
-		return R.data(postService.saveOrUpdateBatch(post));
+		return R.data(postService.saveBatchPost(post));
 	}
 	@Override
 	@PostMapping(SAVE_USER_DEPART_API)
@@ -235,7 +239,7 @@ public class SysClient implements ISysClient {
 
 	@Override
 	public R<Long> getPostIdByAssociationId(String associationId) {
-		return null;
+		return R.data(postService.getPostIdByAssociationId(associationId));
 	}
 
 }

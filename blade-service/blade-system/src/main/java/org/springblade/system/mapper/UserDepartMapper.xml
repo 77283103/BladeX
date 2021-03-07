@@ -24,4 +24,14 @@
             where t.user_id = #{associationId}
         </if>
     </select>
+
+    <insert id="saveBatchUserDepart">
+        INSERT INTO blade_user_depart (id, user_id, role_id, dept_id, post_id)
+        VALUES
+        <foreach collection="userDepartList" separator="," item="item">
+            (#{item.id}, #{item.userId}, #{item.roleId}, #{item.deptId}, #{item.postId})
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        user_id = VALUES(user_id),role_id = VALUES(role_id),dept_id = VALUES(dept_id),post_id = VALUES(post_id)
+    </insert>
 </mapper>

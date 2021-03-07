@@ -30,13 +30,14 @@ import java.util.Map;
 @Component
 public class TemplateExportUntil {
 
-	private static  String ftlPath;
+	/*private static  String ftlPath;
 
 	@Value("${api.file.ftlPath}")
 	public  void setFtlPath(String ftlPath) {
 		TemplateExportUntil.ftlPath = ftlPath;
-	}
-	//private static String ftlPath="/ftl/";//模板路径
+	}*/
+	//模板路径
+	private static String ftlPath="/ftl/";
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
 //	private static MergeWordDocument mergeWordDocument;

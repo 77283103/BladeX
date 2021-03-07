@@ -294,4 +294,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		}
 		return null;
 	}
+
+	@Override
+	public boolean saveBatchUser(List<User> userList) {
+		return userMapper.saveBatchUser(userList);
+	}
 }

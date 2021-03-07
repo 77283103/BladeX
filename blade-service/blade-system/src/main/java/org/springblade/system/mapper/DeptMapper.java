@@ -17,7 +17,9 @@
 package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.Dept;
+import org.springblade.system.entity.Post;
 import org.springblade.system.vo.DeptVO;
 
 import java.util.List;
@@ -80,4 +82,12 @@ public interface DeptMapper extends BaseMapper<Dept> {
 	 * @return
 	 */
 	Dept getDeptIdByAssociationId(String associationId);
+
+	/**
+	 *
+	 *批量新增
+	 * @param deptList
+	 * @return
+	 */
+	boolean saveBatchDept(@Param("deptList") List<Dept> deptList);
 }

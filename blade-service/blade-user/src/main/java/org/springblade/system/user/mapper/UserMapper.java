@@ -20,6 +20,7 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
+import org.springblade.system.entity.Dept;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.excel.UserExcel;
@@ -100,4 +101,12 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @return
 	 */
 	User getUserIdByAssociationId(String associationId);
+
+	/**
+	 *
+	 *批量新增
+	 * @param userList
+	 * @return
+	 */
+	boolean saveBatchUser(@Param("userList") List<User> userList);
 }

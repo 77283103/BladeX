@@ -257,4 +257,16 @@
             where u.association_id = #{associationId}
         </if>
     </select>
+
+    <insert id="saveBatchUser">
+        INSERT INTO blade_user (id, code, account, password, real_name, email, association_id,fact_no,fact_name,dept_no,dept_nm,lai_yuan,update_time , status, is_deleted, is_enable)
+        VALUES
+        <foreach collection="userList" separator="," item="item">
+            (#{item.id}, #{item.code}, #{item.account}, #{item.password}, #{item.realName}, #{item.email}, #{item.associationId},#{item.factNo},#{item.factName},#{item.deptNo},#{item.deptNm},#{item.laiYuan}, #{item.updateTime}, 1, 0, #{item.isEnable} )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        code = VALUES(code),account = VALUES(account),password = VALUES(password),real_name = VALUES(real_name),email = VALUES(email),
+        fact_no = VALUES(fact_no),fact_name = VALUES(fact_name),dept_no = VALUES(dept_no),dept_nm = VALUES(dept_nm),lai_yuan = VALUES(lai_yuan),
+        update_time = VALUES(update_time),status = VALUES(status),is_deleted = VALUES(is_deleted),is_enable = VALUES(is_enable)
+    </insert>
 </mapper>

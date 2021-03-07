@@ -19,12 +19,16 @@ package org.springblade.auth.config;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springblade.auth.support.BladePasswordEncoderFactories;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
@@ -35,6 +39,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @AllArgsConstructor
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+	@Autowired
+	UserDetailsService loginService;
 
 	@Bean
 	@Override
@@ -55,6 +62,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		http.httpBasic().and().csrf().disable();
 		registry.antMatchers("/login","/index").permitAll();
 		registry.anyRequest().authenticated();
+	}
+
+	/**
+	 * 用户验证
+	 * @param auth
+	 */
+	@Override
+	@SneakyThrows
+	public void configure(AuthenticationManagerBuilder auth) {
+		auth.authenticationProvider(new LoginAuthenticationProvider(this.loginService,this.passwordEncoder()));
 	}
 
 }

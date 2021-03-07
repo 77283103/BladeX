@@ -8,7 +8,7 @@ spring:
     url: ${blade.datasource.dev.url}
     username: ${blade.datasource.dev.username}
     password: ${blade.datasource.dev.password}
-api:
-  file:
+#api:
+#  file:
     #ftlPath: D:/ftl/
-    ftlPath: /ftl/
+#    ftlPath: /ftl/

@@ -18,6 +18,7 @@ package org.springblade.system.user.service;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
@@ -205,8 +206,16 @@ public interface IUserService extends BaseService<User> {
 
 	/**
 	 * 根据lunid获取Id
-	 * @param lunid
+	 * @param associationId
 	 * @return
 	 */
 	Long getUserIdByAssociationId(String associationId);
+
+	/**
+	 *
+	 *批量新增
+	 * @param userList
+	 * @return
+	 */
+	boolean saveBatchUser( List<User> userList);
 }

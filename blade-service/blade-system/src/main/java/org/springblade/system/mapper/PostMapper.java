@@ -63,4 +63,12 @@ public interface PostMapper extends BaseMapper<Post> {
 	 * @return
 	 */
 	Post getPostIdByAssociationId(String associationId);
+
+	/**
+	 *
+	 *批量新增
+	 * @param postList
+	 * @return
+	 */
+	boolean saveBatchPost(@Param("postList") List<Post> postList);
 }

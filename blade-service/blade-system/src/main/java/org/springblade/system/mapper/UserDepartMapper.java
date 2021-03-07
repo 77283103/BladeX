@@ -1,8 +1,11 @@
 package org.springblade.system.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.UserDepartEntity;
+
+import java.util.List;
 
 /**
  *  Mapper 接口
@@ -28,4 +31,11 @@ public interface UserDepartMapper extends BaseMapper<UserDepartEntity> {
 	 */
 	UserDepartEntity getDeptIdByAssociationId(Long associationId);
 
+	/**
+	 *
+	 *批量新增
+	 * @param userDepartList
+	 * @return
+	 */
+	boolean saveBatchUserDepart(@Param("userDepartList") List<UserDepartEntity> userDepartList);
 }

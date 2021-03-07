@@ -74,9 +74,7 @@ public class ContractFormInfoController extends BladeController {
 	private ContractFormInfoMapper formInfoMapper;
 	private IDictBizClient bizClient;
 	private IFileClient fileClient;
-	private IAbutmentClient abutmentClient;
 	@Resource
-	private RedisCacheUtil redisCacheUtil;
 	private static final Integer CHANGE_CONTRACT_ID = -1;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";

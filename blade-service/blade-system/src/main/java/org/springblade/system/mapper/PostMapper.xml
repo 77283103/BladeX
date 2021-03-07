@@ -75,4 +75,15 @@
             where t.association_id = #{associationId}
         </if>
     </select>
+
+
+    <insert id="saveBatchPost">
+        INSERT INTO blade_post (id, post_name, association_id, update_time , status, is_deleted)
+        VALUES
+        <foreach collection="postList" separator="," item="item">
+            (#{item.id}, #{item.postName}, #{item.associationId}, #{item.updateTime}, 1, 0 )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        post_name = VALUES(post_name),is_deleted = VALUES(is_deleted),update_time = VALUES(update_time),status = VALUES(status)
+    </insert>
 </mapper>

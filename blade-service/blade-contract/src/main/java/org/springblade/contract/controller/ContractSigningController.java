@@ -107,15 +107,17 @@ public class ContractSigningController extends BladeController {
         ContractSigningEntity entity = new ContractSigningEntity();
         BeanUtil.copy(contractSigning,entity);
         contractSigningService.save(entity);
-        String contractForm = contractFormInfoService.getById(contractSigning.getContractId()).getContractForm();
+        //String contractForm = contractFormInfoService.getById(contractSigning.getContractId()).getContractForm();
         //判断合同类型是否为电子合同，是则签订完即可自动归档
-        if (CONTRACT_CONTRACT_FORM_VALUE.equals(contractForm)) {
+        /*if (CONTRACT_CONTRACT_FORM_VALUE.equals(contractForm)) {
             String contractStatus = CONTRACT_ARCHIVE_STATUS;
             contractFormInfoService.updateExportStatus(contractStatus, contractSigning.getContractId());
         } else {
             String contractStatus = CONTRACT_SIGNING_SAVE_STATUS;
             contractFormInfoService.updateExportStatus(contractStatus, contractSigning.getContractId());
-        }
+        }*/
+		String contractStatus = CONTRACT_SIGNING_SAVE_STATUS;
+		contractFormInfoService.updateExportStatus(contractStatus, contractSigning.getContractId());
         List<ContractSigningArchiveEntity> signingArchiveList= JSONObject.parseArray(contractSigning.getSigningArchiveJson(),ContractSigningArchiveEntity.class);
         signingArchiveList.forEach(signingArchive -> {
             if (Func.isNotEmpty(signingArchive.getId())){

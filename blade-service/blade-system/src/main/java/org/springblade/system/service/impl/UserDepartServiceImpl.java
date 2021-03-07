@@ -41,5 +41,10 @@ public class UserDepartServiceImpl extends ServiceImpl<UserDepartMapper, UserDep
 		return null;
 	}
 
+	@Override
+	public boolean saveBatchUserDepart(List<UserDepartEntity> userDepartList) {
+		return userDepartMapper.saveBatchUserDepart(userDepartList);
+	}
+
 
 }

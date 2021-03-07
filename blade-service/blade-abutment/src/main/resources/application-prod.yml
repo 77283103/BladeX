@@ -4,37 +4,37 @@ spring:
   aop:
     auto: true
   datasource:
-    url: ${blade.datasource.dev.url}
-    username: ${blade.datasource.dev.username}
-    password: ${blade.datasource.dev.password}
+    url: ${blade.datasource.prod.url}
+    username: ${blade.datasource.prod.username}
+    password: ${blade.datasource.prod.password}
 api:
   doc:
-    tokenUrl: http://oatest.pec.com.cn:9080/query/openapi/getToken
-    docInfoUrl: http://oatest.pec.com.cn:9080/query/openapi/queryDocInfo
+    tokenUrl: http://oa.pec.com.cn:9080/query/openapi/getToken
+    docInfoUrl: http://oa.pec.com.cn:9080/query/openapi/queryDocInfo
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
   ekp:
-    tokenUrl: http://oatest.pec.com.cn:9080/restful/ekp/getToken
-    ekpUrl: http://oatest.pec.com.cn:9080/restful/ekp/genhrbill
-    account: iHR
-    password: oaekp
-    fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
+    tokenUrl: http://oa.pec.com.cn:9080/restful/ekp/getToken
+    ekpUrl: http://oa.pec.com.cn:9080/restful/ekp/genhrbill
+    account: contract_user
+    password: fe37b304792607ed561648bcc67435cc
+    fdTemplateId: 1780054e40b82ff3f5f9e0c4bcfa9eac
   organization:
-    wsdl: http://oatest.pec.com.cn:8080/sys/webservice/organizationWebService?wsdl
+    wsdl: https://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
     namespace: http://sys.webservice.client
     method: updateOrganization
-    account: shebake_test
-    password: d65937df2000cc755253956bd1403aa5
+    account: shebake
+    password: 80372a095c16319ce09ef7cc2c871b53
   eSeal:
-    tokenUrl: http://sa.pec.com.cn:9080/common/user/access
-    orgInfoByCodeUrl: http://sa.pec.com.cn:9080/common/apply/company/getByOrganCode
-    orgInfoBySysUidUrl: http://sa.pec.com.cn:9080/common/apply/company/getBySysUid
-    uploadFileDivideUrl: http://sa.pec.com.cn:9080/common/file/upload/divide
-    uploadFileMergeUrl: http://sa.pec.com.cn:9080/common/file/upload/merge
-    viewUrl: http://sa.pec.com.cn:9080/common/file/contract/view
-    downloadUrl: http://sa.pec.com.cn:9080/common/file/downloadSinged
-    singleSignUrl: http://sa.pec.com.cn:9080/common/run/esign/singleSign
-    sendSmsUrl: http://sa.pec.com.cn:9080/common/run/esign/sendSms
-    multiSignUrl: http://sa.pec.com.cn:9080/common/run/esign/multiSign
-    username: 1111
-    password: 1111
+    tokenUrl: https://unici.pec.com.cn/common/user/access
+    orgInfoByCodeUrl: https://unici.pec.com.cn/common/apply/company/getByOrganCode
+    orgInfoBySysUidUrl: https://unici.pec.com.cn/common/apply/company/getBySysUid
+    uploadFileDivideUrl: https://unici.pec.com.cn/common/file/upload/divide
+    uploadFileMergeUrl: https://unici.pec.com.cn/common/file/upload/merge
+    viewUrl: https://unici.pec.com.cn/common/file/contract/view
+    downloadUrl: https://unici.pec.com.cn/common/file/downloadSinged
+    singleSignUrl: https://unici.pec.com.cn/common/run/esign/singleSign
+    sendSmsUrl: https://unici.pec.com.cn/common/run/esign/sendSms
+    multiSignUrl: https://unici.pec.com.cn/common/run/esign/multiSign
+    username: admin_cont
+    password: 148a0bed39597ef88f3f8b53134993a5
 

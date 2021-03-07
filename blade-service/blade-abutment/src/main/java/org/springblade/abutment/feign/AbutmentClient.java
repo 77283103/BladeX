@@ -422,7 +422,7 @@ public class AbutmentClient implements IAbutmentClient {
 						}
 						pushEkpEntity.setToken(ekpService.getToken());
 						pushEkpEntity.setDocSubject(entity.getContractName());
-						pushEkpEntity.setFdTemplateId("176212613bf6f84e6bf1ad942cbb8344");
+						pushEkpEntity.setFdTemplateId(fdTemplateId);
 						if (StrUtil.isNotEmpty(pushEkpEntity.getToken())) {
 							ekpVo = ekpService.pushData(pushEkpEntity);
 						}

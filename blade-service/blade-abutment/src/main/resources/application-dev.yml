@@ -18,12 +18,18 @@ api:
     account: iHR
     password: oaekp
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
-  organization:
+  organization_cs:
     wsdl: http://oatest.pec.com.cn:8080/sys/webservice/organizationWebService?wsdl
     namespace: http://sys.webservice.client
     method: updateOrganization
     account: shebake_test
     password: d65937df2000cc755253956bd1403aa5
+  organization:
+    wsdl: https://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
+    namespace: http://sys.webservice.client
+    method: updateOrganization
+    account: shebake
+    password: 80372a095c16319ce09ef7cc2c871b53
   eSeal:
     tokenUrl: http://sa.pec.com.cn:9080/common/user/access
     orgInfoByCodeUrl: http://sa.pec.com.cn:9080/common/apply/company/getByOrganCode

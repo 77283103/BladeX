@@ -31,6 +31,9 @@ import java.util.List;
  */
 public interface IPostService extends BaseService<Post> {
 
+
+
+
 	/**
 	 * 分页查询
 	 * @param page
@@ -80,5 +83,11 @@ public interface IPostService extends BaseService<Post> {
 	 * @return 岗位id
 	 */
 	Long getPostIdByAssociationId(String associationId);
+
+
+	/**
+	 * 批量保存岗位
+	 */
+	boolean saveBatchPost(List<Post> postList);
 
 }
