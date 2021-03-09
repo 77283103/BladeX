@@ -1,7 +1,9 @@
 package org.springblade.contract.util;
 
+
+import com.spire.doc.Document;
+import com.spire.doc.FileFormat;
 import org.apache.poi.openxml4j.opc.OPCPackage;
-import org.apache.poi.xwpf.usermodel.Document;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFPictureData;
 import org.apache.xmlbeans.XmlOptions;
@@ -10,6 +12,9 @@ import org.springframework.util.ObjectUtils;
 
 import java.io.*;
 import java.util.*;
+
+import static org.apache.poi.xwpf.usermodel.Document.PICTURE_TYPE_PNG;
+
 
 /**
  * @program: 合并多份word文件
@@ -21,19 +26,23 @@ public class MagerUtils {
     /**
      * 合并多个Word
      *
-     * @param filepaths
+     * @param filepaths  filepaths[0] 拼接后DOCX filepaths[1] 拼接DOCX转PDF filepaths[2]  去水印PDF  filepaths[3] 转型DOCX
      * @throws Exception
      */
-    public static void mergeDoc(String... filepaths) throws Exception {
+    public static Boolean mergeDoc(List<String> filepaths) throws Exception {
+		Boolean isDelete = false;
         // 需要配置导出文件路径 记得替换为自己电脑的路径
-        OutputStream dest = new FileOutputStream("D:/VMware/附件拼接.docx");
+		// 判断文件是否存在 存在即删除
+		File file=new File(filepaths.get(0));
+		if(file.exists()) { file.delete(); }
+		OutputStream dest = new FileOutputStream(filepaths.get(0));
         List<CTBody> ctBodyList = new ArrayList<>();
         List<XWPFDocument> srcDocuments = new ArrayList<>();
-        for (String filepath : filepaths) {
+		for (int i = 2; i<=filepaths.size()-1; i++) {
             InputStream in = null;
             OPCPackage srcPackage = null;
             try {
-                in = new FileInputStream(filepath);
+                in = new FileInputStream(filepaths.get(i));
                 srcPackage = OPCPackage.open(in);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -44,44 +53,35 @@ public class MagerUtils {
             CTBody srcBody = srcDocument.getDocument().getBody();
             ctBodyList.add(srcBody);
             srcDocuments.add(srcDocument);
+			srcDocuments.get(i-2).createParagraph().setPageBreak(true);
         }
         if (!ObjectUtils.isEmpty(ctBodyList)) {
             appendBody(ctBodyList);
             srcDocuments.get(0).write(dest);
         }
+        dest.close();
+		// 拼接后文档docx转pdf
+		MergeWordDocument.docxToPDF(filepaths.get(0), filepaths.get(1));
+		return true;
     }
-
-    public static void mergeDocx(String... filepaths) throws Exception {
-        // 需要配置导出文件路径 记得替换为自己电脑的路径
-        OutputStream dest = new FileOutputStream("D:/VMware/附件拼接.docx");
-        List<XWPFDocument> srcDocuments = new ArrayList<>();
-        XWPFDocument doc = null;
-        for (String filepath : filepaths) {
-            InputStream in = null;
-            OPCPackage srcPackage = null;
-            try {
-                in = new FileInputStream(filepath);
-                srcPackage = OPCPackage.open(in);
-                XWPFDocument srcDocument = new XWPFDocument(srcPackage);
-                srcDocuments.add(srcDocument);
-            } catch (Exception e) {
-                e.printStackTrace();
-            } finally {
-                closeStream(in);
-            }
-        }
-        for (XWPFDocument xwpfDocument : srcDocuments) {
-            doc = srcDocuments.get(0);
-            xwpfDocument.createParagraph().setPageBreak(true);
-            appendBody(doc, xwpfDocument);
-            doc.createParagraph().setPageBreak(true);
-            try {
-                doc.write(dest);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
+	/**
+	 * Spire
+	 * @param filepaths filepaths[0] 合同原文档 filepaths[1]  拼接后的文档
+	 * @retur
+	 * @throws Exception
+	 */
+	public static void mergeDocsToPDF(String... filepaths) throws Exception {
+		//加载第一个文档
+		Document document = new Document(filepaths[0]);
+		// 循环拼接
+		for (int i = 2; i<=filepaths.length-1; i++) {
+			//使用insertTextFromFile方法将第二个文档的内容插入到第一个文档
+			document.insertTextFromFile(filepaths[i], FileFormat.Docx_2013);
+		}
+		//保存文档
+		document.saveToFile(filepaths[0], FileFormat.Docx_2013);
+		document.close();
+	}
 
     public static void appendBody(XWPFDocument src, XWPFDocument append) throws Exception {
         CTBody src1Body = src.getDocument().getBody();
@@ -93,7 +93,7 @@ public class MagerUtils {
         for (XWPFPictureData picture : allPictures) {
             String before = append.getRelationId(picture);
             //将原文档中的图片加入到目标文档中
-            String after = src.addPictureData(picture.getData(), Document.PICTURE_TYPE_PNG);
+            String after = src.addPictureData(picture.getData(), PICTURE_TYPE_PNG);
             map.put(before, after);
         }
         appendBody(src1Body, src2Body, map);
@@ -108,7 +108,6 @@ public class MagerUtils {
         String mainPart = srcString.substring(srcString.indexOf(">") + 1, srcString.lastIndexOf("<"));
         String sufix = srcString.substring(srcString.lastIndexOf("<"));
         String addPart = appendString.substring(appendString.indexOf(">") + 1, appendString.lastIndexOf("<"));
-
         if (map != null && !map.isEmpty()) {
             //对xml字符串中图片ID进行替换
             for (Map.Entry<String, String> set : map.entrySet()) {
@@ -122,7 +121,6 @@ public class MagerUtils {
 
     /**
      * 拼接所有的文档元素
-     *
      * @param ctBodyList
      * @throws Exception
      */
@@ -147,10 +145,8 @@ public class MagerUtils {
         CTBody makeBody = CTBody.Factory.parse(distinctPrefix + allElement.toString() + "</xml-fragment>");
         ctBodyList.get(0).set(makeBody);
     }
-
     /**
      * 去重合并xml的Xmlns
-     *
      * @param prefix
      * @return
      */
@@ -175,10 +171,8 @@ public class MagerUtils {
         sb.append(">");
         return sb.toString();
     }
-
     /**
      * xmlns 可能存在xmlns头相同但是指向地址不同的情况
-     *
      * @param set
      * @return
      */
@@ -191,7 +185,6 @@ public class MagerUtils {
         }
         return map;
     }
-
     /**
      * 关闭流
      * 这一步可以放到公用工具类中，close的类型可以使用Closeable，这样就可以关闭input和output的流

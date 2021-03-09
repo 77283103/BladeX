@@ -59,16 +59,11 @@
     <select id="pageList" resultMap="contractArchiveResultMap">
         SELECT
             <include refid="baseColumnList"></include>
-        FROM contract_archive
+        FROM contract_archive,
+        contract_form_info
         WHERE is_deleted = 0
         <if test="counterpart.name != null and counterpart.name != ''">
-            AND name = #{counterpart.name}
-        </if>
-        <if test="counterpart.counterpartCategory != null and counterpart.counterpartCategory != ''">
-            AND counterpart_category = #{counterpart.counterpartCategory}
-        </if>
-        <if test="counterpart.legalRepresentative != null and counterpart.legalRepresentative != ''">
-            AND legal_representative = #{counterpart.legalRepresentative}
+            AND (SELECT id FROM contract_counterpart WHERE name = #{counterpart.name})
         </if>
     </select>
 

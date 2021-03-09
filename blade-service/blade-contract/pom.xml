@@ -18,6 +18,16 @@
         <dependency>
             <groupId>org.springblade</groupId>
             <artifactId>blade-core-boot</artifactId>
+            <exclusions>
+                <exclusion>
+                    <artifactId>asm</artifactId>
+                    <groupId>org.ow2.asm</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>javassist</artifactId>
+                    <groupId>org.javassist</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
@@ -27,6 +37,12 @@
             <groupId>org.springblade</groupId>
             <artifactId>blade-contract-api</artifactId>
             <version>${bladex.project.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>swagger-annotations</artifactId>
+                    <groupId>io.swagger</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
@@ -50,6 +66,16 @@
             <groupId>com.alibaba</groupId>
             <artifactId>easyexcel</artifactId>
             <version>2.1.6</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>poi-ooxml</artifactId>
+                    <groupId>org.apache.poi</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>poi</artifactId>
+                    <groupId>org.apache.poi</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
@@ -96,6 +122,12 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>1.8.8</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jempbox</artifactId>
+                    <groupId>org.apache.pdfbox</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox -->
         <dependency>
@@ -140,29 +172,6 @@
             <artifactId>httpmime</artifactId>
         </dependency>
         <!--excel导出-->
-        <!-- !! POI依赖包  -->
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-scratchpad</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>4.1.0</version>
-        </dependency>
-        <!-- POI依赖包  !!-->
         <!--out net begin -->
         <dependency>
             <groupId>org.docx4j</groupId>
@@ -178,13 +187,148 @@
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j-export-fo</artifactId>
             <version>3.3.6</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>xmlgraphics-commons</artifactId>
+                    <groupId>org.apache.xmlgraphics</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>fontbox</artifactId>
+                    <groupId>org.apache.pdfbox</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>1.11.2</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jsoup</artifactId>
+                    <groupId>org.jsoup</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--out net end -->
+        <dependency>
+            <groupId>io.swagger</groupId>
+            <artifactId>swagger-annotations</artifactId>
+            <version>1.6.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/fr.opensagres.xdocreport/fr.opensagres.poi.xwpf.converter.pdf -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.1.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/poi-4.1.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/poi-ooxml-4.1.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>4.1.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/poi-ooxml-schemas-4.1.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>4.1.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/poi-scratchpad-4.1.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.6.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/xmlbeans-2.6.0.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>openxml4j</artifactId>
+            <version>1.0-beta</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/openxml4j-1.0-beta.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>oe-iceblue</groupId>
+            <artifactId>spire.doc</artifactId>
+            <version>3.9.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/Spire.Doc-FE_3.9.0/lib/Spire.Doc.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>ooxml-schemas</artifactId>
+            <version>1.4</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/ooxml-schemas-1.4.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.lowagie</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/itext-2.1.7.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>fr.opensagres.xdocreport</groupId>
+            <artifactId>org.apache.poi.xwpf.converter.core</artifactId>
+            <version>1.0.6</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/org.apache.poi.xwpf.converter.core-1.0.6.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>fr.opensagres.xdocreport</groupId>
+            <artifactId>org.apache.poi.xwpf.converter.core-gae</artifactId>
+            <version>1.0.6</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/org.apache.poi.xwpf.converter.core-gae-1.0.6.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>fr.opensagres.xdocreport</groupId>
+            <artifactId>org.apache.poi.xwpf.converter.pdf</artifactId>
+            <version>1.0.6</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/org.apache.poi.xwpf.converter.pdf-1.0.6.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>fr.opensagres.xdocreport</groupId>
+            <artifactId>xdocreport</artifactId>
+            <version>1.0.6</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/xdocreport-1.0.6.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>xmlgraphics-commons</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/xmlgraphics-commons-2.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+            <version>2.1.1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/dom4j-2.1.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.deepoove</groupId>
+            <artifactId>poi-tl</artifactId>
+            <version>1.8.2</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/poi-tl-1.8.2.jar</systemPath>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -203,15 +347,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
             </plugin>
-<!--            <plugin>-->
-<!--                <groupId>org.springframework.boot</groupId>-->
-<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
-<!--                <configuration>-->
-<!--                    &lt;!&ndash; 生成可执行的jar的名字：xxx-exec.jar &ndash;&gt;-->
-<!--                    &lt;!&ndash; 不固定，写成abcd都可以 &ndash;&gt;-->
-<!--                    <classifier>blade-cases</classifier>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
+            <!--            <plugin>-->
+            <!--                <groupId>org.springframework.boot</groupId>-->
+            <!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+            <!--                <configuration>-->
+            <!--                    &lt;!&ndash; 生成可执行的jar的名字：xxx-exec.jar &ndash;&gt;-->
+            <!--                    &lt;!&ndash; 不固定，写成abcd都可以 &ndash;&gt;-->
+            <!--                    <classifier>blade-cases</classifier>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
         </plugins>
     </build>
 </project>

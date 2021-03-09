@@ -11,13 +11,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.abutment.feign.IAbutmentClient;
-import org.springblade.contract.entity.*;
+import org.springblade.contract.entity.ContractAccordingEntity;
+import org.springblade.contract.entity.ContractBondEntity;
+import org.springblade.contract.entity.ContractBondPlanEntity;
+import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.*;
-import org.springblade.contract.util.RedisCacheUtil;
 import org.springblade.contract.util.TemplateExportUntil;
 import org.springblade.contract.util.TemplateSaveUntil;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
@@ -45,10 +46,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.*;
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.*;
 
@@ -74,7 +74,6 @@ public class ContractFormInfoController extends BladeController {
 	private ContractFormInfoMapper formInfoMapper;
 	private IDictBizClient bizClient;
 	private IFileClient fileClient;
-	@Resource
 	private static final Integer CHANGE_CONTRACT_ID = -1;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";

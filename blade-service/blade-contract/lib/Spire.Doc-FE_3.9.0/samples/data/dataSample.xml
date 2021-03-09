@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Data>
+	<Country>
+		<Capital>Buenos Aires</Capital>
+		<Name>Argentina</Name>
+		<Continent>2777815</Continent>
+		<Area>South America</Area>
+		<Population>32300003</Population>
+	</Country>
+	<Country>
+		<Capital>La Paz</Capital>
+		<Name>Bolivia</Name>
+		<Continent>1098575</Continent>
+		<Area>South America</Area>
+		<Population>7300000</Population>
+	</Country>
+	<Country>
+		<Capital>Brasilia</Capital>
+		<Name>Brazil</Name>
+		<Continent>8511196</Continent>
+		<Area>South America</Area>
+		<Population>150400000</Population>
+	</Country>	
+	<Country>
+		<Capital>Buenos Aires</Capital>
+		<Name>Argentina</Name>
+		<Continent>2777815</Continent>
+		<Area>South America</Area>
+		<Population>32300003</Population>
+	</Country>
+	<Country>
+		<Capital>La Paz</Capital>
+		<Name>Bolivia</Name>
+		<Continent>1098575</Continent>
+		<Area>South America</Area>
+		<Population>7300000</Population>
+	</Country>
+	<Country>
+		<Capital>Brasilia</Capital>
+		<Name>Brazil</Name>
+		<Continent>8511196</Continent>
+		<Area>South America</Area>
+		<Population>150400000</Population>
+	</Country>	
+	<Country>
+		<Capital>Buenos Aires</Capital>
+		<Name>Argentina</Name>
+		<Continent>2777815</Continent>
+		<Area>South America</Area>
+		<Population>32300003</Population>
+	</Country>
+	<Country>
+		<Capital>La Paz</Capital>
+		<Name>Bolivia</Name>
+		<Continent>1098575</Continent>
+		<Area>South America</Area>
+		<Population>7300000</Population>
+	</Country>
+	<Country>
+		<Capital>Brasilia</Capital>
+		<Name>Brazil</Name>
+		<Continent>8511196</Continent>
+		<Area>South America</Area>
+		<Population>150400000</Population>
+	</Country>	
+	<Country>
+		<Capital>Buenos Aires</Capital>
+		<Name>Argentina</Name>
+		<Continent>2777815</Continent>
+		<Area>South America</Area>
+		<Population>32300003</Population>
+	</Country>
+	<Country>
+		<Capital>La Paz</Capital>
+		<Name>Bolivia</Name>
+		<Continent>1098575</Continent>
+		<Area>South America</Area>
+		<Population>7300000</Population>
+	</Country>
+	<Country>
+		<Capital>Brasilia</Capital>
+		<Name>Brazil</Name>
+		<Continent>8511196</Continent>
+		<Area>South America</Area>
+		<Population>150400000</Population>
+	</Country>	
+</Data>

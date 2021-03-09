@@ -10,5 +10,9 @@ spring:
     password: ${blade.datasource.dev.password}
 #api:
 #  file:
+#    #ftlPath: D:/ftl/
+#    ftlPath: /ftl/
+#api:
+#  file:
     #ftlPath: D:/ftl/
 #    ftlPath: /ftl/

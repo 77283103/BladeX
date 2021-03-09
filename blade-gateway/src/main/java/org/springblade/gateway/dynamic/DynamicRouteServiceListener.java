@@ -68,6 +68,8 @@ public class DynamicRouteServiceListener {
 			Properties properties = new Properties();
 			properties.setProperty(PropertyKeyConst.SERVER_ADDR, nacosDiscoveryProperties.getServerAddr());
 			properties.setProperty(PropertyKeyConst.NAMESPACE, nacosDiscoveryProperties.getNamespace());
+			properties.setProperty(PropertyKeyConst.NAMESPACE, nacosDiscoveryProperties.getAccessKey());
+			properties.setProperty(PropertyKeyConst.NAMESPACE, nacosDiscoveryProperties.getSecretKey());
 			ConfigService configService = NacosFactory.createConfigService(properties);
 			configService.addListener(dataId, group, new Listener() {
 				@Override
