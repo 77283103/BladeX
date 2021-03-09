@@ -1,9 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-import com.spire.doc.fields.*;
-
-import java.awt.*;
-
 public class insertEndnote {
     public static void main(String[] args) {
         //Create a document and load file

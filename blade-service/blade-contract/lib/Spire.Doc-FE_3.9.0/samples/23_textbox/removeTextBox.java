@@ -1,5 +1,3 @@
-import com.spire.doc.*;
-
 public class removeTextBox {
     public static void main(String[] args) {
         //Load the document

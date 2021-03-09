@@ -1,6 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-
 public class changeTOCTabStyle {
     public static void main(String[] args) {
         //Load document from disk

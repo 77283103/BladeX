@@ -1,7 +1,3 @@
-import com.spire.doc.*;
-
-import java.awt.print.*;
-
 public class printWithNewMethod {
     public static void main(String[] args) {
         Document document = new Document();

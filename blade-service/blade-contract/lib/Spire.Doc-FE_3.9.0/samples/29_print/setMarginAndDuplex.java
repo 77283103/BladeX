@@ -1,6 +1,3 @@
-import com.spire.doc.*;
-import com.spire.ms.Printing.*;
-
 public class setMarginAndDuplex {
     public static void main(String[] args) {
         Document doc = new Document();

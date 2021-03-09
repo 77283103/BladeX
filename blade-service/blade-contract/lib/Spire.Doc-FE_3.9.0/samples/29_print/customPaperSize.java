@@ -1,6 +1,3 @@
-import com.spire.doc.*;
-import com.spire.ms.Printing.*;
-
 public class customPaperSize {
     public static void main(String[] args) {
         //Load document

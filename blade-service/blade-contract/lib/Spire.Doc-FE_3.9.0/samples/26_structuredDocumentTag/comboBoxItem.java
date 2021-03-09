@@ -1,6 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-
 public class comboBoxItem {
     public static void main(String[] args) {
         // Create a new document and load from file

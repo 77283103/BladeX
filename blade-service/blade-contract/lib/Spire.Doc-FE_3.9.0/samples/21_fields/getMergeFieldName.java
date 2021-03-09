@@ -1,7 +1,5 @@
 import com.spire.doc.Document;
 
-import java.io.*;
-
 public class getMergeFieldName {
     public static void main(String[] args) throws IOException {
         StringBuilder sb = new StringBuilder();

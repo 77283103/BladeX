@@ -1,8 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-
-import java.awt.*;
-
 public class changeTOCStyle {
     public static void main(String[] args) {
         //Load document from disk

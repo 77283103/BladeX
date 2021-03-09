@@ -1,4 +1,3 @@
-import com.spire.doc.*;
 import com.spire.doc.documents.Paragraph;
 import com.spire.doc.fields.Field;
 

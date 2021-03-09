@@ -1,9 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-import com.spire.doc.fields.*;
-
-import java.io.*;
-
 public class extractTextFromTextBoxes {
     public static void main(String[] args) throws IOException {
 

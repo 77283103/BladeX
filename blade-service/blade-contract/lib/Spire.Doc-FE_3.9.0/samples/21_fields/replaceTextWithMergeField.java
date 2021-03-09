@@ -1,7 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-import com.spire.doc.fields.*;
-
 public class replaceTextWithMergeField {
     public static void main(String[] args) {
         //Open a Word document

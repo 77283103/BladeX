@@ -1,6 +1,4 @@
-import com.spire.doc.*;
 import com.spire.doc.collections.FormFieldCollection;
-import java.io.*;
 
 public class getFormFieldsCollection {
     public static void main(String[] args) throws IOException {

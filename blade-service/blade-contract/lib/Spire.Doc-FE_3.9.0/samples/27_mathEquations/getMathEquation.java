@@ -1,6 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.fields.omath.*;
-
 public class GetMathEquation {
     public static void main(String[] args) {
         Document doc = new Document();

@@ -1,10 +1,4 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
 import com.spire.doc.fields.TextRange;
-
-import java.io.*;
-import java.math.*;
-import java.util.*;
 
 public class getContentControlProperty {
     public static void main(String[] args) throws IOException {

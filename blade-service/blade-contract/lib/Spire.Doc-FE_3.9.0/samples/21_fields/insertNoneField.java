@@ -1,7 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-import com.spire.doc.fields.*;
-
 public class insertNoneField {
     public static void main(String[] args) {
         Document document = new Document("data/sampleB_2.docx");

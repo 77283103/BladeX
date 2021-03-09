@@ -1,10 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-import com.spire.doc.fields.*;
-import com.spire.doc.interfaces.*;
-
-import java.awt.*;
-
 public class tableCaptionCrossReference {
     public static void main(String[] args) {
         //Create word document

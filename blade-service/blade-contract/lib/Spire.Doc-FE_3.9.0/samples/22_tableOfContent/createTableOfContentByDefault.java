@@ -1,7 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-import com.spire.doc.fields.*;
-
 public class createTableOfContentByDefault {
     public static void main(String[] args) {
         Document doc = new Document();

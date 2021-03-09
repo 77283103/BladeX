@@ -1,5 +1,3 @@
-import com.spire.doc.*;
-
 public class macros {
     public static void main(String[] args) {
         //Load Word document which contains macro

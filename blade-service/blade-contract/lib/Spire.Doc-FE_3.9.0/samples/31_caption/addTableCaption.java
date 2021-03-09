@@ -1,5 +1,3 @@
-import com.spire.doc.*;
-
 public class addTableCaption {
     public static void main(String[] args) {
         //Create word document

@@ -1,5 +1,3 @@
-import com.spire.doc.*;
-
 public class detectAndRemoveVBAMacros {
     public static void main(String[] args) {
         //Create Word document

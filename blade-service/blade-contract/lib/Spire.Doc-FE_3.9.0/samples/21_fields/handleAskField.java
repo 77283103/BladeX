@@ -1,7 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.fields.*;
-import java.io.InputStream;
-
 public class handleAskField {
     public static void main(String[] args) {
         String input="data/handleAskField.docx";

@@ -1,7 +1,3 @@
-import com.spire.doc.*;
-
-import java.util.regex.*;
-
 public class removeTableOfContent {
     public static void main(String[] args) {
         //Create a document

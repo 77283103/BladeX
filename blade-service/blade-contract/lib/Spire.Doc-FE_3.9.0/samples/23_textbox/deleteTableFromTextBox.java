@@ -1,6 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.fields.*;
-
 public class deleteTableFromTextBox {
     public static void main(String[] args) {
         //Load the document

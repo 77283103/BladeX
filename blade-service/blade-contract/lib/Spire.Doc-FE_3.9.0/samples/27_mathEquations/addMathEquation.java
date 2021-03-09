@@ -1,7 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-import com.spire.doc.fields.omath.*;
-
 public class addMathEquation {
     public static void main(String[] args) {
         String[] latexMathCode = {

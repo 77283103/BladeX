@@ -1,5 +1,3 @@
-import com.spire.doc.*;
-
 public class removeCustomPropertyFields {
     public static void main(String[] args) {
         //Create Word document.

@@ -1,5 +1,3 @@
-import com.spire.doc.*;
-
 public class updateFields {
     public static void main(String[] args) {
         //Open a Word document

@@ -1,8 +1,3 @@
-import com.spire.doc.*;
-import com.spire.doc.documents.*;
-
-import java.util.*;
-
 public class updateCheckBox {
     public static void main(String[] args) {
         //Create a document

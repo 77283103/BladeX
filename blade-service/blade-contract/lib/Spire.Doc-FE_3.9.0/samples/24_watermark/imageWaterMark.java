@@ -1,5 +1,3 @@
-import com.spire.doc.*;
-
 public class imageWaterMark {
     public static void main(String[] args) {
         Document document = new Document("data/sampleB_2.docx");
