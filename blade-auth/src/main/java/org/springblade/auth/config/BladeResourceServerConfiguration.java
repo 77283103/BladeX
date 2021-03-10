@@ -52,6 +52,7 @@ public class BladeResourceServerConfiguration extends ResourceServerConfigurerAd
 				"/token/**",
 				"/auth/login",
 				"/auth/according",
+				"/oauth/token",
 				"/oauth/captcha",
 				"/oauth/logout",
 				"/organization/queryOrganization",

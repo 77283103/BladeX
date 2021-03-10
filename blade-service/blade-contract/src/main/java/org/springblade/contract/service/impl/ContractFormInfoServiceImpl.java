@@ -73,8 +73,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	//@Value("${api.file.ftlPath}")
 	//模板路径
 	//private String ftlPath;
-	//private static final String ftlPath="D:/ftl/";//模板路径
-	private static final String ftlPath="/ftl/";//模板路径
+	//private static final String ftlPath="D:/ftl/";
+	private static final String ftlPath="/ftl/";
 	private IFileClient fileClient;
 
 	private ISysClient sysClient;

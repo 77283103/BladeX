@@ -24,7 +24,7 @@ public class MyEKPSSOClient extends EKPSSOClient {
 
 	@Override
 	public void init(String filterConfigFile) throws ServletException {
-		if (StringUtil.isNull(filterConfigFile)) {
+		/*if (StringUtil.isNull(filterConfigFile)) {
 			String errorMsg = "未正确配置filterConfigFile初始参数。";
 			Logger.error(errorMsg);
 			throw new IllegalArgumentException(errorMsg);
@@ -33,7 +33,7 @@ public class MyEKPSSOClient extends EKPSSOClient {
 			instance.get();
 			Properties prop = new Properties();
 			prop.setProperty("log.level","WARN");
-			prop.setProperty("filter.chain","CASURLFilter");
+			prop.setProperty("filter.chain","CASEKPSSOClient");
 			prop.setProperty("CASURLFilter.cas.server","http://sso.pec.com.cn/sso");
 			prop.setProperty("CASURLFilter.cas.ticket","ticket");
 			String logLevel;
@@ -53,7 +53,7 @@ public class MyEKPSSOClient extends EKPSSOClient {
 						clzName = packageName + clzName;
 					}
 					try {
-						Class c = Class.forName(clzName);
+						Class c = Class.forName("org.springblade.auth.config.CASEKPSSOClient");
 						EKPSSOFilter filter = (EKPSSOFilter)c.newInstance();
 						processingFilters[i] = filter;
 						filter.init(prop);
@@ -64,6 +64,6 @@ public class MyEKPSSOClient extends EKPSSOClient {
 				}
 			}
 
-		}
+		}*/
 	}
 }

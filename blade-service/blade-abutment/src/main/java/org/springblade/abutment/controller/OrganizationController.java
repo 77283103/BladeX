@@ -183,7 +183,7 @@ public class OrganizationController {
 		OrganizationEntity entity = new OrganizationEntity();
 		List<OrganizationVo> organizationList = null;
 		//保存组织机构
-		/*try {
+		try {
 			entity.setOrgType("2");
 			organizationList = organizationService.getOrganizationInfo(entity);
 		} catch (Exception e) {
@@ -197,7 +197,7 @@ public class OrganizationController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));*/
+		sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));
 		//保存个人
 		try {
 			entity.setOrgType("8");
