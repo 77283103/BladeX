@@ -31,7 +31,6 @@ public class MagerUtils {
      */
     public static Boolean mergeDoc(List<String> filepaths) throws Exception {
 		Boolean isDelete = false;
-        // 需要配置导出文件路径 记得替换为自己电脑的路径
 		// 判断文件是否存在 存在即删除
 		File file=new File(filepaths.get(0));
 		if(file.exists()) { file.delete(); }

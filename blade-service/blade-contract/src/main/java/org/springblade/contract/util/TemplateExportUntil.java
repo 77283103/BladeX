@@ -38,7 +38,6 @@ public class TemplateExportUntil {
 	private static MagerUtils magerUtils;
 	@Autowired
 	private IFileClient fileClient;
-
 	//初始化
 	@PostConstruct
 	public void init() {
@@ -102,7 +101,7 @@ public class TemplateExportUntil {
 			fos.close();
 			out.close();
 
-			// 测试代码 需要拼接的子文档
+			//测试代码 需要拼接的子文档
 			String fileName1 = "D:/VMware/附件一.docx";
 			String fileName2 = "D:/VMware/附件二.docx";
 			String contractFile = "D:/VMware/转类型文件.docx";
@@ -117,17 +116,13 @@ public class TemplateExportUntil {
 			filepathsTest.add(2, contractFile);
 			filepathsTest.add(3, fileName1);
 			filepathsTest.add(4, fileName2);
-			try {
-				//MagerUtils.mergeDoc(filepathsTest);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			new MergeWordDocument().wordToPdf(newFileDoc,newFilePDF);
+
+			MergeWordDocument.wordToPdf(newFileDoc,newFilePDF);
 			//判断是否存在需要拼接的附件
 			if (!Func.isNull(dataModel.get("annex")) && Func.isNoneBlank(dataModel.get("annex").toString())) {
-				//初始化文件   1.拼接后docx文档  2.拼接后pdf文档  3.转类型doc转docx文档
-				String mergeFileDocx = ftlPath + templateVO.getTemplateCode() + date + ".docx";
-				String newFileDocx = ftlPath + templateVO.getTemplateCode() + date + ".docx";
+				//初始化文件   1.拼接后docx文档  2.转类型doc转docx文档
+				String mergeFileDocx = ftlPath + templateVO.getTemplateCode() +"_M_"+ date + ".docx";
+				String newFileDocx = ftlPath + templateVO.getTemplateCode() + "_X_"+ date + ".docx";
 				// office转wps,处理兼容问题
 				AsposeWordToPdfUtils.doc2Docx(newFileDoc, newFileDocx);
 				//拼接文件名字数组
@@ -136,7 +131,7 @@ public class TemplateExportUntil {
 				filepaths.add(1, newFilePdf);
 				filepaths.add(2, newFileDocx);
 				//获取模板中的附件
-				List<FileVO> result = fileClient.getByIds(String.valueOf(dataModel.get("annex"))).getData();
+				List<FileVO> result = templateExportUntil.fileClient.getByIds(String.valueOf(dataModel.get("annex"))).getData();
 				result.forEach(file -> {
 					//新建空文件
 					int index = file.getName().lastIndexOf(".");

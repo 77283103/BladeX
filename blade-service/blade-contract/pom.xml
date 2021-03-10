@@ -329,6 +329,13 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/poi-tl-1.8.2.jar</systemPath>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.20</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/lib/commons-compress-1.20.jar</systemPath>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

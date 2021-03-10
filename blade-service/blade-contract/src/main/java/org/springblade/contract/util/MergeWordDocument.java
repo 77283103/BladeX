@@ -9,16 +9,16 @@ import com.spire.pdf.automaticfields.PdfCompositeField;
 import com.spire.pdf.automaticfields.PdfPageCountField;
 import com.spire.pdf.automaticfields.PdfPageNumberField;
 import com.spire.pdf.graphics.*;
-import lombok.SneakyThrows;
+import lombok.AllArgsConstructor;
 import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springblade.core.tool.api.R;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
@@ -27,8 +27,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.List;
 import java.util.*;
+import java.util.List;
 
 import static org.springblade.contract.util.AsposeWordToPdfUtils.doc2Docx;
 
@@ -37,11 +37,18 @@ import static org.springblade.contract.util.AsposeWordToPdfUtils.doc2Docx;
  *
  * @author xhbbo
  */
+@AllArgsConstructor
 @Component
 public class MergeWordDocument {
-	@Autowired
+	private static MergeWordDocument mergeWordDocument;
 	private IFileClient fileClient;
 	private static String ftlPath = "D:/ftl/";
+
+	//初始化
+	@PostConstruct
+	public void init() {
+		mergeWordDocument = this;
+	}
 
 	/**
 	 * Spire
@@ -163,17 +170,17 @@ public class MergeWordDocument {
 	}
 
 	/**
+	 * 测试拼接方法
 	 * @param newFileDoc 合同范本doc
 	 * @param newFilePdf 合同范本pdf
 	 */
-	public void wordToPdf(String newFileDoc, String newFilePdf) {
+	public static void wordToPdf(String newFileDoc, String newFilePdf) {
 		//设置日期格式
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = df.format(new Date());
 		//初始化文件   1.拼接后docx文档  2.拼接后pdf文档  3.转类型doc转docx文档
-		String mergeFileDocx = ftlPath +  date + ".docx";
-		String newFileDocx = ftlPath +  date + ".docx";
-		String docxFileUrl="1369235409415720961,1369235690593472513";
+		String mergeFileDocx = ftlPath +"mergeFileDocx"+ date + ".docx";
+		String newFileDocx = ftlPath + "newFileDocx" + date + ".docx";
 		// office转wps,处理兼容问题
 		AsposeWordToPdfUtils.doc2Docx(newFileDoc, newFileDocx);
 		//拼接文件名字数组
@@ -181,8 +188,8 @@ public class MergeWordDocument {
 		filepaths.add(0, mergeFileDocx);
 		filepaths.add(1, newFilePdf);
 		filepaths.add(2, newFileDocx);
-		//获取模板中的附件
-		List<FileVO> result = fileClient.getByIds(docxFileUrl).getData();
+		String docxFileUrl="1369533814157668354,1369533735501885442,1369546602934497281,";
+		List<FileVO> result = mergeWordDocument.fileClient.getByIds(docxFileUrl).getData();
 		result.forEach(file -> {
 			int index = file.getName().lastIndexOf(".");
 			String pathname=ftlPath + file.getName().substring(0, index) + date + ".docx";
@@ -202,11 +209,11 @@ public class MergeWordDocument {
 		});
 		try {
 			//拼接文档
-			MagerUtils.mergeDoc(filepaths);
+			magerDocx(filepaths);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			for (int i = 2; i <filepaths.size()-1 ; i++) {
+			for (int i = 2; i <=filepaths.size()-1 ; i++) {
 				File file=new File(filepaths.get(i));
 				file.delete();
 			}
@@ -218,20 +225,34 @@ public class MergeWordDocument {
 	 * word拼接方法三
 	 * @param filepaths 相关文档  1.合同范本源模板   附件   1.拼接后文档  2.pdf文档
  	 */
-	@SneakyThrows
-	private static void magerDocx(List<String> filepaths){
-		XWPFTemplate template = XWPFTemplate.compile(filepaths.get(0)).render(
-			new HashMap<String, Object>(){{
-				for (int i = 3; i <filepaths.size()-1 ; i++) {
-					put("docx_word"+i, new DocxRenderData(new File(filepaths.get(i))));
-				}
-			}});
-		FileOutputStream out = new FileOutputStream(filepaths.get(1));
-		template.write(out);
-		out.flush();
-		out.close();
-		template.close();
+	public static void magerDocx(List<String> filepaths){
+		XWPFTemplate template = XWPFTemplate.compile(new File(filepaths.get(2)));
+		HashMap<String, Object> hashMap=new HashMap<>();
+		for (int i = 3; i <=filepaths.size()-1 ; i++) {
+			hashMap.put("docx_word"+i, new DocxRenderData(new File(filepaths.get(i))));
+		}
+		template.render(hashMap);
+//		XWPFTemplate template = XWPFTemplate.compile(filepaths.get(2)).render(
+//			new HashMap<String, Object>(){{
+//				for (int i = 3; i <=filepaths.size()-1 ; i++) {
+//					put("docx_word"+i, new DocxRenderData(new File(filepaths.get(i))));
+//				}
+//			}});
+		FileOutputStream out = null;
+		try {
+			out = new FileOutputStream(filepaths.get(0));
+			template.write(out);
+			out.flush();
+			out.close();
+			template.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		// 拼接后文档docx转pdf
-		docxToPDF(filepaths.get(1), filepaths.get(2));
+		try {
+			docxToPDF(filepaths.get(0), filepaths.get(1));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
