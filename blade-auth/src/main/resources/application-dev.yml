@@ -10,3 +10,5 @@ spring:
     password: ${blade.datasource.dev.password}
 api:
   ssoUrl: http://upht.pec.com.cn
+  serviceURL: http://upht.pec.com.cn/api/blade-auth/auth/login
+  tokenUrl: http://upht.pec.com.cn/api/blade-auth/oauth/token

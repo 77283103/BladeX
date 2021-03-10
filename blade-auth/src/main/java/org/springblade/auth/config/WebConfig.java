@@ -39,6 +39,21 @@ public class WebConfig {
         return registration;
     }
 
+	@Bean
+	public FilterRegistrationBean<Filter> CASEKPSSOClient() {
+		FilterRegistrationBean<Filter> registration = new FilterRegistrationBean<>();
+		//创建上面的自定义的WebFilter对象
+		registration.setFilter(new MyEKPSSOClient());
+		registration.addUrlPatterns("/*");
+		//相当于web.xml中的<param-name>、<param-value>。可以添加n个
+		registration.addInitParameter("filterConfigFile", "/sso-config.properties");
+		//该Filter的名字，自己随便定义
+		registration.setName("CASEKPSSOClient");
+		//启动时候的优先级
+		registration.setOrder(22);
+		return registration;
+	}
+
     /*@Bean
     public EKPSSOClientAuthenticationFilter EKPSSOClientAuthenticationFilter() {
         return new EKPSSOClientAuthenticationFilter();

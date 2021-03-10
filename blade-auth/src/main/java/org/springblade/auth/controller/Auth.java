@@ -7,6 +7,11 @@ import com.landray.sso.client.EKPSSOUserData;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
+import org.jasig.cas.client.validation.Assertion;
+import org.jasig.cas.client.validation.Cas10TicketValidator;
+import org.jasig.cas.client.validation.TicketValidationException;
+import org.jasig.cas.client.validation.TicketValidator;
+import org.springblade.auth.feign.SSOClient;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.feign.IUserClient;
@@ -15,6 +20,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -27,30 +33,63 @@ import java.net.URLEncoder;
 public class Auth {
 	private final  RedisTemplate redisTemplate;
 	private final  IUserClient userClient;
+	private final  SSOClient iSSOClient;
 	@Value("${api.ssoUrl}")
 	private String ssoUrl;
+	@Value("${api.serviceURL}")
+	private String serviceURL;
+	@Value("${api.tokenUrl}")
+	private String tokenUrl;
+
+
+	@GetMapping("/loginTest/{ticket}")
+	@ApiOperation(value = "单点", notes = "传入ticket")
+	public void eipLogin(@PathVariable("ticket") String ticket, HttpServletRequest request) {
+		String urlNginx = request.getHeaders("x-forwarded-for").toString();
+		StringBuffer url=request.getRequestURL();
+		String serviceURL = "http://upht.pec.com.cn:8100/auth/login";
+		String casServerUrlPrefix = "http://sso.pec.com.cn/sso";
+		String username = null;
+		TicketValidator validator = null;
+		validator = new Cas10TicketValidator(casServerUrlPrefix);
+		Assertion assertion = null;
+		try {
+			assertion = validator.validate(ticket, serviceURL);
+		} catch (TicketValidationException e) {
+			e.printStackTrace();
+		}
+		username = assertion.getPrincipal().getName();
+		System.out.println(username);
+
+	}
 
 	@GetMapping("/login")
 	@ApiOperation(value = "单点", notes = "传入ticket")
 	public R eipLoginCokie(HttpServletResponse response,
+						   @RequestParam(value ="ticket",required=false) String ticket,
 						   @RequestParam(value ="id",required=false) String id,
 						   @RequestParam(value ="name",required=false) String name,
 						   @RequestParam(value ="accType",required=false) String accType,
 						   @RequestParam(value ="sourceOfContract",required=false) String sourceOfContract,
 						   @RequestParam(value ="code",required=false) String code) throws IOException {
-		EKPSSOUserData userData = EKPSSOUserData.getInstance();
-		String username = userData.getCurrentUsername();
+		String username="";
 		//id为空为单点登录
 		if (StringUtils.isBlank(id)) {
-			if (StringUtils.isBlank(username)) {
+			if (StringUtils.isBlank(ticket)) {
 				//跳转到SSO登录
 				response.sendRedirect("http://sso.pec.com.cn/sso/login?service="+ssoUrl+"/api/blade-auth/auth/login");
 				return R.success("false");
 			} else {
+				String validator = iSSOClient.validate(ticket,serviceURL);
+				System.out.println(validator);
+				if(validator.contains("yes")){
+					username =validator.replaceAll("yes","").trim();
+					System.out.println(username);
+				}
 				setToken(username,response);
 				response.sendRedirect(ssoUrl+"/#/singleLogin");
 			}
-		}else {//id不为空为单点登录后跳转起草页面
+		}else {//id不为空为跳转起草页面
 			//查看缓存里是否有依据信息
 			String j = (String) redisTemplate.opsForValue().get(id);
 			//没有的情况下去缓存依据信息
@@ -67,7 +106,7 @@ public class Auth {
 				redisTemplate.opsForValue().set(id, json);
 				response.sendRedirect("http://sso.pec.com.cn/sso/login?service="+ssoUrl+"/api/blade-auth/auth/login?id=" + id);
 			} else {
-				if (StringUtils.isBlank(username)) {
+				if (StringUtils.isBlank(ticket)) {
 					redisTemplate.delete(id);
 					com.alibaba.fastjson.JSONObject object = new com.alibaba.fastjson.JSONObject();
 					object.put("type", "1");
@@ -83,6 +122,11 @@ public class Auth {
 					response.sendRedirect("http://sso.pec.com.cn/sso/login?service="+ssoUrl+"/api/blade-auth/auth/login?id=" + id);
 				}else{
 					//有缓存的话说明已经是通过单点之后进来的
+					String validator = iSSOClient.validate(ticket,serviceURL+"?id=" + id);
+					System.out.println("validator是："+validator);
+					if(validator.contains("yes")){
+						username =validator.replaceAll("yes","").trim();
+					}
 					setToken(username,response);
 					com.alibaba.fastjson.JSONObject jsonObject1 =com.alibaba.fastjson.JSONObject.parseObject(j);
 					String source= (String) jsonObject1.get("sourceOfContract");
@@ -120,7 +164,7 @@ public class Auth {
 		param.set("grant_type","captcha");
 		param.set("scope","all");
 		param.set("type","account");
-		JSONObject docInfoJson = JSONUtil.parseObj(HttpUtil.createPost(this.ssoUrl+"/api/blade-auth/oauth/token")
+		JSONObject docInfoJson = JSONUtil.parseObj(HttpUtil.createPost(this.tokenUrl)
 			.header("Tenant-Id","000000")
 			.header("Authorization","Basic c2FiZXI6c2FiZXJfc2VjcmV0")
 			.form(param)

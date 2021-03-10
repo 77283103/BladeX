@@ -10,3 +10,5 @@ spring:
     password: ${blade.datasource.prod.password}
 api:
   ssoUrl: http://cms.pec.com.cn
+  serviceURL: http://cms.pec.com.cn/api/blade-auth/auth/login
+  tokenUrl: https://cms.pec.com.cn/api/blade-auth/oauth/token
