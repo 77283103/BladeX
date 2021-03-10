@@ -32,8 +32,8 @@ public class TemplateExportUntil {
 		TemplateExportUntil.ftlPath = ftlPath;
 	}*/
 	//模板路径
-	private static String ftlPath="/ftl/";
-	//private static  String ftlPath="D:/ftl/";
+	//private static String ftlPath="/ftl/";
+	private static  String ftlPath="D:/ftl/";
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
 	private static ReplaceImages replaceImages;

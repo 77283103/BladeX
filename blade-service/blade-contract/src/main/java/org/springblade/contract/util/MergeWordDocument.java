@@ -209,7 +209,8 @@ public class MergeWordDocument {
 		});
 		try {
 			//拼接文档
-			magerDocx(filepaths);
+			MagerUtils.mergeDoc(filepaths);
+			//magerDocx(filepaths);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
