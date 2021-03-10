@@ -43,7 +43,7 @@ public interface LauncherConstant {
 	String NACOS_DEV_ADDR = "localhost:8848";
 
 	/**
-	 * nacos prod 地址 用户名 密码 毛命名空间ID
+	 * nacos prod 地址 用户名 密码 命名空间ID
 	 */
 	String NACOS_PROD_ADDR = "nacosout.pec.com.cn:8848";
 	/**
@@ -74,7 +74,7 @@ public interface LauncherConstant {
 	/**
 	 * seata prod 地址
 	 */
-	String SEATA_PROD_ADDR = "172.30.0.68:8091";
+	String SEATA_PROD_ADDR = "nacosout.pec.com.cn:8091";
 
 	/**
 	 * seata test 地址

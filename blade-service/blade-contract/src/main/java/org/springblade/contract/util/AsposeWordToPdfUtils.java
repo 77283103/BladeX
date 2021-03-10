@@ -77,6 +77,30 @@ public class AsposeWordToPdfUtils {
     }
 
 	/**
+	 * doc 转 docx
+	 *@param sourcerFile 源文件
+	 *@param targetFile 目标文件
+	 */
+	public static void doc2Docx(String sourcerFile,String targetFile) {
+		// 验证License 若不验证则转化出的pdf文档会有水印产生
+		if (!getLicense()) {
+			return;
+		}
+		try {
+			//新建一个空白pdf文档
+			//File file = new File(targetFile);
+			File file=ResourceUtils.getFile(targetFile);
+			FileOutputStream os = new FileOutputStream(file);
+			//sourcerFile是将要被转化的word文档
+			Document docx = new Document(sourcerFile);
+			//全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
+			docx.save(os, SaveFormat.DOCX);
+			os.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	/**
 	 * pdf转word操作
 	 *@param sourcerFile 源文件
 	 *@param targetFile 目标文件

@@ -34,7 +34,5 @@ public class GateWayApplication {
 
 	public static void main(String[] args) {
 		BladeApplication.run(AppConstant.APPLICATION_GATEWAY_NAME, GateWayApplication.class, args);
-		
 	}
-
 }

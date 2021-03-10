@@ -186,14 +186,14 @@
     </sql>
     <select id="selectById" resultMap="formInfoResultMap">
         SELECT  <include refid="baseColumnList"/>
-        FROM `bladex-ty`.contract_form_info
+        FROM contract_form_info
         WHERE is_deleted=0
         AND id=#{id}
     </select>
      <!--  变更合同详情  -->
     <select id="selectByChangeId" resultMap="formInfoResultMap">
         SELECT  <include refid="baseColumnList"/>
-        FROM `bladex-ty`.contract_form_info
+        FROM contract_form_info
         WHERE is_deleted=0
         AND change_contract_id=#{id}
     </select>
@@ -254,7 +254,7 @@
         count(col_pay_type) AS count,
         dict_value
         FROM `contract_form_info` info,
-        `bladex-ty`.blade_dict_biz biz
+        blade_dict_biz biz
         WHERE info.is_deleted = 0
         AND info.col_pay_type = biz.id
         GROUP BY col_pay_type
@@ -358,7 +358,7 @@
     <!--计算合同金额-->
     <select id="selectAmountSum" resultType="java.lang.Double">
         select sum(contract_amount) AS contract_amount
-        FROM `bladex-ty`.contract_form_info
+        FROM contract_form_info
         WHERE is_deleted=0
         AND contract_big_category is not null
     </select>
