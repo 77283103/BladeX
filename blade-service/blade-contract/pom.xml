@@ -217,125 +217,98 @@
             <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/fr.opensagres.xdocreport/fr.opensagres.poi.xwpf.converter.pdf -->
+        <!-- 开始手动导入jar包 -->
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi</artifactId>
-            <version>4.1.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/poi-4.1.2.jar</systemPath>
+            <groupId>commons</groupId>
+            <artifactId>commons</artifactId>
+            <version>1.20</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml</artifactId>
-            <version>4.1.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/poi-ooxml-4.1.2.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-ooxml-schemas</artifactId>
-            <version>4.1.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/poi-ooxml-schemas-4.1.2.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>poi-scratchpad</artifactId>
-            <version>4.1.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/poi-scratchpad-4.1.2.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlbeans</groupId>
-            <artifactId>xmlbeans</artifactId>
-            <version>2.6.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/xmlbeans-2.6.0.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>openxml4j</artifactId>
-            <version>1.0-beta</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/openxml4j-1.0-beta.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>oe-iceblue</groupId>
-            <artifactId>spire.doc</artifactId>
-            <version>3.9.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/Spire.Doc-FE_3.9.0/lib/Spire.Doc.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.poi</groupId>
-            <artifactId>ooxml-schemas</artifactId>
-            <version>1.4</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/ooxml-schemas-1.4.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>com.lowagie</groupId>
-            <artifactId>itext</artifactId>
-            <version>2.1.7</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/itext-2.1.7.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>fr.opensagres.xdocreport</groupId>
-            <artifactId>org.apache.poi.xwpf.converter.core</artifactId>
-            <version>1.0.6</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/org.apache.poi.xwpf.converter.core-1.0.6.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>fr.opensagres.xdocreport</groupId>
-            <artifactId>org.apache.poi.xwpf.converter.core-gae</artifactId>
-            <version>1.0.6</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/org.apache.poi.xwpf.converter.core-gae-1.0.6.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>fr.opensagres.xdocreport</groupId>
-            <artifactId>org.apache.poi.xwpf.converter.pdf</artifactId>
-            <version>1.0.6</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/org.apache.poi.xwpf.converter.pdf-1.0.6.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>fr.opensagres.xdocreport</groupId>
-            <artifactId>xdocreport</artifactId>
-            <version>1.0.6</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/xdocreport-1.0.6.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.xmlgraphics</groupId>
-            <artifactId>xmlgraphics-commons</artifactId>
-            <version>2.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/xmlgraphics-commons-2.1.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>org.dom4j</groupId>
+            <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <version>2.1.1</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/dom4j-2.1.1.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>com.deepoove</groupId>
+            <groupId>itext</groupId>
+            <artifactId>itext</artifactId>
+            <version>2.1.7</version>
+        </dependency>
+        <dependency>
+            <groupId>ooxml</groupId>
+            <artifactId>ooxml</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>ooxml</groupId>
+            <artifactId>ooxml</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>openxml4j</groupId>
+            <artifactId>openxml4j</artifactId>
+            <version>1.0-beta</version>
+        </dependency>
+        <dependency>
+            <groupId>converter.core</groupId>
+            <artifactId>converter.core</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>core-gae</groupId>
+            <artifactId>core-gae</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>converter.pdf</groupId>
+            <artifactId>converter.pdf</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>poi-ooxml</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>poi-ooxml-schemas</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>poi-scratchpad</groupId>
+            <artifactId>poi-scratchpad</artifactId>
+            <version>4.1.2</version>
+        </dependency>
+        <dependency>
+            <groupId>xmlgraphics-commons</groupId>
+            <artifactId>xmlgraphics-commons</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>xmlbeans</groupId>
+            <artifactId>xmlbeans</artifactId>
+            <version>2.6.0</version>
+        </dependency>
+        <dependency>
+            <groupId>xdocreport</groupId>
+            <artifactId>xdocreport</artifactId>
+            <version>1.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>poi-tl</groupId>
             <artifactId>poi-tl</artifactId>
             <version>1.8.2</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/poi-tl-1.8.2.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.20</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/lib/commons-compress-1.20.jar</systemPath>
+            <groupId>Spire.Doc</groupId>
+            <artifactId>Spire.Doc</artifactId>
+            <version>1.0</version>
         </dependency>
+        <!-- 结束手动导入jar包 -->
     </dependencies>
     <build>
         <plugins>

@@ -174,7 +174,7 @@ public class AsposeWordToPdfUtils {
 				//添加水印
 				client = HttpClients.createDefault();
 				method = new HttpPost("http://sa.pec.com.cn:9080/common/file/addWatermark");
-				RequestConfig rc = RequestConfig.custom().setConnectTimeout(60000).setConnectionRequestTimeout(60000).setSocketTimeout(60000).build();
+				RequestConfig rc = RequestConfig.custom().setConnectTimeout(350000).setConnectionRequestTimeout(350000).setSocketTimeout(200000).build();
 				method.setConfig(rc);
 				MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 				builder.setCharset(Charset.forName(Consts.UTF_8.name()));

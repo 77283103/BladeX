@@ -32,8 +32,8 @@ public class TemplateExportUntil {
 		TemplateExportUntil.ftlPath = ftlPath;
 	}*/
 	//模板路径
-	//private static String ftlPath="/ftl/";
-	private static  String ftlPath="D:/ftl/";
+	private static String ftlPath="/ftl/";
+	//private static  String ftlPath="D:/ftl/";
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
 	private static ReplaceImages replaceImages;
@@ -110,16 +110,16 @@ public class TemplateExportUntil {
 			String outContractFile = "D:/VMware/拼接后输出文件.docx";
 			String newFilePDF = "D:/VMware/拼接后文档docx转.pdf";
 			// office转wps,处理兼容问题
-			AsposeWordToPdfUtils.doc2Docx(newFileDoc, contractFile);
+			//AsposeWordToPdfUtils.doc2Docx(newFileDoc, contractFile);
 			// wood拼接后文档路径
 			List<String> filepathsTest = new ArrayList<>();
-			filepathsTest.add(0, outContractFile);
+			/*filepathsTest.add(0, outContractFile);
 			filepathsTest.add(1, newFilePDF);
 			filepathsTest.add(2, contractFile);
 			filepathsTest.add(3, fileName1);
-			filepathsTest.add(4, fileName2);
+			filepathsTest.add(4, fileName2);*/
 
-			MergeWordDocument.wordToPdf(newFileDoc,newFilePDF);
+			//MergeWordDocument.wordToPdf(newFileDoc,newFilePDF);
 			//判断是否存在需要拼接的附件
 			if (!Func.isNull(dataModel.get("annex")) && Func.isNoneBlank(dataModel.get("annex").toString())) {
 				//初始化文件   1.拼接后docx文档  2.转类型doc转docx文档
