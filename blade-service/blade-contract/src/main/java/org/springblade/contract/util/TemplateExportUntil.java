@@ -32,8 +32,8 @@ public class TemplateExportUntil {
 		TemplateExportUntil.ftlPath = ftlPath;
 	}*/
 	//模板路径
-	private static String ftlPath="/ftl/";
-	//private static  String ftlPath="D:/ftl/";
+	//private static String ftlPath="/ftl/";
+	private static  String ftlPath="D:/ftl/";
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
 	private static ReplaceImages replaceImages;
@@ -102,24 +102,8 @@ public class TemplateExportUntil {
 			oWriter.close();
 			fos.close();
 			out.close();
-
-			//测试代码 需要拼接的子文档
-			String fileName1 = "D:/VMware/附件一.docx";
-			String fileName2 = "D:/VMware/附件二.docx";
-			String contractFile = "D:/VMware/转类型文件.docx";
-			String outContractFile = "D:/VMware/拼接后输出文件.docx";
-			String newFilePDF = "D:/VMware/拼接后文档docx转.pdf";
-			// office转wps,处理兼容问题
-			//AsposeWordToPdfUtils.doc2Docx(newFileDoc, contractFile);
-			// wood拼接后文档路径
-			List<String> filepathsTest = new ArrayList<>();
-			/*filepathsTest.add(0, outContractFile);
-			filepathsTest.add(1, newFilePDF);
-			filepathsTest.add(2, contractFile);
-			filepathsTest.add(3, fileName1);
-			filepathsTest.add(4, fileName2);*/
-
-			//MergeWordDocument.wordToPdf(newFileDoc,newFilePDF);
+			//测试拼接文档方法
+			MergeWordDocument.wordToPdf(newFileDoc,newFilePdf);
 			//判断是否存在需要拼接的附件
 			if (!Func.isNull(dataModel.get("annex")) && Func.isNoneBlank(dataModel.get("annex").toString())) {
 				//初始化文件   1.拼接后docx文档  2.转类型doc转docx文档
@@ -165,7 +149,7 @@ public class TemplateExportUntil {
 				}
 			} else {
 				//doc转为pdf
-				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
+				//AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 			}
 			//判断是否有需要添加或覆盖的图片
 			if (!Func.isNull(dataModel.get("image")) && Func.isNoneBlank(dataModel.get("image").toString())) {

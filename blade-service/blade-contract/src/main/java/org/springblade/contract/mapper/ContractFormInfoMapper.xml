@@ -274,7 +274,7 @@
         SELECT
         <include refid="baseColumnList"/>
         FROM contract_form_info
-                WHERE is_deleted = 0
+        WHERE is_deleted = 0
         <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
             <foreach collection="contractFormInfo.code" item="contract_status" open="and contract_status in ("
                      separator="," close=")">
@@ -348,6 +348,7 @@
             WHERE seal.is_deleted=0
             AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') BETWEEN #{contractFormInfo.yearStart} and #{contractFormInfo.yearEnd})
         </if>
+        ORDER BY create_time DESC
     </select>
     <!--修改合同状态-->
     <update id="updateExportStatus">
@@ -549,7 +550,7 @@
     <!-- 分页 月度合同集合信息统计-->
     <select id="monthByIdInfo" resultMap="formInfoResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+            <include refid="baseColumnList"> </include>
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0
           AND DATE_FORMAT(info.create_time,'%Y')=#{yearStart}

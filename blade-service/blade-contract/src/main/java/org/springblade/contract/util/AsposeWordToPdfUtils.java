@@ -94,6 +94,7 @@ public class AsposeWordToPdfUtils {
 			//sourcerFile是将要被转化的word文档
 			Document docx = new Document(sourcerFile);
 			//全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
+			docx.removeMacros();
 			docx.save(os, SaveFormat.DOCX);
 			os.close();
 		} catch (Exception e) {

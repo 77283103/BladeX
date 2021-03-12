@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,6 +74,7 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void importCounterpart(List<ContractCounterpartExcel> data, Boolean isCovered) {
+    	List<ContractCounterpartEntity> list=new ArrayList<>();
         //将时间转化保存到数据库
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         //遍历sheet页每条数据
@@ -165,7 +167,32 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
                 contractCounterpartEntity.setExistenceStatus(
                         dictBizClient.getKey("existence_status",counterpartExcel.getExistenceStatus()).getData());
             }
-            if (contractCounterpartMapper.selectByName(contractCounterpartEntity.getName()).size()<=0){
+			//单位类型
+			if (!"-".equals(counterpartExcel.getClassification()) && !"".equals(counterpartExcel.getClassification())) {
+				contractCounterpartEntity.setClassification(counterpartExcel.getClassification());
+			}
+			//黑名单标识
+			if (!"-".equals(counterpartExcel.getBlacklistLogo()) && !"".equals(counterpartExcel.getBlacklistLogo())) {
+				contractCounterpartEntity.setBlacklistLogo(counterpartExcel.getBlacklistLogo());
+			}
+			//是否注销
+			if (!"-".equals(counterpartExcel.getCancellation()) && !"".equals(counterpartExcel.getCancellation())) {
+				contractCounterpartEntity.setCancellation(counterpartExcel.getCancellation());
+			}
+			//备注
+			if (!"-".equals(counterpartExcel.getRemarks()) && !"".equals(counterpartExcel.getRemarks())) {
+				contractCounterpartEntity.setRemarks(counterpartExcel.getRemarks());
+			}
+			//更名每月检视
+			if (!"-".equals(counterpartExcel.getRenameMonthlyReview()) && !"".equals(counterpartExcel.getRenameMonthlyReview())) {
+				contractCounterpartEntity.setRenameMonthlyReview(counterpartExcel.getRenameMonthlyReview());
+			}
+			//半角名称
+			if (!"-".equals(counterpartExcel.getHalfWidthName()) && !"".equals(counterpartExcel.getHalfWidthName())) {
+				contractCounterpartEntity.setHalfWidthName(counterpartExcel.getHalfWidthName());
+			}
+
+            if (contractCounterpartMapper.selectByName(contractCounterpartEntity.getUnifiedSocialCreditCode()).size()<=0){
                 this.save(contractCounterpartEntity);
             }else {
                 contractCounterpartMapper.updateByName(contractCounterpartEntity);

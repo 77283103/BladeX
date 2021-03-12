@@ -22,13 +22,13 @@ import java.io.Serializable;
 public class ContractCounterpartExcel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
+	@ExcelProperty(value = "单位类型") private String classification;
 	@ExcelProperty(value = "相对方类型") private String counterpartCategory;
 	@ExcelProperty(value = "相对方名称") private String name;
 	@ExcelProperty(value = "相对方性质") private String natureCategory;
 	@ExcelProperty(value = "注册地址") private String registeredAddress;
 	@ExcelProperty(value = "法定代表人") private String legalRepresentative;
-	@ExcelProperty(value = "身份证号码") private String idNumber;
+	@ExcelProperty(value = "姓名+身份证号码") private String idNumber;
 	@ExcelProperty(value = "护照号码") private String passportId;
 	@ExcelProperty(value = "成立日期") private String establishDate;
 	@ExcelProperty(value = "经营期限") private String operatingPeriod;
@@ -47,7 +47,11 @@ public class ContractCounterpartExcel implements Serializable {
 	@ExcelProperty(value = "付款方式") private String paymentMethod;
 	@ExcelProperty(value = "企业相关证件附件") private String attachedFiles;
 	@ExcelProperty(value = "存续状态") private String existenceStatus;
-
+	@ExcelProperty(value = "黑名单标识") private String blacklistLogo;
+	@ExcelProperty(value = "是否注销") private String cancellation;
+	@ExcelProperty(value = "备注") private String remarks;
+	@ExcelProperty(value = "更名每月检视") private String renameMonthlyReview;
+	@ExcelProperty(value = "半角名称") private String halfWidthName;
 
 
 

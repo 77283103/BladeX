@@ -2,6 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.vo.ContractCounterpartRequestVO;
 
@@ -49,4 +50,12 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	 * @param entity
 	 */
 	void updateByName(ContractCounterpartEntity entity);
+
+	/**
+	 *
+	 *批量新增
+	 * @param postList
+	 * @return
+	 */
+	boolean saveBatchPost(@Param("ContractCounterpartList") List<ContractCounterpartEntity> postList);
 }

@@ -39,11 +39,17 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
+        <result column="classification" property="classification"/>
+        <result column="blacklist_logo" property="blacklistLogo"/>
+        <result column="cancellation" property="cancellation"/>
+        <result column="remarks" property="remarks"/>
+        <result column="rename_review" property="renameMonthlyReview"/>
+        <result column="half_width_name" property="halfWidthName"/>
 
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-    id,
+        id,
         name,
         id_number,
         unified_social_credit_code,
@@ -77,8 +83,14 @@
         create_time,
         update_user,
         update_time,
-        create_dept
-</sql>
+        create_dept,
+        classification,
+        blacklist_logo,
+        cancellation,
+        remarks,
+        rename_review,
+        half_width_name
+    </sql>
     <sql id="baseColumnListJoin">
         name={entity.name},
         id_number={entity.id_number},
@@ -106,12 +118,18 @@
         deposit_bank={entity.deposit_bank},
         bank_account={entity.bank_account},
         attached_files={entity.attached_files},
-        currency_category={entity.currency_category}
+        currency_category={entity.currency_category},
+        classification={entity.classification},
+        blacklist_logo={entity.blacklist_logo},
+        cancellation={entity.cancellation},
+        remarks={entity.remarks},
+        rename_review{entity.rename_review},
+        half_width_name={entity.half_width_name}
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="counterpartResultMap">
         SELECT
-            <include refid="baseColumnList"> </include>
+        <include refid="baseColumnList"> </include>
         FROM contract_counterpart
         WHERE is_deleted = 0
         <if test="counterpart.name != null and counterpart.name != ''">
@@ -140,7 +158,7 @@
         FROM contract_counterpart
         WHERE is_deleted = 0
         AND
-        id IN (SELECT c.counterpart_id FROM  contract_counterpart_setting c WHERE c.contract_id = #{id})
+        id IN (SELECT c.counterpart_id FROM contract_counterpart_setting c WHERE c.contract_id = #{id})
     </select>
     <select id="selectById" resultMap="counterpartResultMap">
         SELECT
@@ -151,20 +169,31 @@
         id = #{id}
     </select>
 
-    <!--根据相对方名称查询相对方集合-->
+    <!--根相对方统一信用代码吗查询黁相对方是否存在-->
     <select id="selectByName" resultMap="counterpartResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
         FROM contract_counterpart
         WHERE is_deleted = 0
         AND
-        name = #{name}
+        unified_social_credit_code = #{unified_social_credit_code}
     </select>
 
-    <!--根据相对方名称查询相对方集合-->
-    <update id="updateByName" >
+    <!--根相对方统一信用代码修改i相对方信息-->
+    <update id="updateByName">
         UPDATE contract_counterpart
-        SET <include refid="baseColumnListJoin"> </include>
-        WHERE name = #{entity.name}
+        SET
+        <include refid="baseColumnListJoin"> </include>
+        WHERE unified_social_credit_code = #{entity.unified_social_credit_code}
     </update>
+    <!--批量插入-->
+    <insert id="saveBatchPost">
+        INSERT INTO blade_post (id, post_name, association_id, update_time , status, is_deleted)
+        VALUES
+        <foreach collection="ContractCounterpartList" separator="," item="item">
+            (#{item.id}, #{item.postName}, #{item.associationId}, #{item.updateTime}, 1, 0 )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        post_name = VALUES(post_name),is_deleted = VALUES(is_deleted),update_time = VALUES(update_time),status = VALUES(status)
+    </insert>
 </mapper>

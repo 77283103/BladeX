@@ -239,11 +239,6 @@
             <version>1.4</version>
         </dependency>
         <dependency>
-            <groupId>ooxml</groupId>
-            <artifactId>ooxml</artifactId>
-            <version>1.4</version>
-        </dependency>
-        <dependency>
             <groupId>openxml4j</groupId>
             <artifactId>openxml4j</artifactId>
             <version>1.0-beta</version>
@@ -266,22 +261,22 @@
         <dependency>
             <groupId>poi</groupId>
             <artifactId>poi</artifactId>
-            <version>4.1.2</version>
+            <version>3.9</version>
         </dependency>
         <dependency>
             <groupId>poi-ooxml</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>4.1.2</version>
+            <version>3.9</version>
         </dependency>
         <dependency>
             <groupId>poi-ooxml-schemas</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
-            <version>4.1.2</version>
+            <version>3.9</version>
         </dependency>
         <dependency>
             <groupId>poi-scratchpad</groupId>
             <artifactId>poi-scratchpad</artifactId>
-            <version>4.1.2</version>
+            <version>3.9</version>
         </dependency>
         <dependency>
             <groupId>xmlgraphics-commons</groupId>
@@ -291,7 +286,7 @@
         <dependency>
             <groupId>xmlbeans</groupId>
             <artifactId>xmlbeans</artifactId>
-            <version>2.6.0</version>
+            <version>3.1.0</version>
         </dependency>
         <dependency>
             <groupId>xdocreport</groupId>
@@ -306,7 +301,12 @@
         <dependency>
             <groupId>Spire.Doc</groupId>
             <artifactId>Spire.Doc</artifactId>
-            <version>1.0</version>
+            <version>3.9.0</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-collections4</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
         </dependency>
         <!-- 结束手动导入jar包 -->
     </dependencies>
