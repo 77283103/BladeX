@@ -38,6 +38,7 @@ public class TemplateExportUntil {
 	private static TemplateExportUntil templateExportUntil;
 	private static ReplaceImages replaceImages;
 	private static MagerUtils magerUtils;
+
 	@Autowired
 	private IFileClient fileClient;
 	//初始化
@@ -48,6 +49,8 @@ public class TemplateExportUntil {
 
 	public FileVO templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 		String pdfId = "";
+		//从服务器上获取ftl文件，保存到宿主机指定目录
+		MergeWordDocument.getTemplateFTLFile(ftlPath,templateVO,contractFormInfoEntity.getContractListId());
 		//第一步：创建一个Configuration对象，直接new一个对象。构造方法的参数就是freemarker对于的版本号。
 		Configuration configuration = new Configuration();
 		// 第二步：设置模板文件所在的路径。
@@ -103,7 +106,7 @@ public class TemplateExportUntil {
 			fos.close();
 			out.close();
 			//测试拼接文档方法
-			MergeWordDocument.wordToPdf(newFileDoc,newFilePdf);
+			//MergeWordDocument.wordToPdf(newFileDoc,newFilePdf);
 			//判断是否存在需要拼接的附件
 			if (!Func.isNull(dataModel.get("annex")) && Func.isNoneBlank(dataModel.get("annex").toString())) {
 				//初始化文件   1.拼接后docx文档  2.转类型doc转docx文档
@@ -149,7 +152,7 @@ public class TemplateExportUntil {
 				}
 			} else {
 				//doc转为pdf
-				//AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
+				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 			}
 			//判断是否有需要添加或覆盖的图片
 			if (!Func.isNull(dataModel.get("image")) && Func.isNoneBlank(dataModel.get("image").toString())) {

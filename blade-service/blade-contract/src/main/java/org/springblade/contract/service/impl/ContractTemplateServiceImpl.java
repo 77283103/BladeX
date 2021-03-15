@@ -148,6 +148,16 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 				templateResponseVO.setTemplateFileVOList(result.getData());
 			}
 		}
+		//判断FTL文件ID是否为空
+		if (Func.isNoneBlank(templateResponseVO.getTemplateFileId())){
+			//根据文件id查询关联的文件信息
+			R<List<FileVO>> result = fileClient.getByIds(templateResponseVO.getTemplateFileId());
+			//潘顿查询是否成功
+			if (result.isSuccess()){
+				//将文件信息set到vo 的 list
+				templateResponseVO.setTemplateFileFTLVOList(result.getData());
+			}
+		}
 		/* 查询创建者 */
 		if (Func.isNoneBlank(templateResponseVO.getCreateUser().toString())) {
 			User user = userClient.userInfoById(templateResponseVO.getCreateUser()).getData();
