@@ -13,9 +13,12 @@ import lombok.AllArgsConstructor;
 import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.springblade.contract.service.IContractTemplateService;
+import org.springblade.contract.service.ISclContractTemplateService;
 import org.springblade.core.tool.api.R;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -27,8 +30,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 
 import static org.springblade.contract.util.AsposeWordToPdfUtils.doc2Docx;
 
@@ -41,6 +44,7 @@ import static org.springblade.contract.util.AsposeWordToPdfUtils.doc2Docx;
 @Component
 public class MergeWordDocument {
 	private static MergeWordDocument mergeWordDocument;
+	private IContractTemplateService templateService;
 	private IFileClient fileClient;
 	private static String ftlPath = "D:/ftl/";
 
@@ -82,7 +86,7 @@ public class MergeWordDocument {
 	private final static String word2007U = ".docx";
 
 	/**
-	 * docx转doc
+	 * docx转pdf
 	 * @param inPath
 	 * @param outPath
 	 */
@@ -188,7 +192,7 @@ public class MergeWordDocument {
 		filepaths.add(0, mergeFileDocx);
 		filepaths.add(1, newFilePdf);
 		filepaths.add(2, newFileDocx);
-		String docxFileUrl="1369533814157668354,1369533735501885442,1369546602934497281,";
+		String docxFileUrl="1370231882483777538,1370231706432061441,1370231775097012225,";
 		List<FileVO> result = mergeWordDocument.fileClient.getByIds(docxFileUrl).getData();
 		result.forEach(file -> {
 			int index = file.getName().lastIndexOf(".");
@@ -227,7 +231,7 @@ public class MergeWordDocument {
 	 * @param filepaths 相关文档  1.合同范本源模板   附件   1.拼接后文档  2.pdf文档
  	 */
 	public static void magerDocx(List<String> filepaths){
-		XWPFTemplate template = XWPFTemplate.compile(new File(filepaths.get(2)));
+		XWPFTemplate template = XWPFTemplate.compile(filepaths.get(2));
 		HashMap<String, Object> hashMap=new HashMap<>();
 		for (int i = 3; i <=filepaths.size()-1 ; i++) {
 			hashMap.put("docx_word"+i, new DocxRenderData(new File(filepaths.get(i))));
@@ -255,5 +259,32 @@ public class MergeWordDocument {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * 获取模板FTL文件
+	 * @param ftlPath 文件路径
+	 * @param templateVO 拼接文件名称
+	 * @param templateId 关联的范本ID
+	 */
+	public static void getTemplateFTLFile(String ftlPath,TemplateRequestVO templateVO,Long templateId ){
+		//获取模板中的附件
+		List<FileVO> result = mergeWordDocument.fileClient.getByIds(mergeWordDocument.templateService.getById(templateId).getTemplateFileId()).getData();
+		result.forEach(file -> {
+			//新建空文件
+			String pathname=ftlPath+templateVO.getTemplateCode()+".ftl";
+			//创建空ftl文件
+			File fileFTL = new File(pathname);
+			//建立输出字节流
+			FileOutputStream fosx = null;
+			try {
+				fosx = new FileOutputStream(fileFTL);
+				//将根据URL获取到的数据流写到空docx文件
+				fosx.write(AsposeWordToPdfUtils.getUrlFileData(file.getLink()));
+				fosx.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		});
 	}
 }

@@ -1,12 +1,10 @@
 package org.springblade.contract.wrapper;
 
-import org.springblade.core.mp.support.IEntityWrapper;
-import org.springblade.contract.vo.ContractBorrowHandleResponseVO;
-import org.springblade.contract.vo.ContractBorrowHandleRequestVO;
 import org.springblade.contract.entity.ContractBorrowHandleEntity;
+import org.springblade.contract.vo.ContractBorrowHandleRequestVO;
+import org.springblade.contract.vo.ContractBorrowHandleResponseVO;
+import org.springblade.core.mp.support.IEntityWrapper;
 import org.springframework.stereotype.Component;
-import org.springblade.system.cache.SysCache;
-import org.springblade.system.user.cache.UserCache;
 
 
 /**
@@ -39,8 +37,8 @@ public class ContractBorrowHandleWrapper implements IEntityWrapper<ContractBorro
 
     @Override
     public void selectUserName(ContractBorrowHandleResponseVO responseVO) {
-        responseVO.setCreateUserName(UserCache.getUser(responseVO.getCreateUser()).getRealName());
-        responseVO.setUpdateUserName(UserCache.getUser(responseVO.getCreateUser()).getRealName());
-        responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));
+        //responseVO.setCreateUserName(UserCache.getUser(responseVO.getCreateUser()).getRealName());
+        //responseVO.setUpdateUserName(UserCache.getUser(responseVO.getCreateUser()).getRealName());
+        //responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));
     }
 }

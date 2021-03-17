@@ -39,8 +39,8 @@ public class ContractCaseClosedWrapper implements IEntityWrapper<ContractCaseClo
 
     @Override
     public void selectUserName(ContractCaseClosedResponseVO responseVO) {
-        responseVO.setCreateUserName(UserCache.getUser(responseVO.getCreateUser()).getRealName());
+        /*responseVO.setCreateUserName(UserCache.getUser(responseVO.getCreateUser()).getRealName());
         responseVO.setUpdateUserName(UserCache.getUser(responseVO.getCreateUser()).getRealName());
-        responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));
+        responseVO.setCreateDeptName(SysCache.getDeptName(responseVO.getCreateDept()));*/
     }
 }

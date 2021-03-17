@@ -129,6 +129,11 @@ public class ContractTemplateEntity extends BaseEntity {
 	@ApiModelProperty(value = "模板编号")
 	private String templateCode;
 	/**
+	 * 模板文件id
+	 */
+	@ApiModelProperty(value = "模板文件id")
+	private  String templateFileId;
+	/**
 	 * json页面
 	 */
 	@ApiModelProperty(value = "json页面")

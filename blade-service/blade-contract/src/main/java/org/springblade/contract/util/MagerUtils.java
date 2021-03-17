@@ -4,6 +4,7 @@ package org.springblade.contract.util;
 import com.spire.doc.Document;
 import com.spire.doc.FileFormat;
 import org.apache.poi.openxml4j.opc.OPCPackage;
+import org.apache.poi.xwpf.usermodel.BodyElementType;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFPictureData;
 import org.apache.xmlbeans.XmlOptions;
@@ -52,8 +53,17 @@ public class MagerUtils {
             CTBody srcBody = srcDocument.getDocument().getBody();
             ctBodyList.add(srcBody);
             srcDocuments.add(srcDocument);
+            //设置拼接文章新启一页添加
 			srcDocuments.get(i-2).createParagraph().setPageBreak(true);
         }
+		//删除文章最后空白页
+		if (srcDocuments.size()>0) {
+			int summary = srcDocuments.get(srcDocuments.size() - 1).getBodyElements().size();
+			//注意下面有可能会误删段落
+			if (srcDocuments.get(srcDocuments.size() - 1).getBodyElements().get(summary - 1).getElementType().equals(BodyElementType.PARAGRAPH)) {//首先必须得是个段落
+				srcDocuments.get(srcDocuments.size() - 1).removeBodyElement(summary - 1);
+			}
+		}
         if (!ObjectUtils.isEmpty(ctBodyList)) {
             appendBody(ctBodyList);
             srcDocuments.get(0).write(dest);

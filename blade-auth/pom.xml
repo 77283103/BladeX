@@ -15,7 +15,6 @@
     <name>${project.artifactId}</name>
     <version>${bladex.project.version}</version>
     <packaging>jar</packaging>
-
     <dependencies>
         <!--Blade-->
         <dependency>

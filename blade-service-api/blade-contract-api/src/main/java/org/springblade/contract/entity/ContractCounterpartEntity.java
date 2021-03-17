@@ -171,4 +171,34 @@ public class ContractCounterpartEntity extends BaseEntity {
 	@ApiModelProperty(value = "币种")
 	private String currencyCategory;
 
+	/**
+	 * 单位类型
+	 */
+	@ApiModelProperty(value = "单位类型")
+	private String classification;
+	/**
+	 * 黑名单标识
+	 */
+	@ApiModelProperty(value = "黑名单标识")
+	private String blacklistLogo;
+	/**
+	 * 是否注销
+	 */
+	@ApiModelProperty(value = "是否注销")
+	private String cancellation;
+	/**
+	 * 备注
+	 */
+	@ApiModelProperty(value = "备注")
+	private String remarks;
+	/**
+	 * 更名每月检视
+	 */
+	@ApiModelProperty(value = "更名每月检视")
+	private String renameMonthlyReview;
+	/**
+	 * 半角名称
+	 */
+	@ApiModelProperty(value = "半角名称")
+	private String halfWidthName;
 }

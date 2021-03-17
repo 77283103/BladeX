@@ -30,6 +30,7 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
+        <result column="template_file_id" property="templateFileId"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -58,12 +59,13 @@
         create_time,
         update_user,
         update_time,
-        create_dept
+        create_dept,
+        template_file_id
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="templateResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+            <include refid="baseColumnList"> </include>
         FROM contract_template
         WHERE is_deleted = 0
         <if test="template.name != null and template.name != ''">
@@ -179,7 +181,7 @@
     <!--根据范本id查询范本已完成数量-->
     <select id="FilterDuplicates" resultMap="templateResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+            <include refid="baseColumnList"> </include>
         FROM contract_template
         WHERE  is_deleted = 0
           AND name like concat('%',#{templateName},'%')

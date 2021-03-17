@@ -29,6 +29,10 @@ public class ContractTemplateResponseVO extends ContractTemplateEntity {
 	 */
 	private List<FileVO> templateFileVOList;
 	/**
+	 *范本附件列表
+	 */
+	private List<FileVO> templateFileFTLVOList;
+	/**
 	 * 范本历史版本
 	 */
 	private List<ContractTemplateEntity> templateEntityOldVOList;
