@@ -26,14 +26,25 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.*;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AsposeWordToPdfUtils {
-
-
+	//正式
+	private static final String tokenUrl="https://unici.pec.com.cn/common/user/access";
+	private static final String tokenSY="https://unici.pec.com.cn/common/file/addWatermark";
+	private static final String tokenXZ="https://unici.pec.com.cn/common/file/downloadWaterMarkDoc/";
+	private static  final String username="admin_cont";
+	private static  final String password="148a0bed39597ef88f3f8b53134993a5";
+	//测试
+	//private static final String tokenUrl="http://sa.pec.com.cn:9080/common/user/access";
+	//private static final String tokenSY="http://sa.pec.com.cn:9080/common/file/addWatermark";
+	//private static  final String tokenXZ="http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/";
+	//private static  final String username="admin_ekp";
+	//private static  final String password="c5c85e7ef7747ce3f1649f44feb8b3bf";
     /**
      * 判断是否有授权文件 如果没有则会认为是试用版，转换的文件会有水印
      *@return
@@ -124,21 +135,29 @@ public class AsposeWordToPdfUtils {
 
 
 	//获取链接地址文件的byte数据
-	public static byte[] getUrlFileData(String fileUrl) throws Exception
+	public static byte[] getUrlFileData(String fileUrl)
 	{
-		URL url = new URL(fileUrl);
-		HttpURLConnection httpConn = (HttpURLConnection) url.openConnection();
-		httpConn.connect();
-		InputStream cin = httpConn.getInputStream();
-		ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-		byte[] buffer = new byte[1024];
-		int len = 0;
-		while ((len = cin.read(buffer)) != -1) {
-			outStream.write(buffer, 0, len);
+		//连不上就会一直不走
+		URL url = null;
+		HttpURLConnection httpConn=null;
+		byte[] fileData =null;
+		try {
+			url = new URL(fileUrl);
+			httpConn = (HttpURLConnection) url.openConnection();
+			httpConn.connect();
+			InputStream cin = httpConn.getInputStream();
+			ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+			byte[] buffer = new byte[1024];
+			int len = 0;
+			while ((len = cin.read(buffer)) != -1) {
+				outStream.write(buffer, 0, len);
+			}
+			cin.close();
+			fileData = outStream.toByteArray();
+			outStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		cin.close();
-		byte[] fileData = outStream.toByteArray();
-		outStream.close();
 		return fileData;
 	}
 
@@ -155,12 +174,12 @@ public class AsposeWordToPdfUtils {
 				throw new IllegalArgumentException();
 			}
 			Map<String, Object> tokenMap = new HashMap<String, Object>();
-			tokenMap.put("username", "admin_ekp");
-			tokenMap.put("password", "c5c85e7ef7747ce3f1649f44feb8b3bf");
+			tokenMap.put("username", username);
+			tokenMap.put("password", password);
 			JSONObject tokenMapJson = new JSONObject(tokenMap);
 			//获取token
 			client_1 = HttpClients.createDefault();
-			method_1 = new HttpPost("http://sa.pec.com.cn:9080/common/user/access");
+			method_1 = new HttpPost(tokenUrl);
 			RequestConfig rc_1 = RequestConfig.custom().setConnectTimeout(60000).setConnectionRequestTimeout(60000).setSocketTimeout(60000).build();
 			method_1.setConfig(rc_1);
 			method_1.addHeader("Content-Type", "application/json;charset=UTF-8");
@@ -173,7 +192,7 @@ public class AsposeWordToPdfUtils {
 			if (null!=token) {
 				//添加水印
 				client = HttpClients.createDefault();
-				method = new HttpPost("http://sa.pec.com.cn:9080/common/file/addWatermark");
+				method = new HttpPost(tokenSY);
 				RequestConfig rc = RequestConfig.custom().setConnectTimeout(350000).setConnectionRequestTimeout(350000).setSocketTimeout(200000).build();
 				method.setConfig(rc);
 				MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -227,12 +246,12 @@ public class AsposeWordToPdfUtils {
 		CloseableHttpResponse response_1 = null;
 		try{
 			Map<String, Object> tokenMap = new HashMap<String, Object>();
-			tokenMap.put("username", "admin_ekp");
-			tokenMap.put("password", "c5c85e7ef7747ce3f1649f44feb8b3bf");
+			tokenMap.put("username", username);
+			tokenMap.put("password", password);
 			JSONObject tokenMapJson = new JSONObject(tokenMap);
 			//获取token
 			client_1 = HttpClients.createDefault();
-			method_1 = new HttpPost("http://sa.pec.com.cn:9080/common/user/access");
+			method_1 = new HttpPost(tokenUrl);
 			RequestConfig rc_1 = RequestConfig.custom().setConnectTimeout(35000).setConnectionRequestTimeout(35000).setSocketTimeout(20000).build();
 			method_1.setConfig(rc_1);
 			method_1.addHeader("Content-Type", "application/json;charset=UTF-8");
@@ -244,7 +263,7 @@ public class AsposeWordToPdfUtils {
 			String token = tokenJson.getString("token");
 			if (null!=token) {
 				client = HttpClients.createDefault();
-				method = new HttpGet( "http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/" +fileId);
+				method = new HttpGet( tokenXZ +fileId);
 				RequestConfig rc = RequestConfig.custom().setConnectTimeout(35000).setConnectionRequestTimeout(35000).setSocketTimeout(20000).build();
 				method.setConfig(rc);
 				method.addHeader("token", token);

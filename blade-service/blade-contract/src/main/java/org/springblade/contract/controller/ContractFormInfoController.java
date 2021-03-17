@@ -430,6 +430,7 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setTextFilePdf(filevo.getId()+",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
+			System.out.println(filevo.getDomain());
 			contractFormInfoEntity=contractFormInfoService.SingleSign(contractFormInfoEntity);
 		}
 		contractFormInfoService.updateById(contractFormInfoEntity);

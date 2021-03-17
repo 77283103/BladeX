@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.SclServiceContractRefrigerationMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="SclServiceContractRefrigerationResultMap" type="org.springblade.contract.entity.SclServiceContractRefrigerationEntity">
+        <result column="id" property="id"/>
+        <result column="scl_paty_a" property="sclPatyA"/>
+        <result column="scl_paty_a_address" property="sclPatyAAddress"/>
+        <result column="scl_paty_b" property="sclPatyB"/>
+        <result column="scl_paty_b_address" property="sclPatyBAddress"/>
+        <result column="scl_signing_date" property="sclSigningDate"/>
+        <result column="scl_site" property="sclSite"/>
+        <result column="scl_handover" property="sclHandover"/>
+        <result column="scl_check_the_date" property="sclCheckTheDate"/>
+        <result column="scl_price_standard" property="sclPriceStandard"/>
+        <result column="scl_multiple" property="sclMultiple"/>
+        <result column="scl_few_hours" property="sclFewHours"/>
+        <result column="scl_east" property="sclEast"/>
+        <result column="scl_east2" property="sclEast2"/>
+        <result column="scl_margin_rmb" property="sclMarginRmb"/>
+        <result column="scl_margin_rmb2" property="sclMarginRmb2"/>
+        <result column="scl_few_dollars" property="sclFewDollars"/>
+        <result column="scl_start_time" property="sclStartTime"/>
+        <result column="scl_end_of_time" property="sclEndOfTime"/>
+        <result column="scl_party_a_to_sign" property="sclPartyAToSign"/>
+        <result column="scl_party_b_to_sign" property="sclPartyBToSign"/>
+        <result column="scl_advance" property="sclAdvance"/>
+        <result column="scl_legal_representative" property="sclLegalRepresentative"/>
+        <result column="scl_address" property="sclAddress"/>
+        <result column="scl_some_day" property="sclSomeDay"/>
+        <result column="scl_name_of_the_company" property="sclNameOfTheCompany"/>
+        <result column="scl_name_of_the_company2" property="sclNameOfTheCompany2"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        scl_paty_a,
+        scl_paty_a_address,
+        scl_paty_b,
+        scl_paty_b_address,
+        scl_signing_date,
+        scl_site,
+        scl_handover,
+        scl_check_the_date,
+        scl_price_standard,
+        scl_multiple,
+        scl_few_hours,
+        scl_east,
+        scl_east2,
+        scl_margin_rmb,
+        scl_margin_rmb2,
+        scl_few_dollars,
+        scl_start_time,
+        scl_end_of_time,
+        scl_party_a_to_sign,
+        scl_party_b_to_sign,
+        scl_advance,
+        scl_legal_representative,
+        scl_address,
+        scl_some_day,
+        scl_name_of_the_company,
+        scl_name_of_the_company2,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="SclServiceContractRefrigerationResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM scl_service_contract_refrigeration
+        WHERE is_deleted = 0
+    </select>
+</mapper>

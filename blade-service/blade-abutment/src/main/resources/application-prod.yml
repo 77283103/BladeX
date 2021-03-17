@@ -18,6 +18,7 @@ api:
     account: GenFlowNm
     password: o!a@e@k#p
     fdTemplateId: 1780054e40b82ff3f5f9e0c4bcfa9eac
+    ftlPath: /ftl/
   organization:
     wsdl: https://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
     namespace: http://sys.webservice.client
@@ -37,4 +38,5 @@ api:
     multiSignUrl: https://unici.pec.com.cn/common/run/esign/multiSign
     username: admin_cont
     password: 148a0bed39597ef88f3f8b53134993a5
+
 

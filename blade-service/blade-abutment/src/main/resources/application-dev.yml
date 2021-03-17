@@ -18,6 +18,7 @@ api:
     account: iHR
     password: oaekp
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
+    ftlPath: D:/ftl/
   organization_cs:
     wsdl: http://oatest.pec.com.cn:8080/sys/webservice/organizationWebService?wsdl
     namespace: http://sys.webservice.client

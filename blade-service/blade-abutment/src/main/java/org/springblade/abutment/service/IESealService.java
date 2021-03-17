@@ -30,7 +30,7 @@ public interface IESealService {
      * 上传文件
      * @return
      */
-    List<UploadFileVo> uploadFiles(String token, UploadFileEntity uploadFilesEntity) throws Exception;
+    List<UploadFileVo> uploadFiles(String token, UploadFileEntity uploadFilesEntity) ;
 
     /**
      * 查看合同

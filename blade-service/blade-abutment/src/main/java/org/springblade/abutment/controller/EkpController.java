@@ -62,7 +62,7 @@ public class EkpController {
 
 
 	/**
-	 * 批量导入
+	 * 获取token
 	 */
 	@GetMapping("/eToken")
 	@ApiOperationSupport(order = 12)

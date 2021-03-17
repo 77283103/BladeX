@@ -73,8 +73,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	//@Value("${api.file.ftlPath}")
 	//模板路径
 	//private String ftlPath;
-	//private static final String ftlPath="D:/ftl/";
-	private static final String ftlPath="/ftl/";
+	private static final String ftlPath="D:/ftl/";
+	//private static final String ftlPath="/ftl/";
 	private IFileClient fileClient;
 
 	private ISysClient sysClient;
@@ -1093,6 +1093,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		try {
 			in=new FileInputStream(filePDF);
 			String fileId=AsposeWordToPdfUtils.addWaterMak(in,"统一集团",filePDF.getName(),null);
+			Thread.sleep(2000);
 			String url=AsposeWordToPdfUtils.downloadFile(fileId);
 			System.out.println(url);
 			//建立输出字节流
@@ -1158,10 +1159,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		// 上传合同文件 结束
 		//epk流程接口
 		entity.setTextFilePdf(uploadFileVoList.get(0).getId());
+		MultipartFile multipartFile = null;
+		try {
+			multipartFile = new MockMultipartFile("file", fileBH.getName(),
+				ContentType.MULTIPART.toString(), new FileInputStream(fileBH));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		/* 上传文件 */
+		R<FileVO> fileVO = fileClient.save(multipartFile);
+		entity.setOtherInformation(fileVO.getData().getLink());
 		EkpVo ekpVo = abutmentClient.sendEkpFormPost(entity).getData();
 		if (ekpVo != null) {
 			entity.setRelContractId(ekpVo.getDoc_info());
-
 		}
 		return entity;
 	}
@@ -1742,12 +1752,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 			InputStream input = null;
+			PDDocument document = null;
 			try {
 				input = new FileInputStream(filePDF);
 				// 新建一个PDF解析器对象
 				PDFParser parser = new PDFParser(input);
 				parser.parse();
-				PDDocument document = parser.getPDDocument();
+				document = parser.getPDDocument();
 				PDFTextStripper stripper = new PDFTextStripper();
 				String text = stripper.getText(document);
 				int az = text.indexOf("甲方（签章）");
@@ -1761,6 +1772,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				e.printStackTrace();
 			}finally{
 				try {
+					if (document != null) {
+						document.close();
+					}
 					if (input != null) {
 						input.close();
 					}
