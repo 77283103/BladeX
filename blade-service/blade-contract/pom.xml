@@ -304,14 +304,9 @@
             <version>1.0.6</version>
         </dependency>
         <dependency>
-            <groupId>poi-tl</groupId>
+            <groupId>com.deepoove</groupId>
             <artifactId>poi-tl</artifactId>
             <version>1.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>Spire.Doc</groupId>
-            <artifactId>Spire.Doc</artifactId>
-            <version>3.9.0</version>
         </dependency>
         <dependency>
             <groupId>commons-collections4</groupId>

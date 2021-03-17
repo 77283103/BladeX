@@ -21,6 +21,9 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
+import com.deepoove.poi.data.DocxRenderData;
+import com.deepoove.poi.data.PictureType;
+import com.deepoove.poi.data.Pictures;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -35,6 +38,8 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -54,7 +59,7 @@ public enum TemplateExporterEnum {
     //物流服务合同（二段仓储+配送）
     WLFW_23("WLFW_23") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             dataModel.put("sclPartya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
             dataModel.put("sclPartyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -242,7 +247,7 @@ public enum TemplateExporterEnum {
     //作业外包协议
     WBXY_27("WBXY_27") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             dataModel.put("employer", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
             dataModel.put("contractor", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -302,7 +307,7 @@ public enum TemplateExporterEnum {
     //新陈列协议书
     CLXY_42("CLXY_42") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             //把json串转换成集合
@@ -350,7 +355,7 @@ public enum TemplateExporterEnum {
     //店招合同
     DZHT_35("DZHT_35") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             dataModel.put("ywlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
             dataModel.put("ywlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -369,7 +374,7 @@ public enum TemplateExporterEnum {
     //媒体类：视频广告改编合同
     GBHT_14("GBHT_14") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<Map<String, Object>> list1 = new ArrayList();
@@ -430,7 +435,7 @@ public enum TemplateExporterEnum {
     //加工承揽合同（代工合同）
     CLHT_19("CLHT_19") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<Map<String, Object>> list1 = new ArrayList();
@@ -520,7 +525,7 @@ public enum TemplateExporterEnum {
     //音频制作合同
     ZZHT_18("ZZHT_18") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<Map<String, Object>> list1 = new ArrayList();
@@ -601,7 +606,7 @@ public enum TemplateExporterEnum {
     //修图合同
     XTHT_17("XTHT_17") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
@@ -641,7 +646,7 @@ public enum TemplateExporterEnum {
     //视频制作合同
     ZZHT_16("ZZHT_16") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<Map<String, Object>> list1 = new ArrayList();
@@ -722,7 +727,7 @@ public enum TemplateExporterEnum {
     //视频广告拍摄制作合同
     ZZHT_15("ZZHT_15") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<Map<String, Object>> list1 = new ArrayList();
@@ -822,7 +827,7 @@ public enum TemplateExporterEnum {
     //活动执行合同
     HDZX_05("HDZX_05") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             dataModel.put("cglPartya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
             dataModel.put("cglPartyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -884,7 +889,7 @@ public enum TemplateExporterEnum {
     //物流服务合同（二段配送）
     FWHT_24("FWHT_24") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             SclLogisticsServiceEntity sclLogisticsService = JSONObject.toJavaObject(j, SclLogisticsServiceEntity.class);
             dataModel.put("partya", Func.isNull(contractFormInfoEntity.getSealName())?"":contractFormInfoEntity.getSealName());
@@ -1032,7 +1037,7 @@ public enum TemplateExporterEnum {
     //媒体类：平面广告拍摄制作合同
     ZZHT_12("ZZHT_12") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<Map<String, Object>> list1 = new ArrayList();
@@ -1121,7 +1126,7 @@ public enum TemplateExporterEnum {
     //生产类：设备维修保养合同
     BYHT_21("BYHT_21") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
@@ -1236,7 +1241,7 @@ public enum TemplateExporterEnum {
     //物流服务合同（一段+调拨运输）
     FWHT_25("FWHT_25") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             SclProductionCategoryEntity sclProductionCategory = JSONObject.toJavaObject(j, SclProductionCategoryEntity.class);
             dataModel.put("sclPartyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -1339,7 +1344,7 @@ public enum TemplateExporterEnum {
     //广告制作安装合同模板
     GGZZ_04("GGZZ_04") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             CglAdvertisementProductionEntity cglAdvertisementProductionEntity = JSONObject.toJavaObject(j, CglAdvertisementProductionEntity.class);
             dataModel.put("sclPartyA", j.get("sclPartyA"));
@@ -1382,7 +1387,7 @@ public enum TemplateExporterEnum {
     //采购类_打样合同书
     DYHT_03("DYHT_03") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
@@ -1425,7 +1430,7 @@ public enum TemplateExporterEnum {
     //保密协议（二方）
     BMXY_01("BMXY_01") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             dataModel.put("pontactPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -1442,7 +1447,7 @@ public enum TemplateExporterEnum {
     //保密协议（三方）
     BMXY_02("BMXY_02") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             dataModel.put("tradeSide", j.get("tradeSide"));
@@ -1465,7 +1470,7 @@ public enum TemplateExporterEnum {
     //房屋租赁合同模板
     FWZL_36("FWZL_36") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             YwbBusinessContractTemplateEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, YwbBusinessContractTemplateEntity.class);
             dataModel.put("ywbTenantry", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -1633,7 +1638,7 @@ public enum TemplateExporterEnum {
     //下脚品买卖合同模版
     MMHT_26("MMHT_26") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             dataModel.put("infSaler", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
             dataModel.put("infBuyer", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -1711,7 +1716,7 @@ public enum TemplateExporterEnum {
     //配送服务合同
     FWHT_38("FWHT_38") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             DistServiceContractEntity sclLogisticsService = JSONObject.toJavaObject(j, DistServiceContractEntity.class);
             dataModel.put("clientA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -1733,7 +1738,7 @@ public enum TemplateExporterEnum {
     //生产项目外包服务合同
     FWHT_22("FWHT_22") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<Map<String, Object>> list1 = new ArrayList();
@@ -1823,7 +1828,7 @@ public enum TemplateExporterEnum {
     //设备投放使用协议
     SBTF_40("SBTF_40") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             DeviceLaunchUseContractEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, DeviceLaunchUseContractEntity.class);
             dataModel.put("devSaler", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -1935,7 +1940,7 @@ public enum TemplateExporterEnum {
     //班车服务合同
     FWHT_51("FWHT_51") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             //主表
             BusServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, BusServiceContractEntity.class);
@@ -1960,7 +1965,7 @@ public enum TemplateExporterEnum {
     //市调合同（定性+定量）
     SDHT_13("SDHT_13") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
@@ -2106,7 +2111,7 @@ public enum TemplateExporterEnum {
     //劳务派遣合同
     LWHT_52("LWHT_52") {
         @Override
-        public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+        public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
             Map dataModel = new HashMap();
             LaborDispatchEntity laborDispatchEntity = JSONObject.toJavaObject(j, LaborDispatchEntity.class);
             dataModel.put("ywbFirstParty", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -2154,10 +2159,10 @@ public enum TemplateExporterEnum {
         }
     },
 
-	//劳务派遣合同
+	//物流服务合同（冷冻）
 	WLFW_59("WLFW_59") {
 		@Override
-		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+		public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map dataModel = new HashMap();
 			//迭代器遍历json对象
 			Iterator iter = j.entrySet().iterator();
@@ -2169,12 +2174,14 @@ public enum TemplateExporterEnum {
 				log.info("==key"+entry.getKey().toString());
 				log.info("==value"+entry.getKey().toString());
 				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+
 			}
-			return dataModel;
+			return setFile(filepaths,dataModel);
 		}
 	};
 
-    public abstract Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j);
+
+	public abstract Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j);
 
     @Getter
     public String type;
@@ -2205,6 +2212,17 @@ public enum TemplateExporterEnum {
         dataModel.put("legalRepresentative", listLegalRepresentative);
         return dataModel;
     }
+
+	/**
+	 * 插入文件
+	 **/
+	public static Map setFile(List<String> filepaths,Map dataModel) {
+		for(int i=0;i<filepaths.size(); i++){
+			dataModel.put("docx_word"+i, new DocxRenderData(new File(filepaths.get(i))));
+		}
+		return dataModel;
+	}
+
 
     /**
      * 获取两个日期相差的月数

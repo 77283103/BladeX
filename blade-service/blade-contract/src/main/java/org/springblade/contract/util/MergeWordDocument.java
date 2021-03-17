@@ -307,25 +307,25 @@ public class MergeWordDocument {
 	 * @param templateVO 拼接文件名称
 	 * @param templateId 关联的范本ID
 	 */
-	public static void getTemplateFTLFile(String ftlPath,TemplateRequestVO templateVO,Long templateId ){
+	public static String getTemplateFTLFile(String ftlPath,TemplateRequestVO templateVO,Long templateId ){
 		//获取模板中的附件
+		File fileFTL=null;
 		List<FileVO> result = mergeWordDocument.fileClient.getByIds(mergeWordDocument.templateService.getById(templateId).getTemplateFileId()).getData();
-		result.forEach(file -> {
-			//新建空文件
-			String pathname=ftlPath+templateVO.getTemplateCode()+".ftl";
-			//创建空ftl文件
-			File fileFTL = new File(pathname);
-			//建立输出字节流
-			FileOutputStream fosx = null;
-			try {
-				fosx = new FileOutputStream(fileFTL);
-				//将根据URL获取到的数据流写到空docx文件
-				fosx.write(AsposeWordToPdfUtils.getUrlFileData(file.getLink()));
-				fosx.close();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		});
+		//新建空文件
+		String pathname=ftlPath+templateVO.getTemplateCode()+".docx";
+		//创建空ftl文件
+		fileFTL = new File(pathname);
+		//建立输出字节流
+		FileOutputStream fosx = null;
+		try {
+			fosx = new FileOutputStream(fileFTL);
+			//将根据URL获取到的数据流写到空docx文件
+			fosx.write(AsposeWordToPdfUtils.getUrlFileData(result.get(0).getLink()));
+			fosx.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return pathname;
 	}
 
 	/**

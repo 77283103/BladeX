@@ -90,7 +90,7 @@ public class AbutmentClient implements IAbutmentClient {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 				//人员编号
-				docCreatorEntity.setEmplno("17090089");
+				docCreatorEntity.setEmplno(entity.getPersonCodeContract());
 				pushEkpEntity.setDocCreator(docCreatorEntity);
 				FormValuesEntity formValuesEntity = new FormValuesEntity();
 				//依据编号

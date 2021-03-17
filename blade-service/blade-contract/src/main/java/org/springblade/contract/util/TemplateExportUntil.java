@@ -1,6 +1,7 @@
 package org.springblade.contract.util;
 
 import com.alibaba.fastjson.JSONObject;
+import com.deepoove.poi.XWPFTemplate;
 import feign.form.ContentType;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -33,7 +34,7 @@ public class TemplateExportUntil {
 	}*/
 	//模板路径
 	//private static String ftlPath="/ftl/";
-	private static  String ftlPath="D:/ftl/";
+	private static String ftlPath = "D:/ftl/";
 	//建一个静态的本类
 	private static TemplateExportUntil templateExportUntil;
 	private static ReplaceImages replaceImages;
@@ -41,13 +42,14 @@ public class TemplateExportUntil {
 
 	@Autowired
 	private IFileClient fileClient;
+
 	//初始化
 	@PostConstruct
 	public void init() {
 		templateExportUntil = this;
 	}
 
-	public FileVO templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+	/*public FileVO templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 		String pdfId = "";
 		//从服务器上获取ftl文件，保存到宿主机指定目录
 		MergeWordDocument.getTemplateFTLFile(ftlPath,templateVO,contractFormInfoEntity.getContractListId());
@@ -114,8 +116,7 @@ public class TemplateExportUntil {
 				String newFileDocx = ftlPath + templateVO.getTemplateCode() + "_X_"+ date + ".docx";
 				// office转wps,处理兼容问题
 				AsposeWordToPdfUtils.doc2Docx(newFileDoc, newFileDocx);
-				//拼接文件名字数组 图片数组
-				List<String> imagepaths = new ArrayList<>();
+				//拼接文件名字数组
 				List<String> filepaths = new ArrayList<>();
 				filepaths.add(0, mergeFileDocx);
 				filepaths.add(1, newFilePdf);
@@ -140,50 +141,30 @@ public class TemplateExportUntil {
 					}
 					filepaths.add(pathname);
 				});
-				//判断是否有需要添加或覆盖的图片
-				if (!Func.isNull(dataModel.get("image")) && Func.isNoneBlank(dataModel.get("image").toString())) {
-					//获取模板中的图片
-					List<FileVO> images = templateExportUntil.fileClient.getByIds(String.valueOf(dataModel.get("image"))).getData();
-					images.forEach(image -> {
-						int index = image.getName().lastIndexOf(".");
-						String pathname=ftlPath + image.getName().substring(0, index) + date + ".jpeg";
-						FileOutputStream fosx = null;
-						try {
-							fosx = new FileOutputStream(new File(pathname));
-							//将根据URL获取到的数据流写到空docx文件
-							fosx.write(AsposeWordToPdfUtils.getUrlFileData(image.getLink()));
-							fosx.close();
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						imagepaths.add(pathname);
-					});
-				}
 				try {
 					//拼接文档
-					//MagerUtils.mergeDoc(filepaths);
-					MergeWordDocument.magerDocx(filepaths,imagepaths);
+					MagerUtils.mergeDoc(filepaths);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}finally {
-					for (int i = 2; i <=filepaths.size()-1 ; i++) {
+					for (int i = 2; i <filepaths.size()-1 ; i++) {
 						File file=new File(filepaths.get(i));
 						file.delete();
-					}
-					for (int g = 0; g <=imagepaths.size()-1 ; g++) {
-						File image=new File(imagepaths.get(g));
-						image.delete();
 					}
 				}
 			} else {
 				//doc转为pdf
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 			}
+			//判断是否有需要添加或覆盖的图片
+			if (!Func.isNull(dataModel.get("image")) && Func.isNoneBlank(dataModel.get("image").toString())) {
+				newFileDoc = replaceImages.replaceImage(newFileDoc, dataModel);
+			}
 			File fileDoc = new File(newFileDoc);
 			File filePDF = ResourceUtils.getFile(newFilePdf);
 			MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
 				ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
-			/* 上传文件 */
+			*//* 上传文件 *//*
 			R<FileVO> fileVO = templateExportUntil.fileClient.save(multipartFile);
 			if (fileDoc.exists()) {
 				fileDoc.delete();
@@ -195,5 +176,87 @@ public class TemplateExportUntil {
 			e.printStackTrace();
 		}
 		return files;
+	}*/
+
+	public FileVO templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+		String date = df.format(new Date());
+		List<String> filepaths = new ArrayList<>();
+		String pdfId = "";
+		// 第五步：创建一个模板使用的数据集，可以是pojo也可以是map。一般是Map。
+		Map dataModel;
+		FileVO files = null;
+		// 第六步 定义向数据集中添加数据
+		//--------------从这里开始取所需要的数据 start 通过范本类型来执行对应方法
+		if (!Func.isNull(j.get("annex")) && Func.isNoneBlank(j.get("annex").toString())) {
+			//拼接文件名字数组
+			filepaths = new ArrayList<>();
+			//获取模板中的附件
+			List<FileVO> result = templateExportUntil.fileClient.getByIds(String.valueOf(j.get("annex"))).getData();
+			for (FileVO file : result) {
+				//新建空文件
+				int index = file.getName().lastIndexOf(".");
+				String pathname = ftlPath + file.getName().substring(0, index) + df.format(new Date()) + ".docx";
+				//创建空docx文件
+				File filePDF = new File(pathname);
+				//建立输出字节流
+				FileOutputStream fosx = null;
+				try {
+					fosx = new FileOutputStream(filePDF);
+					//将根据URL获取到的数据流写到空docx文件
+					fosx.write(AsposeWordToPdfUtils.getUrlFileData(file.getLink()));
+					fosx.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				filepaths.add(pathname);
+			}
+		}
+			dataModel = TemplateExporterEnum.fromValue(templateVO.getTemplateCode()).setScheduler(filepaths, contractFormInfoEntity, templateVO, json, j);
+			//模板地址
+			String path = MergeWordDocument.getTemplateFTLFile(ftlPath, templateVO, contractFormInfoEntity.getContractListId());
+			//拼接后的地址
+			String mergeFileDocx = ftlPath + templateVO.getTemplateCode() + "_M_" + date + ".docx";
+			//转成pdf的地址
+			String newFilePdf = ftlPath + templateVO.getBeanName() + date + ".pdf";
+			//读取模板
+			XWPFTemplate template = XWPFTemplate.compile(path);
+			template.render(dataModel);
+			FileOutputStream out;
+			File templateFile = new File(mergeFileDocx);
+			try {
+				out = new FileOutputStream(templateFile);
+				template.write(out);
+				out.flush();
+				out.close();
+				template.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}finally {
+				for (int i = 2; i <filepaths.size()-1 ; i++) {
+					File file=new File(filepaths.get(i));
+					file.delete();
+				}
+			}
+			//--------------从这里开始取所需要的数据 end
+			//doc转为pdf
+			AsposeWordToPdfUtils.doc2pdf(mergeFileDocx, newFilePdf);
+			File filePDF = null;
+			try {
+				filePDF = ResourceUtils.getFile(newFilePdf);
+				MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
+					ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
+				/* 上传文件 */
+				R<FileVO> fileVO = templateExportUntil.fileClient.save(multipartFile);
+				if (templateFile.exists()) {
+					templateFile.delete();
+					System.out.println("删除成功");
+				}
+				files = fileVO.getData();
+				files.setDomain(newFilePdf);
+			} catch (IOException ex) {
+				ex.printStackTrace();
+			}
+			return files;
 	}
 }
