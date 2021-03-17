@@ -2,6 +2,8 @@ package org.springblade.contract.util;
 
 import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.data.DocxRenderData;
+import com.deepoove.poi.data.PictureType;
+import com.deepoove.poi.data.Pictures;
 import com.spire.doc.Document;
 import com.spire.doc.FileFormat;
 import com.spire.pdf.PdfDocument;
@@ -10,12 +12,22 @@ import com.spire.pdf.automaticfields.PdfPageCountField;
 import com.spire.pdf.automaticfields.PdfPageNumberField;
 import com.spire.pdf.graphics.*;
 import lombok.AllArgsConstructor;
+import lombok.SneakyThrows;
+import org.apache.log4j.Level;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.docx4j.convert.out.pdf.viaXSLFO.PdfSettings;
+import org.docx4j.fonts.IdentityPlusMapper;
+import org.docx4j.fonts.Mapper;
+import org.docx4j.fonts.PhysicalFont;
+import org.docx4j.fonts.PhysicalFonts;
+import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springblade.contract.service.IContractTemplateService;
-import org.springblade.contract.service.ISclContractTemplateService;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -25,10 +37,7 @@ import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
@@ -59,21 +68,19 @@ public class MergeWordDocument {
 	 *
 	 * @param oldFileDoc 原范本文件Word的文件路径名称
 	 * @param dataModel  获取范本的附件的字段值，获取附件信息
-	 * @return
 	 */
-	public String SplicingWord(String oldFileDoc, Map dataModel) {
+	public static void SplicingWord(String oldFileDoc, Map dataModel) {
 		//加载第一个文档
 		Document document = new Document();
 		document.loadFromFile(oldFileDoc);
 		//获取模板中的附件
-		R<List<FileVO>> result = fileClient.getByIds(String.valueOf(dataModel.get("annex")));
+		R<List<FileVO>> result = mergeWordDocument.fileClient.getByIds(String.valueOf(dataModel.get("annex")));
 		result.getData().forEach(file -> {
 			//使用insertTextFromFile方法将子文档的内容依次插入到第一个文档
 			document.insertTextFromFile(file.getLink(), FileFormat.Docx_2013);
 		});
 		//保存文档
 		document.saveToFile(oldFileDoc, FileFormat.Docx_2013);
-		return oldFileDoc;
 	}
 
 	/**
@@ -86,9 +93,10 @@ public class MergeWordDocument {
 	private final static String word2007U = ".docx";
 
 	/**
+	 * POI
 	 * docx转pdf
-	 * @param inPath
-	 * @param outPath
+	 * @param inPath  docx文档路径
+	 * @param outPath  pdf文档路径
 	 */
 	public static boolean docxToPDF(String inPath, String outPath) throws IOException {
 		// 是否需清除中间转换的docx文档
@@ -137,8 +145,8 @@ public class MergeWordDocument {
 	 * Spire
 	 * 去除Evaluation Warning : The document was created with Spire.PDF for Java.
 	 *
-	 * @param path
-	 * @param outPath
+	 * @param path 有水印的pdf文档
+	 * @param outPath 去除水印的pdf文档
 	 */
 	public static void AddPdfPageNumbers(String path, String outPath) {
 		//加载PDF文档
@@ -174,6 +182,7 @@ public class MergeWordDocument {
 	}
 
 	/**
+	 * POI
 	 * 测试拼接方法
 	 * @param newFileDoc 合同范本doc
 	 * @param newFilePdf 合同范本pdf
@@ -188,11 +197,13 @@ public class MergeWordDocument {
 		// office转wps,处理兼容问题
 		AsposeWordToPdfUtils.doc2Docx(newFileDoc, newFileDocx);
 		//拼接文件名字数组
+		List<String> imagepths = new ArrayList<>();
 		List<String> filepaths = new ArrayList<>();
 		filepaths.add(0, mergeFileDocx);
 		filepaths.add(1, newFilePdf);
 		filepaths.add(2, newFileDocx);
 		String docxFileUrl="1370231882483777538,1370231706432061441,1370231775097012225,";
+		String imageFileUrl="1371707073609109505";
 		List<FileVO> result = mergeWordDocument.fileClient.getByIds(docxFileUrl).getData();
 		result.forEach(file -> {
 			int index = file.getName().lastIndexOf(".");
@@ -211,30 +222,57 @@ public class MergeWordDocument {
 			}
 			filepaths.add(pathname);
 		});
+		//判断是否有需要添加或覆盖的图片
+			List<FileVO> images = mergeWordDocument.fileClient.getByIds(imageFileUrl).getData();
+			images.forEach(image -> {
+				int index = image.getName().lastIndexOf(".");
+				String pathname=ftlPath + image.getName().substring(0, index) + date + ".jpeg";
+				FileOutputStream fosx = null;
+				try {
+					fosx = new FileOutputStream(new File(pathname));
+					//将根据URL获取到的数据流写到空docx文件
+					fosx.write(AsposeWordToPdfUtils.getUrlFileData(image.getLink()));
+					fosx.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				imagepths.add(pathname);
+			});
 		try {
 			//拼接文档
-			MagerUtils.mergeDoc(filepaths);
-			//magerDocx(filepaths);
+			//MagerUtils.mergeDoc(filepaths);
+			magerDocx(filepaths,imagepths);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			for (int i = 2; i <=filepaths.size()-1 ; i++) {
-				File file=new File(filepaths.get(i));
+			for (int i = 2; i <= filepaths.size() - 1; i++) {
+				File file = new File(filepaths.get(i));
 				file.delete();
 			}
+			for (int j = 0; j <= imagepths.size() - 1; j++) {
+				File image = new File(imagepths.get(j));
+				image.delete();
+			}
 		}
-
 	}
 
 	/**
+	 * POI-TL
 	 * word拼接方法三
 	 * @param filepaths 相关文档  1.合同范本源模板   附件   1.拼接后文档  2.pdf文档
  	 */
-	public static void magerDocx(List<String> filepaths){
+	@SneakyThrows
+	public static void magerDocx(List<String> filepaths,List<String> imagepaths){
 		XWPFTemplate template = XWPFTemplate.compile(filepaths.get(2));
 		HashMap<String, Object> hashMap=new HashMap<>();
+		// 插入文档
 		for (int i = 3; i <=filepaths.size()-1 ; i++) {
 			hashMap.put("docx_word"+i, new DocxRenderData(new File(filepaths.get(i))));
+		}
+		// 图片流
+		for (int j = 0; j <=imagepaths.size()- 1; j++) {
+			hashMap.put("streamImg"+j, Pictures.ofStream(new FileInputStream(imagepaths.get(j)), PictureType.JPEG)
+				.size(700, 400).create());
 		}
 		template.render(hashMap);
 //		XWPFTemplate template = XWPFTemplate.compile(filepaths.get(2)).render(
@@ -254,11 +292,13 @@ public class MergeWordDocument {
 			e.printStackTrace();
 		}
 		// 拼接后文档docx转pdf
-		try {
-			docxToPDF(filepaths.get(0), filepaths.get(1));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			docxToPDF(filepaths.get(0), filepaths.get(1));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		//wordDocx4JPdf(filepaths.get(0), filepaths.get(1));
+		AsposeWordToPdfUtils.doc2pdf(filepaths.get(0), filepaths.get(1));
 	}
 
 	/**
@@ -286,5 +326,34 @@ public class MergeWordDocument {
 				e.printStackTrace();
 			}
 		});
+	}
+
+	/**
+	 * POI and DOCX4j 转docx为pdf
+	 * @param newFileDoc docx文档路径
+	 * @param newFilePdf pdf文档路径
+	 */
+	@SneakyThrows
+	public static void wordDocx4JPdf(String newFileDoc, String newFilePdf) {
+		InputStream is = new FileInputStream(new File(newFileDoc));
+		WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(is);
+		List sections = wordMLPackage.getDocumentModel().getSections();
+		for (int i = 0; i < sections.size(); i++) {
+			wordMLPackage.getDocumentModel().getSections().get(i)
+				.getPageDimensions();
+		}
+		Mapper fontMapper = new IdentityPlusMapper();
+		PhysicalFont font = PhysicalFonts.getPhysicalFonts().get("宋体");
+		fontMapper.getFontMappings().put("Algerian", font);
+		wordMLPackage.setFontMapper(fontMapper);
+		PdfSettings pdfSettings = new PdfSettings();
+		org.docx4j.convert.out.pdf.PdfConversion conversion = new org.docx4j.convert.out.pdf.viaXSLFO.Conversion(wordMLPackage);
+		//To turn off logger
+		List<Logger> loggers = Collections.<Logger> list(LogManager.getCurrentLoggers());
+		loggers.add(LogManager.getRootLogger());
+		for (Logger logger : loggers) {
+			logger.setLevel(Level.OFF);
+		}
+		conversion.output(new FileOutputStream(new File(newFilePdf)), pdfSettings);
 	}
 }

@@ -207,6 +207,14 @@
                     <artifactId>jsoup</artifactId>
                     <groupId>org.jsoup</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>jsoup</artifactId>
+                    <groupId>org.jsoup</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>jsoup</artifactId>
+                    <groupId>org.jsoup</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <!--out net end -->
@@ -261,22 +269,22 @@
         <dependency>
             <groupId>poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.9</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>poi-ooxml</groupId>
             <artifactId>poi-ooxml</artifactId>
-            <version>3.9</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>poi-ooxml-schemas</groupId>
             <artifactId>poi-ooxml-schemas</artifactId>
-            <version>3.9</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>poi-scratchpad</groupId>
             <artifactId>poi-scratchpad</artifactId>
-            <version>3.9</version>
+            <version>4.1.2</version>
         </dependency>
         <dependency>
             <groupId>xmlgraphics-commons</groupId>
@@ -296,7 +304,7 @@
         <dependency>
             <groupId>poi-tl</groupId>
             <artifactId>poi-tl</artifactId>
-            <version>1.8.2</version>
+            <version>1.9.1</version>
         </dependency>
         <dependency>
             <groupId>Spire.Doc</groupId>

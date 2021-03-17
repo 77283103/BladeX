@@ -19,6 +19,7 @@ import com.spire.pdf.graphics.PdfRGBColor;
 import com.spire.pdf.graphics.PdfSolidBrush;
 import com.spire.pdf.graphics.PdfTrueTypeFont;
 
+import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
@@ -32,37 +33,38 @@ import java.util.Map;
 @Component
 public class ReplaceImages {
     private IFileClient fileClient;
+    private static ReplaceImages replaceImages;
+	//初始化
+	@PostConstruct
+    public void init(){
+		replaceImages=this;
+	}
 
-    /**
-     * @param annexFileDoc 原文档名称路径
-     * @param dataModel    获取保存在数据库中的图片id从而获取新图片路径
-     * @return
-     */
-    public String replaceImage(String annexFileDoc, Map dataModel) {
-        //加载Word文档
-        Document doc = new Document();
-        doc.loadFromFile(annexFileDoc);
-        //获取文档中的第一个节
-        Section section = doc.getSections().get(0);
-        //遍历该节中的所有段落
-        for (Paragraph para : (Iterable<Paragraph>) section.getParagraphs()) {
-            //遍历每个段落中的子元素
-            for (DocumentObject obj : (Iterable<DocumentObject>) para.getChildObjects()) {
-                //使用新图片替换文档中的现有图片
-                if (obj instanceof DocPicture) {
-                    DocPicture pic = (DocPicture) obj;
-                    //将上传的图片替换掉文本原有的图片
-                    R<List<FileVO>> result = fileClient.getByIds(String.valueOf(dataModel.get("image")));
-                    result.getData().forEach(file -> {
-                        pic.loadImage(file.getLink());
-                    });
-                }
-            }
-        }
-        //保存结果文档
-        doc.saveToFile(annexFileDoc, FileFormat.Docx_2013);
-        return annexFileDoc;
-    }
+	/**
+	 *
+	 * @param filepaths
+	 */
+	public static void replaceImage(List<String> filepaths,List<String > imagepths) {
+		//加载Word文档
+		Document doc = new Document();
+		doc.loadFromFile(filepaths.get(0));
+		//获取文档中的第一个节
+		Section section = doc.getSections().get(0);
+		//遍历该节中的所有段落
+		for (Paragraph para : (Iterable<Paragraph>) section.getParagraphs()) {
+			//遍历每个段落中的子元素
+			for (DocumentObject obj : (Iterable<DocumentObject>) para.getChildObjects()) {
+				//使用新图片替换文档中的现有图片
+				if (obj instanceof DocPicture) {
+					DocPicture pic = (DocPicture) obj;
+					//将上传的图片替换掉文本原有的图片
+						pic.loadImage(imagepths.get(0));
+				}
+			}
+		}
+		//保存结果文档
+		doc.saveToFile(filepaths.get(1), FileFormat.Docx_2013);
+	}
 
 
 	public static void FindAndReplaceText (String docPath, String pdfPath) {

@@ -114,7 +114,8 @@ public class TemplateExportUntil {
 				String newFileDocx = ftlPath + templateVO.getTemplateCode() + "_X_"+ date + ".docx";
 				// office转wps,处理兼容问题
 				AsposeWordToPdfUtils.doc2Docx(newFileDoc, newFileDocx);
-				//拼接文件名字数组
+				//拼接文件名字数组 图片数组
+				List<String> imagepaths = new ArrayList<>();
 				List<String> filepaths = new ArrayList<>();
 				filepaths.add(0, mergeFileDocx);
 				filepaths.add(1, newFilePdf);
@@ -139,24 +140,44 @@ public class TemplateExportUntil {
 					}
 					filepaths.add(pathname);
 				});
+				//判断是否有需要添加或覆盖的图片
+				if (!Func.isNull(dataModel.get("image")) && Func.isNoneBlank(dataModel.get("image").toString())) {
+					//获取模板中的图片
+					List<FileVO> images = templateExportUntil.fileClient.getByIds(String.valueOf(dataModel.get("image"))).getData();
+					images.forEach(image -> {
+						int index = image.getName().lastIndexOf(".");
+						String pathname=ftlPath + image.getName().substring(0, index) + date + ".jpeg";
+						FileOutputStream fosx = null;
+						try {
+							fosx = new FileOutputStream(new File(pathname));
+							//将根据URL获取到的数据流写到空docx文件
+							fosx.write(AsposeWordToPdfUtils.getUrlFileData(image.getLink()));
+							fosx.close();
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						imagepaths.add(pathname);
+					});
+				}
 				try {
 					//拼接文档
-					MagerUtils.mergeDoc(filepaths);
+					//MagerUtils.mergeDoc(filepaths);
+					MergeWordDocument.magerDocx(filepaths,imagepaths);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}finally {
-					for (int i = 2; i <filepaths.size()-1 ; i++) {
+					for (int i = 2; i <=filepaths.size()-1 ; i++) {
 						File file=new File(filepaths.get(i));
 						file.delete();
+					}
+					for (int g = 0; g <=imagepaths.size()-1 ; g++) {
+						File image=new File(imagepaths.get(g));
+						image.delete();
 					}
 				}
 			} else {
 				//doc转为pdf
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
-			}
-			//判断是否有需要添加或覆盖的图片
-			if (!Func.isNull(dataModel.get("image")) && Func.isNoneBlank(dataModel.get("image").toString())) {
-				newFileDoc = replaceImages.replaceImage(newFileDoc, dataModel);
 			}
 			File fileDoc = new File(newFileDoc);
 			File filePDF = ResourceUtils.getFile(newFilePdf);

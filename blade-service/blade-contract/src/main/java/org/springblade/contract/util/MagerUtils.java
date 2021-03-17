@@ -1,8 +1,6 @@
 package org.springblade.contract.util;
 
 
-import com.spire.doc.Document;
-import com.spire.doc.FileFormat;
 import org.apache.poi.openxml4j.opc.OPCPackage;
 import org.apache.poi.xwpf.usermodel.BodyElementType;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -73,24 +71,6 @@ public class MagerUtils {
 		MergeWordDocument.docxToPDF(filepaths.get(0), filepaths.get(1));
 		return true;
     }
-	/**
-	 * Spire
-	 * @param filepaths filepaths[0] 合同原文档 filepaths[1]  拼接后的文档
-	 * @retur
-	 * @throws Exception
-	 */
-	public static void mergeDocsToPDF(String... filepaths) throws Exception {
-		//加载第一个文档
-		Document document = new Document(filepaths[0]);
-		// 循环拼接
-		for (int i = 2; i<=filepaths.length-1; i++) {
-			//使用insertTextFromFile方法将第二个文档的内容插入到第一个文档
-			document.insertTextFromFile(filepaths[i], FileFormat.Docx_2013);
-		}
-		//保存文档
-		document.saveToFile(filepaths[0], FileFormat.Docx_2013);
-		document.close();
-	}
 
     public static void appendBody(XWPFDocument src, XWPFDocument append) throws Exception {
         CTBody src1Body = src.getDocument().getBody();
