@@ -189,10 +189,6 @@ public class TemplateExportUntil {
 				fileDoc.delete();
 				System.out.println("删除成功");
 			}
-			/*if(filePDF.exists()) {
-				filePDF.delete();
-				System.out.println("删除成功");
-			}*/
 			files = fileVO.getData();
 			files.setDomain(newFilePdf);
 		} catch (TemplateException | IOException e) {

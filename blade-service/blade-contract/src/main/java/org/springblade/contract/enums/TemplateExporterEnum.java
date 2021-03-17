@@ -24,6 +24,7 @@ import com.alibaba.fastjson.serializer.ValueFilter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
@@ -47,6 +48,7 @@ import java.util.stream.Stream;
  */
 @Getter
 @AllArgsConstructor
+@Slf4j
 public enum TemplateExporterEnum {
 
     //物流服务合同（二段仓储+配送）
@@ -2150,7 +2152,27 @@ public enum TemplateExporterEnum {
             dataModel.put("telephoneB", j.get("telephoneB"));
             return dataModel;
         }
-    };
+    },
+
+	//劳务派遣合同
+	WLFW_59("WLFW_59") {
+		@Override
+		public Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map dataModel = new HashMap();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if(entry.getKey()==null){
+					continue;
+				}
+				log.info("==key"+entry.getKey().toString());
+				log.info("==value"+entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			return dataModel;
+		}
+	};
 
     public abstract Map setScheduler(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j);
 

@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
@@ -93,7 +94,7 @@ public class ESealServiceImpl implements IESealService {
     }
 
     @Override
-    public List<UploadFileVo> uploadFiles(String token, UploadFileEntity uploadFilesEntity) throws Exception {
+    public List<UploadFileVo> uploadFiles(String token, UploadFileEntity uploadFilesEntity)  {
         HttpPost method = null;
         CloseableHttpClient client = HttpClients.createDefault();
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -111,11 +112,21 @@ public class ESealServiceImpl implements IESealService {
         HttpEntity entity = builder.build();
         method.addHeader("token", token);
         method.setEntity(entity);
-        CloseableHttpResponse response = client.execute(method);
-        JSONObject uploadFilesJson = null;
+		CloseableHttpResponse response = null;
+		try {
+			response = client.execute(method);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		JSONObject uploadFilesJson = null;
         if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
-            String info = EntityUtils.toString(response.getEntity(), Consts.UTF_8.name());
-            log.info(info);
+			String info = null;
+			try {
+				info = EntityUtils.toString(response.getEntity(), Consts.UTF_8.name());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			log.info(info);
             uploadFilesJson = JSONUtil.parseObj(info);
         }
         /*for(File file : uploadFilesEntity.getFile()) {

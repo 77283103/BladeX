@@ -117,6 +117,12 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>1.8.8</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>jempbox</artifactId>
+                    <groupId>org.apache.pdfbox</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox -->
         <dependency>

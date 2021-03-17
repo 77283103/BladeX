@@ -53,6 +53,8 @@ public interface IFileService extends BaseService<FileEntity> {
 	 * @return
 	 */
 	List<FileVO> getByIds(String ids);
+
+
 	InputStream getObject(String fileName);
 
 }

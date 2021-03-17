@@ -63,20 +63,20 @@
         </dependency>
         <!--excel导出-->
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>easyexcel</artifactId>
-            <version>2.1.6</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>poi-ooxml</artifactId>
-                    <groupId>org.apache.poi</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>poi</artifactId>
-                    <groupId>org.apache.poi</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+        <groupId>com.alibaba</groupId>
+        <artifactId>easyexcel</artifactId>
+        <version>2.1.6</version>
+        <exclusions>
+            <exclusion>
+                <artifactId>poi-ooxml</artifactId>
+                <groupId>org.apache.poi</groupId>
+            </exclusion>
+            <exclusion>
+                <artifactId>poi</artifactId>
+                <groupId>org.apache.poi</groupId>
+            </exclusion>
+        </exclusions>
+    </dependency>
         <dependency>
             <groupId>org.springblade</groupId>
             <artifactId>blade-starter-excel</artifactId>
@@ -166,10 +166,12 @@
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpclient</artifactId>
+            <version>4.5.13</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
+            <version>4.5.13</version>
         </dependency>
         <!--excel导出-->
         <!--out net begin -->

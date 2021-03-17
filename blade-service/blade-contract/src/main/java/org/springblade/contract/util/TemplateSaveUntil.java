@@ -111,6 +111,8 @@ public class TemplateSaveUntil {
 	private IBusServiceContractService busServiceContractService;
 	@Autowired
 	private ILaborDispatchService laborDispatchService;
+	@Autowired
+	private ISclServiceContractRefrigerationService sclServiceContractRefrigerationService;
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -408,6 +410,12 @@ public class TemplateSaveUntil {
 				templateSaveUntil.laborDispatchService.save(laborDispatchEntity);
 				id = laborDispatchEntity.getId();
 			}
+			//劳务派遣合同
+			else if ("WLFW_59".equals(template.getTemplateCode())) {
+				SclServiceContractRefrigerationEntity sclServiceContractRefrigeration= JSONObject.toJavaObject(j, SclServiceContractRefrigerationEntity.class);
+				templateSaveUntil.sclServiceContractRefrigerationService.save(sclServiceContractRefrigeration);
+				id = sclServiceContractRefrigeration.getId();
+			}
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
@@ -678,6 +686,12 @@ public class TemplateSaveUntil {
 				LaborDispatchEntity laborDispatchEntity= JSONObject.toJavaObject(j, LaborDispatchEntity.class);
 				laborDispatchEntity.setId(contractFormInfoEntity.getContractListId());
 				templateSaveUntil.laborDispatchService.updateById(laborDispatchEntity);
+			}
+			//劳务派遣合同
+			else if ("WLFW_59".equals(template.getTemplateCode())) {
+				SclServiceContractRefrigerationEntity sclServiceContractRefrigeration= JSONObject.toJavaObject(j, SclServiceContractRefrigerationEntity.class);
+				sclServiceContractRefrigeration.setId(contractFormInfoEntity.getContractListId());
+				templateSaveUntil.sclServiceContractRefrigerationService.updateById(sclServiceContractRefrigeration);
 			}
 		}
 		return contractFormInfoEntity.getId();

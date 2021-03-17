@@ -19,4 +19,8 @@ public interface IOrganizationService {
      * @return
      */
     List<OrganizationVo> getOrganizationInfo(OrganizationEntity entity) throws Exception;
+	/**
+	 * 增量更新组织及人员信息数据
+	 */
+	List<OrganizationVo> getOrganizationInfoIncrement();
 }
