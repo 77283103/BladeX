@@ -232,4 +232,9 @@ public class SclProductionCategoryEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value="保证金缴纳方案三")
 	private String bondChooseThree;
+	/**
+	 * 附件拼接
+	 */
+	@ApiModelProperty(value="附件拼接")
+	private String annex;
 }

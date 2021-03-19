@@ -91,7 +91,7 @@ public class ContractClient implements IContractClient{
 	@GetMapping(CONTRACT_SAVE)
 	public R saveContractFormInfo(Long id, String status) {
 		ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
-		if(Func.isEmpty(contractFormInfo.getId())){
+		if(Func.isEmpty(contractFormInfo)){
 			return R.fail("合同信息不存在");
 		}
 		if("30".equals(status)){

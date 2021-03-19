@@ -2,6 +2,8 @@ package org.springblade.contract.util;
 
 import com.alibaba.fastjson.JSONObject;
 import com.deepoove.poi.XWPFTemplate;
+import com.deepoove.poi.config.Configure;
+import com.deepoove.poi.policy.HackLoopTableRenderPolicy;
 import feign.form.ContentType;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -196,7 +198,9 @@ public class TemplateExportUntil {
 			for (FileVO file : result) {
 				//新建空文件
 				int index = file.getName().lastIndexOf(".");
-				String pathname = ftlPath + file.getName().substring(0, index) + df.format(new Date()) + ".docx";
+				String suffix = file.getName().substring(index);
+				//判断是否为pdf文件，pdf文件不需要转换
+				String pathname = ftlPath + file.getName().substring(0, index) + df.format(new Date()) + suffix;
 				//创建空docx文件
 				File filePDF = new File(pathname);
 				//建立输出字节流
@@ -212,51 +216,52 @@ public class TemplateExportUntil {
 				filepaths.add(pathname);
 			}
 		}
-			dataModel = TemplateExporterEnum.fromValue(templateVO.getTemplateCode()).setScheduler(filepaths, contractFormInfoEntity, templateVO, json, j);
-			//模板地址
-			String path = MergeWordDocument.getTemplateFTLFile(ftlPath, templateVO, contractFormInfoEntity.getContractListId());
-			//拼接后的地址
-			String mergeFileDocx = ftlPath + templateVO.getTemplateCode() + "_M_" + date + ".docx";
-			//转成pdf的地址
-			String newFilePdf = ftlPath + templateVO.getBeanName() + date + ".pdf";
-			//读取模板
-			XWPFTemplate template = XWPFTemplate.compile(path);
-			template.render(dataModel);
-			FileOutputStream out;
-			File templateFile = new File(mergeFileDocx);
-			try {
-				out = new FileOutputStream(templateFile);
-				template.write(out);
-				out.flush();
-				out.close();
-				template.close();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}finally {
-				for (int i = 2; i <filepaths.size()-1 ; i++) {
-					File file=new File(filepaths.get(i));
-					file.delete();
-				}
+		dataModel = TemplateExporterEnum.fromValue(templateVO.getTemplateCode()).setScheduler(filepaths, contractFormInfoEntity, templateVO, json, j);
+		//模板地址
+		String path = MergeWordDocument.getTemplateFTLFile(ftlPath, templateVO, contractFormInfoEntity.getContractListId());
+		//拼接后的地址
+		String mergeFileDocx = ftlPath + templateVO.getTemplateCode() + "_M_" + date + ".docx";
+		//转成pdf的地址
+		String newFilePdf = ftlPath + templateVO.getBeanName() + date + ".pdf";
+		//读取模板
+		Configure config =(Configure)dataModel.get("config");
+		XWPFTemplate template = XWPFTemplate.compile(path, config);
+		template.render(dataModel.get("dataModel"));
+		FileOutputStream out;
+		File templateFile = new File(mergeFileDocx);
+		try {
+			out = new FileOutputStream(templateFile);
+			template.write(out);
+			out.flush();
+			out.close();
+			template.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			for (int i = 0; i < filepaths.size() - 1; i++) {
+				File file = new File(filepaths.get(i));
+				file.delete();
 			}
-			//--------------从这里开始取所需要的数据 end
-			//doc转为pdf
-			AsposeWordToPdfUtils.doc2pdf(mergeFileDocx, newFilePdf);
-			File filePDF = null;
-			try {
-				filePDF = ResourceUtils.getFile(newFilePdf);
-				MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
-					ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
-				/* 上传文件 */
-				R<FileVO> fileVO = templateExportUntil.fileClient.save(multipartFile);
-				if (templateFile.exists()) {
-					templateFile.delete();
-					System.out.println("删除成功");
-				}
-				files = fileVO.getData();
-				files.setDomain(newFilePdf);
-			} catch (IOException ex) {
-				ex.printStackTrace();
+		}
+		//--------------从这里开始取所需要的数据 end
+		//doc转为pdf
+		AsposeWordToPdfUtils.doc2pdf(mergeFileDocx, newFilePdf);
+		File filePDF = null;
+		try {
+			filePDF = ResourceUtils.getFile(newFilePdf);
+			MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
+				ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
+			/* 上传文件 */
+			R<FileVO> fileVO = templateExportUntil.fileClient.save(multipartFile);
+			if (templateFile.exists()) {
+				templateFile.delete();
+				System.out.println("删除成功");
 			}
-			return files;
+			files = fileVO.getData();
+			files.setDomain(newFilePdf);
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+		return files;
 	}
 }

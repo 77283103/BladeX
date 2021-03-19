@@ -21,9 +21,11 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
+import com.deepoove.poi.config.Configure;
 import com.deepoove.poi.data.DocxRenderData;
 import com.deepoove.poi.data.PictureType;
 import com.deepoove.poi.data.Pictures;
+import com.deepoove.poi.policy.HackLoopTableRenderPolicy;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -647,15 +649,18 @@ public enum TemplateExporterEnum {
     ZZHT_16("ZZHT_16") {
         @Override
         public Map setScheduler(List<String> filepaths,ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
-            Map dataModel = new HashMap();
+			Map model = new HashMap();
+        	Map dataModel = new HashMap();
             List<Map<String, Object>> list = new ArrayList();
             List<Map<String, Object>> list1 = new ArrayList();
             List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+			List<MtlVideoProductionContract1ResponseVO> mtlVideoProductionContract1List = new ArrayList<>();
+			List<MtlVideoProductionContract2ResponseVO> mtlVideoProductionContract2List = new ArrayList<>();
             for (TemplateFieldJsonEntity templateField : templateFieldList) {
                 //视频制作合同 关联表1
                 if (ContractFormInfoTemplateContract.CONTRACT_MTLVIDEOPRODUCTIONCONTRACT1.equals(templateField.getRelationCode())) {
-                    List<MtlVideoProductionContract1ResponseVO> mtlVideoProductionContract1List = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract1ResponseVO.class);
-                    for (int i = 0; i < mtlVideoProductionContract1List.size(); i++) {
+                    mtlVideoProductionContract1List = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract1ResponseVO.class);
+                    /*for (int i = 0; i < mtlVideoProductionContract1List.size(); i++) {
                         JSONObject mtlVideoProductionContract1 = JSON.parseObject(JSON.toJSONString(mtlVideoProductionContract1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
                         Map<String, Object> map = new HashMap();
                         map.put("formDelivery", mtlVideoProductionContract1.get("formDelivery"));
@@ -664,12 +669,12 @@ public enum TemplateExporterEnum {
                         map.put("requirements", mtlVideoProductionContract1.get("requirements"));
                         map.put("expenses", mtlVideoProductionContract1.get("expenses"));
                         list.add(map);
-                    }
+                    }*/
                 }
                 //视频制作合同 关联表2
                 if (ContractFormInfoTemplateContract.CONTRACT_MTLVIDEOPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
-                    List<MtlVideoProductionContract2ResponseVO> mtlVideoProductionContract2List = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract2ResponseVO.class);
-                    for (int i = 0; i < mtlVideoProductionContract2List.size(); i++) {
+                    mtlVideoProductionContract2List = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract2ResponseVO.class);
+                    /*for (int i = 0; i < mtlVideoProductionContract2List.size(); i++) {
                         JSONObject mtlVideoProductionContract2 = JSON.parseObject(JSON.toJSONString(mtlVideoProductionContract2List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
                         Map<String, Object> map = new HashMap();
                         map.put("intellectualProperty", mtlVideoProductionContract2.get("intellectualProperty"));
@@ -677,10 +682,15 @@ public enum TemplateExporterEnum {
                         map.put("serviceLife", mtlVideoProductionContract2.get("serviceLife"));
                         map.put("useArea", mtlVideoProductionContract2.get("useArea"));
                         list1.add(map);
-                    }
+                    }*/
                 }
             }
-            //主表
+			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
+			Configure config = Configure.builder()
+				.bind("mtlVideoProductionContract1List", policy).bind("mtlVideoProductionContract2List", policy).build();
+			dataModel.put("mtlVideoProductionContract1List", mtlVideoProductionContract1List);
+			dataModel.put("mtlVideoProductionContract2List", mtlVideoProductionContract2List);
+			//主表
             MtlVideoProductionContractEntity mtlVideoProductionContract = JSONObject.toJavaObject(j, MtlVideoProductionContractEntity.class);
             dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
             dataModel.put("mtlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -719,9 +729,11 @@ public enum TemplateExporterEnum {
             dataModel.put("mtlPortraitRights", j.get("mtlPortraitRights"));
             dataModel.put("mtlLiquidatedDamages2", j.get("mtlLiquidatedDamages2"));
             dataModel.put("mtlDubbingUse", j.get("mtlDubbingUse"));
-            dataModel.put("list", list);
-            dataModel.put("list1", list1);
-            return dataModel;
+            //dataModel.put("list", list);
+            //dataModel.put("list1", list1);
+			model.put("dataModel", setFile(filepaths,dataModel));
+			model.put("config", config);
+            return model;
         }
     },
     //视频广告拍摄制作合同
@@ -1338,7 +1350,7 @@ public enum TemplateExporterEnum {
             dataModel.put("sclJfEntrusted", j.get("sclJfEntrusted"));
             dataModel.put("sclYfEntrusted", j.get("sclYfEntrusted"));
             dataModel.put("sclCompany", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
-            return dataModel;
+			return setFile(filepaths,dataModel);
         }
     },
     //广告制作安装合同模板

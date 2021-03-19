@@ -34,17 +34,17 @@ import java.util.Map;
 
 public class AsposeWordToPdfUtils {
 	//正式
-	private static final String tokenUrl="https://unici.pec.com.cn/common/user/access";
+	/*private static final String tokenUrl="https://unici.pec.com.cn/common/user/access";
 	private static final String tokenSY="https://unici.pec.com.cn/common/file/addWatermark";
 	private static final String tokenXZ="https://unici.pec.com.cn/common/file/downloadWaterMarkDoc/";
 	private static  final String username="admin_cont";
-	private static  final String password="148a0bed39597ef88f3f8b53134993a5";
+	private static  final String password="148a0bed39597ef88f3f8b53134993a5";*/
 	//测试
-	//private static final String tokenUrl="http://sa.pec.com.cn:9080/common/user/access";
-	//private static final String tokenSY="http://sa.pec.com.cn:9080/common/file/addWatermark";
-	//private static  final String tokenXZ="http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/";
-	//private static  final String username="admin_ekp";
-	//private static  final String password="c5c85e7ef7747ce3f1649f44feb8b3bf";
+	private static final String tokenUrl="http://sa.pec.com.cn:9080/common/user/access";
+	private static final String tokenSY="http://sa.pec.com.cn:9080/common/file/addWatermark";
+	private static  final String tokenXZ="http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/";
+	private static  final String username="admin_ekp";
+	private static  final String password="c5c85e7ef7747ce3f1649f44feb8b3bf";
     /**
      * 判断是否有授权文件 如果没有则会认为是试用版，转换的文件会有水印
      *@return
@@ -127,7 +127,7 @@ public class AsposeWordToPdfUtils {
 			FileOutputStream os = new FileOutputStream(file);
 			Document doc = new Document(sourcerFile);
 			//全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
-			doc.save(os, SaveFormat.DOC);
+			doc.save(os, SaveFormat.DOCX);
 			os.close();
 		} catch (Exception e) {
 			e.printStackTrace();

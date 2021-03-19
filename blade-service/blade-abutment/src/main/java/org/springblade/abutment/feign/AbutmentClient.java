@@ -5,7 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
+import org.csource.common.MyException;
+import org.csource.common.NameValuePair;
+import org.csource.fastdfs.StorageClient;
+import org.csource.fastdfs.StorageServer;
 import org.csource.fastdfs.TrackerClient;
+import org.csource.fastdfs.TrackerServer;
 import org.json.simple.JSONObject;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.IDocService;
@@ -17,12 +22,15 @@ import org.springblade.contract.entity.ContractPerformanceColPayEntity;
 import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.feign.IContractClient;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.feign.IDictBizClient;
+import org.springblade.system.user.entity.User;
+import org.springblade.system.user.feign.IUserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,6 +70,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@Autowired
 	private IFileClient fileClient;
 	@Autowired
+	private IUserClient userClient;
+	@Autowired
 	private TrackerClient trackerClient;
 
 	//	@Autowired
@@ -75,7 +85,6 @@ public class AbutmentClient implements IAbutmentClient {
 	@Value("${api.ekp.ftlPath}")
 	private String ftlPath;
 
-	//private static final String ftlPath="/ftl/";
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
 	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
@@ -90,7 +99,8 @@ public class AbutmentClient implements IAbutmentClient {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 				//人员编号
-				docCreatorEntity.setEmplno(entity.getPersonCodeContract());
+				R<User> user=userClient.userInfoById(AuthUtil.getUserId());
+				docCreatorEntity.setEmplno(String.valueOf("".equals(user.getData().getCode())?17090089:user.getData().getCode()));
 				pushEkpEntity.setDocCreator(docCreatorEntity);
 				FormValuesEntity formValuesEntity = new FormValuesEntity();
 				//依据编号
@@ -364,7 +374,7 @@ public class AbutmentClient implements IAbutmentClient {
 				pushEkpEntity.setFormValues(formValuesEntity);
 				try {
 					//处理合同附件
-					/*if (!Func.isEmpty(entity.getAttachedFiles())) {
+					if (!Func.isEmpty(entity.getAttachedFiles())) {
 						List<FileVO> fileVOs = fileClient.getByIds(entity.getAttachedFiles()).getData();
 						String[] fileIds = new String[0];
 						List<Attachment> listAttachment = new ArrayList<>();
@@ -421,7 +431,7 @@ public class AbutmentClient implements IAbutmentClient {
 							listAttachment.add(attachment);
 						}
 						pushEkpEntity.setFd_attachment(listAttachment);
-					}*/
+					}
 					pushEkpEntity.setToken(ekpService.getToken());
 					pushEkpEntity.setDocSubject(entity.getContractName());
 					pushEkpEntity.setFdTemplateId(fdTemplateId);
