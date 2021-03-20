@@ -195,7 +195,7 @@ public class ContractCounterpartEntity extends BaseEntity {
 	 * 更名每月检视
 	 */
 	@ApiModelProperty(value = "更名每月检视")
-	private String renameMonthlyReview;
+	private String renameReview;
 	/**
 	 * 半角名称
 	 */

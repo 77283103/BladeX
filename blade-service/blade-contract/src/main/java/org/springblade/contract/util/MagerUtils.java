@@ -24,9 +24,8 @@ import static org.apache.poi.xwpf.usermodel.Document.PICTURE_TYPE_PNG;
 public class MagerUtils {
     /**
      * 合并多个Word
-     *
      * @param filepaths  filepaths[0] 拼接后DOCX filepaths[1] 拼接DOCX转PDF filepaths[2]  去水印PDF  filepaths[3] 转型DOCX
-     * @throws Exception
+     * @throws Exception 抛出異常
      */
     public static Boolean mergeDoc(List<String> filepaths) throws Exception {
 		Boolean isDelete = false;

@@ -90,6 +90,8 @@
             <scope>system</scope>
             <systemPath>${project.basedir}/lib/EKP-SSO-client-java.jar</systemPath>
         </dependency>-->
+        <!--word merge start-->
+        <!-- word merge end-->
     </dependencies>
 
     <build>

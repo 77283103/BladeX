@@ -185,14 +185,16 @@
         a.a_account_name
     </sql>
     <select id="selectById" resultMap="formInfoResultMap">
-        SELECT  <include refid="baseColumnList"/>
+        SELECT
+        <include refid="baseColumnList"/>
         FROM contract_form_info
         WHERE is_deleted=0
         AND id=#{id}
     </select>
-     <!--  变更合同详情  -->
+    <!--  变更合同详情  -->
     <select id="selectByChangeId" resultMap="formInfoResultMap">
-        SELECT  <include refid="baseColumnList"/>
+        SELECT
+        <include refid="baseColumnList"/>
         FROM contract_form_info
         WHERE is_deleted=0
         AND change_contract_id=#{id}
@@ -200,7 +202,7 @@
     <!-- 分页 合同大类分组类型  合同分类总金额  合同分类签订数量-->
     <select id="pageListStatisticsType" resultMap="formInfoResultMap">
         SELECT contract_big_category,
-        sum(contract_amount)         AS contract_amount,
+        sum(contract_amount) AS contract_amount,
         count(contract_big_category) AS count,
         dict_value
         FROM `contract_form_info` info,
@@ -231,7 +233,7 @@
     <!-- 分页 合同状态查找 合同分类总金额  合同分类签订数量-->
     <select id="pageListStatisticsStatus" resultMap="formInfoResultMap">
         SELECT contract_status,
-        sum(contract_amount)   AS contract_amount,
+        sum(contract_amount) AS contract_amount,
         count(contract_status) AS count
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0
@@ -250,7 +252,7 @@
     <!-- 分页 合同支付类型查找 合同分类总金额  合同分类签订数量-->
     <select id="pageListStatisticsColPayType" resultMap="formInfoResultMap">
         SELECT col_pay_type,
-        sum(contract_amount)   AS contract_amount,
+        sum(contract_amount) AS contract_amount,
         count(col_pay_type) AS count,
         dict_value
         FROM `contract_form_info` info,
@@ -284,8 +286,14 @@
         <if test="contractFormInfo.changeCategory != null and contractFormInfo.changeCategory != ''">
             AND change_category =#{contractFormInfo.changeCategory}
         </if>
+--         合同名称查询
         <if test="contractFormInfo.contractName != null and contractFormInfo.contractName != ''">
             AND contract_name like concat('%', #{contractFormInfo.contractName}, '%')
+        </if>
+--         相对方名称查询
+        <if test="contractFormInfo.counterpartName != null and contractFormInfo.counterpartName != ''">
+            AND id IN(SELECT contract_id FROM contract_counterpart_setting WHERE counterpart_id IN(SELECT id FROM
+            contract_counterpart WHERE `name` like concat('%', #{contractFormInfo.counterpartName}, '%')))
         </if>
         <if test="contractFormInfo.fileExportCategory != null and contractFormInfo.fileExportCategory != ''">
             AND file_export_category = #{contractFormInfo.fileExportCategory}
@@ -306,13 +314,13 @@
             AND file_time is not null
             And file_time != ''
             AND ((
-                         DATE_FORMAT(now(), '%y') - DATE_FORMAT(file_time, '%y')) &gt;= '6'
-                    OR ((
-                                DATE_FORMAT(now(), '%y') - DATE_FORMAT(file_time, '%y')) = '5'
-                    AND (
-                                DATE_FORMAT(now(), '%m') - DATE_FORMAT(file_time, '%m')) &gt;= '0'
-                    AND (
-                                DATE_FORMAT(now(), '%e') - DATE_FORMAT(file_time, '%e')) &gt;= '0'))
+            DATE_FORMAT(now(), '%y') - DATE_FORMAT(file_time, '%y')) &gt;= '6'
+            OR ((
+            DATE_FORMAT(now(), '%y') - DATE_FORMAT(file_time, '%y')) = '5'
+            AND (
+            DATE_FORMAT(now(), '%m') - DATE_FORMAT(file_time, '%m')) &gt;= '0'
+            AND (
+            DATE_FORMAT(now(), '%e') - DATE_FORMAT(file_time, '%e')) &gt;= '0'))
         </if>
         <if test="contractFormInfo.contractSmallCategory != null and contractFormInfo.contractSmallCategory != ''">
             AND contract_small_category like concat('%',#{contractFormInfo.contractSmallCategory},'%')
@@ -333,20 +341,21 @@
         <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd == null">
             AND id IN (SELECT ref_contract_id
             FROM contract_seal_using_info seal
-            WHERE  seal.is_deleted=0
+            WHERE seal.is_deleted=0
             AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') &gt;= #{contractFormInfo.yearStart})
         </if>
         <if test="contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != '' and contractFormInfo.yearStart == null">
             AND id IN (SELECT ref_contract_id
             FROM contract_seal_using_info seal
-            WHERE  seal.is_deleted=0
+            WHERE seal.is_deleted=0
             AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') &lt;= #{contractFormInfo.yearEnd})
         </if>
         <if test="contractFormInfo.yearStart != null and contractFormInfo.yearStart != '' and contractFormInfo.yearEnd != null and contractFormInfo.yearEnd != ''">
             AND id IN (SELECT ref_contract_id
             FROM contract_seal_using_info seal
             WHERE seal.is_deleted=0
-            AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') BETWEEN #{contractFormInfo.yearStart} and #{contractFormInfo.yearEnd})
+            AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') BETWEEN #{contractFormInfo.yearStart} and
+            #{contractFormInfo.yearEnd})
         </if>
         ORDER BY create_time DESC
     </select>
@@ -369,10 +378,10 @@
         <include refid="baseColumnListJoin">
         </include>
         FROM contract_form_info a
-                     LEFT JOIN
-                     contract_seal_using_info b
-                             ON
-                                     a.id = b.ref_contract_id
+        LEFT JOIN
+        contract_seal_using_info b
+        ON
+        a.id = b.ref_contract_id
         <if test="contractFormInfoRequestVO.startingTime != null and contractFormInfoRequestVO.endTime != null">
             WHERE
             <if test="contractFormInfoRequestVO.startingTime != null">
@@ -392,12 +401,12 @@
     <!--保存关联相对方-->
     <insert id="saveCounterpart">
         insert into contract_counterpart_setting
-                (contract_id,
-                 counterpart_id)
-                values
+        (contract_id,
+        counterpart_id)
+        values
         <foreach collection="counterpart" item="item" index="index" open="" close="" separator=",">
             (#{id},
-             #{item.id})
+            #{item.id})
         </foreach>
     </insert>
 
@@ -413,12 +422,12 @@
     <!--保存关联依据-->
     <insert id="saveAccording">
         insert into contract_according_setting
-                (contract_id,
-                 contract_according_id)
-                values
+        (contract_id,
+        contract_according_id)
+        values
         <foreach collection="accordingIds" item="item" index="index" open="" close="" separator=",">
             (#{id},
-             #{item})
+            #{item})
         </foreach>
     </insert>
 
@@ -495,7 +504,7 @@
     <!--合同借阅，案件处理等模块所能操作的合同状态信息查询集合  動態返回合同選擇的下拉選-->
     <select id="getChooseList" resultMap="formInfoResultMap">
         SELECT
-        <include refid="baseColumnList"> </include>
+        <include refid="baseColumnList"></include>
         FROM contract_form_info
         WHERE is_deleted=0
         AND contract_status='110'
@@ -503,16 +512,16 @@
     <!--根据保证金id查询合同id-->
     <select id="findContractList" resultMap="formInfoResultMap">
         SELECT
-        <include refid="baseColumnList"> </include>
+        <include refid="baseColumnList"></include>
         FROM contract_form_info
         WHERE is_deleted = 0
         AND
-        id IN (SELECT c.contract_id  FROM  contract_bond_setting c WHERE c.bond_id = #{id})
+        id IN (SELECT c.contract_id FROM contract_bond_setting c WHERE c.bond_id = #{id})
     </select>
     <!--   范本使用的合同集合 -->
     <select id="getByIdForm" resultMap="formInfoResultMap">
         SELECT
-        <include refid="baseColumnList"> </include>
+        <include refid="baseColumnList"></include>
         FROM contract_form_info
         WHERE is_deleted = 0
         AND contract_template_id = #{id}
@@ -520,7 +529,7 @@
     <!-- 分页 部门合同数量、金额统计表-->
     <select id="deptType" resultMap="formInfoResultMap">
         SELECT
-        <include refid="baseColumnList"> </include>
+        <include refid="baseColumnList"></include>
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0
         <if test="contractFormInfo.createDept != null and contractFormInfo.createDept != ''">
@@ -550,21 +559,21 @@
     <!-- 分页 月度合同集合信息统计-->
     <select id="monthByIdInfo" resultMap="formInfoResultMap">
         SELECT
-            <include refid="baseColumnList"> </include>
+        <include refid="baseColumnList"></include>
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0
-          AND DATE_FORMAT(info.create_time,'%Y')=#{yearStart}
-          AND DATE_FORMAT(info.create_time,'%c')=#{month}
-          AND create_dept=#{createDept}
+        AND DATE_FORMAT(info.create_time,'%Y')=#{yearStart}
+        AND DATE_FORMAT(info.create_time,'%c')=#{month}
+        AND create_dept=#{createDept}
     </select>
     <!-- 分页公司類型分頁 -->
     <select id="monthTypeFirm" resultMap="formInfoResultMap">
-    SELECT
+        SELECT
         DISTINCT
         create_dept
-    FROM contract_form_info
-    WHERE is_deleted = 0
-    AND create_dept in ( SELECT create_dept
+        FROM contract_form_info
+        WHERE is_deleted = 0
+        AND create_dept in ( SELECT create_dept
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0)
         <if test="contractFormInfo.createDept != null and contractFormInfo.createDept != ''">
@@ -574,7 +583,7 @@
     <!-- 分页 类型合同统计表-->
     <select id="eachType" resultMap="formInfoResultMap">
         SELECT contract_big_category,
-        sum(contract_amount)         AS contract_amount,
+        sum(contract_amount) AS contract_amount,
         count(contract_big_category) AS count,
         dict_value
         FROM `contract_form_info` info,
@@ -597,7 +606,7 @@
     </select>
     <!--根據支付類型計算合同金額-->
     <select id="payTypeAmount" resultType="java.math.BigDecimal">
-        SELECT sum(contract_amount)  AS contract_amount
+        SELECT sum(contract_amount) AS contract_amount
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0
         AND info.contract_big_category=#{contractBigCategory}
@@ -618,7 +627,8 @@
 
     <!--根據支付類型計算合同金額-->
     <select id="selectByContractNumber" resultMap="formInfoResultMap">
-        SELECT <include refid="baseColumnList"/>
+        SELECT
+        <include refid="baseColumnList"/>
         FROM `contract_form_info` info
         WHERE info.is_deleted = 0
         AND info.contract_big_category=#{contractFormInfo.contractBigCategory}
