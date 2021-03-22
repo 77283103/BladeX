@@ -349,13 +349,13 @@ public class ContractFormInfoController extends BladeController {
 				j.put(templateField.getFieldName(), templateField.getFieldValue());
 			}
 		}*/
+		//把json串转换成一个对象
 		TemplateRequestVO template=contractFormInfo.getTemplate();
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
 		for (TemplateFieldEntity templateField : templateFieldList) {
 			j.put(templateField.getFieldName(), templateField.getFieldValue());
 		}
-		//把json串转换成一个对象
 		ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
 		/*if(Func.isEmpty(contractFormInfoEntity.getContractTemplateId())){

@@ -1641,6 +1641,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			if ("[]".equals(jsonObject2.get("tableData"))) {
 				jsonObject2.put("tableData", array);
 			}
+			//处理下拉多选的值
+			if ("selectMany".equals(jsonObject2.get("componentType"))&&null != (jsonObject2.get("fieldValue"))) {
+				String selectManyString=jsonObject2.get("fieldValue").toString();
+				String[] selectManyAry=selectManyString.substring(1,selectManyString.length()-1).replaceAll("\"", "").split(",");
+				jsonObject2.put("fieldValue", selectManyAry);
+			}
 			jsonArray.add(jsonObject2);
 		}
 		json = jsonArray.toJSONString();
