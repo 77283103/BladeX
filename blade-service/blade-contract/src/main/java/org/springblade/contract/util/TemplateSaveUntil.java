@@ -416,6 +416,7 @@ public class TemplateSaveUntil {
 				templateSaveUntil.sclServiceContractRefrigerationService.save(sclServiceContractRefrigeration);
 				id = sclServiceContractRefrigeration.getId();
 			}
+			//ContractListId保存的是字表的id
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {

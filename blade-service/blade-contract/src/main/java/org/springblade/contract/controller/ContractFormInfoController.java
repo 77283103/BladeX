@@ -358,9 +358,9 @@ public class ContractFormInfoController extends BladeController {
 		//把json串转换成一个对象
 		ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
-		if(Func.isEmpty(contractFormInfoEntity.getContractTemplateId())){
+		/*if(Func.isEmpty(contractFormInfoEntity.getContractTemplateId())){
 			contractFormInfoEntity.setContractTemplateId(contractFormInfo.getContractListId());
-		}
+		}*/
 		Long id=TemplateSaveUntil.templateSave(contractFormInfoEntity,template,j);
 		contractFormInfo.setId(id);
 		/*保存相对方信息*/

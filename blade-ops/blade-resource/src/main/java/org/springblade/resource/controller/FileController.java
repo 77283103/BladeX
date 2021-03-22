@@ -66,7 +66,12 @@ public class FileController extends BladeController {
 		return R.status(fileService.del(Func.toLongList(ids)));
 	}
 
+	/**
+	 * 下载文件
+	 */
 	@GetMapping("/downloadFiles")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "下载文件", notes = "传入文件id")
 	public void downloadFiles(@RequestParam String id, HttpServletResponse response) {
 		try {
 			FileEntity fileEntity = fileService.getById(Long.valueOf(id));

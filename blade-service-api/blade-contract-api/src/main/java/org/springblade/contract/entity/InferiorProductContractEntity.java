@@ -245,5 +245,9 @@ public class InferiorProductContractEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "废茶渣流向承诺")
 	private String infTeaSurf;
-
+	/**
+	 * 附件拼接
+	 */
+	@ApiModelProperty(value="附件拼接")
+	private String annex;
 }

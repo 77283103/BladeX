@@ -1711,7 +1711,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
 			}
 			if(("0".equals(companyInfoVo.getOrganCode()))&&("2".equals(contractFormInfo.getContractForm()))){
-				return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子签章内部用印");
+				return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
 			}
 		}
 		String newFileDoc = "";

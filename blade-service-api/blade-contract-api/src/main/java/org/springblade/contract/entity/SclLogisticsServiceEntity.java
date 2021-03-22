@@ -439,5 +439,9 @@ public class SclLogisticsServiceEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="公司")
 	private String company1;
-
+	/**
+	 * 附件拼接
+	 */
+	@ApiModelProperty(value="附件拼接")
+	private String annex;
 }

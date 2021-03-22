@@ -10,6 +10,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.enums.TemplateExporterEnum;
+import org.springblade.contract.vo.MtlVideoProductionContract1ResponseVO;
+import org.springblade.contract.vo.MtlVideoProductionContract2ResponseVO;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -218,14 +220,20 @@ public class TemplateExportUntil {
 		}
 		dataModel = TemplateExporterEnum.fromValue(templateVO.getTemplateCode()).setScheduler(filepaths, contractFormInfoEntity, templateVO, json, j);
 		//模板地址
-		String path = MergeWordDocument.getTemplateFTLFile(ftlPath, templateVO, contractFormInfoEntity.getContractListId());
+		String path = MergeWordDocument.getTemplateFTLFile(ftlPath, templateVO, contractFormInfoEntity.getContractTemplateId());
 		//拼接后的地址
 		String mergeFileDocx = ftlPath + templateVO.getTemplateCode() + "_M_" + date + ".docx";
 		//转成pdf的地址
 		String newFilePdf = ftlPath + templateVO.getBeanName() + date + ".pdf";
 		//读取模板
+		XWPFTemplate template;
+		//判断config是否为空，不为空表示有关联表
 		Configure config =(Configure)dataModel.get("config");
-		XWPFTemplate template = XWPFTemplate.compile(path, config);
+		if(Func.isEmpty(config)){
+			template = XWPFTemplate.compile(path);
+		}else{
+			template = XWPFTemplate.compile(path,config);
+		}
 		template.render(dataModel.get("dataModel"));
 		FileOutputStream out;
 		File templateFile = new File(mergeFileDocx);
