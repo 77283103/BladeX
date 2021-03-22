@@ -50,7 +50,7 @@ public class ContractCounterpartExcel implements Serializable {
 	@ExcelProperty(value = "黑名单标识") private String blacklistLogo;
 	@ExcelProperty(value = "是否注销") private String cancellation;
 	@ExcelProperty(value = "备注") private String remarks;
-	@ExcelProperty(value = "更名每月检视") private String renameMonthlyReview;
+	@ExcelProperty(value = "更名每月检视") private String renameReview;
 	@ExcelProperty(value = "半角名称") private String halfWidthName;
 
 

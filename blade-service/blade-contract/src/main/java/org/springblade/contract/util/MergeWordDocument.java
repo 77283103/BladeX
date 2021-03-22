@@ -27,7 +27,6 @@ import org.docx4j.fonts.PhysicalFonts;
 import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springblade.contract.service.IContractTemplateService;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -292,12 +291,6 @@ public class MergeWordDocument {
 			e.printStackTrace();
 		}
 		// 拼接后文档docx转pdf
-//		try {
-//			docxToPDF(filepaths.get(0), filepaths.get(1));
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-		//wordDocx4JPdf(filepaths.get(0), filepaths.get(1));
 		AsposeWordToPdfUtils.doc2pdf(filepaths.get(0), filepaths.get(1));
 	}
 
@@ -326,34 +319,5 @@ public class MergeWordDocument {
 			e.printStackTrace();
 		}
 		return pathname;
-	}
-
-	/**
-	 * POI and DOCX4j 转docx为pdf
-	 * @param newFileDoc docx文档路径
-	 * @param newFilePdf pdf文档路径
-	 */
-	@SneakyThrows
-	public static void wordDocx4JPdf(String newFileDoc, String newFilePdf) {
-		InputStream is = new FileInputStream(new File(newFileDoc));
-		WordprocessingMLPackage wordMLPackage = WordprocessingMLPackage.load(is);
-		List sections = wordMLPackage.getDocumentModel().getSections();
-		for (int i = 0; i < sections.size(); i++) {
-			wordMLPackage.getDocumentModel().getSections().get(i)
-				.getPageDimensions();
-		}
-		Mapper fontMapper = new IdentityPlusMapper();
-		PhysicalFont font = PhysicalFonts.getPhysicalFonts().get("宋体");
-		fontMapper.getFontMappings().put("Algerian", font);
-		wordMLPackage.setFontMapper(fontMapper);
-		PdfSettings pdfSettings = new PdfSettings();
-		org.docx4j.convert.out.pdf.PdfConversion conversion = new org.docx4j.convert.out.pdf.viaXSLFO.Conversion(wordMLPackage);
-		//To turn off logger
-		List<Logger> loggers = Collections.<Logger> list(LogManager.getCurrentLoggers());
-		loggers.add(LogManager.getRootLogger());
-		for (Logger logger : loggers) {
-			logger.setLevel(Level.OFF);
-		}
-		conversion.output(new FileOutputStream(new File(newFilePdf)), pdfSettings);
 	}
 }

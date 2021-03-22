@@ -81,7 +81,7 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
         data.forEach(counterpartExcel -> {
             ContractCounterpartEntity contractCounterpartEntity = new ContractCounterpartEntity();
             //相对方类型
-            if (!"-".equals(counterpartExcel.getCounterpartCategory()) && !"".equals(counterpartExcel.getCounterpartCategory())) {
+            if (!"-".equals(counterpartExcel.getCounterpartCategory()) && !"".equals(counterpartExcel.getCounterpartCategory()) && null!=counterpartExcel.getCounterpartCategory()) {
                 contractCounterpartEntity.setCounterpartCategory(counterpartExcel.getCounterpartCategory()); }
             //相对方名称
             if (!"-".equals(counterpartExcel.getName()) && !"".equals(counterpartExcel.getName())) {
@@ -90,19 +90,19 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
 //            if (!"-".equals(counterpartExcel.getNatureCategory()) && !"".equals(counterpartExcel.getNatureCategory())) {
 //                contractCounterpartEntity.setNatureCategory(counterpartExcel.getNatureCategory()); }
             //注册地址
-            if (!"-".equals(counterpartExcel.getRegisteredAddress()) && !"".equals(counterpartExcel.getRegisteredAddress())) {
+            if (!"-".equals(counterpartExcel.getRegisteredAddress()) && !"".equals(counterpartExcel.getRegisteredAddress()) && null!=counterpartExcel.getRegisteredAddress()) {
                 contractCounterpartEntity.setRegisteredAddress(counterpartExcel.getRegisteredAddress()); }
             //法定代表人
-            if (!"-".equals(counterpartExcel.getLegalRepresentative()) && !"".equals(counterpartExcel.getLegalRepresentative())) {
+            if (!"-".equals(counterpartExcel.getLegalRepresentative()) && !"".equals(counterpartExcel.getLegalRepresentative()) && null!=counterpartExcel.getLegalRepresentative()) {
                 contractCounterpartEntity.setLegalRepresentative(counterpartExcel.getLegalRepresentative()); }
             //身份证号
-            if (!"-".equals(counterpartExcel.getIdNumber()) && !"".equals(counterpartExcel.getIdNumber())) {
+            if (!"-".equals(counterpartExcel.getIdNumber()) && !"".equals(counterpartExcel.getIdNumber()) && null!=counterpartExcel.getIdNumber()) {
                 contractCounterpartEntity.setIdNumber(counterpartExcel.getIdNumber()); }
             //护照号
-            if (!"-".equals(counterpartExcel.getPassportId()) && !"".equals(counterpartExcel.getPassportId())) {
+            if (!"-".equals(counterpartExcel.getPassportId()) && !"".equals(counterpartExcel.getPassportId()) && null!=counterpartExcel.getPassportId()) {
                 contractCounterpartEntity.setPassportId(counterpartExcel.getPassportId()); }
             //成立日期
-            if (!"-".equals(counterpartExcel.getEstablishDate()) && !"".equals(counterpartExcel.getEstablishDate())) {
+            if (!"-".equals(counterpartExcel.getEstablishDate()) && !"".equals(counterpartExcel.getEstablishDate()) && null!=counterpartExcel.getEstablishDate()) {
                 try {
                     contractCounterpartEntity.setEstablishDate(
                             format.parse(counterpartExcel.getEstablishDate()));
@@ -111,7 +111,7 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
                 }
             }
             //注册资本
-            if (!"-".equals(counterpartExcel.getRegisteredCapital()) && !"".equals(counterpartExcel.getRegisteredCapital())) {
+            if (!"-".equals(counterpartExcel.getRegisteredCapital()) && !"".equals(counterpartExcel.getRegisteredCapital()) && null!=counterpartExcel.getRegisteredCapital()) {
 //				BigDecimal registeredCapital=null;
 //				if (counterpartExcel.getRegisteredCapital().contains("人民币")) {
 //					registeredCapital = BigDecimal.valueOf(
@@ -122,73 +122,73 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
                 contractCounterpartEntity.setRegisteredCapital(counterpartExcel.getRegisteredCapital());
             }
             //币种
-            if (!"-".equals(counterpartExcel.getCurrencyCategory()) && !"".equals(counterpartExcel.getCurrencyCategory())) {
+            if (!"-".equals(counterpartExcel.getCurrencyCategory()) && !"".equals(counterpartExcel.getCurrencyCategory()) && null!=counterpartExcel.getCurrencyCategory()) {
                 contractCounterpartEntity.setCurrencyCategory(
                 		dictBizClient.getKey("bz",counterpartExcel.getCurrencyCategory()).getData()); }
             //社会统一信用代码
-            if (!"-".equals(counterpartExcel.getUnifiedSocialCreditCode()) && !"".equals(counterpartExcel.getUnifiedSocialCreditCode())) {
+            if (!"-".equals(counterpartExcel.getUnifiedSocialCreditCode()) && !"".equals(counterpartExcel.getUnifiedSocialCreditCode()) && null!=counterpartExcel.getUnifiedSocialCreditCode()) {
                 contractCounterpartEntity.setUnifiedSocialCreditCode(counterpartExcel.getUnifiedSocialCreditCode()); }
             //组织机构代码
-            if (!"-".equals(counterpartExcel.getOrganizationCode()) && !"".equals(counterpartExcel.getOrganizationCode())) {
+            if (!"-".equals(counterpartExcel.getOrganizationCode()) && !"".equals(counterpartExcel.getOrganizationCode()) && null!=counterpartExcel.getOrganizationCode()) {
                 contractCounterpartEntity.setOrganizationCode(counterpartExcel.getOrganizationCode()); }
             //电子印章序列号
-            if (!"-".equals(counterpartExcel.getElectronicSealSerialId()) && !"".equals(counterpartExcel.getElectronicSealSerialId())) {
+            if (!"-".equals(counterpartExcel.getElectronicSealSerialId()) && !"".equals(counterpartExcel.getElectronicSealSerialId()) && null!=counterpartExcel.getElectronicSealSerialId()) {
                 contractCounterpartEntity.setElectronicSealSerialId(counterpartExcel.getElectronicSealSerialId());
             }
             //相关联系人
-            if (!"-".equals(counterpartExcel.getCounterpartCategory()) && !"".equals(counterpartExcel.getCounterpartCategory())) {
+            if (!"-".equals(counterpartExcel.getCounterpartCategory()) && !"".equals(counterpartExcel.getCounterpartCategory()) && null!=counterpartExcel.getCounterpartCategory()) {
                 contractCounterpartEntity.setContactPersonPhone(counterpartExcel.getContactPersonName()); }
             //联系人电话
-            if (!"-".equals(counterpartExcel.getContactPersonPhone()) && !"".equals(counterpartExcel.getContactPersonPhone())) {
+            if (!"-".equals(counterpartExcel.getContactPersonPhone()) && !"".equals(counterpartExcel.getContactPersonPhone()) && null!=counterpartExcel.getContactPersonPhone()) {
                 contractCounterpartEntity.setContactPersonPhone(counterpartExcel.getContactPersonPhone()); }
             //联系人邮箱
-            if (!"-".equals(counterpartExcel.getContactPersonMail()) && !"".equals(counterpartExcel.getContactPersonMail())) {
+            if (!"-".equals(counterpartExcel.getContactPersonMail()) && !"".equals(counterpartExcel.getContactPersonMail()) && null!=counterpartExcel.getContactPersonMail()) {
                 contractCounterpartEntity.setContactPersonMail(counterpartExcel.getContactPersonMail()); }
             //开户银行
-            if (!"-".equals(counterpartExcel.getDepositBank()) && !"".equals(counterpartExcel.getDepositBank())) {
+            if (!"-".equals(counterpartExcel.getDepositBank()) && !"".equals(counterpartExcel.getDepositBank()) && null!=counterpartExcel.getDepositBank()) {
                 contractCounterpartEntity.setDepositBank(counterpartExcel.getDepositBank()); }
             //开户地址
-            if (!"-".equals(counterpartExcel.getAccountOpeningAddress()) && !"".equals(counterpartExcel.getAccountOpeningAddress())) {
+            if (!"-".equals(counterpartExcel.getAccountOpeningAddress()) && !"".equals(counterpartExcel.getAccountOpeningAddress()) && null!=counterpartExcel.getAccountOpeningAddress()) {
                 contractCounterpartEntity.setAccountOpeningAddress(counterpartExcel.getAccountOpeningAddress()); }
             //银行账号
-            if (!"-".equals(counterpartExcel.getBankAccount()) && !"".equals(counterpartExcel.getBankAccount())) {
+            if (!"-".equals(counterpartExcel.getBankAccount()) && !"".equals(counterpartExcel.getBankAccount()) && null!=counterpartExcel.getBankAccount()) {
                 contractCounterpartEntity.setBankAccount(counterpartExcel.getBankAccount()); }
             //付款方式
-            if (!"-".equals(counterpartExcel.getPaymentMethod()) && !"".equals(counterpartExcel.getPaymentMethod())) {
+            if (!"-".equals(counterpartExcel.getPaymentMethod()) && !"".equals(counterpartExcel.getPaymentMethod()) && null!=counterpartExcel.getPaymentMethod()) {
                 contractCounterpartEntity.setPaymentMethod(
                         dictBizClient.getValue("payment_method",counterpartExcel.getPaymentMethod()).getData());
             }
             //相关附件
-            if (!"-".equals(counterpartExcel.getAttachedFiles()) && !"".equals(counterpartExcel.getAttachedFiles())) {
+            if (!"-".equals(counterpartExcel.getAttachedFiles()) && !"".equals(counterpartExcel.getAttachedFiles()) && null!=counterpartExcel.getAttachedFiles()) {
                 contractCounterpartEntity.setAttachedFiles(counterpartExcel.getAttachedFiles());
             }
             //存续状态
-            if (!"-".equals(counterpartExcel.getExistenceStatus()) && !"".equals(counterpartExcel.getExistenceStatus())) {
+            if (!"-".equals(counterpartExcel.getExistenceStatus()) && !"".equals(counterpartExcel.getExistenceStatus()) && null!=counterpartExcel.getExistenceStatus()) {
                 contractCounterpartEntity.setExistenceStatus(
                         dictBizClient.getKey("existence_status",counterpartExcel.getExistenceStatus()).getData());
             }
 			//单位类型
-			if (!"-".equals(counterpartExcel.getClassification()) && !"".equals(counterpartExcel.getClassification())) {
+			if (!"-".equals(counterpartExcel.getClassification()) && !"".equals(counterpartExcel.getClassification()) && null!=counterpartExcel.getClassification()) {
 				contractCounterpartEntity.setClassification(counterpartExcel.getClassification());
 			}
 			//黑名单标识
-			if (!"-".equals(counterpartExcel.getBlacklistLogo()) && !"".equals(counterpartExcel.getBlacklistLogo())) {
+			if (!"-".equals(counterpartExcel.getBlacklistLogo()) && !"".equals(counterpartExcel.getBlacklistLogo()) && null!=counterpartExcel.getBlacklistLogo()) {
 				contractCounterpartEntity.setBlacklistLogo(counterpartExcel.getBlacklistLogo());
 			}
 			//是否注销
-			if (!"-".equals(counterpartExcel.getCancellation()) && !"".equals(counterpartExcel.getCancellation())) {
+			if (!"-".equals(counterpartExcel.getCancellation()) && !"".equals(counterpartExcel.getCancellation()) && null!=counterpartExcel.getCancellation()) {
 				contractCounterpartEntity.setCancellation(counterpartExcel.getCancellation());
 			}
 			//备注
-			if (!"-".equals(counterpartExcel.getRemarks()) && !"".equals(counterpartExcel.getRemarks())) {
+			if (!"-".equals(counterpartExcel.getRemarks()) && !"".equals(counterpartExcel.getRemarks()) && null!=counterpartExcel.getRemarks()) {
 				contractCounterpartEntity.setRemarks(counterpartExcel.getRemarks());
 			}
 			//更名每月检视
-			if (!"-".equals(counterpartExcel.getRenameMonthlyReview()) && !"".equals(counterpartExcel.getRenameMonthlyReview())) {
-				contractCounterpartEntity.setRenameMonthlyReview(counterpartExcel.getRenameMonthlyReview());
+			if (!"-".equals(counterpartExcel.getRenameReview()) && !"".equals(counterpartExcel.getRenameReview()) && null!=counterpartExcel.getRenameReview()) {
+				contractCounterpartEntity.setRenameReview(counterpartExcel.getRenameReview());
 			}
 			//半角名称
-			if (!"-".equals(counterpartExcel.getHalfWidthName()) && !"".equals(counterpartExcel.getHalfWidthName())) {
+			if (!"-".equals(counterpartExcel.getHalfWidthName()) && !"".equals(counterpartExcel.getHalfWidthName()) && null!=counterpartExcel.getHalfWidthName()) {
 				contractCounterpartEntity.setHalfWidthName(counterpartExcel.getHalfWidthName());
 			}
 

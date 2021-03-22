@@ -40,16 +40,16 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 
 	/**
 	 * 根据相对方名称获取集合
-	 * @param name 合同name
+	 * @param unifiedSocialCreditCode 合同name
 	 * @return
 	 */
-	List<ContractCounterpartEntity> selectByName(String name);
+	List<ContractCounterpartEntity> selectByName(String unifiedSocialCreditCode);
 
 	/**
 	 *
-	 * @param entity
+	 * @param contractCounterpartEntity 相对方信息
 	 */
-	void updateByName(ContractCounterpartEntity entity);
+	void updateByName(ContractCounterpartEntity contractCounterpartEntity);
 
 	/**
 	 *

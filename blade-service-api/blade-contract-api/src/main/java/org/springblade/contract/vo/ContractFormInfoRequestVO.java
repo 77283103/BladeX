@@ -99,4 +99,9 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	 */
 	@ApiModelProperty(value="統計查詢類型(年份結束)")
 	private String yearEnd;
+	/**
+	 * 相对方名称
+	 */
+	@ApiModelProperty(value="相对方名称")
+	private String counterpartName;
 }

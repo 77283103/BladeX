@@ -43,7 +43,7 @@
         <result column="blacklist_logo" property="blacklistLogo"/>
         <result column="cancellation" property="cancellation"/>
         <result column="remarks" property="remarks"/>
-        <result column="rename_review" property="renameMonthlyReview"/>
+        <result column="rename_review" property="renameReview"/>
         <result column="half_width_name" property="halfWidthName"/>
 
     </resultMap>
@@ -92,39 +92,39 @@
         half_width_name
     </sql>
     <sql id="baseColumnListJoin">
-        name={entity.name},
-        id_number={entity.id_number},
-        unified_social_credit_code={entity.unified_social_credit_code},
-        nature_category={entity.nature_category},
-        counterpart_category={entity.counterpart_category},
-        registered_address={entity.registered_address},
-        contact_person_phone={entity.contact_person_phone},
-        contact_person_name={entity.contact_person_name},
-        existence_status={entity.existence_status},
-        contact_address={entity.contactcontact_address},
-        organization_code={entity.organization_code},
-        account_opening_address={entity.account_opening_address},
-        passport_id={entity.passport_id},
-        first_cooperation_date={entity.first_cooperation_date},
-        electronic_seal_serial_id={entity.electronic_seal_serial_id},
-        tax_rate={entity.tax_rate},
-        payment_method={entity.payment_method},
-        information_syn_date={entity.information_syn_date},
-        establish_date={entity.establish_date},
-        company_address={entity.company_address},
-        registered_capital={entity.registered_capital},
-        legal_representative={entity.legal_representative},
-        contact_person_mail={entity.contact_person_mail},
-        deposit_bank={entity.deposit_bank},
-        bank_account={entity.bank_account},
-        attached_files={entity.attached_files},
-        currency_category={entity.currency_category},
-        classification={entity.classification},
-        blacklist_logo={entity.blacklist_logo},
-        cancellation={entity.cancellation},
-        remarks={entity.remarks},
-        rename_review{entity.rename_review},
-        half_width_name={entity.half_width_name}
+        name=#{name},
+        id_number=#{idNumber},
+        unified_social_credit_code=#{unifiedSocialCreditCode},
+        nature_category=#{natureCategory},
+        counterpart_category=#{counterpartCategory},
+        registered_address=#{registeredAddress},
+        contact_person_phone=#{contactPersonPhone},
+        contact_person_name=#{contactPersonName},
+        existence_status=#{existenceStatus},
+        contact_address=#{contactAddress},
+        organization_code=#{organizationCode},
+        account_opening_address=#{accountOpeningAddress},
+        passport_id=#{passportId},
+        first_cooperation_date=#{firstCooperationDate},
+        electronic_seal_serial_id=#{electronicSealSerialId},
+        tax_rate=#{taxRate},
+        payment_method=#{paymentMethod},
+        information_syn_date=#{informationSynDate},
+        establish_date=#{establishDate},
+        company_address=#{companyAddress},
+        registered_capital=#{registeredCapital},
+        legal_representative=#{legalRepresentative},
+        contact_person_mail=#{contactPersonMail},
+        deposit_bank=#{depositBank},
+        bank_account=#{bankAccount},
+        attached_files=#{attachedFiles},
+        currency_category=#{currencyCategory},
+        classification=#{classification},
+        blacklist_logo=#{blacklistLogo},
+        cancellation=#{cancellation},
+        remarks=#{remarks},
+        rename_review=#{renameReview},
+        half_width_name=#{halfWidthName}
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="counterpartResultMap">
@@ -176,7 +176,7 @@
         FROM contract_counterpart
         WHERE is_deleted = 0
         AND
-        unified_social_credit_code = #{unified_social_credit_code}
+        unified_social_credit_code = #{unifiedSocialCreditCode}
     </select>
 
     <!--根相对方统一信用代码修改i相对方信息-->
@@ -184,7 +184,7 @@
         UPDATE contract_counterpart
         SET
         <include refid="baseColumnListJoin"> </include>
-        WHERE unified_social_credit_code = #{entity.unified_social_credit_code}
+        WHERE unified_social_credit_code = #{unifiedSocialCreditCode}
     </update>
     <!--批量插入-->
     <insert id="saveBatchPost">
