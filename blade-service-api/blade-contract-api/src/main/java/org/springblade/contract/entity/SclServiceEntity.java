@@ -321,7 +321,7 @@ public class SclServiceEntity extends BaseEntity {
 	 * 元/月
 	 */
 	@ApiModelProperty(value = "元/月")
-	private BigDecimal sclCost;
+	private String sclCost;
 	/**
 	 * 办公等条件
 	 */
