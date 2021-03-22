@@ -204,7 +204,7 @@ public class SclServiceRequestVO extends BaseEntity {
 	private Double sclNinth;
 
 	@ApiModelProperty(value="元/月")
-	private BigDecimal sclCost;
+	private String sclCost;
 
 	@ApiModelProperty(value="办公等条件")
 	private Integer sclBank;
