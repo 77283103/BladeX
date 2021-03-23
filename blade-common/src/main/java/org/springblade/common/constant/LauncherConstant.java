@@ -49,7 +49,7 @@ public interface LauncherConstant {
 	/**
 	 * nacos test 地址
 	 */
-	String NACOS_TEST_ADDR = "120.53.124.80:8848";
+	String NACOS_TEST_ADDR = "localhost:8848";
 
 	/**
 	 * sentinel dev 地址
