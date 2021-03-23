@@ -147,7 +147,21 @@ public class ContractTemplateController extends BladeController {
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(templateService.deleteLogic(Func.toLongList(ids)));
 	}
-
+	/**
+	 * 启用
+	 */
+	@PostMapping("/enabled")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "启用", notes = "传入template")
+	@PreAuth("hasPermission('contract:template:enabled')")
+	public R enabled(@Valid @RequestBody ContractTemplateRequestVO template) {
+		if ("1".equals(template.getEnabled())){
+			template.setEnabled("0");
+		}else{
+			template.setEnabled("1");
+		}
+		return R.status(templateService.updateTemplateEnabled(template.getEnabled(),template.getId()));
+	}
 	/**
 	 * 废弃
 	 */
@@ -199,6 +213,7 @@ public class ContractTemplateController extends BladeController {
 		ContractTemplateEntity entity = new ContractTemplateEntity();
 		BeanUtil.copy(template,entity);
 		entity.setTemplateCode(template.getTemplateCode());
+		entity.setEnabled("0");
 		entity.setTemplateStatus(TEMPLATE_REVISION_STATUS);
 		templateService.save(entity,"REVISION");
 		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD,entity.getOriginalTemplateId());

@@ -7,9 +7,7 @@ import com.spire.doc.Section;
 import com.spire.doc.documents.Paragraph;
 import com.spire.doc.fields.DocPicture;
 import lombok.AllArgsConstructor;
-import org.springblade.core.tool.api.R;
 import org.springblade.resource.feign.IFileClient;
-import org.springblade.resource.vo.FileVO;
 import org.springframework.stereotype.Component;
 import com.spire.pdf.*;
 import com.spire.pdf.general.find.PdfTextFind;
@@ -23,7 +21,6 @@ import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author xhbbo

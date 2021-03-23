@@ -13,18 +13,9 @@ import com.spire.pdf.automaticfields.PdfPageNumberField;
 import com.spire.pdf.graphics.*;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 import org.apache.poi.xwpf.converter.pdf.PdfConverter;
 import org.apache.poi.xwpf.converter.pdf.PdfOptions;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.docx4j.convert.out.pdf.viaXSLFO.PdfSettings;
-import org.docx4j.fonts.IdentityPlusMapper;
-import org.docx4j.fonts.Mapper;
-import org.docx4j.fonts.PhysicalFont;
-import org.docx4j.fonts.PhysicalFonts;
-import org.docx4j.openpackaging.packages.WordprocessingMLPackage;
 import org.springblade.contract.service.IContractTemplateService;
 import org.springblade.core.tool.api.R;
 import org.springblade.resource.feign.IFileClient;
@@ -274,12 +265,6 @@ public class MergeWordDocument {
 				.size(700, 400).create());
 		}
 		template.render(hashMap);
-//		XWPFTemplate template = XWPFTemplate.compile(filepaths.get(2)).render(
-//			new HashMap<String, Object>(){{
-//				for (int i = 3; i <=filepaths.size()-1 ; i++) {
-//					put("docx_word"+i, new DocxRenderData(new File(filepaths.get(i))));
-//				}
-//			}});
 		FileOutputStream out = null;
 		try {
 			out = new FileOutputStream(filepaths.get(0));

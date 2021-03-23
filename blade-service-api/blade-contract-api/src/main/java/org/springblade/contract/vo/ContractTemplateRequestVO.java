@@ -81,6 +81,9 @@ public class ContractTemplateRequestVO extends ContractTemplateEntity {
 	@ApiModelProperty(value = "备注")
 	private String remarks;
 
+	@ApiModelProperty(value = "启用")
+	private String enabled;
+
 	@ApiModelProperty(value="模板状态集合")
 	private List<String> code;
 	/**

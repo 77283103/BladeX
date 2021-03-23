@@ -123,6 +123,17 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	}
 
 	/**
+	 * 范本是否启用
+	 * @param enabled
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public boolean updateTemplateEnabled(String enabled, Long id) {
+		return templateMapper.updateTemplateEnabled(enabled, id);
+	}
+
+	/**
 	 * 返回文件vo
 	 * @param id
 	 * @return

@@ -30,6 +30,7 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
+        <result column="enabled" property="enabled"/>
         <result column="template_file_id" property="templateFileId"/>
     </resultMap>
     <!-- 通用查询结果列 -->
@@ -60,6 +61,7 @@
         update_user,
         update_time,
         create_dept,
+        enabled,
         template_file_id
     </sql>
     <!-- 分页 -->
@@ -70,6 +72,9 @@
         WHERE is_deleted = 0
         <if test="template.name != null and template.name != ''">
             AND name like concat('%', #{template.name}, '%')
+        </if>
+        <if test="template.enabled != null and template.enabled != ''">
+            AND enabled like concat('%', #{template.enabled}, '%')
         </if>
         <if test="template.templateCategory != null and template.templateCategory != ''">
             AND template_category like concat('%', #{template.templateCategory}, '%')
@@ -105,6 +110,10 @@
     <!--修改范本状态-->
     <update id="updateTemplateStatus">
         UPDATE contract_template SET template_status = #{templateStatus} WHERE id =#{id}
+    </update>
+    <!--修改范本是否启用-->
+    <update id="updateTemplateEnabled">
+        UPDATE contract_template SET enabled = #{enabled} WHERE id =#{id}
     </update>
     <!--查询模板历史版本-->
     <select id="versionInfo" resultMap="templateResultMap">

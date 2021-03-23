@@ -42,7 +42,13 @@ public interface ContractTemplateMapper extends BaseMapper<ContractTemplateEntit
 	 * @return
 	 */
 	boolean updateTemplateStatus(String templateStatus, Long id);
-
+	/**
+	 * 更新范本是否启用
+	 * @param id
+	 * @return
+	 */
+	boolean updateTemplateEnabled(@Param("enabled") String enabled,
+								  @Param("id") Long id);
 	/**
 	 * 历史版本列表查询
 	 * @param id

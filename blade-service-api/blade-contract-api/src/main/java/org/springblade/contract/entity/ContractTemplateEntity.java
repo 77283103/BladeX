@@ -139,6 +139,11 @@ public class ContractTemplateEntity extends BaseEntity {
 	@ApiModelProperty(value = "json页面")
 	private String json;
 	/**
+	 * 是否启用
+	 */
+	@ApiModelProperty(value = "是否启用")
+	private String enabled;
+	/**
 	 * 范本使用的合同集合
 	 */
 	@ApiModelProperty(value = "范本使用的合同集合")

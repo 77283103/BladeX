@@ -1,0 +1,58 @@
+stages:
+  - install_deps
+  - test
+  - build
+  - deploy_test
+  - deploy_production
+
+cache:
+  key: ${CI_BUILD_REF_NAME}
+  paths:
+    - node_modules/
+    - dist/
+
+# 安装依赖
+install_deps:
+  stage: install_deps
+  only:
+    - develop
+    - dev_ty
+  script:
+    - npm install
+
+# 运行测试用例
+test:
+  stage: test
+  only:
+    - develop
+    - dev_ty
+  script:
+    - npm run test
+
+# 编译
+build:
+  stage: build
+  only:
+    - develop
+    - dev_ty
+  script:
+    - npm run clean
+    - npm run build:client
+    - npm run build:server
+
+# 部署测试服务器
+deploy_test:
+  stage: deploy_test
+  only:
+    - develop
+  script:
+    - pm2 delete app || true
+    - pm2 start app.js --name app
+
+# 部署生产服务器
+deploy_production:
+  stage: deploy_production
+  only:
+    - dev_ty
+  script:
+    - bash scripts/deploy/deploy.sh
