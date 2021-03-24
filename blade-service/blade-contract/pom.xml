@@ -285,12 +285,6 @@
             <groupId>com.deepoove</groupId>
             <artifactId>poi-tl</artifactId>
             <version>1.9.1</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>poi</artifactId>
-                    <groupId>org.apache.poi</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
     </dependencies>
     <build>
