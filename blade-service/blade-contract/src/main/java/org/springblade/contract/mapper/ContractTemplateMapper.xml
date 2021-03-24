@@ -97,6 +97,7 @@
                 #{template_status}
             </foreach>
         </if>
+        ORDER BY update_time DESC
     </select>
 
     <!--批量修改范本状态-->

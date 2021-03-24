@@ -147,7 +147,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("day4", j.get("day4"));
 			//、保证金条款
 			dataModel.put("sclYuan", j.get("sclYuan"));
-			dataModel.put("sclWhole", MoneyToChiness.moneyToChinese(j.get("sclYuan").toString()));
+			dataModel.put("sclWhole", MoneyToChiness.tenThousand(j.get("sclYuan").toString()));
 			dataModel.put("sclLead", j.get("sclLead"));
 			//违约责任-1
 			dataModel.put("sclRequirementsd", j.get("sclRequirementsd"));
