@@ -1003,7 +1003,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			formInfoEntity.setCounterpartName(name.toString());
 		}
 		formInfoEntityList.add(formInfoEntity);
-		while (formInfoEntity.getChangeContractId() != null) {
+		while (Func.isNotEmpty(formInfoEntity.getChangeContractId())) {
 			formInfoEntity = contractFormInfoMapper.selectById(formInfoEntity.getChangeContractId());
 			//查询多方起草关联相对方
 			contractCounterpartList = contractCounterpartMapper.selectByIds(formInfoEntity.getId());

@@ -43,9 +43,8 @@ public class TemplateRequestVO extends TemplateEntity {
 	@ApiModelProperty(value="表单json",required = true)
 	private String json;
 
-    @JsonSerialize(using = ToStringSerializer.class)
     @ApiModelProperty(value="关联的原合同ID",required = true)
-	private Long changeContractId;
+	private String changeContractId;
 
     @ApiModelProperty(value="修改原合同状态",required = true)
     private String originalContractStatus;

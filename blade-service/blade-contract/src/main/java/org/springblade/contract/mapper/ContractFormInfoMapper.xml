@@ -625,7 +625,7 @@
         </if>
     </select>
 
-    <!--根據支付類型計算合同金額-->
+    <!---->
     <select id="selectByContractNumber" resultMap="formInfoResultMap">
         SELECT
         <include refid="baseColumnList"/>

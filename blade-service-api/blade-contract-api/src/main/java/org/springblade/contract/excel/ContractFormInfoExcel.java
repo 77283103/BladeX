@@ -77,7 +77,7 @@ public class ContractFormInfoExcel extends BaseEntity {
 	 */
 	@ColumnWidth
 	@ExcelProperty("合同编号")
-	private Long changeContractId;
+	private String changeContractId;
 	/**
 	 * 合同节点状态
 	 */

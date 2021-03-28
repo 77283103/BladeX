@@ -74,9 +74,12 @@ public class ContractChangeController extends BladeController {
 	public R<ContractChangeEntity> save(@Valid @RequestBody ContractChangeRequestVO change) {
         ContractChangeEntity entity = new ContractChangeEntity();
         BeanUtil.copy(change,entity);
+        //判断变更信息新增 还是 修改
         if (Func.isEmpty(change.getId())) {
         	if (Func.isEmpty(changeService.getById(change.getRefContractId()))){
+        		//删除关联合同的历史数据
         		changeService.deleteByChangeId(change.getRefContractId());
+        		//保存变更数据
 				changeService.save(entity);
 			}
         } else {

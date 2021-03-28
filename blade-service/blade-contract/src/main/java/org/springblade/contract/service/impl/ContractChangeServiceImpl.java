@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractChangeEntity;
 import org.springblade.contract.mapper.ContractChangeMapper;
+import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractChangeService;
 import org.springblade.contract.vo.ContractChangeResponseVO;
 import org.springblade.contract.wrapper.ContractChangeWrapper;
@@ -25,6 +26,8 @@ import java.util.List;
 public class ContractChangeServiceImpl extends BaseServiceImpl<ContractChangeMapper, ContractChangeEntity> implements IContractChangeService {
 
 	private IFileClient fileClient;
+	private ContractChangeMapper contractChangeMapper;
+	private ContractFormInfoMapper formInfoMapper;
 	@Override
 	public IPage<ContractChangeEntity> pageList(IPage<ContractChangeEntity> page, ContractChangeEntity change) {
 		return baseMapper.pageList(page, change);
@@ -32,12 +35,17 @@ public class ContractChangeServiceImpl extends BaseServiceImpl<ContractChangeMap
 
 	@Override
 	public void deleteByChangeId(Long id) {
-		baseMapper.deleteByChangeId(id);
+		contractChangeMapper.deleteByChangeId(id);
+	}
+
+	@Override
+	public boolean updateExportStatus(String contractStatus, Long id) {
+		return formInfoMapper.updateExportStatus(contractStatus,id);
 	}
 
 	@Override
 	public ContractChangeResponseVO getById(Long id) {
-		ContractChangeEntity changeEntity=baseMapper.selectById(id);
+		ContractChangeEntity changeEntity=contractChangeMapper.selectById(id);
 		ContractChangeResponseVO changeResponseVO= ContractChangeWrapper.build().entityVO(changeEntity);
 		return changeResponseVO;
 	}
@@ -55,7 +63,7 @@ public class ContractChangeServiceImpl extends BaseServiceImpl<ContractChangeMap
 			list.add(Long.valueOf(ids[i]));
 		}
 		fileClient.remove(list);
-		baseMapper.deleteChangeFileById(id);
+		contractChangeMapper.deleteChangeFileById(id);
 		return true;
 	}
 }
