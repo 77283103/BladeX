@@ -178,4 +178,10 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	R singleSignIsNot(ContractFormInfoRequestVO entity, FileVO file);
 
+	/**
+	 * 变更合同详情
+	 * @param id
+	 * @return
+	 */
+	ContractFormInfoEntity selectByChangeId(Long id);
 }

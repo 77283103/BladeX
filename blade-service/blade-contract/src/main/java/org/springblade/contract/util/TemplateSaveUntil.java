@@ -2,6 +2,7 @@ package org.springblade.contract.util;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.*;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictBizClient;
@@ -129,18 +130,13 @@ public class TemplateSaveUntil {
 		if (Func.isEmpty(contractFormInfoEntity.getId())) {
 			contractFormInfoEntity.setContractSoure("30");
 			contractFormInfoEntity.setContractStatus("10");
-			//变更用的
-			if (Func.isNotEmpty(template.getChangeContractId())) {
-				contractFormInfoEntity.setChangeContractId(template.getChangeContractId());
-				contractFormInfoEntity.setChangeCategory("10");
-			}
-//			//新陈列协议书
-//			if ("CLXY_42".equals(template.getTemplateCode())) {
+			//新陈列协议书
+			if ("CLXY_42".equals(template.getTemplateCode())) {
 //				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
 //				templateSaveUntil.ywlANewDisplayService.save(ywlANewDisplay);
 //				id = ywlANewDisplay.getId();
 //
-//			} //店招合同
+			} //店招合同
 //			else if ("DZHT_35".equals(template.getTemplateCode())) {
 //				YwlShopRecruitmentEntity ywlShopRecruitment = JSONObject.toJavaObject(j, YwlShopRecruitmentEntity.class);
 //				templateSaveUntil.ywlShopRecruitmentService.save(ywlShopRecruitment);
@@ -416,16 +412,10 @@ public class TemplateSaveUntil {
 				templateSaveUntil.sclServiceContractRefrigerationService.save(sclServiceContractRefrigeration);
 				id = sclServiceContractRefrigeration.getId();
 			}
-			//ContractListId保存的是字表的id
+			//ContractListId保存的是范本数据的id
 			contractFormInfoEntity.setContractListId(id);
 			templateSaveUntil.contractFormInfoService.save(contractFormInfoEntity);
 		} else {
-			//变更用的
-			if ("130".equals(template.getOriginalContractStatus())) {
-				contractFormInfoEntity.setSubmitStatus("10");
-				contractFormInfoEntity.setContractStatus("20");
-				templateSaveUntil.contractFormInfoService.updateExportStatus(template.getOriginalContractStatus(), Long.parseLong(template.getChangeContractId()));
-			}
 			templateSaveUntil.contractFormInfoService.updateById(contractFormInfoEntity);
 			if ("CLXY_42".equals(template.getTemplateCode())) {
 //				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);
