@@ -3,21 +3,16 @@ package org.springblade.contract.util;
 import com.alibaba.fastjson.JSONObject;
 import com.deepoove.poi.XWPFTemplate;
 import com.deepoove.poi.config.Configure;
-import com.deepoove.poi.policy.HackLoopTableRenderPolicy;
 import feign.form.ContentType;
-import freemarker.template.Configuration;
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.enums.TemplateExporterEnum;
-import org.springblade.contract.vo.MtlVideoProductionContract1ResponseVO;
-import org.springblade.contract.vo.MtlVideoProductionContract2ResponseVO;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ResourceUtils;
@@ -28,31 +23,25 @@ import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-@Component
+@Component("TemplateExportUntil")
 public class TemplateExportUntil {
 
-	/*private static  String ftlPath;
 	@Value("${api.file.ftlPath}")
-	public  void setFtlPath(String ftlPath) {
-		TemplateExportUntil.ftlPath = ftlPath;
-	}*/
+	private String ftlPath;
 	//模板路径
 	//private static String ftlPath="/ftl/";
-	private static String ftlPath = "D:/ftl/";
-	//建一个静态的本类
-	private static TemplateExportUntil templateExportUntil;
-	private static ReplaceImages replaceImages;
-	private static MagerUtils magerUtils;
+	//private static String ftlPath = "D:/ftl/";
 
 	@Autowired
 	private IFileClient fileClient;
+	//建一个静态的本类
+	private static TemplateExportUntil templateExportUntil;
 
 	//初始化
 	@PostConstruct
 	public void init() {
 		templateExportUntil = this;
 	}
-
 	/*public FileVO templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 		String pdfId = "";
 		//从服务器上获取ftl文件，保存到宿主机指定目录

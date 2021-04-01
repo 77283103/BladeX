@@ -54,8 +54,8 @@ public class ContractClient implements IContractClient{
 	private IContractTemplateService templateService;
 	private ContractTemplateMapper templateMapper;
 	private IContractSigningService contractSigningService;
-	//private static final String ftlPath="D:/ftl/";//模板路径
-	private static final String ftlPath="/ftl/";
+	private static final String ftlPath="D:/ftl/";//模板路径
+	//private static final String ftlPath="/ftl/";
     @Override
     @GetMapping(CONTRACT)
     public R<ContractFormInfoResponseVO> getById(Long id) {

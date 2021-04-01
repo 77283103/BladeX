@@ -4,16 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.PageSize;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.ColumnText;
-import com.itextpdf.text.pdf.PdfContentByte;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import feign.form.ContentType;
-import lombok.AllArgsConstructor;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -36,7 +27,6 @@ import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -49,6 +39,7 @@ import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
@@ -69,81 +60,110 @@ import java.util.*;
  * @date : 2020-09-23 18:04:38
  */
 @Service
-@AllArgsConstructor
 public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInfoMapper, ContractFormInfoEntity> implements IContractFormInfoService {
-	//@Value("${api.file.ftlPath}")
+	@Value("${api.file.ftlPath}")
+	private String ftlPath;
 	//模板路径
 	//private String ftlPath;
-	private static final String ftlPath="D:/ftl/";
+	//private static final String ftlPath="D:/ftl/";
 	//private static final String ftlPath="/ftl/";
+	@Autowired
 	private IFileClient fileClient;
-
+	@Autowired
 	private ISysClient sysClient;
-
+	@Autowired
 	private IUserClient userClient;
-
+	@Autowired
 	private IDictBizClient bizClient;
-
+	@Autowired
 	private IAbutmentClient abutmentClient;
-
+	@Autowired
 	private ContractFormInfoMapper contractFormInfoMapper;
-
+	@Autowired
 	private ContractCounterpartMapper contractCounterpartMapper;
-
+	@Autowired
 	private ContractBondMapper contractBondMapper;
-
+	@Autowired
 	private ContractAccordingMapper contractAccordingMapper;
-
+	@Autowired
 	private ContractPerformanceMapper contractPerformanceMapper;
-
+	@Autowired
 	private ContractPerformanceColPayMapper contractPerformanceColPayMapper;
-
+	@Autowired
 	private ContractAssessmentMapper contractAssessmentMapper;
-
+	@Autowired
 	private ContractArchiveMapper contractArchiveMapper;
-
+	@Autowired
 	private ContractArchiveNotMapper contractArchiveNotMapper;
-
+	@Autowired
 	private ContractSealUsingInfoMapper sealUsingInfoMapper;
-
+	@Autowired
 	private ContractSigningMapper signingMapper;
-
+	@Autowired
 	private ContractArchiveNotMapper archiveNotMapper;
-
+	@Autowired
 	private ContractRelieveMapper relieveMapper;
-
-
+	@Autowired
 	private ContractTemplateMapper contractTemplateMapper;
 	@Resource
 	private RedisCacheUtil redisCacheUtil;
+	@Autowired
 	private ContractChangeMapper changeMapper;
+	@Autowired
 	private IYwlANewDisplay1Service ywlANewDisplay1Service;
+	@Autowired
 	private ICglCategorySalesContracts1Service cglCategorySalesContracts1Service;
+	@Autowired
 	private ICglTheSalesContract1Service cglTheSalesContract1Service;
+	@Autowired
 	private ICglRawMaterials1Service cglRawMaterials1Service;
+	@Autowired
 	private IMtlAdaptationContract1Service mtlAdaptationContract1Service;
+	@Autowired
 	private IMtlAdaptationContract2Service mtlAdaptationContract2Service;
+	@Autowired
 	private IMtlShootingAndProductionContract1Service mtlShootingAndProductionContract1Service;
+	@Autowired
 	private IMtlShootingAndProductionContract2Service mtlShootingAndProductionContract2Service;
+	@Autowired
 	private IMtlShootingAndProductionContract3Service mtlShootingAndProductionContract3Service;
+	@Autowired
 	private ISclProjectOutsourcing1Service sclProjectOutsourcing1Service;
+	@Autowired
 	private ISclEquipmentMaintenance1Service sclEquipmentMaintenance1Service;
+	@Autowired
 	private IMtbProductionContract1Service mtbProductionContract1Service;
+	@Autowired
 	private IMtbProductionContract2Service mtbProductionContract2Service;
+	@Autowired
 	private IMtbProductionContract3Service mtbProductionContract3Service;
+	@Autowired
 	private IMtlVideoProductionContract1Service mtlVideoProductionContract1Service;
+	@Autowired
 	private IMtlVideoProductionContract2Service mtlVideoProductionContract2Service;
+	@Autowired
 	private IMtlEditedTheContract1Service mtlEditedTheContract1Service;
+	@Autowired
 	private IMtlAudioProductionContract1Service mtlAudioProductionContract1Service;
+	@Autowired
 	private IMtlAudioProductionContract2Service mtlAudioProductionContract2Service;
+	@Autowired
 	private ISclConstructionProject1Service sclConstructionProject1Service;
+	@Autowired
 	private ISclConstructionProject2Service sclConstructionProject2Service;
+	@Autowired
 	private ISclConstructionProject3Service sclConstructionProject3Service;
+	@Autowired
 	private ICglSalesContract1Service cglSalesContract1Service;
+	@Autowired
 	private ICglProofingContract1Service cglProofingContract1Service;
+	@Autowired
 	private IProductOutServiceContract1Service productOutServiceContract1Service;
+	@Autowired
 	private IProductOutServiceContract2Service productOutServiceContract2Service;
+	@Autowired
 	private IProductOutServiceContract3Service productOutServiceContract3Service;
+	@Autowired
 	private IMtbMarketResearchContract1Service iMtbMarketResearchContract1Service;
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
@@ -1118,6 +1138,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			in.close();
 			//处理编号
 			List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);
+			//合同大类
 			final String[] FLCode = {null};
 			R<List<DictBiz>> HTDL = bizClient.getList("HTDL");
 			List<DictBiz> dataBiz = HTDL.getData();
@@ -1126,6 +1147,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					FLCode[0] = bz.getRemark();
 				}
 			});
+			//合同用印全称编号
 			final String[] GSCode = {null};
 			R<List<DictBiz>> seal = bizClient.getList("application_seal");
 			dataBiz = seal.getData();
@@ -1134,6 +1156,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					GSCode[0] = bz.getRemark();
 				}
 			});
+			//存在合同编号按顺序+1
 			if (list.size() > 0) {
 				entity.setContractNumber(redisCacheUtil.selectTaskNo(list.get(0).getContractNumber(), FLCode[0], GSCode[0]));
 			} else {
@@ -1178,7 +1201,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		R<FileVO> fileVO = fileClient.save(multipartFile);
 		entity.setOtherInformation(fileVO.getData().getLink());
 		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
-		if(ekpVo.getCode()==0){
+		if(ekpVo.getCode()==200){
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
 		}else{
 			r.setMsg(ekpVo.getMsg());
