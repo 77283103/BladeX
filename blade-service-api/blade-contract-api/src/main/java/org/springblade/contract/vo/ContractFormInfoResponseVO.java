@@ -107,6 +107,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 */
 	private List<ContractFormInfoEntity> formInfosEntityOldVOList;
 	/**
+	 *  根据合同id查询变更原合同新版本合同
+	 */
+	private List<ContractFormInfoEntity> formInfosEntityNewVOList;
+	/**
 	 * 评估相关附件
 	 */
 	private List<FileVO> assessmentAttachedVOList;

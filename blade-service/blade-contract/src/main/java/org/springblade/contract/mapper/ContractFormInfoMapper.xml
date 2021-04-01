@@ -283,6 +283,11 @@
                 #{contract_status}
             </foreach>
         </if>
+--         合同审批状态
+        <if test="contractFormInfo.submitStatus != null and contractFormInfo.submitStatus != ''">
+            AND submit_status =#{contractFormInfo.submitStatus}
+        </if>
+--         合同变更状态
         <if test="contractFormInfo.changeCategory != null and contractFormInfo.changeCategory != ''">
             AND change_category =#{contractFormInfo.changeCategory}
         </if>
@@ -625,7 +630,7 @@
         </if>
     </select>
 
-    <!--根據支付類型計算合同金額-->
+    <!---->
     <select id="selectByContractNumber" resultMap="formInfoResultMap">
         SELECT
         <include refid="baseColumnList"/>

@@ -75,6 +75,10 @@
                     <artifactId>poi</artifactId>
                     <groupId>org.apache.poi</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>poi-ooxml</artifactId>
+                    <groupId>org.apache.poi</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -122,12 +126,6 @@
             <groupId>org.apache.pdfbox</groupId>
             <artifactId>pdfbox</artifactId>
             <version>1.8.8</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>jempbox</artifactId>
-                    <groupId>org.apache.pdfbox</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.pdfbox/fontbox -->
         <dependency>
@@ -189,16 +187,6 @@
             <groupId>org.docx4j</groupId>
             <artifactId>docx4j-export-fo</artifactId>
             <version>3.3.6</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>xmlgraphics-commons</artifactId>
-                    <groupId>org.apache.xmlgraphics</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>fontbox</artifactId>
-                    <groupId>org.apache.pdfbox</groupId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>

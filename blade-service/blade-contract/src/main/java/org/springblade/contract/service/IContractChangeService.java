@@ -22,10 +22,17 @@ public interface IContractChangeService extends BaseService<ContractChangeEntity
 	IPage<ContractChangeEntity> pageList(IPage<ContractChangeEntity> page, ContractChangeEntity change);
 
 	/**
-	 * 根据合同id伤处重复信息
+	 * 根据合同id删除重复信息
 	 * @param id
 	 */
 	void deleteByChangeId(Long id);
+
+	/**
+	 * 修改原合同状态
+	 * @param contractStatus,id
+	 * @return
+	 */
+	boolean updateExportStatus(String contractStatus,Long id);
 
 	/**
 	 * 返回vo

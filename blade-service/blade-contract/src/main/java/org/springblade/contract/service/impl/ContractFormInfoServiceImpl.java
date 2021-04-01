@@ -74,8 +74,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	//@Value("${api.file.ftlPath}")
 	//模板路径
 	//private String ftlPath;
-	//private static final String ftlPath="D:/ftl/";
-	private static final String ftlPath="/ftl/";
+	private static final String ftlPath="D:/ftl/";
+	//private static final String ftlPath="/ftl/";
 	private IFileClient fileClient;
 
 	private ISysClient sysClient;
@@ -814,11 +814,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		ContractFormInfoResponseVO contractFormInfoResponseVO = new ContractFormInfoResponseVO();
 		ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
 		ContractFormInfoEntity changeFormInfoEntity = contractFormInfoMapper.selectByChangeId(id);
+		//根据合同ID查询是否有变更的合同信息 如果有则判断其变更合同状态是否为草稿（10） 是则返回变更的合同信息，**编辑变更操作**
+		//否则返回原合同（为送审状态返回原合同，并将变更信息返回页面VOList **禁止编辑**）
 		if (Func.isNotEmpty(changeFormInfoEntity)) {
 			if (CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getContractStatus())) {
 				contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(changeFormInfoEntity);
 			} else {
 				contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(contractFormInfo);
+				//将变更合同的新合同信息SET到VOList中
+				List<ContractFormInfoEntity> changList=new ArrayList<>();
+				changList.add(changeFormInfoEntity);
+				contractFormInfoResponseVO.setFormInfosEntityNewVOList(changList);
 			}
 		} else {
 			contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(contractFormInfo);
@@ -1004,7 +1010,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			formInfoEntity.setCounterpartName(name.toString());
 		}
 		formInfoEntityList.add(formInfoEntity);
-		while (formInfoEntity.getChangeContractId() != null) {
+		while (Func.isNotEmpty(formInfoEntity.getChangeContractId())) {
 			formInfoEntity = contractFormInfoMapper.selectById(formInfoEntity.getChangeContractId());
 			//查询多方起草关联相对方
 			contractCounterpartList = contractCounterpartMapper.selectByIds(formInfoEntity.getId());
@@ -1805,5 +1811,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		} else {
 			return R.data(2, "缺失签章关键字", "缺失签章关键字");
 		}
+	}
+
+	@Override
+	public ContractFormInfoEntity selectByChangeId(Long id) {
+		return contractFormInfoMapper.selectByChangeId(id);
 	}
 }
