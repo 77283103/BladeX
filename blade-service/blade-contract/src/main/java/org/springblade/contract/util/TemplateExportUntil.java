@@ -215,6 +215,13 @@ public class TemplateExportUntil {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
+				if(".doc".equals(suffix)){
+					String docx = ftlPath + file.getName().substring(0, index) + df.format(new Date()) + ".docx";
+					AsposeWordToPdfUtils.doc2Docx(pathname,docx);
+					File filedoc = new File(pathname);
+					filedoc.delete();
+					pathname=docx;
+				}
 				filepaths.add(pathname);
 			}
 		}
@@ -261,6 +268,7 @@ public class TemplateExportUntil {
 				ContentType.MULTIPART.toString(), new FileInputStream(filePDF));
 			/* 上传文件 */
 			R<FileVO> fileVO = templateExportUntil.fileClient.save(multipartFile);
+			templateFile = new File(mergeFileDocx);
 			if (templateFile.exists()) {
 				templateFile.delete();
 				System.out.println("删除成功");

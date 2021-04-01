@@ -132,8 +132,9 @@ public class ContractClient implements IContractClient{
 			}else{
 				contractFormInfo.setContractStatus("30");
 			}
+		}else{
+			contractFormInfo.setContractStatus(status);
 		}
-		contractFormInfo.setSubmitStatus(status);
 		formInfoService.saveOrUpdate(contractFormInfo);
 		return R.success("审核成功");
 	}

@@ -153,6 +153,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiAdd')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> multiAdd(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		R<ContractFormInfoEntity> r;
 		contractFormInfo.setContractSoure("20");
 		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
 		//contractFormInfo.setSealName(sealName);
@@ -221,8 +222,12 @@ public class ContractFormInfoController extends BladeController {
 		//开始接口处理
 		if("20".equals(entity.getContractStatus())){
 			//处理电子签章和oa流程
-			entity=contractFormInfoService.SingleSign(entity);
-			contractFormInfoService.updateById(entity);
+			r=contractFormInfoService.SingleSign(R.data(entity));
+			if(r.getCode()!=0){
+				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
+				return r;
+			}
+			contractFormInfoService.updateById(r.getData());
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
@@ -238,6 +243,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		R<ContractFormInfoEntity> r;
 		contractFormInfo.setContractSoure("10");
 		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
 		//contractFormInfo.setSealName(sealName);
@@ -303,13 +309,15 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
-		//String paramStr = "{\"contractId\":\"1343427293518774274\",\"submitStatus\":\"30\"}";
-		//cn.hutool.json.JSONObject docInfoJson = JSONUtil.parseObj(HttpUtil.createPost("http://localhost:18080/ekp/submit").body(paramStr,"application/json").execute().body());
 		//开始接口处理
 		if("20".equals(entity.getContractStatus())){
 			//处理电子签章和oa流程
-			entity=contractFormInfoService.SingleSign(entity);
-			contractFormInfoService.updateById(entity);
+			r=contractFormInfoService.SingleSign(R.data(entity));
+			if(r.getCode()!=0){
+				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
+				return r;
+			}
+			contractFormInfoService.updateById(r.getData());
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
@@ -324,6 +332,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateSave')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		R<ContractFormInfoEntity> r = null;
 		/*List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
 		JSONObject j = new JSONObject();
 		//处理合同的二级联动保存
@@ -430,11 +439,15 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setTextFilePdf(filevo.getId()+",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
-			System.out.println(filevo.getDomain());
-			contractFormInfoEntity=contractFormInfoService.SingleSign(contractFormInfoEntity);
+			r=contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
+			if(r.getCode()!=0){
+				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
+				return r;
+			}
 		}
-		contractFormInfoService.updateById(contractFormInfoEntity);
-		return R.data(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
+		assert r != null;
+		contractFormInfoService.updateById(r.getData());
+		return R.data(ContractFormInfoWrapper.build().entityPV(r.getData()));
 	}
 
 	/**

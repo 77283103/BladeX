@@ -19,6 +19,7 @@ import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
@@ -159,10 +160,11 @@ public class ContractAccordingController extends BladeController {
 	 */
 	@PostMapping("/according")
 	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "查询redis的数据", notes = "传入id")
-	public R<String> according(@ApiParam(value = "主键集合", required = true) @RequestParam String id) {
-		String j= String.valueOf(redisTemplate.opsForValue().get(id));
-		redisTemplate.delete(id);
+	@ApiOperation(value = "查询redis的数据", notes = "")
+	public R<String> according() {
+		BladeUser user = AuthUtil.getUser();
+		String j= String.valueOf(redisTemplate.opsForValue().get(user.getAccount()+"-according"));
+		//redisTemplate.delete(id);
 		return R.data(j);
 	}
 }

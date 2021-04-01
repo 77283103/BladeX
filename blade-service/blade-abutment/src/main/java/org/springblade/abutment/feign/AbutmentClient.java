@@ -88,7 +88,7 @@ public class AbutmentClient implements IAbutmentClient {
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
 	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
-
+		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
 		pushEkpEntity.setFdTemplateId(fdTemplateId);
@@ -433,17 +433,33 @@ public class AbutmentClient implements IAbutmentClient {
 						pushEkpEntity.setFd_attachment(listAttachment);
 					}
 					pushEkpEntity.setToken(ekpService.getToken());
+					log.info("获取ekp的token："+pushEkpEntity.getToken());
+					if(StrUtil.isNotEmpty(pushEkpEntity.getToken())){
+						rEkpVo.setCode(1);
+						rEkpVo.setMsg("token获取失败，连接超时");
+						rEkpVo.setSuccess(false);
+						rEkpVo.setData(null);
+						return rEkpVo;
+					}
 					pushEkpEntity.setDocSubject(entity.getContractName());
 					pushEkpEntity.setFdTemplateId(fdTemplateId);
-					if (StrUtil.isNotEmpty(pushEkpEntity.getToken())) {
-						ekpVo = ekpService.pushData(pushEkpEntity);
+					ekpVo = ekpService.pushData(pushEkpEntity);
+					if(StrUtil.isNotEmpty(ekpVo.getDoc_info())){
+						rEkpVo.setCode(2);
+						rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+						rEkpVo.setSuccess(false);
+						rEkpVo.setData(null);
+						return rEkpVo;
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
 		}
-		return R.data(ekpVo);
+		rEkpVo.setData(ekpVo);
+		rEkpVo.setCode(0);
+		rEkpVo.setSuccess(true);
+		return rEkpVo;
 	}
 
 	/*public FormValuesEntity fileText(FormValuesEntity formValuesEntity,ContractFormInfoEntity entity) {

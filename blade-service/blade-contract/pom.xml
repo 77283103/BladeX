@@ -209,14 +209,6 @@
                     <artifactId>jsoup</artifactId>
                     <groupId>org.jsoup</groupId>
                 </exclusion>
-                <exclusion>
-                    <artifactId>jsoup</artifactId>
-                    <groupId>org.jsoup</groupId>
-                </exclusion>
-                <exclusion>
-                    <artifactId>jsoup</artifactId>
-                    <groupId>org.jsoup</groupId>
-                </exclusion>
             </exclusions>
         </dependency>
         <!--out net end -->

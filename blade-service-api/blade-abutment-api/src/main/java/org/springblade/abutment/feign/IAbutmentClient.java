@@ -3,6 +3,7 @@ package org.springblade.abutment.feign;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.feign.IContractFallback;
 import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,8 @@ import java.util.List;
  * @author xhb
  */
 @FeignClient(
-        value = "blade-abutment"
+        value = "blade-abutment",
+	fallback = IAbutmentFallback.class
 )
 public interface IAbutmentClient {
 

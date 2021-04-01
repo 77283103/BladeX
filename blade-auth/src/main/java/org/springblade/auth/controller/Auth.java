@@ -123,14 +123,16 @@ public class Auth {
 				}else{
 					//有缓存的话说明已经是通过单点之后进来的
 					String validator = iSSOClient.validate(ticket,serviceURL+"?id=" + id);
-					System.out.println("validator是："+validator);
 					if(validator.contains("yes")){
 						username =validator.replaceAll("yes","").trim();
 					}
 					setToken(username,response);
-					com.alibaba.fastjson.JSONObject jsonObject1 =com.alibaba.fastjson.JSONObject.parseObject(j);
+					redisTemplate.opsForValue().set(username+"-according", j);
+					redisTemplate.delete(id);
+					/*com.alibaba.fastjson.JSONObject jsonObject1 =com.alibaba.fastjson.JSONObject.parseObject(j);
 					String source= (String) jsonObject1.get("sourceOfContract");
-					response.sendRedirect(ssoUrl+"/#/singleLogin?draftType=1&source="+source+"&fileId=" + id);
+					response.sendRedirect(ssoUrl+"/#/singleLogin?draftType=1&source="+source+"&fileId=" + id);*/
+					response.sendRedirect(ssoUrl+"/#/singleLogin");
 				}
 			}
 			return R.success("false");

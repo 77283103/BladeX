@@ -36,6 +36,7 @@ import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -428,7 +429,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
-	 * 合同数据导入
+	 * 合同数据批量导入
 	 *
 	 * @return list
 	 */
@@ -1042,11 +1043,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	/**
 	 * 电子签章业务处理
 	 *
-	 * @param entity 合同信息
+	 * @param r 合同信息
 	 * @return 状态
 	 */
 	@Override
-	public ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity) {
+	public R<ContractFormInfoEntity> SingleSign(R<ContractFormInfoEntity> r) {
+		ContractFormInfoEntity entity=r.getData();
 		// 上传合同文件 开始
 		// 接口是支持批量上传的
 		UploadFileEntity uploadFileEntity = new UploadFileEntity();
@@ -1169,11 +1171,22 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		/* 上传文件 */
 		R<FileVO> fileVO = fileClient.save(multipartFile);
 		entity.setOtherInformation(fileVO.getData().getLink());
-		EkpVo ekpVo = abutmentClient.sendEkpFormPost(entity).getData();
-		if (ekpVo != null) {
-			entity.setRelContractId(ekpVo.getDoc_info());
+		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
+		if(ekpVo.getCode()==0){
+			entity.setRelContractId(ekpVo.getData().getDoc_info());
+		}else{
+			r.setMsg(ekpVo.getMsg());
+			r.setSuccess(false);
 		}
-		return entity;
+		System.out.println("ekp返回的code"+ekpVo.getCode());
+		System.out.println("ekp返回的依据ID"+ekpVo.getData().getDoc_info());
+		System.out.println("ekp原依据ID"+entity.getRelContractId());
+		/*R<EkpVo> ekpVo=new R<EkpVo>();
+		ekpVo.setCode(0);
+		entity.setRelContractId("123");*/
+		r.setData(entity);
+		r.setCode(ekpVo.getCode());
+		return r;
 	}
 
 	/**

@@ -121,10 +121,10 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	/**
 	 * 电子签章业务处理
 	 *
-	 * @param entity            合同信息
+	 * @param r            合同信息
 	 * @return 返回统计状态
 	 */
-	ContractFormInfoEntity SingleSign(ContractFormInfoEntity entity);
+	R<ContractFormInfoEntity> SingleSign(R<ContractFormInfoEntity> r);
 
 	/**
 	 *范本起草保存
