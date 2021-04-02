@@ -51,7 +51,7 @@ public class SclServiceRequestVO extends BaseEntity {
 	private String sclNo;
 
 	@ApiModelProperty(value="仓储面积：【？】平方米")
-	private Integer sclStorageee;
+	private String sclStorageee;
 
 	@ApiModelProperty(value="其他条件：【？】")
 	private String sclConditionsa;

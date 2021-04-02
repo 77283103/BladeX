@@ -240,8 +240,8 @@ public enum TemplateExporterEnum {
 			dataModel.put("phone", j.get("phone"));
 			dataModel.put("mail1", j.get("mail1"));
 			dataModel.put("postalAddress", j.get("postalAddress"));
-			//厂商承诺书-此致
-			dataModel.put("company", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+			//厂商承诺书-此致 -》使用为特别约定
+			dataModel.put("company", j.get("company"));
 			//拼接附件
 			dataModel.put("annex", j.get("annex"));
 			//《出货传票》及《出货传票交接清单》样式
@@ -1497,7 +1497,7 @@ public enum TemplateExporterEnum {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list = new ArrayList();
-			dataModel.put("pontactPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
+			dataModel.put("contactPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("productNameA", j.get("productNameA"));
 			dataModel.put("productContentA", j.get("productContentA"));
 			dataModel.put("productNameB", j.get("productNameB"));

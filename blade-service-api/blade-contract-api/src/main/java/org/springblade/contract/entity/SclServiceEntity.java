@@ -66,7 +66,7 @@ public class SclServiceEntity extends BaseEntity {
 	 * 仓储面积：【？】平方米
 	 */
 	@ApiModelProperty(value = "仓储面积：【？】平方米")
-	private Integer sclStorageee;
+	private String sclStorageee;
 	/**
 	 * 其他条件：【？】
 	 */

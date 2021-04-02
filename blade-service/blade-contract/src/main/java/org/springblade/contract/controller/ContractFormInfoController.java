@@ -81,6 +81,7 @@ public class ContractFormInfoController extends BladeController {
 	private static final String CONTRACT_EXPORT_STATUS = "40";
 	private static final String CONTRACT_SEAL_USING_INFO_STATUS = "50";
 	private static final String CONTRACT_SIGNING_STATUS = "60";
+	private static final String CONTRACT_PERFORMANCE_STATUS="70";
 	private static final String CONTRACT_ARCHIVE_STATUS = "110";
 	private static final String CONTRACT_ASSESSMENT_STATUS = "100";
 	private static final String ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS = "75";
@@ -910,7 +911,7 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, entity);
 		// 因为合同变更为一对一版本  所以根据ID唯一性查询是否有变更合同信息 结果为空对象说明没有变更信息即**新增**
 		// 否则已有变更信息即**修改**
-		if (Func.isNotBlank(entity.getContractStatus()) && "70".equals(entity.getContractStatus())) {
+		if (CONTRACT_PERFORMANCE_STATUS.equals(entity.getContractStatus())) {
 			//判断变更是否已经暂存，未暂存过直接保存信息
 			entity.setId(null);
 			//存入原合同ID 进行关联
@@ -918,12 +919,19 @@ public class ContractFormInfoController extends BladeController {
 			//清空合同的文本导出次数记录
 			entity.setFileExportCount(0);
 			entity.setFileExportCategory(0);
-			entity.setContractStatus(CHANGE_REVIEW_STATUS);
+			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())){
+				entity.setContractStatus(CONTRACT_REVIEW_STATUS);
+			}else {
+				entity.setContractStatus(CHANGE_REVIEW_STATUS);
+			}
 			contractFormInfoService.save(entity);
-		} else {
-			entity.setSubmitStatus(APPROVE_REVIEW_STATUS);
+		} else if (CHANGE_REVIEW_STATUS.equals(entity.getContractStatus())){
 			entity.setChangeCategory(CHANGE_REVIEW_STATUS);
-			//变更中如暂存过那么执行修改操作 判断条件为ID不为空
+			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())){
+				entity.setContractStatus(CONTRACT_REVIEW_STATUS);
+			}else {
+				entity.setContractStatus(CHANGE_REVIEW_STATUS);
+			}
 			contractFormInfoService.updateById(entity);
 		}
 		//保存变更合同ID 并关联保存一下关联信息
@@ -985,15 +993,15 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
-		//判断满足已变更新合同的条件 修改原合同 变更状为变更申请中 送审状态为送审中 合同状态变更申请中
-		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory()) && APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())
-			&& CONTRACT_REVIEW_STATUS.equals(contractFormInfo.getContractStatus())) {
-			changeService.updateExportStatus(ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS, Long.parseLong(entity.getChangeContractId()));
-		}
 		if (CONTRACT_REVIEW_STATUS.equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			r=contractFormInfoService.SingleSign(R.data(entity));
+			if(r.getCode()!=200){
+				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
+				return r;
+			}
 			entity=r.getData();
+			entity.setChangeCategory(CHANGE_REVIEW_STATUS);
 			//注意**因为合同送审时生成合同编号，变更合同编号需要与原合同编号有关联性 即需要覆盖自动生成的合同编号 使用原合同原合同编号加后缀编号(-1+n)
 			entity.setContractNumber(
 				contractFormInfo.getContractNumber().contains("-") ?
@@ -1002,6 +1010,11 @@ public class ContractFormInfoController extends BladeController {
 						contractFormInfo.getContractNumber().substring(
 							contractFormInfo.getContractNumber().lastIndexOf("-"))) + 1 : contractFormInfo.getContractNumber() + "-1");
 			contractFormInfoService.updateById(entity);
+		}
+		//判断满足已变更新合同的条件 修改原合同 变更状为变更申请中 送审状态为送审中 合同状态变更申请中
+		if (CHANGE_REVIEW_STATUS.equals(entity.getChangeCategory()) && APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())
+			&& CONTRACT_REVIEW_STATUS.equals(entity.getContractStatus())) {
+			changeService.updateExportStatus(ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS, Long.parseLong(entity.getChangeContractId()));
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
@@ -1029,22 +1042,16 @@ public class ContractFormInfoController extends BladeController {
 		ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
 		//****************************************变更新增代码START***************************************//
-		// 因为合同变更为一对一版本  所以根据ID唯一性查询是否有变更合同信息 结果为空对象说明没有变更信息即**新增**
-		// 否则已有变更信息即**修改**
-		if (Func.isNotBlank(contractFormInfo.getContractStatus()) && "70".equals(contractFormInfo.getContractStatus())) {
+		if (CONTRACT_PERFORMANCE_STATUS.equals(contractFormInfo.getContractStatus())) {
 			contractFormInfoEntity.setId(null);
 			//存入原合同ID 进行关联
 			contractFormInfoEntity.setChangeContractId(contractFormInfo.getId().toString());
 			//清空合同的文本导出次数记录
 			contractFormInfoEntity.setFileExportCount(0);
 			contractFormInfoEntity.setFileExportCategory(0);
-			contractFormInfoEntity.setContractStatus(CHANGE_REVIEW_STATUS);
 			//清空合同推送的合同正文ID  TextFile为本地合同ID  TextFilePDF为推送到他们的平台的文件ID
 			contractFormInfoEntity.setTextFilePdf("");
 			contractFormInfoEntity.setTextFile("");
-		}else {
-			contractFormInfoEntity.setChangeCategory(CHANGE_REVIEW_STATUS);
-			contractFormInfoEntity.setSubmitStatus(APPROVE_REVIEW_STATUS);
 		}
 		//*****************************************变更新增代码END***************************************//
 		Long id = TemplateSaveUntil.templateSave(contractFormInfoEntity, template, j);
@@ -1108,7 +1115,9 @@ public class ContractFormInfoController extends BladeController {
 		if ("20".equals(template.getBean())) {
 			//导出pdf文件
 			FileVO filevo = templateExportUntil.templateSave(contractFormInfoEntity, template, contractFormInfoEntity.getJson(), j);
-			contractFormInfoEntity.setContractStatus("20");
+			contractFormInfoEntity.setContractStatus(CONTRACT_REVIEW_STATUS);
+			contractFormInfoEntity.setChangeCategory(CHANGE_REVIEW_STATUS);
+			contractFormInfoEntity.setSubmitStatus(APPROVE_REVIEW_STATUS);
 			contractFormInfoEntity.setTextFile(filevo.getId() + ",");
 			contractFormInfoEntity.setTextFilePdf(filevo.getId() + ",");
 			contractFormInfoEntity.setContractStatus(template.getBean());

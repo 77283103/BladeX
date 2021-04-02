@@ -53,7 +53,8 @@ public class ContractTemplateController extends BladeController {
 	private ISysClient sysClient;
 	private IDictBizClient dictBizClient;
 	private IContractTemplateService templateService;
-	private static final String TEMPLATE_STATUS="10";
+	private static final String TEMPLATE_STATUS="45";
+	private static final String APPROVAL_STATUS="50";
 	private static final String TEMPLATE_SCRAP_STATUS="30";
 	private static final String TEMPLATE_REVISION_STATUS="20";
 	private static final String TEMPLATE_REVISION_STATUS_OLD="40";
@@ -105,9 +106,17 @@ public class ContractTemplateController extends BladeController {
 	public R save(@Valid @RequestBody ContractTemplateRequestVO template) {
         ContractTemplateEntity entity = new ContractTemplateEntity();
         BeanUtil.copy(template,entity);
-        entity.setOriginalTemplateId(entity.getId());
-        entity.setTemplateStatus(TEMPLATE_STATUS);
-		return R.status(templateService.save(entity,"SAVE"));
+        if (Func.isEmpty(entity.getId())){
+        	if (APPROVAL_STATUS.equals(entity.getTemplateStatus())){
+				entity.setTemplateStatus(APPROVAL_STATUS);
+			}else {
+				entity.setTemplateStatus(TEMPLATE_STATUS);
+			}
+			templateService.save(entity,"SAVE");
+		}else {
+			templateService.updateById(entity);
+		}
+		return R.status(true);
 	}
 
 	/**
@@ -214,6 +223,7 @@ public class ContractTemplateController extends BladeController {
 		BeanUtil.copy(template,entity);
 		entity.setTemplateCode(template.getTemplateCode());
 		entity.setEnabled("0");
+		entity.setOriginalTemplateId(template.getId());
 		entity.setTemplateStatus(TEMPLATE_REVISION_STATUS);
 		templateService.save(entity,"REVISION");
 		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD,entity.getOriginalTemplateId());

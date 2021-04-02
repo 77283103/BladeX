@@ -80,6 +80,8 @@ public class ContractClient implements IContractClient{
 		List<ContractTemplateEntity> list = templateService.list(queryWrapper);
 		for (ContractTemplateEntity v : list) {
 			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
+				v.setTemplateStatus("10");
+				v.setTemplateCode(entity.getTemplateCode());
 				v.setJson(entity.getJson());
 				templateService.updateById(v);
 			}
