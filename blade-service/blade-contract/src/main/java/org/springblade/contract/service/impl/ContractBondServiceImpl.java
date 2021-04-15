@@ -35,15 +35,17 @@ import java.util.List;
 public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper, ContractBondEntity> implements IContractBondService {
 	private ContractFormInfoMapper formInfoMapper;
 	private ContractCounterpartMapper counterpartMapper;
+	private ContractBondMapper contractBondMapper;
+
 	@Override
 	public IPage<ContractBondResponseVO> pageList(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
-		page=baseMapper.pageList(page, contractBond);
-		IPage<ContractBondResponseVO> pages= ContractBondWrapper.build().entityPVPage(page);
+		page = baseMapper.pageList(page, contractBond);
+		IPage<ContractBondResponseVO> pages = ContractBondWrapper.build().entityPVPage(page);
 		List<ContractBondResponseVO> records = pages.getRecords();
 		List<ContractBondResponseVO> recordList = new ArrayList<>();
-		for(ContractBondResponseVO v : records) {
-			List<ContractFormInfoEntity> contractFormInfoList=formInfoMapper.findContractList(v.getId());
-			for(ContractFormInfoEntity contractFormInfo : contractFormInfoList){
+		for (ContractBondResponseVO v : records) {
+			List<ContractFormInfoEntity> contractFormInfoList = formInfoMapper.findContractList(v.getId());
+			for (ContractFormInfoEntity contractFormInfo : contractFormInfoList) {
 				List<ContractCounterpartEntity> counterpartEntity = counterpartMapper.selectByIds(contractFormInfo.getId());
 				contractFormInfo.setCounterpart(counterpartEntity);
 			}
@@ -59,7 +61,7 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 
 	@Override
 	public IPage<ContractBondEntity> pageListSerious(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
-		page=baseMapper.pageListSerious(page, contractBond);
+		page = baseMapper.pageListSerious(page, contractBond);
 		return page;
 	}
 
@@ -72,15 +74,15 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 	@Override
 	public void saveBond(List<Long> ids, Long id) {
 		baseMapper.deleteBond(id);
-		baseMapper.saveBond(ids,id);
+		baseMapper.saveBond(ids, id);
 	}
 
 	@Override
 	public void deleteByContractId(Long id) {
-		baseMapper.deleteBond(id);
-		/*List<ContractBondEntity> list=baseMapper.selectByIds(id);
-		list.forEach(bond ->{
-			baseMapper.deleteById(bond.getId());
-		});*/
+		List<ContractBondEntity> list = baseMapper.selectByIds(id);
+		list.forEach(bond -> {
+			contractBondMapper.deleteById(bond.getId());
+		});
+		contractBondMapper.deleteBond(id);
 	}
 }

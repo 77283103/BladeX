@@ -217,7 +217,7 @@ public class ContractSigningController extends BladeController {
             /*所属合同一级分类*/
             cloumns.add(bizClient.getValues("HTDL", Long.valueOf(formInfoEntity.getContractBigCategory())).getData());
             /*所属合同二级分类*/
-            cloumns.add(bizClient.getValues("HTDL", Long.valueOf(formInfoEntity.getContractSmallCategory())).getData());
+            cloumns.add(bizClient.getValues("HTXL", Long.valueOf(formInfoEntity.getContractSmallCategory())).getData());
             /*合同相对方名称*/
             StringBuilder name = new StringBuilder();
             for (ContractCounterpartEntity counterpartEntity : formInfoEntity.getCounterpart()) {
@@ -294,7 +294,7 @@ public class ContractSigningController extends BladeController {
             /*所属合同一级分类*/
             cloumns.add(bizClient.getValues("HTDL", Long.valueOf(formInfoEntity.getContractBigCategory())).getData());
             /*所属合同二级分类*/
-            cloumns.add(bizClient.getValues("HTDL", Long.valueOf(formInfoEntity.getContractSmallCategory())).getData());
+            cloumns.add(bizClient.getValues("HTXL", Long.valueOf(formInfoEntity.getContractSmallCategory())).getData());
             /*合同相对方名称*/
             StringBuilder name = new StringBuilder();
             for (ContractCounterpartEntity counterpartEntity : formInfoEntity.getCounterpart()) {
@@ -305,12 +305,12 @@ public class ContractSigningController extends BladeController {
             cloumns.add(name.toString());
             ContractSigningEntity signingEntity=contractSigningService.selectSigningById(formInfoEntity.getId());
             /*承办人*/
-            cloumns.add(signingEntity.getManager());
+            cloumns.add(Func.isEmpty(signingEntity)?"":signingEntity.getManager());
             ContractSealUsingInfoEntity sealUsingInfoEntity=sealUsingInfoService.selectSealUsing(formInfoEntity.getId());
             /*用印时间*/
-            cloumns.add(sealUsingInfoEntity.getSignTime());
+            cloumns.add(Func.isNull(sealUsingInfoEntity)?"":sealUsingInfoEntity.getSignTime());
             /*快递信息*/
-            cloumns.add("递交类型:"+bizClient.getValue("submission_type",signingEntity.getSubmissionType()).getData()+"//快递单号:"
+            cloumns.add("递交类型:"+bizClient.getValue("submission_type",signingEntity.getSubmissionType()).getData()+"\n"+"//快递单号:"
                     +signingEntity.getCourierNum()+"//快递公司:"+signingEntity.getCourierCompany()
                     +"//收件人:"+signingEntity.getAddressee()+"//收件人地址:"+signingEntity.getAddress());
             data.add(cloumns);

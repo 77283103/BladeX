@@ -20,6 +20,8 @@
         <result column="actual_return_amount" property="actualReturnAmount"/>
         <result column="return_condition" property="returnCondition"/>
         <result column="counterpart_id" property="counterpartId"/>
+        <result column="counterpart_identity" property="counterpartIdentity"/>
+        <result column="counterpart_name" property="counterpartName"/>
         <result column="factories" property="factories"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
@@ -47,6 +49,8 @@
         actual_return_amount,
         return_condition,
         counterpart_id,
+        counterpart_identity,
+        counterpart_name,
         factories,
         create_user,
         create_dept,

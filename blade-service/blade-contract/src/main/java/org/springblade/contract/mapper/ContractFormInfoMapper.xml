@@ -283,6 +283,13 @@
                 #{contract_status}
             </foreach>
         </if>
+<!--        合同管理员查询管理合同的数据限制-->
+        <if test="contractFormInfo.sealNames != null and contractFormInfo.sealName != ''">
+            <foreach collection="contractFormInfo.sealNames" item="seal_name" open="and seal_name in ("
+                     separator="," close=")">
+                #{seal_name}
+            </foreach>
+        </if>
 --         合同审批状态
         <if test="contractFormInfo.submitStatus != null and contractFormInfo.submitStatus != ''">
             AND submit_status =#{contractFormInfo.submitStatus}
@@ -422,7 +429,6 @@
         FROM contract_counterpart_setting
         WHERE contract_id = #{id}
     </delete>
-
 
     <!--保存关联依据-->
     <insert id="saveAccording">

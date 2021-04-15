@@ -632,6 +632,7 @@ public class AbutmentClient implements IAbutmentClient {
 			if (StrUtil.isNotEmpty(token)) {
 				if (StrUtil.isNotEmpty(entity.getIsMerge())) {
 					uploadFileVo = eSealService.uploadFiles(token, entity);
+					System.out.println(uploadFileVo.size()+"/n"+uploadFileVo.get(0).getId());
 				}
 			}
 		} catch (Exception e) {

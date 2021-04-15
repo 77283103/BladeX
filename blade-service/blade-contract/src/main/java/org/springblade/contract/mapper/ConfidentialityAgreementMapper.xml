@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="confidentialityAgreementResultMap" type="org.springblade.contract.entity.ConfidentialityAgreementEntity">
         <result column="id" property="id"/>
+        <result column="jia_fang" property="jiaFang"/>
         <result column="trade_side" property="tradeSide"/>
         <result column="manufacturer" property="manufacturer"/>
         <result column="product_involved" property="productInvolved"/>
@@ -23,6 +24,7 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        jia_fang,
         trade_side,
         manufacturer,
         product_involved,

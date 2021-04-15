@@ -20,6 +20,7 @@ import org.springblade.core.launch.constant.AppConstant;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.*;
+import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.DeptVO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -72,6 +73,7 @@ public interface ISysClient {
 	String GET_USER_DEPART_ID_BY_LUNID= API_PREFIX + "/get-user-depart-id-by-lunid";
 	String GET_ANCESTOR_IDS = API_PREFIX + "/get-ancestor-ids";
 	String GET_POST_ID_BY_LUNID = API_PREFIX + "/get-post-id-by-lunid";
+	String GET_DATA_SEAL_AUTHORITY = API_PREFIX + "/get_data_seal_authority";
 	/**
 	 * 获取菜单
 	 *
@@ -347,4 +349,13 @@ public interface ISysClient {
 	 */
 	@GetMapping(GET_POST_ID_BY_LUNID)
 	R<Long> getPostIdByAssociationId(@RequestParam("associationId") String associationId);
+
+	/**
+	 * 根据角色ID查询用户数据权限数据
+	 * @param userId
+	 * @return
+	 */
+	@GetMapping(GET_DATA_SEAL_AUTHORITY)
+	R<DataSealAuthorityResponseVO> getByIdData(@RequestParam("userId") String userId,
+											   @RequestParam("roleId") String roleId );
 }

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.DraftContractCounterpartMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="counterpartResultMap" type="org.springblade.contract.entity.DraftContractCounterpartEntity">
+        <result column="id" property="id"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="counterpart_id" property="counterpartId"/>
+        <result column="counterpart_identity" property="counterpartIdentity"/>
+        <result column="counterpart_person" property="counterpartPerson"/>
+        <result column="telephone_person" property="telephonePerson"/>
+        <result column="address_person" property="addressPerson"/>
+        <result column="email_person" property="emailPerson"/>
+       <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        contract_id,
+        counterpart_id,
+        counterpart_identity,
+        counterpart_person,
+        telephone_person,
+        address_person,
+        email_person,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_counterpart
+        WHERE is_deleted = 0
+    </select>
+    <select id="selectByContractId" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_draft_counterpart
+        WHERE is_deleted = 0
+        AND contract_id = #{id}
+    </select>
+
+    <!--删除关联相对方-->
+    <delete id="deleteDraftCounterpart" parameterType="java.lang.Long">
+        DELETE
+        FROM contract_draft_counterpart
+        WHERE contract_id = #{id}
+    </delete>
+
+    <!--保存关联依据-->
+    <insert id="saveDraftCounterpart">
+        insert into contract_draft_counterpart
+        <include refid="baseColumnList"></include>
+        values
+        <foreach collection="accordingIds" item="item" index="index" open="" close="" separator=",">
+            (#{contract_id},
+            #{counterpart_id},
+            #{counterpart_identity},
+            #{counterpart_person},
+            #{telephone_person},
+            #{address_person},
+            #{email_person})
+        </foreach>
+    </insert>
+    <!--根据合同id查询相对方集合-->
+    <select id="selectByIds" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_draft_counterpart
+        WHERE is_deleted = 0
+        AND
+        id IN (SELECT c.counterpart_id FROM contract_counterpart_setting c WHERE c.contract_id = #{id})
+    </select>
+    <select id="selectById" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_draft_counterpart
+        WHERE is_deleted = 0
+        AND
+        id = #{id}
+    </select>
+</mapper>

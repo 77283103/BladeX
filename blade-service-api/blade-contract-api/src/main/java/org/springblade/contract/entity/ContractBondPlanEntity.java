@@ -126,7 +126,16 @@ public class ContractBondPlanEntity extends BaseEntity {
 	@ApiModelProperty(value = "相对方id")
 	@JsonSerialize(using = ToStringSerializer.class)
 	private Long counterpartId;
-
+	/**
+	 * 相对方身份
+	 */
+	@ApiModelProperty(value = "相对方身份")
+	private String counterpartIdentity;
+	/**
+	 * 相对方名称
+	 */
+	@ApiModelProperty(value = "相对方名称")
+	private String counterpartName;
 	/**
 	 * 厂别
 	 */

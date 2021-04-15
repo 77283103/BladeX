@@ -5,6 +5,8 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="ywlANewDisplayResultMap" type="org.springblade.contract.entity.YwlAnewDisplayEntity">
         <result column="id" property="id"/>
+        <result column="ywl_patya" property="ywlPatya"/>
+        <result column="ywl_patyb" property="ywlPatyb"/>
         <result column="ywl_cooperation_content" property="ywlCooperationContent"/>
         <result column="ywl_the_start_time" property="ywlTheStartTime"/>
         <result column="ywl_end_of_time" property="ywlEndOfTime"/>
@@ -21,6 +23,8 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        ywl_patya,
+        ywl_patyb,
         ywl_cooperation_content,
         ywl_the_start_time,
         ywl_end_of_time,

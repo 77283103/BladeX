@@ -27,6 +27,11 @@ public class ConfidentialityAgreementEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * 投资方(甲方)
+	 */
+	@ApiModelProperty(value = "投资方(甲方)")
+	private String jiaFang;
+	/**
 	 * 贸易方(乙方)
 	 */
 	@ApiModelProperty(value = "贸易方(乙方)")

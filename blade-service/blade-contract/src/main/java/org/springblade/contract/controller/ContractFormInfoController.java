@@ -17,6 +17,7 @@ import org.springblade.contract.entity.ContractBondPlanEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
+import org.springblade.contract.mapper.DraftContractCounterpartMapper;
 import org.springblade.contract.service.*;
 import org.springblade.contract.util.TemplateExportUntil;
 import org.springblade.contract.util.TemplateSaveUntil;
@@ -29,7 +30,9 @@ import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
+import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
@@ -40,10 +43,13 @@ import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
+import org.springblade.system.feign.ISysClient;
+import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -70,8 +76,11 @@ public class ContractFormInfoController extends BladeController {
 	private IContractPerformanceColPayService contractPerformanceColPayService;
 	private IContractBondPlanService contractBondPlanService;
 	private IContractChangeService changeService;
+	private IDraftContractCounterparService draftContractCounterparService;
+	private DraftContractCounterpartMapper draftContractCounterpartMapper;
 	private IDictBizClient bizClient;
 	private IFileClient fileClient;
+	private ISysClient roleService;
 	private TemplateExportUntil templateExportUntil;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
@@ -81,7 +90,7 @@ public class ContractFormInfoController extends BladeController {
 	private static final String CONTRACT_EXPORT_STATUS = "40";
 	private static final String CONTRACT_SEAL_USING_INFO_STATUS = "50";
 	private static final String CONTRACT_SIGNING_STATUS = "60";
-	private static final String CONTRACT_PERFORMANCE_STATUS="70";
+	private static final String CONTRACT_PERFORMANCE_STATUS = "70";
 	private static final String CONTRACT_ARCHIVE_STATUS = "110";
 	private static final String CONTRACT_ASSESSMENT_STATUS = "100";
 	private static final String ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS = "75";
@@ -118,6 +127,20 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:list')")
 	public R<IPage<ContractFormInfoResponseVO>> list(ContractFormInfoRequestVO contractFormInfo, Query query) {
+		BladeUser user = AuthUtil.getUser();
+		List<String> realNameList = roleService.getRoleAliases(user.getRoleId()).getData();
+		List<String> seal = new ArrayList<>();
+		realNameList.forEach(real -> {
+			if (real.contains("contract_admin")) {
+				DataSealAuthorityResponseVO responseVO = roleService.getByIdData(user.getUserId().toString(), user.getRoleId()).getData();
+				if (Func.isNotEmpty(responseVO)) {
+					responseVO.getSealList().forEach(s -> {
+						seal.add(bizClient.getValue("application_seal", s).getData());
+					});
+				}
+				contractFormInfo.setSealNames(seal);
+			}
+		});
 		IPage<ContractFormInfoResponseVO> pages = contractFormInfoService.pageList(Condition.getPage(query), contractFormInfo);
 		return R.data(pages);
 	}
@@ -158,8 +181,6 @@ public class ContractFormInfoController extends BladeController {
 	public R<ContractFormInfoEntity> multiAdd(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		R<ContractFormInfoEntity> r;
 		contractFormInfo.setContractSoure("20");
-		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
-		//contractFormInfo.setSealName(sealName);
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
@@ -168,12 +189,21 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoService.updateById(entity);
 		}
 		contractFormInfo.setId(entity.getId());
+		/*保存多方向对方身份信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getDraftContractCounterpartList())) {
+			draftContractCounterpartMapper.deleteDraftCounterpart(contractFormInfo.getId());
+			contractFormInfo.getDraftContractCounterpartList().forEach(dcl -> {
+				dcl.setContractId(contractFormInfo.getId().toString());
+				draftContractCounterparService.save(dcl);
+			});
+		}
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
 			contractFormInfoService.saveCounterpart(contractFormInfo);
 		}
 		/*保存保证金信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
+			//村保证金ID
 			List<Long> list = new ArrayList<>();
 			ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
 			//删除保证金库脏数据
@@ -182,9 +212,7 @@ public class ContractFormInfoController extends BladeController {
 			contractBondPlanService.deleteByContractId(contractFormInfo.getId());
 			for (ContractBondEntity contractBondEntity : contractFormInfo.getContractBond()) {
 				BeanUtil.copy(contractBondEntity, contractBondPlan);
-				if (Func.isEmpty(contractBondEntity.getId())) {
-					contractBondService.save(contractBondEntity);
-				}
+				contractBondService.saveOrUpdate(contractBondEntity);
 				//保存保证金履约计划
 				contractBondPlan.setContractId(contractFormInfo.getId());
 				contractBondPlan.setId(null);
@@ -225,8 +253,8 @@ public class ContractFormInfoController extends BladeController {
 		//开始接口处理
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			r=contractFormInfoService.SingleSign(R.data(entity));
-			if(r.getCode()!=200){
+			r = contractFormInfoService.SingleSign(R.data(entity));
+			if (r.getCode() != 200) {
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
@@ -247,8 +275,6 @@ public class ContractFormInfoController extends BladeController {
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		R<ContractFormInfoEntity> r;
 		contractFormInfo.setContractSoure("10");
-		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
-		//contractFormInfo.setSealName(sealName);
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
@@ -314,8 +340,8 @@ public class ContractFormInfoController extends BladeController {
 		//开始接口处理
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			r=contractFormInfoService.SingleSign(R.data(entity));
-			if(r.getCode()!=200){
+			r = contractFormInfoService.SingleSign(R.data(entity));
+			if (r.getCode() != 200) {
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
@@ -440,12 +466,12 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setTextFilePdf(filevo.getId() + ",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
-			r=contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
-			if(r.getCode()!=200){
+			r = contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
+			if (r.getCode() != 200) {
 				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 				return r;
 			}
-			contractFormInfoEntity=r.getData();
+			contractFormInfoEntity = r.getData();
 		}
 		assert r != null;
 		contractFormInfoService.updateById(contractFormInfoEntity);
@@ -919,17 +945,17 @@ public class ContractFormInfoController extends BladeController {
 			//清空合同的文本导出次数记录
 			entity.setFileExportCount(0);
 			entity.setFileExportCategory(0);
-			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())){
+			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())) {
 				entity.setContractStatus(CONTRACT_REVIEW_STATUS);
-			}else {
+			} else {
 				entity.setContractStatus(CHANGE_REVIEW_STATUS);
 			}
 			contractFormInfoService.save(entity);
-		} else if (CHANGE_REVIEW_STATUS.equals(entity.getContractStatus())){
+		} else if (CHANGE_REVIEW_STATUS.equals(entity.getContractStatus())) {
 			entity.setChangeCategory(CHANGE_REVIEW_STATUS);
-			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())){
+			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())) {
 				entity.setContractStatus(CONTRACT_REVIEW_STATUS);
-			}else {
+			} else {
 				entity.setContractStatus(CHANGE_REVIEW_STATUS);
 			}
 			contractFormInfoService.updateById(entity);
@@ -995,12 +1021,12 @@ public class ContractFormInfoController extends BladeController {
 		}
 		if (CONTRACT_REVIEW_STATUS.equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			r=contractFormInfoService.SingleSign(R.data(entity));
-			if(r.getCode()!=200){
+			r = contractFormInfoService.SingleSign(R.data(entity));
+			if (r.getCode() != 200) {
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
-			entity=r.getData();
+			entity = r.getData();
 			entity.setChangeCategory(CHANGE_REVIEW_STATUS);
 			//注意**因为合同送审时生成合同编号，变更合同编号需要与原合同编号有关联性 即需要覆盖自动生成的合同编号 使用原合同原合同编号加后缀编号(-1+n)
 			entity.setContractNumber(
@@ -1111,7 +1137,7 @@ public class ContractFormInfoController extends BladeController {
 		}
 		//保存合同和关联表 这个方法有问题
 		contractFormInfoEntity = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
-			//页面用这个字段来判断是否提交
+		//页面用这个字段来判断是否提交
 		if ("20".equals(template.getBean())) {
 			//导出pdf文件
 			FileVO filevo = templateExportUntil.templateSave(contractFormInfoEntity, template, contractFormInfoEntity.getJson(), j);
@@ -1123,8 +1149,8 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
 			System.out.println(filevo.getDomain());
-			r=contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
-			contractFormInfoEntity=r.getData();
+			r = contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
+			contractFormInfoEntity = r.getData();
 			//覆盖自动生成的合同编号
 			contractFormInfoEntity.setContractNumber(
 				contractFormInfo.getContractNumber().contains("-") ?
