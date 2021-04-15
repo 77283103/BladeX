@@ -22,10 +22,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.deepoove.poi.config.Configure;
-import com.deepoove.poi.data.DocxRenderData;
-import com.deepoove.poi.data.PictureType;
-import com.deepoove.poi.data.Pictures;
-import com.deepoove.poi.data.TextRenderData;
+import com.deepoove.poi.data.*;
 import com.deepoove.poi.data.style.Style;
 import com.deepoove.poi.policy.HackLoopTableRenderPolicy;
 import lombok.AllArgsConstructor;
@@ -38,7 +35,9 @@ import org.springblade.contract.entity.*;
 import org.springblade.contract.util.DataFormatUtils;
 import org.springblade.contract.util.MoneyToChiness;
 import org.springblade.contract.vo.*;
+import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.vo.TemplateRequestVO;
 
@@ -319,15 +318,15 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			List<YwlANewDisplay1ResponseVO> ywlANewDisplay1ResponseVOList = new ArrayList();
+			List<YwlANewDisplay1ResponseVO> YwlANewDisplay1 = new ArrayList();
 			//把json串转换成集合
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//给当前范本的合同关联表设置一个编号 等于编号时循环处理放到list中
 				if (ContractFormInfoTemplateContract.CONTRACT_YWLANEWDISPLAY1.equals(templateField.getRelationCode())) {
-					ywlANewDisplay1ResponseVOList = JSON.parseArray(templateField.getTableData(),YwlANewDisplay1ResponseVO.class);
-					for (int i = 0; i < ywlANewDisplay1ResponseVOList.size(); i++) {
-						ywlANewDisplay1ResponseVOList.get(i).setYwlNumber(String.valueOf(i+1));
+					YwlANewDisplay1 = JSON.parseArray(templateField.getTableData(),YwlANewDisplay1ResponseVO.class);
+					for (int i = 0; i < YwlANewDisplay1.size(); i++) {
+						YwlANewDisplay1.get(i).setYwlNumber(String.valueOf(i+1));
 //						Map<String, Object> map = new HashMap();
 //						map.put("ywlNumber", i + 1);
 //						map.put("ywlDisplayProducts", jsonArr.getJSONObject(i).get("ywlDisplayProducts"));
@@ -338,11 +337,11 @@ public enum TemplateExporterEnum {
 				}
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
-			Configure config = Configure.builder().bind("ywlANewDisplay1ResponseVOList", policy).build();
-			dataModel.put("ywlANewDisplay1ResponseVOList", ywlANewDisplay1ResponseVOList);
+			Configure config = Configure.builder().bind("YwlANewDisplay1", policy).build();
+			dataModel.put("YwlANewDisplay1", YwlANewDisplay1);
 			//这部分处理模板的变量字段
-			dataModel.put("ywlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
-			dataModel.put("ywlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
+			dataModel.put("ywlPatya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+			dataModel.put("ywlPatyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("ywlCooperationContent", j.get("ywlCooperationContent"));
 			//日期格式的字段需要DataFormatUtils.systemTimeFormat处理一下
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -362,7 +361,7 @@ public enum TemplateExporterEnum {
 				dataModel.put("ywlDisplayType", "☐");
 			}
 			dataModel.put("ywlOther", j.get("ywlOther"));
-			modle.put("",setFile(filepaths,dataModel));
+			modle.put("dataModel",setFile(filepaths,dataModel));
 			modle.put("config",config);
 			return modle;
 		}
@@ -394,13 +393,13 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			List<MtlAdaptationContract1ResponseVO> mtlAdaptationContract1ResponseVOList = new ArrayList();
-			List<MtlAdaptationContract2ResponseVO> mtlAdaptationContract2ResponseVOList = new ArrayList();
+			List<MtlAdaptationContract1ResponseVO> MtlAdaptationContract1 = new ArrayList();
+			List<MtlAdaptationContract2ResponseVO> MtlAdaptationContract2 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//*视频广告改编合同关联表
 				if (ContractFormInfoTemplateContract.CONTRACT_MTADAPTATIONCONTRACT1.equals(templateField.getRelationCode())) {
-					mtlAdaptationContract1ResponseVOList = JSON.parseArray(templateField.getTableData(),MtlAdaptationContract1ResponseVO.class);
+					MtlAdaptationContract1 = JSON.parseArray(templateField.getTableData(),MtlAdaptationContract1ResponseVO.class);
 //					for (int i = 0; i < jsonArr.size(); i++) {
 //						Map<String, Object> map = new HashMap();
 //						map.put("formDelivery", jsonArr.getJSONObject(i).get("formDelivery"));
@@ -412,7 +411,7 @@ public enum TemplateExporterEnum {
 //					}
 				}
 				if (ContractFormInfoTemplateContract.CONTRACT_MTADAPTATIONCONTRACT2.equals(templateField.getRelationCode())) {
-					mtlAdaptationContract2ResponseVOList = JSON.parseArray(templateField.getTableData(),MtlAdaptationContract2ResponseVO.class);
+					MtlAdaptationContract2 = JSON.parseArray(templateField.getTableData(),MtlAdaptationContract2ResponseVO.class);
 //					for (int i = 0; i < jsonArr.size(); i++) {
 //						Map<String, Object> map = new HashMap();
 //						map.put("intellectualProperty", jsonArr.getJSONObject(i).get("intellectualProperty"));
@@ -425,9 +424,9 @@ public enum TemplateExporterEnum {
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("mtlAdaptationContract1ResponseVOList", policy).bind("mtlAdaptationContract2ResponseVOList",policy).build();
-			dataModel.put("mtlAdaptationContract1ResponseVOList", mtlAdaptationContract1ResponseVOList);
-			dataModel.put("mtlAdaptationContract2ResponseVOList", mtlAdaptationContract2ResponseVOList);
+				.bind("MtlAdaptationContract1", policy).bind("MtlAdaptationContract2",policy).build();
+			dataModel.put("MtlAdaptationContract1", MtlAdaptationContract1);
+			dataModel.put("MtlAdaptationContract2", MtlAdaptationContract2);
 			//主表
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("mtlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -462,14 +461,14 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			List<SclConstructionProject1ResponseVO> sclConstructionProject1List = new ArrayList();
-			List<SclConstructionProject2ResponseVO> sclConstructionProject2List = new ArrayList();
-			List<SclConstructionProject3ResponseVO> sclConstructionProject3List = new ArrayList();
+			List<SclConstructionProject1ResponseVO> SclConstructionProject1 = new ArrayList();
+			List<SclConstructionProject2ResponseVO> SclConstructionProject2 = new ArrayList();
+			List<SclConstructionProject3ResponseVO> SclConstructionProject3 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//加工承揽合同（代工合同）关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_SCLCONSTRUCTIONPROJECT1.equals(templateField.getRelationCode())) {
-					 sclConstructionProject1List = JSON.parseArray(templateField.getTableData(), SclConstructionProject1ResponseVO.class);
+					SclConstructionProject1 = JSON.parseArray(templateField.getTableData(), SclConstructionProject1ResponseVO.class);
 //					for (int i = 0; i < sclConstructionProject1List.size(); i++) {
 //						JSONObject sclConstructionProject1 = JSON.parseObject(JSON.toJSONString(sclConstructionProject1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -481,7 +480,7 @@ public enum TemplateExporterEnum {
 				}
 				//加工承揽合同（代工合同）关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_SCLCONSTRUCTIONPROJECT2.equals(templateField.getRelationCode())) {
-					 sclConstructionProject2List = JSON.parseArray(templateField.getTableData(), SclConstructionProject2ResponseVO.class);
+					SclConstructionProject2 = JSON.parseArray(templateField.getTableData(), SclConstructionProject2ResponseVO.class);
 //					for (int i = 0; i < sclConstructionProject2List.size(); i++) {
 //						JSONObject sclConstructionProject2 = JSON.parseObject(JSON.toJSONString(sclConstructionProject2List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -494,7 +493,7 @@ public enum TemplateExporterEnum {
 				}
 				//加工承揽合同（代工合同）关联表3
 				if (ContractFormInfoTemplateContract.CONTRACT_SCLCONSTRUCTIONPROJECT3.equals(templateField.getRelationCode())) {
-					 sclConstructionProject3List = JSON.parseArray(templateField.getTableData(), SclConstructionProject3ResponseVO.class);
+					SclConstructionProject3 = JSON.parseArray(templateField.getTableData(), SclConstructionProject3ResponseVO.class);
 //					for (int i = 0; i < sclConstructionProject3List.size(); i++) {
 //						JSONObject sclConstructionProject3 = JSON.parseObject(JSON.toJSONString(sclConstructionProject3List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -509,10 +508,10 @@ public enum TemplateExporterEnum {
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("sclConstructionProject1List", policy).bind("sclConstructionProject2List",policy).bind("sclConstructionProject3List",policy).build();
-			dataModel.put("sclConstructionProject1List", sclConstructionProject1List);
-			dataModel.put("sclConstructionProject2List", sclConstructionProject2List);
-			dataModel.put("sclConstructionProject3List", sclConstructionProject3List);
+				.bind("SclConstructionProject1", policy).bind("SclConstructionProject2",policy).bind("SclConstructionProject3",policy).build();
+			dataModel.put("SclConstructionProject1", SclConstructionProject1);
+			dataModel.put("SclConstructionProject2", SclConstructionProject2);
+			dataModel.put("SclConstructionProject3", SclConstructionProject3);
 			//主表
 			SclConstructionProjectEntity sclConstructionProject = JSONObject.toJavaObject(j, SclConstructionProjectEntity.class);
 			dataModel.put("sclOrderingParty", j.get("sclOrderingParty"));
@@ -557,13 +556,13 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			List<MtlAudioProductionContract1ResponseVO> mtlAudioProductionContract1List = new ArrayList();
-			List<MtlAudioProductionContract2ResponseVO> mtlAudioProductionContract2List = new ArrayList();
+			List<MtlAudioProductionContract1ResponseVO> MtlAudioProductionContract1 = new ArrayList();
+			List<MtlAudioProductionContract2ResponseVO> MtlAudioProductionContract2 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//音频制作合同 关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLAUDIOPRODUCTIONCONTRACT1.equals(templateField.getRelationCode())) {
-					mtlAudioProductionContract1List = JSON.parseArray(templateField.getTableData(), MtlAudioProductionContract1ResponseVO.class);
+					MtlAudioProductionContract1 = JSON.parseArray(templateField.getTableData(), MtlAudioProductionContract1ResponseVO.class);
 //                    for (int i = 0; i < mtlAudioProductionContract1List.size(); i++) {
 //                        JSONObject mtlAudioProductionContract1 = JSON.parseObject(JSON.toJSONString(mtlAudioProductionContract1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //                        Map<String, Object> map = new HashMap();
@@ -577,7 +576,7 @@ public enum TemplateExporterEnum {
 				}
 				//音频制作合同 关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLAUDIOPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
-					mtlAudioProductionContract2List = JSON.parseArray(templateField.getTableData(), MtlAudioProductionContract2ResponseVO.class);
+					MtlAudioProductionContract2 = JSON.parseArray(templateField.getTableData(), MtlAudioProductionContract2ResponseVO.class);
 //                    for (int i = 0; i < mtlAudioProductionContract2List.size(); i++) {
 //                        JSONObject mtlAudioProductionContract2 = JSON.parseObject(JSON.toJSONString(mtlAudioProductionContract2List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //                        Map<String, Object> map = new HashMap();
@@ -590,9 +589,9 @@ public enum TemplateExporterEnum {
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("mtlAudioProductionContract1List", policy).bind("mtlAudioProductionContract2List",policy).build();
-			dataModel.put("mtlAudioProductionContract1List", mtlAudioProductionContract1List);
-			dataModel.put("mtlAudioProductionContract2List", mtlAudioProductionContract2List);
+				.bind("MtlAudioProductionContract1", policy).bind("MtlAudioProductionContract2",policy).build();
+			dataModel.put("MtlAudioProductionContract1", MtlAudioProductionContract1);
+			dataModel.put("MtlAudioProductionContract2", MtlAudioProductionContract2);
 			//主表
 			MtlAudioProductionContractEntity mtlAudioProductionContract = JSONObject.toJavaObject(j, MtlAudioProductionContractEntity.class);
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -645,27 +644,28 @@ public enum TemplateExporterEnum {
 			Map model = new HashMap();
 			Map dataModel = new HashMap();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
-			List<MtlEditedTheContract1ResponseVO> mtlEditedTheContract1List = new ArrayList<>();
+			List<MtlEditedTheContract1ResponseVO> MtlEditedTheContract1 = new ArrayList<>();
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//音频制作合同 关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLEDITEDTHECONTRACT1.equals(templateField.getRelationCode())) {
-					mtlEditedTheContract1List = JSON.parseArray(templateField.getTableData(), MtlEditedTheContract1ResponseVO.class);
-//					for (int i = 0; i < mtlEditedTheContract1List.size(); i++) {
+					MtlEditedTheContract1 = JSON.parseArray(templateField.getTableData(), MtlEditedTheContract1ResponseVO.class);
+					for (int i = 0; i < MtlEditedTheContract1.size(); i++) {
+						MtlEditedTheContract1.get(i).setPictureSampleD(Pictures.ofUrl(MtlEditedTheContract1.get(i).getPictureSample().substring(0, MtlEditedTheContract1.get(i).getPictureSample().length() - 1),PictureType.JPEG).size(50, 50).create());
 //						JSONObject mtlEditedTheContract1 = JSON.parseObject(JSON.toJSONString(mtlEditedTheContract1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
-//						mtlEditedTheContract1List.get(i).setDeliveryTime(DataFormatUtils.systemTimeFormat(String.valueOf(mtlEditedTheContract1.get("deliveryTime"))));
+//						MtlEditedTheContract1.get(i).setDeliveryTime(DataFormatUtils.systemTimeFormat(String.valueOf(mtlEditedTheContract1.get("deliveryTime"))));
 //						Map<String, Object> map = new HashMap();
 //						map.put("pictureSample", mtlEditedTheContract1.get("pictureSample"));
 //						map.put("modificationRequirements", mtlEditedTheContract1.get("modificationRequirements"));
 //						map.put("deliveryTime", DataFormatUtils.systemTimeFormat(String.valueOf(mtlEditedTheContract1.get("deliveryTime"))));
 //						map.put("modeDelivery", mtlEditedTheContract1.get("modeDelivery"));
-//						mtlEditedTheContract1List.add(map);
-//					}
+//						MtlEditedTheContract1.add(map);
+					}
 				}
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("mtlEditedTheContract1List", policy).build();
-			dataModel.put("mtlEditedTheContract1List", mtlEditedTheContract1List);
+				.bind("MtlEditedTheContract1", policy).build();
+			dataModel.put("MtlEditedTheContract1", MtlEditedTheContract1);
 			//主表
 			MtlEditedTheContractEntity mtlEditedTheContract = JSONObject.toJavaObject(j, MtlEditedTheContractEntity.class);
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -692,23 +692,23 @@ public enum TemplateExporterEnum {
 			Map model = new HashMap();
 			Map dataModel = new HashMap();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
-			List<MtlVideoProductionContract1ResponseVO> mtlVideoProductionContract1List = new ArrayList<>();
-			List<MtlVideoProductionContract2ResponseVO> mtlVideoProductionContract2List = new ArrayList<>();
+			List<MtlVideoProductionContract1ResponseVO> MtlVideoProductionContract1 = new ArrayList<>();
+			List<MtlVideoProductionContract2ResponseVO> MtlVideoProductionContract2 = new ArrayList<>();
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//视频制作合同 关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLVIDEOPRODUCTIONCONTRACT1.equals(templateField.getRelationCode())) {
-					mtlVideoProductionContract1List = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract1ResponseVO.class);
+					MtlVideoProductionContract1 = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract1ResponseVO.class);
 				}
 				//视频制作合同 关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLVIDEOPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
-					mtlVideoProductionContract2List = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract2ResponseVO.class);
+					MtlVideoProductionContract2 = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract2ResponseVO.class);
 				}
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("mtlVideoProductionContract1List", policy).bind("mtlVideoProductionContract2List", policy).build();
-			dataModel.put("mtlVideoProductionContract1List", mtlVideoProductionContract1List);
-			dataModel.put("mtlVideoProductionContract2List", mtlVideoProductionContract2List);
+				.bind("MtlVideoProductionContract1", policy).bind("MtlVideoProductionContract2", policy).build();
+			dataModel.put("MtlVideoProductionContract1", MtlVideoProductionContract1);
+			dataModel.put("MtlVideoProductionContract2", MtlVideoProductionContract2);
 			//主表
 			MtlVideoProductionContractEntity mtlVideoProductionContract = JSONObject.toJavaObject(j, MtlVideoProductionContractEntity.class);
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -759,14 +759,14 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
-			List<MtlShootingAndProductionContract1ResponseVO> mtlShootingAndProductionContract1List = new ArrayList();
-			List<MtlShootingAndProductionContract2ResponseVO> mtlShootingAndProductionContract2List = new ArrayList();
-			List<MtlShootingAndProductionContract3ResponseVO> mtlShootingAndProductionContract3List = new ArrayList();
+			List<MtlShootingAndProductionContract1ResponseVO> MtlShootingAndProductionContract1 = new ArrayList();
+			List<MtlShootingAndProductionContract2ResponseVO> MtlShootingAndProductionContract2 = new ArrayList();
+			List<MtlShootingAndProductionContract3ResponseVO> MtlShootingAndProductionContract3 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//视频广告拍摄制作合同 关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLSHOOTINGANDPRODUCTIONCONTRACT1.equals(templateField.getRelationCode())) {
-					 mtlShootingAndProductionContract1List = JSON.parseArray(templateField.getTableData(), MtlShootingAndProductionContract1ResponseVO.class);
+					MtlShootingAndProductionContract1 = JSON.parseArray(templateField.getTableData(), MtlShootingAndProductionContract1ResponseVO.class);
 //					for (int i = 0; i < mtlShootingAndProductionContract1List.size(); i++) {
 //						JSONObject mtlShootingAndProductionContract1 = JSON.parseObject(JSON.toJSONString(mtlShootingAndProductionContract1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -780,7 +780,7 @@ public enum TemplateExporterEnum {
 				}
 				//视频广告拍摄制作合同 关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLSHOOTINGANDPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
-					 mtlShootingAndProductionContract2List = JSON.parseArray(templateField.getTableData(), MtlShootingAndProductionContract2ResponseVO.class);
+					MtlShootingAndProductionContract2 = JSON.parseArray(templateField.getTableData(), MtlShootingAndProductionContract2ResponseVO.class);
 //					for (int i = 0; i < mtlShootingAndProductionContract2List.size(); i++) {
 //						JSONObject mtlShootingAndProductionContract2 = JSON.parseObject(JSON.toJSONString(mtlShootingAndProductionContract2List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -793,7 +793,7 @@ public enum TemplateExporterEnum {
 				}
 				//视频广告拍摄制作合同 关联表3
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLSHOOTINGANDPRODUCTIONCONTRACT3.equals(templateField.getRelationCode())) {
-					 mtlShootingAndProductionContract3List = JSON.parseArray(templateField.getTableData(), MtlShootingAndProductionContract3ResponseVO.class);
+					MtlShootingAndProductionContract3 = JSON.parseArray(templateField.getTableData(), MtlShootingAndProductionContract3ResponseVO.class);
 //					for (int i = 0; i < mtlShootingAndProductionContract3List.size(); i++) {
 //						JSONObject mtlShootingAndProductionContract3 = JSON.parseObject(JSON.toJSONString(mtlShootingAndProductionContract3List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -808,10 +808,10 @@ public enum TemplateExporterEnum {
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("mtlShootingAndProductionContract1List", policy).bind("mtlShootingAndProductionContract2List", policy).bind("mtlShootingAndProductionContract3List", policy).build();
-			dataModel.put("mtlShootingAndProductionContract1List", mtlShootingAndProductionContract1List);
-			dataModel.put("mtlShootingAndProductionContract2List", mtlShootingAndProductionContract2List);
-			dataModel.put("mtlShootingAndProductionContract3List", mtlShootingAndProductionContract3List);
+				.bind("MtlShootingAndProductionContract1", policy).bind("MtlShootingAndProductionContract2", policy).bind("MtlShootingAndProductionContract3", policy).build();
+			dataModel.put("MtlShootingAndProductionContract1", MtlShootingAndProductionContract1);
+			dataModel.put("MtlShootingAndProductionContract2", MtlShootingAndProductionContract2);
+			dataModel.put("MtlShootingAndProductionContract3", MtlShootingAndProductionContract3);
 			//主表
 			MtlShootingAndProductionContractEntity mtlShootingAndProductionContract = JSONObject.toJavaObject(j, MtlShootingAndProductionContractEntity.class);
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -863,6 +863,7 @@ public enum TemplateExporterEnum {
 	HDZX_05("HDZX_05") {
 		@Override
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map modle=new HashMap();
 			Map dataModel = new HashMap();
 			dataModel.put("cglPartya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("cglPartyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
@@ -918,7 +919,8 @@ public enum TemplateExporterEnum {
 			dataModel.put("two", j.get("scheduling"));
 			dataModel.put("three", j.get("cglPrice"));
 			dataModel.put("four", j.get("cglInspectionStandard"));
-			return dataModel;
+			modle.put("dataModel",setFile(filepaths,dataModel));
+			return modle;
 		}
 	},
 	//物流服务合同（二段配送）
@@ -1077,14 +1079,14 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			List<MtbProductionContract1ResponseVO> mtbProductionContract1List = new ArrayList();
-			List<MtbProductionContract2ResponseVO> mtbProductionContract2List = new ArrayList();
-			List<MtbProductionContract3ResponseVO> mtbProductionContract3List = new ArrayList();
+			List<MtbProductionContract1ResponseVO> MtbProductionContract1 = new ArrayList();
+			List<MtbProductionContract2ResponseVO> MtbProductionContract2 = new ArrayList();
+			List<MtbProductionContract3ResponseVO> MtbProductionContract3 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//平面广告拍摄制作合同 关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_MTBPRODUCTIONCONTRACT1.equals(templateField.getRelationCode())) {
-					mtbProductionContract1List = JSON.parseArray(templateField.getTableData(), MtbProductionContract1ResponseVO.class);
+					MtbProductionContract1 = JSON.parseArray(templateField.getTableData(), MtbProductionContract1ResponseVO.class);
 //					for (int i = 0; i < mtbProductionContract1List.size(); i++) {
 //						JSONObject mtbProductionContract1 = JSON.parseObject(JSON.toJSONString(mtbProductionContract1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -1097,7 +1099,7 @@ public enum TemplateExporterEnum {
 				}
 				//平面广告拍摄制作合同 关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_MTBPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
-					 mtbProductionContract2List = JSON.parseArray(templateField.getTableData(), MtbProductionContract2ResponseVO.class);
+					MtbProductionContract2 = JSON.parseArray(templateField.getTableData(), MtbProductionContract2ResponseVO.class);
 //					for (int i = 0; i < mtbProductionContract2List.size(); i++) {
 //						JSONObject mtbProductionContract2 = JSON.parseObject(JSON.toJSONString(mtbProductionContract2List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -1110,7 +1112,7 @@ public enum TemplateExporterEnum {
 				}
 				//平面广告拍摄制作合同 关联表3
 				if (ContractFormInfoTemplateContract.CONTRACT_MTBPRODUCTIONCONTRACT3.equals(templateField.getRelationCode())) {
-					mtbProductionContract3List = JSON.parseArray(templateField.getTableData(), MtbProductionContract3ResponseVO.class);
+					MtbProductionContract3 = JSON.parseArray(templateField.getTableData(), MtbProductionContract3ResponseVO.class);
 //					for (int i = 0; i < mtbProductionContract3List.size(); i++) {
 //						JSONObject mtbProductionContract3 = JSON.parseObject(JSON.toJSONString(mtbProductionContract3List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -1125,10 +1127,10 @@ public enum TemplateExporterEnum {
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("mtbProductionContract1List", policy).bind("mtbProductionContract2List", policy).bind("mtbProductionContract3List", policy).build();
-			dataModel.put("mtbProductionContract1List", mtbProductionContract1List);
-			dataModel.put("mtbProductionContract2List", mtbProductionContract2List);
-			dataModel.put("mtbProductionContract3List", mtbProductionContract3List);
+				.bind("MtbProductionContract1", policy).bind("MtbProductionContract2", policy).bind("MtbProductionContract3", policy).build();
+			dataModel.put("MtbProductionContract1", MtbProductionContract1);
+			dataModel.put("MtbProductionContract2", MtbProductionContract2);
+			dataModel.put("MtbProductionContract3", MtbProductionContract3);
 			//主表
 			MtbProductionContractEntity mtbProductionContract = JSONObject.toJavaObject(j, MtbProductionContractEntity.class);
 			dataModel.put("mtbPatyA", contractFormInfoEntity.getSealName());
@@ -1145,11 +1147,15 @@ public enum TemplateExporterEnum {
 			dataModel.put("mtbShootingCompletionTime", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
 			//2.乙方制作的作品被甲方全部确认后，应同时提交以下内容（勾选）：
 			StringBuilder mtlTerm = new StringBuilder();
-			if (j.get("mtbSubmitContent").toString().contains("1")) {
-				mtlTerm.append("(1)");
-			}
-			if (j.get("mtbSubmitContent").toString().contains("2")) {
-				mtlTerm.append("(2)");
+			if (Func.isNull(j.get("mtbSubmitContent"))){
+				mtlTerm.append("/");
+			}else {
+				if (j.get("mtbSubmitContent").toString().contains("1")) {
+					mtlTerm.append("(1)");
+				}
+				if (j.get("mtbSubmitContent").toString().contains("2")) {
+					mtlTerm.append("(2)");
+				}
 			}
 			dataModel.put("mtbSubmitContent", mtlTerm.toString());
 			dataModel.put("mtbAcceptancePersonnel", j.get("mtbAcceptancePersonnel"));
@@ -1173,14 +1179,14 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
-			List<SclEquipmentMaintenance1ResponseVO> slEquipmentMaintenance1List = new ArrayList();
+			List<SclEquipmentMaintenance1ResponseVO> SclEquipmentMaintenance1 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//设备维修保养合同 关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_SCLEQUIOMENTMAINTENANCE1.equals(templateField.getRelationCode())) {
-					 slEquipmentMaintenance1List = JSON.parseArray(templateField.getTableData(), SclEquipmentMaintenance1ResponseVO.class);
-					for (int i = 0; i < slEquipmentMaintenance1List.size(); i++) {
-						slEquipmentMaintenance1List.get(i).setSclNumber(i+1);
+					SclEquipmentMaintenance1 = JSON.parseArray(templateField.getTableData(), SclEquipmentMaintenance1ResponseVO.class);
+					for (int i = 0; i < SclEquipmentMaintenance1.size(); i++) {
+						SclEquipmentMaintenance1.get(i).setSclNumber(i+1);
 //						JSONObject slEquipmentMaintenance1 = JSON.parseObject(JSON.toJSONString(slEquipmentMaintenance1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
 //						map.put("sclNumber", i + 1);
@@ -1196,8 +1202,8 @@ public enum TemplateExporterEnum {
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("slEquipmentMaintenance1List", policy).build();
-			dataModel.put("slEquipmentMaintenance1List", slEquipmentMaintenance1List);
+				.bind("SclEquipmentMaintenance1", policy).build();
+			dataModel.put("SclEquipmentMaintenance1", SclEquipmentMaintenance1);
 			//主表
 			SclEquipmentMaintenanceEntity sclEquipmentMaintenance = JSONObject.toJavaObject(j, SclEquipmentMaintenanceEntity.class);
 			dataModel.put("sclPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -1207,11 +1213,11 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclProjectName", j.get("sclProjectName"));
 			dataModel.put("sclHome", j.get("sclHome"));
 			AtomicReference<Double> valuesD = new AtomicReference<>(0D);
-			slEquipmentMaintenance1List.forEach(element -> {
+			SclEquipmentMaintenance1.forEach(element -> {
 				valuesD.updateAndGet(v -> v + BigDecimal.valueOf(Double.parseDouble(element.getSclPrice().toString())).multiply(BigDecimal.valueOf(Double.parseDouble(element.getSclNumbers().toString()))).doubleValue());
 			});
 			dataModel.put("sclTotalRmb", valuesD);
-			dataModel.put("sclCapitalRmb", MoneyToChiness.tenThousand(String.valueOf(valuesD)));
+			dataModel.put("sclCapitalRmb", MoneyToChiness.moneyToChinese(String.valueOf(valuesD)));
 			dataModel.put("sclNote", j.get("sclNote"));
 			dataModel.put("sclEquipment", j.get("sclEquipment"));
 			//1、累计运行时间维修保养
@@ -1447,12 +1453,12 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
-			List<CglProofingContract1ResponseVO> cglProofingContract1List = new ArrayList();
+			List<CglProofingContract1ResponseVO> CglProofingContract1 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//采购类_打样合同书 关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_CGLPROOFINGCONTRACT1.equals(templateField.getRelationCode())) {
-					 cglProofingContract1List = JSON.parseArray(templateField.getTableData(), CglProofingContract1ResponseVO.class);
+					CglProofingContract1 = JSON.parseArray(templateField.getTableData(), CglProofingContract1ResponseVO.class);
 //					for (int i = 0; i < cglProofingContract1List.size(); i++) {
 //						JSONObject glProofingContract1 = JSON.parseObject(JSON.toJSONString(cglProofingContract1List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -1467,14 +1473,14 @@ public enum TemplateExporterEnum {
 				}
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
-			Configure config = Configure.builder().bind("cglProofingContract1List", policy).build();
-			dataModel.put("cglProofingContract1List", cglProofingContract1List);
+			Configure config = Configure.builder().bind("CglProofingContract1", policy).build();
+			dataModel.put("CglProofingContract1", CglProofingContract1);
 			//主表
 			CglProofingContractEntity cglProofingContract = JSONObject.toJavaObject(j, CglProofingContractEntity.class);
 			dataModel.put("partyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("partyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			AtomicReference<Double> valuesD = new AtomicReference<>(0D);
-			cglProofingContract1List.forEach(element -> {
+			CglProofingContract1.forEach(element -> {
 				valuesD.updateAndGet(v -> v + Double.parseDouble(element.getTotalAmount().toString()));
 			});
 			dataModel.put("element", valuesD);
@@ -1490,13 +1496,14 @@ public enum TemplateExporterEnum {
 			return modle;
 		}
 	},
-	//保密协议（二方）
+	//协议（二方）
 	BMXY_01("BMXY_01") {
 		@Override
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list = new ArrayList();
+			dataModel.put("contactPartyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("contactPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("productNameA", j.get("productNameA"));
 			dataModel.put("productContentA", j.get("productContentA"));
@@ -1516,6 +1523,7 @@ public enum TemplateExporterEnum {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list = new ArrayList();
+			dataModel.put("jiafang", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("tradeSide", j.get("tradeSide"));
 			dataModel.put("manufacturer", j.get("manufacturer"));
 			dataModel.put("productInvolved", j.get("productInvolved"));
@@ -1814,16 +1822,16 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
-			List<ProductOutServiceContract1ResponseVO> productOutServiceContract1ResponseVOList = new ArrayList();
-			List<ProductOutServiceContract2ResponseVO> productOutServiceContract2ResponseVOList = new ArrayList();
-			List<ProductOutServiceContract3ResponseVO> productOutServiceContract3ResponseVOList = new ArrayList();
+			List<ProductOutServiceContract1ResponseVO> ProductOutServiceContract1 = new ArrayList();
+			List<ProductOutServiceContract2ResponseVO> ProductOutServiceContract2 = new ArrayList();
+			List<ProductOutServiceContract3ResponseVO> ProductOutServiceContract3 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//生产项目外包服务合同关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT1.equals(templateField.getRelationCode())) {
-					 productOutServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract1ResponseVO.class);
-					for (int i = 0; i < productOutServiceContract1ResponseVOList.size(); i++) {
-						productOutServiceContract1ResponseVOList.get(i).setNum(i+1);
+					ProductOutServiceContract1 = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract1ResponseVO.class);
+					for (int i = 0; i < ProductOutServiceContract1.size(); i++) {
+						ProductOutServiceContract1.get(i).setNum(i+1);
 //						JSONObject productOutServiceContract1 = JSON.parseObject(JSON.toJSONString(productOutServiceContract1ResponseVOList.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
 //						map.put("Num", i + 1);
@@ -1836,9 +1844,9 @@ public enum TemplateExporterEnum {
 				}
 				//生产项目外包服务合同关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT2.equals(templateField.getRelationCode())) {
-					 productOutServiceContract2ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract2ResponseVO.class);
-					for (int i = 0; i < productOutServiceContract2ResponseVOList.size(); i++) {
-						productOutServiceContract2ResponseVOList.get(i).setRewardNum(i+1);
+					ProductOutServiceContract2 = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract2ResponseVO.class);
+					for (int i = 0; i < ProductOutServiceContract2.size(); i++) {
+						ProductOutServiceContract2.get(i).setRewardNum(i+1);
 //						JSONObject productOutServiceContract2 = JSON.parseObject(JSON.toJSONString(productOutServiceContract2ResponseVOList.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
 //						map.put("rewardNum", i + 1);
@@ -1849,9 +1857,9 @@ public enum TemplateExporterEnum {
 				}
 				//生产项目外包服务合同关联表3
 				if (ContractFormInfoTemplateContract.CONTRACT_PRODUCTOUTSERVICECONTRACT3.equals(templateField.getRelationCode())) {
-					 productOutServiceContract3ResponseVOList = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract3ResponseVO.class);
-					for (int i = 0; i < productOutServiceContract3ResponseVOList.size(); i++) {
-						productOutServiceContract3ResponseVOList.get(i).setPunishNum(i+1);
+					ProductOutServiceContract3 = JSON.parseArray(templateField.getTableData(), ProductOutServiceContract3ResponseVO.class);
+					for (int i = 0; i < ProductOutServiceContract3.size(); i++) {
+						ProductOutServiceContract3.get(i).setPunishNum(i+1);
 //						JSONObject productOutServiceContract3 = JSON.parseObject(JSON.toJSONString(productOutServiceContract3ResponseVOList.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
 //						map.put("punishNum", i + 1);
@@ -1863,10 +1871,10 @@ public enum TemplateExporterEnum {
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
 			Configure config = Configure.builder()
-				.bind("productOutServiceContract1ResponseVOList", policy).bind("productOutServiceContract2ResponseVOList", policy).bind("productOutServiceContract3ResponseVOList", policy).build();
-			dataModel.put("productOutServiceContract1ResponseVOList", productOutServiceContract1ResponseVOList);
-			dataModel.put("productOutServiceContract2ResponseVOList", productOutServiceContract2ResponseVOList);
-			dataModel.put("productOutServiceContract3ResponseVOList", productOutServiceContract3ResponseVOList);
+				.bind("ProductOutServiceContract1", policy).bind("ProductOutServiceContract2", policy).bind("ProductOutServiceContract3", policy).build();
+			dataModel.put("ProductOutServiceContract1", ProductOutServiceContract1);
+			dataModel.put("ProductOutServiceContract2", ProductOutServiceContract2);
+			dataModel.put("ProductOutServiceContract3", ProductOutServiceContract3);
 			//主表
 			ProductOutServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, ProductOutServiceContractEntity.class);
 			dataModel.put("proSaler", j.get("proSaler"));
@@ -2056,12 +2064,12 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
-			List<MtbMarketResearchContract1ResponseVO> mtbMarketResearchContract1ResponseVOList = new ArrayList();
+			List<MtbMarketResearchContract1ResponseVO> IMtbMarketResearchContract1 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
 				//市调合同（定性+定量） 关联表1
 				if (ContractFormInfoTemplateContract.CONTRAT_IMTBMARKETRESEARCHCONTRACT1.equals(templateField.getRelationCode())) {
-					mtbMarketResearchContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), MtbMarketResearchContract1ResponseVO.class);
+					IMtbMarketResearchContract1 = JSON.parseArray(templateField.getTableData(), MtbMarketResearchContract1ResponseVO.class);
 //					for (int i = 0; i < mtbMarketResearchContract1ResponseVOList.size(); i++) {
 						//JSONObject mtbProductionContract= JSON.parseObject(JSON.toJSONString(mtbMarketResearchContract1ResponseVOList.get(i),filter, SerializerFeature.WriteMapNullValue,SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();
@@ -2072,8 +2080,8 @@ public enum TemplateExporterEnum {
 				}
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
-			Configure config = Configure.builder().bind("mtbMarketResearchContract1ResponseVOList", policy).build();
-			dataModel.put("mtbMarketResearchContract1ResponseVOList", mtbMarketResearchContract1ResponseVOList);
+			Configure config = Configure.builder().bind("IMtbMarketResearchContract1", policy).build();
+			dataModel.put("IMtbMarketResearchContract1", IMtbMarketResearchContract1);
 			//主表
 			MtbMarketResearchContractEntity mtbMarketResearchContractEntity = JSONObject.toJavaObject(j, MtbMarketResearchContractEntity.class);
 			dataModel.put("patya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -2196,7 +2204,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("phon", j.get("phon"));
 			dataModel.put("annex", j.get("annex"));
 			dataModel.put("annex1", j.get("annex1"));
-			modle.put("",setFile(filepaths,dataModel));
+			modle.put("dataModel",setFile(filepaths,dataModel));
 			modle.put("config",config);
 			return modle;
 		}

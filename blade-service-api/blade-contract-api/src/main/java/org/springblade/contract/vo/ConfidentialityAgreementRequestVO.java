@@ -28,6 +28,10 @@ public class ConfidentialityAgreementRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
+
+	@ApiModelProperty(value = "投资方(甲方)")
+	private String jiaFang;
+
     @ApiModelProperty(value="贸易方(乙方)")
 	private String tradeSide;
 

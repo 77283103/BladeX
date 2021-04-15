@@ -84,6 +84,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Autowired
 	private ContractBondMapper contractBondMapper;
 	@Autowired
+	private ContractBondPlanMapper contractBondPlanMapper;
+	@Autowired
 	private ContractAccordingMapper contractAccordingMapper;
 	@Autowired
 	private ContractPerformanceMapper contractPerformanceMapper;
@@ -165,6 +167,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IProductOutServiceContract3Service productOutServiceContract3Service;
 	@Autowired
 	private IMtbMarketResearchContract1Service iMtbMarketResearchContract1Service;
+	@Autowired
+	private IDraftContractCounterparService iDraftContractCounterparService;
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -178,6 +182,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		if (!Func.isEmpty(contractFormInfo.getContractStatus())) {
 			String[] code = contractFormInfo.getContractStatus().split(",");
 			contractFormInfo.setCode(Arrays.asList(code));
+		}
+		//合同管理员根据长
+		if (Func.isNotEmpty(contractFormInfo.getSealNames())) {
+			contractFormInfo.setSealNames(contractFormInfo.getSealNames());
 		}
 		page = baseMapper.pageList(page, contractFormInfo);
 		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
@@ -842,13 +850,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			} else {
 				contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(contractFormInfo);
 				//将变更合同的新合同信息SET到VOList中
-				List<ContractFormInfoEntity> changList=new ArrayList<>();
+				List<ContractFormInfoEntity> changList = new ArrayList<>();
 				changList.add(changeFormInfoEntity);
 				contractFormInfoResponseVO.setFormInfosEntityNewVOList(changList);
 			}
 		} else {
 			contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(contractFormInfo);
 		}
+		//处理首付款类型的字典值
+//		contractFormInfoResponseVO.setColPayTerm(bizClient.getById(Long.parseLong(
+//			Func.isNotEmpty(changeFormInfoEntity) &&
+//				CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getContractStatus()) ?
+//				changeFormInfoEntity.getColPayTerm() : contractFormInfo.getColPayTerm())).getData().getDictValue());
+		//查询申请单位的
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getSealName())) {
 			String[] sealNameList = contractFormInfoResponseVO.getSealName().split(",");
 			contractFormInfoResponseVO.setSealNameList(sealNameList);
@@ -868,9 +882,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			name.substring(0, name.length());
 			contractFormInfoResponseVO.setCounterpartName(name.toString());
 		}
-		//查询独立起草关联相对方
-			/*ContractCounterpartEntity counterpartEntity = contractCounterpartMapper.selectByIds(id).get(0);
-			contractFormInfoResponseVO.setCounterpartEntity(counterpartEntity);*/
+		//查询多方起草关联相对方的身份信息
+		List<DraftContractCounterpartEntity> dcc = iDraftContractCounterparService.selectByContractId(contractFormInfoResponseVO.getId());
+		if (Func.isNotEmpty(dcc)) {
+			contractFormInfoResponseVO.setDraftContractCounterpartList(dcc);
+		}
 		//查询保证金
 		List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(contractFormInfoResponseVO.getId());
 		contractFormInfoResponseVO.setContractBond(contractBondList);
@@ -1004,6 +1020,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		}
+
 		return contractFormInfoResponseVO;
 	}
 
@@ -1074,7 +1091,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public R<ContractFormInfoEntity> SingleSign(R<ContractFormInfoEntity> r) {
-		ContractFormInfoEntity entity=r.getData();
+		ContractFormInfoEntity entity = r.getData();
 		// 上传合同文件 开始
 		// 接口是支持批量上传的
 		UploadFileEntity uploadFileEntity = new UploadFileEntity();
@@ -1097,11 +1114,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				suffix = fileVO.get(0).getName().substring(index + 1, fileVO.get(0).getName().length());
 				//判断是否为pdf文件，pdf文件不需要转换
 				if (!"pdf".equals(suffix)) {
-					newFilePdf = ftlPath + fileVO.get(0).getName().substring(0, index) +date+ ".pdf";
+					newFilePdf = ftlPath + fileVO.get(0).getName().substring(0, index) + date + ".pdf";
 					AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 					filePDF = new File(newFilePdf);
 				} else {
-					filePDF = new File(ftlPath + fileVO.get(0).getName().substring(0, index) +date+ ".pdf");
+					filePDF = new File(ftlPath + fileVO.get(0).getName().substring(0, index) + date + ".pdf");
 					//建立输出字节流
 					FileOutputStream fos = null;
 					try {
@@ -1119,10 +1136,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 		InputStream in = null;
 		try {
-			in=new FileInputStream(filePDF);
-			String fileId=AsposeWordToPdfUtils.addWaterMak(in,"统一集团",filePDF.getName(),null);
+			in = new FileInputStream(filePDF);
+			String fileId = AsposeWordToPdfUtils.addWaterMak(in, "统一集团", filePDF.getName(), null);
 			Thread.sleep(2000);
-			String url=AsposeWordToPdfUtils.downloadFile(fileId);
+			String url = AsposeWordToPdfUtils.downloadFile(fileId);
 			System.out.println(url);
 			//建立输出字节流
 			FileOutputStream fos = null;
@@ -1162,8 +1179,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			} else {
 				entity.setContractNumber(redisCacheUtil.selectTaskNo("", FLCode[0], GSCode[0]));
 			}
-			String BH=ftlPath + "BH-"+filePDF.getName();
-			AsposeWordToPdfUtils.addWaterMark(filePDF.getPath(),BH,entity.getContractNumber());
+			String BH = ftlPath + "BH-" + filePDF.getName();
+			AsposeWordToPdfUtils.addWaterMark(filePDF.getPath(), BH, entity.getContractNumber());
 			fileBH = new File(BH);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1187,7 +1204,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		uploadFileEntity.setIsMerge("0");
 		// 调用上传方法 另外需要注意 接口里自动进行了获取token的动作, 现在的获取地址和账号密码都是测试的,正式使用需要修改这些内容,修改位置在blade-abutment的resources.application里
 		List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
-		// 上传合同文件 结束
+		//上传合同文件 结束
 		//epk流程接口
 		entity.setTextFilePdf(uploadFileVoList.get(0).getId());
 		MultipartFile multipartFile = null;
@@ -1201,15 +1218,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		R<FileVO> fileVO = fileClient.save(multipartFile);
 		entity.setOtherInformation(fileVO.getData().getLink());
 		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
-		if(ekpVo.getCode()==200){
+		if (ekpVo.getCode() == 200) {
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
-		}else{
+		} else {
 			r.setMsg(ekpVo.getMsg());
 			r.setSuccess(false);
 		}
-		System.out.println("ekp返回的code"+ekpVo.getCode());
-		System.out.println("ekp返回的依据ID"+ekpVo.getData().getDoc_info());
-		System.out.println("ekp原依据ID"+entity.getRelContractId());
+		System.out.println("ekp返回的code" + ekpVo.getCode());
+		System.out.println("ekp返回的依据ID" + ekpVo.getData().getDoc_info());
+		System.out.println("ekp原依据ID" + entity.getRelContractId());
 		/*R<EkpVo> ekpVo=new R<EkpVo>();
 		ekpVo.setCode(0);
 		entity.setRelContractId("123");*/
@@ -1684,9 +1701,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				jsonObject2.put("tableData", array);
 			}
 			//处理下拉多选的值
-			if ("selectMany".equals(jsonObject2.get("componentType"))&&null != (jsonObject2.get("fieldValue"))) {
-				String selectManyString=jsonObject2.get("fieldValue").toString();
-				String[] selectManyAry=selectManyString.substring(1,selectManyString.length()-1).replaceAll("\"", "").split(",");
+			if ("selectMany".equals(jsonObject2.get("componentType")) && null != (jsonObject2.get("fieldValue"))) {
+				String selectManyString = jsonObject2.get("fieldValue").toString();
+				String[] selectManyAry = selectManyString.substring(1, selectManyString.length() - 1).replaceAll("\"", "").split(",");
 				jsonObject2.put("fieldValue", selectManyAry);
 			}
 			jsonArray.add(jsonObject2);
@@ -1755,10 +1772,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
 			}
 			//不等于0就是没有电子签章
-			if((!"0".equals(companyInfoVo.getOrganCode()))&&("1".equals(contractFormInfo.getContractForm()))) {
-					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
+			if ((!"0".equals(companyInfoVo.getOrganCode())) && ("1".equals(contractFormInfo.getContractForm()))) {
+				return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
 			}
-			if(("0".equals(companyInfoVo.getOrganCode()))&&("2".equals(contractFormInfo.getContractForm()))){
+			if (("0".equals(companyInfoVo.getOrganCode())) && ("2".equals(contractFormInfo.getContractForm()))) {
 				return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
 			}
 		}
@@ -1789,7 +1806,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					fos.write(AsposeWordToPdfUtils.getUrlFileData(newFileDoc));
 				} catch (Exception e) {
 					e.printStackTrace();
-				}finally{
+				} finally {
 					try {
 						if (fos != null) {
 							fos.close();
@@ -1813,12 +1830,29 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				int bz = text.indexOf("乙方（签章）");
 				int ay = text.indexOf("甲方(签章)");
 				int by = text.indexOf("乙方(签章)");
-				if ((-1 == az || -1 == bz) && (-1 == ay || -1 == by)) {
+				int cz = text.indexOf("甲方(签章）");
+				int cy = text.indexOf("乙方(签章）");
+				int dz = text.indexOf("甲方（签章)");
+				int dy = text.indexOf("乙方（签章)");
+				if ((-1 == az || -1 == bz) && (-1 == ay || -1 == by) && (-1 == cz || -1 == cy) && (-1 == dz || -1 == dy) &&
+					(-1 == az || -1 == by) && (-1 == az || -1 == cy) && (-1 == az || -1 == dy) &&
+					(-1 == bz || -1 == ay) && (-1 == bz || -1 == cz) && (-1 == bz || -1 == dz) &&
+					(-1 == ay || -1 == cy) && (-1 == ay || -1 == dy) &&
+					(-1 == by || -1 == cz) && (-1 == by || -1 == dz) &&
+					(-1 == cz || -1 == dy) && (-1 == cy || -1 == dz)) {
 					return R.data(2, "缺失签章关键字", "缺失签章关键字");
+				}
+				if ((-1 != cz && -1 != cy) || (-1 != dz && -1 != dy) ||
+					(-1 != az && -1 != by) || (-1 != az && -1 != cy) || (-1 != az && -1 != dy) ||
+					(-1 != bz && -1 != ay) || (-1 != bz && -1 != cz) || (-1 != bz && -1 != dz) ||
+					(-1 != ay && -1 != cy) || (-1 != ay && -1 != dy) ||
+					(-1 != by && -1 != cz) || (-1 != by && -1 != dz) ||
+					(-1 != cz && -1 != dy) && (-1 != cy && -1 != dz)) {
+					return R.data(2, "关键字" + "()" + "存在全角半角字符,请检查修改统一", "关键字" + "()" + "存在全角半角字符,请检查修改统一");
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
-			}finally{
+			} finally {
 				try {
 					if (document != null) {
 						document.close();

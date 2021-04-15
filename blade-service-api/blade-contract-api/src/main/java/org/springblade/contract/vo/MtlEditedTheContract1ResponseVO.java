@@ -1,5 +1,7 @@
 package org.springblade.contract.vo;
 
+import com.deepoove.poi.data.PictureRenderData;
+import com.deepoove.poi.data.Pictures;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -28,4 +30,5 @@ public class MtlEditedTheContract1ResponseVO extends MtlEditedTheContract1Entity
 	private String createDeptName;
 
 	private String updateUserName;
+
 }

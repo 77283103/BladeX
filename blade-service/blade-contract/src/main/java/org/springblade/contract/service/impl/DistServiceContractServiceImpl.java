@@ -8,7 +8,7 @@ import org.springblade.contract.mapper.DistServiceContractMapper;
 import org.springframework.stereotype.Service;
 
 /**
- * 配送服务合同 服务实现类
+ * 相对方管理  服务实现类
  *
  * @author 王策
  * @date : 2021-01-18 17:24:27

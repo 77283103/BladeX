@@ -23,6 +23,7 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.*;
 import org.springblade.system.service.*;
+import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.DeptVO;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,6 +58,8 @@ public class SysClient implements ISysClient {
 
 	private IParamService paramService;
 
+	private IDataSealAuthorityService dataSealAuthorityService;
+
 	@Override
 	@GetMapping(MENU)
 	public R<Menu> getMenu(Long id) {
@@ -83,8 +86,8 @@ public class SysClient implements ISysClient {
 	@Override
 	@GetMapping(DEPT_NAME)
 	public R<String> getDeptName(Long id) {
-		if(deptService.getById(id)==null){
-			return R.data(null);
+		if(Func.isEmpty(deptService.getById(id))){
+			return R.data(200,"","未查到所属部门信息");
 		}else{
 			return R.data(deptService.getById(id).getDeptName());
 		}
@@ -240,6 +243,11 @@ public class SysClient implements ISysClient {
 	@Override
 	public R<Long> getPostIdByAssociationId(String associationId) {
 		return R.data(postService.getPostIdByAssociationId(associationId));
+	}
+
+	@Override
+	public R<DataSealAuthorityResponseVO> getByIdData(String userId,String roleId) {
+		return R.data(dataSealAuthorityService.getUserId(userId,roleId));
 	}
 
 }

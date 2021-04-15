@@ -33,6 +33,16 @@ public class YwlAnewDisplayEntity extends BaseEntity {
 	private static final long serialVersionUID = 1L;
 
 	/**
+	 * 甲方
+	 */
+	@ApiModelProperty(value="甲方")
+	private String ywlPatya;
+	/**
+	 * 乙方
+	 */
+	@ApiModelProperty(value="乙方")
+	private String ywlPatyb;
+	/**
 	 * 合作内容：乙方提供位于【？】的位置供甲方陈列其产品并负责甲方产品摆放的外观维护，甲方支付产品陈列费用
 	 */
     @ApiModelProperty(value="合作内容：乙方提供位于【？】的位置供甲方陈列其产品并负责甲方产品摆放的外观维护，甲方支付产品陈列费用")

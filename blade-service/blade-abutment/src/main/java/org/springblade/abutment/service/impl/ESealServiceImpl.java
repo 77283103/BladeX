@@ -150,6 +150,7 @@ public class ESealServiceImpl implements IESealService {
 				uploadFileVoList.add(new UploadFileVo(uploadFilesJson.getStr("id")));
             }
         }
+		System.out.println(uploadFileVoList.size()+"/n"+uploadFileVoList.get(0).getId());
 
         return uploadFileVoList;
     }

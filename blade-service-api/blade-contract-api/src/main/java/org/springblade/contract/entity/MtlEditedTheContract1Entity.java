@@ -1,5 +1,7 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.deepoove.poi.data.PictureRenderData;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springblade.core.tool.utils.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -41,6 +43,11 @@ public class MtlEditedTheContract1Entity extends BaseEntity {
     @ApiModelProperty(value="图片小样")
 	private String pictureSample;
 	/**
+	 * 图片小样
+	 */
+	@TableField(exist = false)
+	private PictureRenderData pictureSampleD;
+	/**
 	 * 修改要求
 	 */
     @ApiModelProperty(value="修改要求")
@@ -61,5 +68,4 @@ public class MtlEditedTheContract1Entity extends BaseEntity {
     @JsonSerialize(using = ToStringSerializer.class)
     @ApiModelProperty(value="合同ID")
 	private Long contractId;
-
 }
