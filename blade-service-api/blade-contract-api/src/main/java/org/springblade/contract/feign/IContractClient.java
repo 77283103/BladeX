@@ -53,7 +53,7 @@ public interface IContractClient {
 	R<ContractTemplateResponseVO> templateUpdate(@RequestBody TemplateEntity entity);
 
 	/**
-	 * 更新模板里json
+	 * epk通过后返回给合同平台合同状态
 	 * @para @return
 	 * @return
 	 */

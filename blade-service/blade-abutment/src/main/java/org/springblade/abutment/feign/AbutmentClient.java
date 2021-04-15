@@ -434,7 +434,7 @@ public class AbutmentClient implements IAbutmentClient {
 					}
 					pushEkpEntity.setToken(ekpService.getToken());
 					log.info("获取ekp的token："+pushEkpEntity.getToken());
-					if(StrUtil.isNotEmpty(pushEkpEntity.getToken())){
+					if(!StrUtil.isNotEmpty(pushEkpEntity.getToken())){
 						rEkpVo.setCode(1);
 						rEkpVo.setMsg("token获取失败，连接超时");
 						rEkpVo.setSuccess(false);
@@ -444,7 +444,7 @@ public class AbutmentClient implements IAbutmentClient {
 					pushEkpEntity.setDocSubject(entity.getContractName());
 					pushEkpEntity.setFdTemplateId(fdTemplateId);
 					ekpVo = ekpService.pushData(pushEkpEntity);
-					if(StrUtil.isNotEmpty(ekpVo.getDoc_info())){
+					if(!StrUtil.isNotEmpty(ekpVo.getDoc_info())){
 						rEkpVo.setCode(2);
 						rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
 						rEkpVo.setSuccess(false);
