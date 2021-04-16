@@ -24,6 +24,7 @@ import org.springblade.contract.util.TemplateSaveUntil;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.wrapper.ContractBondWrapper;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.excel.util.ExcelUtil;
@@ -49,7 +50,6 @@ import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -90,7 +90,7 @@ public class ContractFormInfoController extends BladeController {
 	private static final String CONTRACT_EXPORT_STATUS = "40";
 	private static final String CONTRACT_SEAL_USING_INFO_STATUS = "50";
 	private static final String CONTRACT_SIGNING_STATUS = "60";
-	private static final String CONTRACT_PERFORMANCE_STATUS = "70";
+	private static final String CONTRACT_PERFORMANCE_STATUS="70";
 	private static final String CONTRACT_ARCHIVE_STATUS = "110";
 	private static final String CONTRACT_ASSESSMENT_STATUS = "100";
 	private static final String ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS = "75";
@@ -128,15 +128,15 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:list')")
 	public R<IPage<ContractFormInfoResponseVO>> list(ContractFormInfoRequestVO contractFormInfo, Query query) {
 		BladeUser user = AuthUtil.getUser();
-		List<String> realNameList = roleService.getRoleAliases(user.getRoleId()).getData();
+		List<String> realNameList=roleService.getRoleAliases(user.getRoleId()).getData();
 		List<String> seal = new ArrayList<>();
-		realNameList.forEach(real -> {
-			if (real.contains("contract_admin")) {
-				DataSealAuthorityResponseVO responseVO = roleService.getByIdData(user.getUserId().toString(), user.getRoleId()).getData();
-				if (Func.isNotEmpty(responseVO)) {
-					responseVO.getSealList().forEach(s -> {
-						seal.add(bizClient.getValue("application_seal", s).getData());
-					});
+		realNameList.forEach(real->{
+			if (real.contains("contract_admin")){
+				DataSealAuthorityResponseVO responseVO=roleService.getByIdData(user.getUserId().toString(),user.getRoleId()).getData();
+				if (Func.isNotEmpty(responseVO)){
+				responseVO.getSealList().forEach(s -> {
+					seal.add(bizClient.getValue("application_seal", s).getData());
+				});
 				}
 				contractFormInfo.setSealNames(seal);
 			}
@@ -192,7 +192,7 @@ public class ContractFormInfoController extends BladeController {
 		/*保存多方向对方身份信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getDraftContractCounterpartList())) {
 			draftContractCounterpartMapper.deleteDraftCounterpart(contractFormInfo.getId());
-			contractFormInfo.getDraftContractCounterpartList().forEach(dcl -> {
+			contractFormInfo.getDraftContractCounterpartList().forEach(dcl->{
 				dcl.setContractId(contractFormInfo.getId().toString());
 				draftContractCounterparService.save(dcl);
 			});
@@ -212,7 +212,12 @@ public class ContractFormInfoController extends BladeController {
 			contractBondPlanService.deleteByContractId(contractFormInfo.getId());
 			for (ContractBondEntity contractBondEntity : contractFormInfo.getContractBond()) {
 				BeanUtil.copy(contractBondEntity, contractBondPlan);
-				contractBondService.saveOrUpdate(contractBondEntity);
+				if (Func.isEmpty(contractBondEntity.getId())) {
+					contractBondService.save(contractBondEntity);
+				}else {
+					contractBondEntity.setId(null);
+					contractBondService.save(contractBondEntity);
+				}
 				//保存保证金履约计划
 				contractBondPlan.setContractId(contractFormInfo.getId());
 				contractBondPlan.setId(null);
@@ -253,8 +258,8 @@ public class ContractFormInfoController extends BladeController {
 		//开始接口处理
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			r = contractFormInfoService.SingleSign(R.data(entity));
-			if (r.getCode() != 200) {
+			r=contractFormInfoService.SingleSign(R.data(entity));
+			if(r.getCode()!=200){
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
@@ -340,8 +345,8 @@ public class ContractFormInfoController extends BladeController {
 		//开始接口处理
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			r = contractFormInfoService.SingleSign(R.data(entity));
-			if (r.getCode() != 200) {
+			r=contractFormInfoService.SingleSign(R.data(entity));
+			if(r.getCode()!=200){
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
@@ -471,7 +476,7 @@ public class ContractFormInfoController extends BladeController {
 				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 				return r;
 			}
-			contractFormInfoEntity = r.getData();
+			contractFormInfoEntity=r.getData();
 		}
 		assert r != null;
 		contractFormInfoService.updateById(contractFormInfoEntity);
@@ -945,17 +950,17 @@ public class ContractFormInfoController extends BladeController {
 			//清空合同的文本导出次数记录
 			entity.setFileExportCount(0);
 			entity.setFileExportCategory(0);
-			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())) {
+			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())){
 				entity.setContractStatus(CONTRACT_REVIEW_STATUS);
-			} else {
+			}else {
 				entity.setContractStatus(CHANGE_REVIEW_STATUS);
 			}
 			contractFormInfoService.save(entity);
-		} else if (CHANGE_REVIEW_STATUS.equals(entity.getContractStatus())) {
+		} else if (CHANGE_REVIEW_STATUS.equals(entity.getContractStatus())){
 			entity.setChangeCategory(CHANGE_REVIEW_STATUS);
-			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())) {
+			if (APPROVE_REVIEW_STATUS.equals(entity.getSubmitStatus())){
 				entity.setContractStatus(CONTRACT_REVIEW_STATUS);
-			} else {
+			}else {
 				entity.setContractStatus(CHANGE_REVIEW_STATUS);
 			}
 			contractFormInfoService.updateById(entity);
@@ -1021,12 +1026,12 @@ public class ContractFormInfoController extends BladeController {
 		}
 		if (CONTRACT_REVIEW_STATUS.equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			r = contractFormInfoService.SingleSign(R.data(entity));
-			if (r.getCode() != 200) {
+			r=contractFormInfoService.SingleSign(R.data(entity));
+			if(r.getCode()!=200){
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
-			entity = r.getData();
+			entity=r.getData();
 			entity.setChangeCategory(CHANGE_REVIEW_STATUS);
 			//注意**因为合同送审时生成合同编号，变更合同编号需要与原合同编号有关联性 即需要覆盖自动生成的合同编号 使用原合同原合同编号加后缀编号(-1+n)
 			entity.setContractNumber(
@@ -1137,7 +1142,7 @@ public class ContractFormInfoController extends BladeController {
 		}
 		//保存合同和关联表 这个方法有问题
 		contractFormInfoEntity = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
-		//页面用这个字段来判断是否提交
+			//页面用这个字段来判断是否提交
 		if ("20".equals(template.getBean())) {
 			//导出pdf文件
 			FileVO filevo = templateExportUntil.templateSave(contractFormInfoEntity, template, contractFormInfoEntity.getJson(), j);
@@ -1149,8 +1154,8 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
 			System.out.println(filevo.getDomain());
-			r = contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
-			contractFormInfoEntity = r.getData();
+			r=contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
+			contractFormInfoEntity=r.getData();
 			//覆盖自动生成的合同编号
 			contractFormInfoEntity.setContractNumber(
 				contractFormInfo.getContractNumber().contains("-") ?

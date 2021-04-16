@@ -52,6 +52,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * 服务实现类
@@ -300,8 +301,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					}
 					name.substring(0, name.length());
 					v.setCounterpartName(name.toString());
-					BigDecimal payAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
-					BigDecimal receiveAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(v.getContractBigCategory()), DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+					//判断是否为整数字符串
+					Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
+					BigDecimal payAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(pattern.matcher(v.getContractBigCategory()).matches()?v.getContractBigCategory():"1326765392596602881"), DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+					BigDecimal receiveAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(pattern.matcher(v.getContractBigCategory()).matches()?v.getContractBigCategory():"1326765392596602881"), DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
 					v.setPayAmountVoidData(payAmountVoidData);
 					v.setReceiveAmountVoidData(receiveAmountVoidData);
 				}

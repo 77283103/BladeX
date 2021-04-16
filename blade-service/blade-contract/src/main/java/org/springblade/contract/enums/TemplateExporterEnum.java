@@ -1523,7 +1523,7 @@ public enum TemplateExporterEnum {
 			Map modle=new HashMap();
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list = new ArrayList();
-			dataModel.put("jiafang", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+			dataModel.put("jiaFang", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("tradeSide", j.get("tradeSide"));
 			dataModel.put("manufacturer", j.get("manufacturer"));
 			dataModel.put("productInvolved", j.get("productInvolved"));
