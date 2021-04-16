@@ -74,8 +74,6 @@ public class AbutmentClient implements IAbutmentClient {
 	@Autowired
 	private TrackerClient trackerClient;
 
-	//	@Autowired
-//	private TrackerClient trackerClient;
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
 
@@ -87,6 +85,7 @@ public class AbutmentClient implements IAbutmentClient {
 
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
+	//推送代办
 	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;

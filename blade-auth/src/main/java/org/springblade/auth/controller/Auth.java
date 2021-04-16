@@ -42,27 +42,6 @@ public class Auth {
 	private String tokenUrl;
 
 
-	@GetMapping("/loginTest/{ticket}")
-	@ApiOperation(value = "单点", notes = "传入ticket")
-	public void eipLogin(@PathVariable("ticket") String ticket, HttpServletRequest request) {
-		String urlNginx = request.getHeaders("x-forwarded-for").toString();
-		StringBuffer url=request.getRequestURL();
-		String serviceURL = "http://upht.pec.com.cn:8100/auth/login";
-		String casServerUrlPrefix = "http://sso.pec.com.cn/sso";
-		String username = null;
-		TicketValidator validator = null;
-		validator = new Cas10TicketValidator(casServerUrlPrefix);
-		Assertion assertion = null;
-		try {
-			assertion = validator.validate(ticket, serviceURL);
-		} catch (TicketValidationException e) {
-			e.printStackTrace();
-		}
-		username = assertion.getPrincipal().getName();
-		System.out.println(username);
-
-	}
-
 	@GetMapping("/login")
 	@ApiOperation(value = "单点", notes = "传入ticket")
 	public R eipLoginCokie(HttpServletResponse response,
@@ -126,6 +105,7 @@ public class Auth {
 					if(validator.contains("yes")){
 						username =validator.replaceAll("yes","").trim();
 					}
+					//
 					setToken(username,response);
 					redisTemplate.opsForValue().set(username+"-according", j);
 					redisTemplate.delete(id);
@@ -139,7 +119,7 @@ public class Auth {
 		}
 		return R.success("");
 	}
-
+	//获取token
 	public void setToken(String username,HttpServletResponse response) throws UnsupportedEncodingException {
 		//有缓存的话说明已经是通过单点之后进来的
 		//删除名称为saber-access-token的Cookie
