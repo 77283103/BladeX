@@ -277,14 +277,15 @@
         <include refid="baseColumnList"/>
         FROM contract_form_info
         WHERE is_deleted = 0
+--       合同状态查询
         <if test="contractFormInfo.contractStatus != null and contractFormInfo.contractStatus != ''">
             <foreach collection="contractFormInfo.code" item="contract_status" open="and contract_status in ("
                      separator="," close=")">
                 #{contract_status}
             </foreach>
         </if>
-<!--        合同管理员查询管理合同的数据限制-->
-        <if test="contractFormInfo.sealNames != null and contractFormInfo.sealName != ''">
+--       合同管理员查询管理合同的数据限制
+        <if test="contractFormInfo.sealNames != null and contractFormInfo.sealNames != ''">
             <foreach collection="contractFormInfo.sealNames" item="seal_name" open="and seal_name in ("
                      separator="," close=")">
                 #{seal_name}

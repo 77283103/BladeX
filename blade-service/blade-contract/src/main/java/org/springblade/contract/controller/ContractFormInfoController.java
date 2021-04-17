@@ -127,6 +127,8 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:list')")
 	public R<IPage<ContractFormInfoResponseVO>> list(ContractFormInfoRequestVO contractFormInfo, Query query) {
+		ContractFormInfoRequestVO requestVO=new ContractFormInfoRequestVO();
+		BeanUtil.copy(contractFormInfo,requestVO);
 		BladeUser user = AuthUtil.getUser();
 		List<String> realNameList=roleService.getRoleAliases(user.getRoleId()).getData();
 		List<String> seal = new ArrayList<>();
@@ -138,10 +140,10 @@ public class ContractFormInfoController extends BladeController {
 					seal.add(bizClient.getValue("application_seal", s).getData());
 				});
 				}
-				contractFormInfo.setSealNames(seal);
+				requestVO.setSealNames(seal);
 			}
 		});
-		IPage<ContractFormInfoResponseVO> pages = contractFormInfoService.pageList(Condition.getPage(query), contractFormInfo);
+		IPage<ContractFormInfoResponseVO> pages = contractFormInfoService.pageList(Condition.getPage(query), requestVO);
 		return R.data(pages);
 	}
 
