@@ -1232,7 +1232,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		entity.setOtherInformation(fileVO.getData().getLink());
 		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
 		log.info("ekp调用结果:{}",JsonUtil.toJson(ekpVo));
-		if (ekpVo.getCode() == 200) {
+		if (ekpVo.getCode() == 0) {
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
 		} else {
 			r.setMsg(ekpVo.getMsg());
