@@ -5,6 +5,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import feign.form.ContentType;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -27,6 +29,7 @@ import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -60,6 +63,7 @@ import java.util.regex.Pattern;
  * @author 史智伟//
  * @date : 2020-09-23 18:04:38
  */
+@Log4j2
 @Service
 public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInfoMapper, ContractFormInfoEntity> implements IContractFormInfoService {
 	@Value("${api.file.ftlPath}")
@@ -1094,6 +1098,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public R<ContractFormInfoEntity> SingleSign(R<ContractFormInfoEntity> r) {
+		log.info("电子签章业务处理开始:{}",JsonUtil.toJson(r));
 		ContractFormInfoEntity entity = r.getData();
 		// 上传合同文件 开始
 		// 接口是支持批量上传的
@@ -1158,6 +1163,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			in.close();
 			//处理编号
 			List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);
+			log.info("开始处理编号:{}",JsonUtil.toJson(list));
 			//合同大类
 			final String[] FLCode = {null};
 			R<List<DictBiz>> HTDL = bizClient.getList("HTDL");
@@ -1167,6 +1173,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					FLCode[0] = bz.getRemark();
 				}
 			});
+			log.info("合同大类:{}",JsonUtil.toJson(FLCode));
 			//合同用印全称编号
 			final String[] GSCode = {null};
 			R<List<DictBiz>> seal = bizClient.getList("application_seal");
@@ -1176,7 +1183,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					GSCode[0] = bz.getRemark();
 				}
 			});
+			log.info("合同用印全称编号:{}",JsonUtil.toJson(GSCode));
 			//存在合同编号按顺序+1
+			log.info("存在合同编号:{}",list.size());
 			if (list.size() > 0) {
 				entity.setContractNumber(redisCacheUtil.selectTaskNo(list.get(0).getContractNumber(), FLCode[0], GSCode[0]));
 			} else {
@@ -1228,9 +1237,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			r.setSuccess(false);
 			return R.data(2,null,"EKP推送数据超时，操作失败");
 		}
-		System.out.println("ekp返回的code" + ekpVo.getCode());
-		System.out.println("ekp返回的依据ID" + ekpVo.getData().getDoc_info());
-		System.out.println("ekp原依据ID" + entity.getRelContractId());
+		log.info("ekp返回的code:{}",ekpVo.getCode());
+		log.info("ekp返回的依据ID:{}",ekpVo.getData().getDoc_info());
+		log.info("ekp原依据ID:{}",entity.getRelContractId());
 		/*R<EkpVo> ekpVo=new R<EkpVo>();
 		ekpVo.setCode(0);
 		entity.setRelContractId("123");*/
