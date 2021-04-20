@@ -21,12 +21,11 @@
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
-        id
-            ,
-        user_name,
+        id,
         user_name,
         user_id,
         role_id,
+        role_name,
         code,
         auth_field,
         seal,
