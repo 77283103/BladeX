@@ -285,7 +285,7 @@
             </foreach>
         </if>
 --       合同管理员查询管理合同的数据限制
-        <if test="contractFormInfo.sealNames != null and contractFormInfo.sealNames != ''">
+        <if test="contractFormInfo.sealNames.size != 0">
             <foreach collection="contractFormInfo.sealNames" item="seal_name" open="and seal_name in ("
                      separator="," close=")">
                 #{seal_name}
