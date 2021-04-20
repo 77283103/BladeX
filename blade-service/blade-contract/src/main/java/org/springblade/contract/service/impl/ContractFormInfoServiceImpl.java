@@ -1235,6 +1235,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		} else {
 			r.setMsg(ekpVo.getMsg());
 			r.setSuccess(false);
+			return R.data(2,null,"EKP推送数据超时，操作失败");
 		}
 		log.info("ekp返回的code:{}",ekpVo.getCode());
 		log.info("ekp返回的依据ID:{}",ekpVo.getData().getDoc_info());
