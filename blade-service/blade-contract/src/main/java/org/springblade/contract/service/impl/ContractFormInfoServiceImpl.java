@@ -1177,8 +1177,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			//合同用印全称编号
 			final String[] GSCode = {null};
 			R<List<DictBiz>> seal = bizClient.getList("application_seal");
-			dataBiz = seal.getData();
-			dataBiz.forEach(bz -> {
+			log.info("获取到application_seal:{}",JsonUtil.toJson(seal));
+			seal.getData().forEach(bz -> {
 				if ((bz.getDictValue()).equals(entity.getSealName())) {
 					GSCode[0] = bz.getRemark();
 				}

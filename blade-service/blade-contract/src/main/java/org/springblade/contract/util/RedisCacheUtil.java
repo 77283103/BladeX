@@ -1,5 +1,6 @@
 package org.springblade.contract.util;
 
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.support.atomic.RedisAtomicLong;
 import org.springframework.stereotype.Component;
@@ -9,6 +10,7 @@ import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+@Log4j2
 @Component
 public class RedisCacheUtil {
 	@Resource
@@ -50,7 +52,7 @@ public class RedisCacheUtil {
 		DecimalFormat df = new DecimalFormat(STR_FORMAT);
 		String no = df.format(increment);
 		sbuffer.append(no);
-		System.out.println(">>>>>>>>>>>" + sbuffer.toString());
+		log.info("生成合同编号:{}",sbuffer.toString());
 		return sbuffer.toString();
 	}
 }
