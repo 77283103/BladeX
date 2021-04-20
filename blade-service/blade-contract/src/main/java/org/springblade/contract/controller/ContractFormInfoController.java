@@ -348,7 +348,7 @@ public class ContractFormInfoController extends BladeController {
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			r=contractFormInfoService.SingleSign(R.data(entity));
-			if(r.getCode()!=200){
+			if(r.getCode() != 0){
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
