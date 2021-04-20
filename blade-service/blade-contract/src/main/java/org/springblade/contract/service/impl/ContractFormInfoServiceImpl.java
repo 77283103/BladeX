@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fasterxml.jackson.core.type.TypeReference;
 import feign.form.ContentType;
 import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
@@ -1179,7 +1180,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			R<List<DictBiz>> seal = bizClient.getList("application_seal");
 			log.info("获取到application_seal:{}",JsonUtil.toJson(seal));
 			seal.getData().forEach(bz -> {
-				if ((bz.getDictValue()).equals(entity.getSealName())) {
+				if (bz.getDictValue().equals(entity.getSealName())) {
 					GSCode[0] = bz.getRemark();
 				}
 			});
@@ -1230,6 +1231,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		R<FileVO> fileVO = fileClient.save(multipartFile);
 		entity.setOtherInformation(fileVO.getData().getLink());
 		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
+		log.info("ekp调用结果:{}",JsonUtil.toJson(ekpVo));
 		if (ekpVo.getCode() == 200) {
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
 		} else {
@@ -1247,6 +1249,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		r.setCode(ekpVo.getCode());
 		return r;
 	}
+
+
 
 	/**
 	 * 范本起草保存
