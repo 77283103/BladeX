@@ -50,7 +50,6 @@ public class DataSealAuthorityController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入dataSealAuthority")
-	@PreAuth("hasPermission('datareal:dataSealAuthority:detail')")
 	public R<DataSealAuthorityResponseVO> detail(@RequestParam Long id) {
 		DataSealAuthorityResponseVO detail = dataSealAuthorityService.getById(id);
 		return R.data(detail);
@@ -62,7 +61,6 @@ public class DataSealAuthorityController extends BladeController {
 	@GetMapping("/page")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入dataSealAuthority")
-	@PreAuth("hasPermission('datareal:dataSealAuthority:page')")
 	public R<IPage<DataSealAuthorityResponseVO>> list(DataSealAuthorityRequestVO dataSealAuthority, Query query) {
 		IPage<DataSealAuthorityEntity> pages = dataSealAuthorityService.pageList(Condition.getPage(query), dataSealAuthority);
 		return R.data(DataSealAuthorityWrapper.build().entityPVPage(pages));
@@ -74,7 +72,6 @@ public class DataSealAuthorityController extends BladeController {
 	@PostMapping("/add")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "新增", notes = "传入dataSealAuthority")
-	@PreAuth("hasPermission('datareal:dataSealAuthority:add')")
 	public R save(@Valid @RequestBody DataSealAuthorityResponseVO dataSealAuthority) {
 		DataSealAuthorityEntity entity = new DataSealAuthorityEntity();
 		BeanUtil.copy(dataSealAuthority, entity);
@@ -99,7 +96,6 @@ public class DataSealAuthorityController extends BladeController {
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "修改", notes = "传入dataSealAuthority")
-	@PreAuth("hasPermission('datareal:dataSealAuthority:update')")
 	public R update(@Valid @RequestBody DataSealAuthorityResponseVO dataSealAuthority) {
 	    if (Func.isEmpty(dataSealAuthority.getId())){
             throw new ServiceException("id不能为空");
