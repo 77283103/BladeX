@@ -45,6 +45,7 @@ import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1232,7 +1233,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		entity.setOtherInformation(fileVO.getData().getLink());
 		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
 		log.info("ekp调用结果:{}",JsonUtil.toJson(ekpVo));
-		if (ekpVo.getCode() == 0) {
+		if (ekpVo.getCode() == HttpStatus.OK.value()) {
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
 		} else {
 			r.setMsg(ekpVo.getMsg());

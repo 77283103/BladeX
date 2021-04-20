@@ -47,6 +47,7 @@ import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.TemplateRequestVO;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -127,7 +128,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:list')")
 	public R<IPage<ContractFormInfoResponseVO>> list(ContractFormInfoRequestVO contractFormInfo, Query query) {
-		ContractFormInfoRequestVO requestVO=new ContractFormInfoRequestVO();
+		ContractFormInfoRequestVO requestVO=ContractFormInfoWrapper.build().createQV();
 		BeanUtil.copy(contractFormInfo,requestVO);
 		BladeUser user = AuthUtil.getUser();
 		List<String> realNameList=roleService.getRoleAliases(user.getRoleId()).getData();
@@ -261,7 +262,7 @@ public class ContractFormInfoController extends BladeController {
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			r=contractFormInfoService.SingleSign(R.data(entity));
-			if(r.getCode()!=200){
+			if(r.getCode()!=HttpStatus.OK.value()){
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
@@ -348,7 +349,7 @@ public class ContractFormInfoController extends BladeController {
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			r=contractFormInfoService.SingleSign(R.data(entity));
-			if(r.getCode() != 0){
+			if(r.getCode() != HttpStatus.OK.value()){
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
@@ -474,7 +475,7 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
 			r = contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
-			if (r.getCode() != 200) {
+			if (r.getCode() != HttpStatus.OK.value()) {
 				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 				return r;
 			}
@@ -1029,7 +1030,7 @@ public class ContractFormInfoController extends BladeController {
 		if (CONTRACT_REVIEW_STATUS.equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			r=contractFormInfoService.SingleSign(R.data(entity));
-			if(r.getCode()!=200){
+			if(r.getCode()!=HttpStatus.OK.value()){
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
@@ -1155,8 +1156,12 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setTextFilePdf(filevo.getId() + ",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
-			System.out.println(filevo.getDomain());
+			//处理电子签章和oa流程
 			r=contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
+			if(r.getCode()!=HttpStatus.OK.value()){
+				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
+				return r;
+			}
 			contractFormInfoEntity=r.getData();
 			//覆盖自动生成的合同编号
 			contractFormInfoEntity.setContractNumber(
@@ -1186,6 +1191,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiAddChange')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> multiAddChange(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		R<ContractFormInfoEntity> r;
 //		contractFormInfo.setContractSoure("20");
 		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
 		//contractFormInfo.setSealName(sealName);
@@ -1262,6 +1268,12 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
+		r=contractFormInfoService.SingleSign(R.data(entity));
+		if(r.getCode()!=HttpStatus.OK.value()){
+			r.setData(ContractFormInfoWrapper.build().entityPV(entity));
+			return r;
+		}
+		entity=r.getData();
 		//判断满足已变更新合同的条件 修改原合同状态
 		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory()) && APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())
 			&& CONTRACT_REVIEW_STATUS.equals(contractFormInfo.getContractStatus())) {

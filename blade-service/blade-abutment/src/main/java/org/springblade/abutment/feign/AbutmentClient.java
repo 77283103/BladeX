@@ -33,6 +33,7 @@ import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -456,7 +457,7 @@ public class AbutmentClient implements IAbutmentClient {
 			}
 		}
 		rEkpVo.setData(ekpVo);
-		rEkpVo.setCode(0);
+		rEkpVo.setCode(HttpStatus.OK.value());
 		rEkpVo.setSuccess(true);
 		return rEkpVo;
 	}
