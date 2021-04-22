@@ -25,6 +25,7 @@ import org.springblade.system.entity.*;
 import org.springblade.system.service.*;
 import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.DeptVO;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -247,7 +248,11 @@ public class SysClient implements ISysClient {
 
 	@Override
 	public R<DataSealAuthorityResponseVO> getByIdData(String userId,String roleId) {
-		return R.data(dataSealAuthorityService.getUserId(userId,roleId));
+		if (dataSealAuthorityService.getUserId(userId,roleId).getCode()== HttpStatus.OK.value()){
+			return R.data(HttpStatus.OK.value(), dataSealAuthorityService.getUserId(userId,roleId).getData(),"OK");
+		}else {
+			return R.data(HttpStatus.NO_CONTENT.value(), null,"NO_CONTENT");
+		}
 	}
 
 }

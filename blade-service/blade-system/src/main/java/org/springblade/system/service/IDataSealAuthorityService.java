@@ -3,6 +3,7 @@ package org.springblade.system.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
+import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.DataSealAuthorityEntity;
 import org.springblade.system.vo.DataSealAuthorityRequestVO;
 import org.springblade.system.vo.DataSealAuthorityResponseVO;
@@ -36,5 +37,5 @@ public interface IDataSealAuthorityService extends BaseService<DataSealAuthority
 	 * @Param roleId
 	 * @return
 	 */
-	DataSealAuthorityResponseVO getUserId(String id,String roleId);
+	R<DataSealAuthorityResponseVO> getUserId(String id, String roleId);
 }

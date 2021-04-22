@@ -26,7 +26,6 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	IPage<ContractFormInfoEntity> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo);
-
 	/**
 	 * 部门合同数量、金额统计表
 	 * @param page
