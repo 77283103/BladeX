@@ -98,16 +98,18 @@ public class FileServiceImpl extends BaseServiceImpl<FileMapper, FileEntity> imp
 		return FileWrapper.build().listVO(fileEntityList);
 	}
 	@Override
-	public InputStream getObject(String fileName) {
+	public InputStream getObject(String fileName, String doMain) {
 		try {
 			//MinioClient minioClient = new MinioClient(ossProperties.getEndpoint(), ossProperties.getAccessKey(), ossProperties.getSecretKey());
-			InputStream object = client.getObject("000000-"+ossProperties.getBucketName(),fileName);
-			if (Func.isEmpty(object)){
-				InputStream	 objects = client.getObject(ossProperties.getBucketName(),fileName);
-				return objects;
+			InputStream objects;
+			int index = doMain.indexOf("/", doMain.indexOf("/") + 2);
+			String newStr = doMain.substring(index+1);
+			if (newStr.contains("000000-")){
+				objects = client.getObject("000000-" + ossProperties.getBucketName(), fileName);
 			}else {
-				return object;
+				objects = client.getObject(ossProperties.getBucketName(), fileName);
 			}
+			return objects;
 			//InputStream object = client.getObject(ossProperties.getBucketName(),fileName);
 		} catch (Exception e) {
 			e.printStackTrace();

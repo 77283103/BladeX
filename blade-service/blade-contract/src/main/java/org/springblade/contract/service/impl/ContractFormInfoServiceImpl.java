@@ -193,6 +193,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//合同管理员根据长
 		if (Func.isNotEmpty(contractFormInfo.getSealNames())) {
 			contractFormInfo.setSealNames(contractFormInfo.getSealNames());
+		} else {
+			List<String> stringList = new ArrayList<>();
+			contractFormInfo.setSealNames(stringList);
 		}
 		page = baseMapper.pageList(page, contractFormInfo);
 		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
@@ -271,6 +274,39 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					v.setAttachedFileVOList(result.getData());
 				}
 			}
+			//查询多方起草关联相对方的身份信息
+			List<DraftContractCounterpartEntity> dcc = iDraftContractCounterparService.selectByContractId(v.getId());
+			if (Func.isNotEmpty(dcc)) {
+				v.setDraftContractCounterpartList(dcc);
+			}
+			//查询保证金
+			List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(v.getId());
+			if (Func.isNotEmpty(contractBondList)) {
+				v.setContractBond(contractBondList);
+			}
+			//查询履约保证金
+			List<ContractBondPlanEntity> contractBondPlanList = contractBondPlanMapper.selectByIds(v.getId());
+			if (Func.isNotEmpty(contractBondPlanList)) {
+				v.setBondPlanEntityList(contractBondPlanList);
+			}
+			//归档文本扫描件
+			if (!Func.isEmpty(signingEntity)) {
+				if (Func.isNoneBlank(signingEntity.getTextFiles())) {
+					R<List<FileVO>> result = fileClient.getByIds(signingEntity.getTextFiles());
+					if (result.isSuccess()) {
+						v.setSigningTextFileVOList(result.getData());
+					}
+				}
+			}
+			//归档附件扫描件
+			if (!Func.isEmpty(signingEntity)) {
+				if (Func.isNoneBlank(signingEntity.getAttachedFiles())) {
+					R<List<FileVO>> result = fileClient.getByIds(signingEntity.getAttachedFiles());
+					if (result.isSuccess()) {
+						v.setSigningAttachedFileVOList(result.getData());
+					}
+				}
+			}
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
@@ -309,8 +345,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					v.setCounterpartName(name.toString());
 					//判断是否为整数字符串
 					Pattern pattern = Pattern.compile("^[-\\+]?[\\d]*$");
-					BigDecimal payAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(pattern.matcher(v.getContractBigCategory()).matches()?v.getContractBigCategory():"1326765392596602881"), DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
-					BigDecimal receiveAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(pattern.matcher(v.getContractBigCategory()).matches()?v.getContractBigCategory():"1326765392596602881"), DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+					BigDecimal payAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(pattern.matcher(v.getContractBigCategory()).matches() ? v.getContractBigCategory() : "1326765392596602881"), DICT_BIZ_FINAL_VALUE_CONTRACT_PAY_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
+					BigDecimal receiveAmountVoidData = contractFormInfoMapper.payTypeAmount(Long.valueOf(pattern.matcher(v.getContractBigCategory()).matches() ? v.getContractBigCategory() : "1326765392596602881"), DICT_BIZ_FINAL_VALUE_CONTRACT_RECEIVE_TYPE, v.getCreateDept(), contractFormInfo.getYearStart(), contractFormInfo.getYearEnd());
 					v.setPayAmountVoidData(payAmountVoidData);
 					v.setReceiveAmountVoidData(receiveAmountVoidData);
 				}
@@ -988,7 +1024,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			}
 		}
 		/* 查询创建者 */
-
 		if (!Func.isEmpty(contractFormInfoResponseVO.getCreateUser())) {
 			/*User user = UserCache.getUser(entity.getCreateUser());*/
 			User user = userClient.userInfoById(contractFormInfoResponseVO.getCreateUser()).getData();
@@ -1100,7 +1135,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public R<ContractFormInfoEntity> SingleSign(R<ContractFormInfoEntity> r) {
-		log.info("电子签章业务处理开始:{}",JsonUtil.toJson(r));
+		log.info("电子签章业务处理开始:{}", JsonUtil.toJson(r));
 		ContractFormInfoEntity entity = r.getData();
 		// 上传合同文件 开始
 		// 接口是支持批量上传的
@@ -1165,7 +1200,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			in.close();
 			//处理编号
 			List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);
-			log.info("开始处理编号:{}",JsonUtil.toJson(list));
+			log.info("开始处理编号:{}", JsonUtil.toJson(list));
 			//合同大类
 			final String[] FLCode = {null};
 			R<List<DictBiz>> HTDL = bizClient.getList("HTDL");
@@ -1175,19 +1210,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					FLCode[0] = bz.getRemark();
 				}
 			});
-			log.info("合同大类:{}",JsonUtil.toJson(FLCode));
+			log.info("合同大类:{}", JsonUtil.toJson(FLCode));
 			//合同用印全称编号
 			final String[] GSCode = {null};
 			R<List<DictBiz>> seal = bizClient.getList("application_seal");
-			log.info("获取到application_seal:{}",JsonUtil.toJson(seal));
+			log.info("获取到application_seal:{}", JsonUtil.toJson(seal));
 			seal.getData().forEach(bz -> {
 				if (bz.getDictValue().equals(entity.getSealName())) {
 					GSCode[0] = bz.getRemark();
 				}
 			});
-			log.info("合同用印全称编号:{}",JsonUtil.toJson(GSCode));
+			log.info("合同用印全称编号:{}", JsonUtil.toJson(GSCode));
 			//存在合同编号按顺序+1
-			log.info("存在合同编号:{}",list.size());
+			log.info("存在合同编号:{}", list.size());
 			if (list.size() > 0) {
 				entity.setContractNumber(redisCacheUtil.selectTaskNo(list.get(0).getContractNumber(), FLCode[0], GSCode[0]));
 			} else {
@@ -1232,17 +1267,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		R<FileVO> fileVO = fileClient.save(multipartFile);
 		entity.setOtherInformation(fileVO.getData().getLink());
 		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
-		log.info("ekp调用结果:{}",JsonUtil.toJson(ekpVo));
+		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
 		if (ekpVo.getCode() == HttpStatus.OK.value()) {
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
 		} else {
 			r.setMsg(ekpVo.getMsg());
 			r.setSuccess(false);
-			return R.data(2,null,"EKP推送数据超时，操作失败");
+			return R.data(2, null, "EKP推送数据超时，操作失败");
 		}
-		log.info("ekp返回的code:{}",ekpVo.getCode());
-		log.info("ekp返回的依据ID:{}",ekpVo.getData().getDoc_info());
-		log.info("ekp原依据ID:{}",entity.getRelContractId());
+		log.info("ekp返回的code:{}", ekpVo.getCode());
+		log.info("ekp返回的依据ID:{}", ekpVo.getData().getDoc_info());
+		log.info("ekp原依据ID:{}", entity.getRelContractId());
 		/*R<EkpVo> ekpVo=new R<EkpVo>();
 		ekpVo.setCode(0);
 		entity.setRelContractId("123");*/
@@ -1250,7 +1285,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		r.setCode(ekpVo.getCode());
 		return r;
 	}
-
 
 
 	/**
@@ -1786,15 +1820,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			companyInfoEntity.setOrganCode(counterpart.getUnifiedSocialCreditCode());
 			// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
 			CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
-			if (companyInfoVo == null) {
+			if (null == companyInfoVo) {
 				companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
 			}
-			//不等于0就是没有电子签章
-			if ((!"0".equals(companyInfoVo.getOrganCode())) && ("1".equals(contractFormInfo.getContractForm()))) {
-				return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
-			}
-			if (("0".equals(companyInfoVo.getOrganCode())) && ("2".equals(contractFormInfo.getContractForm()))) {
-				return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
+			if (null != companyInfoVo) {
+				//不等于0就是没有电子签章
+				if ((!"0".equals(companyInfoVo.getOrganCode())) && ("1".equals(contractFormInfo.getContractForm()))) {
+					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
+				}
+				if (("0".equals(companyInfoVo.getOrganCode())) && ("2".equals(contractFormInfo.getContractForm()))) {
+					return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
+				}
 			}
 		}
 		String newFileDoc = "";
@@ -1865,7 +1901,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					(-1 != bz && -1 != ay) || (-1 != bz && -1 != cz) || (-1 != bz && -1 != dz) ||
 					(-1 != ay && -1 != cy) || (-1 != ay && -1 != dy) ||
 					(-1 != by && -1 != cz) || (-1 != by && -1 != dz) ||
-					(-1 != cz && -1 != dy) && (-1 != cy && -1 != dz)) {
+					(-1 != cz && -1 != dy) || (-1 != cy && -1 != dz)) {
 					return R.data(2, "关键字" + "()" + "存在全角半角字符,请检查修改统一", "关键字" + "()" + "存在全角半角字符,请检查修改统一");
 				}
 			} catch (IOException e) {
@@ -1884,7 +1920,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			}
 			return R.data(0, "成功", "成功");
 		} else {
-			return R.data(2, "缺失签章关键字", "缺失签章关键字");
+			return R.data(2, "文件获取失败", "文件获取失败");
 		}
 	}
 

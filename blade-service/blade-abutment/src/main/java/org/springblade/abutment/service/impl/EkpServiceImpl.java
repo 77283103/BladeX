@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import org.springblade.abutment.entity.PushEkpEntity;
 import org.springblade.abutment.service.IEkpService;
 import org.springblade.abutment.vo.EkpVo;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -99,6 +100,7 @@ public class EkpServiceImpl implements IEkpService {
 	@Override
 	public EkpVo pushData(PushEkpEntity entity) {
 		String paramStr = JSONUtil.toJsonStr(entity);
+		log.info("推送的EKP数据:{}",JsonUtil.toJson(paramStr));
 		JSONObject docInfoJson = null;
 		// 获得Http客户端(可以理解为:你得先有一个浏览器;注意:实际上HttpClient与浏览器是不一样的)
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -109,22 +111,22 @@ public class EkpServiceImpl implements IEkpService {
 		// 创建Post请求
 		HttpPost httpPost = new HttpPost(this.ekpUrl);
 		httpPost.setEntity(entitys);
+		log.info("推送的EKP数据:{}",JsonUtil.toJson(httpPost.getEntity()));
 		// 设置ContentType(注:如果只是传普通参数的话,ContentType不一定非要用application/json)
 		httpPost.setHeader("Content-Type", "application/json;charset=utf8");
-
 		// 响应模型
 		CloseableHttpResponse response = null;
 		try {
 			// 由客户端执行(发送)Post请求
+			log.info("开始推送ekp数据:{}",JsonUtil.toJson(httpPost));
 			response = httpClient.execute(httpPost);
+			log.info("推送ekp数据结果:{}", JsonUtil.toJson(response));
 			// 从响应模型中获取响应实体
 			HttpEntity responseEntity = response.getEntity();
-
-			System.out.println("响应状态为:" + response.getStatusLine());
 			if (responseEntity != null) {
-				System.out.println("响应内容长度为:" + responseEntity.getContentLength());
 				json = EntityUtils.toString(responseEntity);
 				docInfoJson = JSONUtil.parseObj(json);
+				log.info("从响应模型中获取响应实体："+docInfoJson.toString());
 			}
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
@@ -142,6 +144,7 @@ public class EkpServiceImpl implements IEkpService {
 			}
 		}
 		assert docInfoJson != null;
+		log.info("获取推送EKP的数据返回的JSON数据："+docInfoJson.toString());
 		return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo")) : null;
 	}
 }

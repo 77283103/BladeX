@@ -55,6 +55,6 @@ public interface IFileService extends BaseService<FileEntity> {
 	List<FileVO> getByIds(String ids);
 
 
-	InputStream getObject(String fileName);
+	InputStream getObject(String fileName,String doMain);
 
 }

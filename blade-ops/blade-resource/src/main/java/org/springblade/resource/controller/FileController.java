@@ -76,8 +76,7 @@ public class FileController extends BladeController {
 		try {
 			FileEntity fileEntity = fileService.getById(Long.valueOf(id));
 			String fileName = fileEntity.getGenerateName();
-
-			InputStream object = fileService.getObject(fileName);
+			InputStream object = fileService.getObject(fileName,fileEntity.getDomain());
 			byte buf[] = new byte[1024];
 			int length = 0;
 			response.reset();
