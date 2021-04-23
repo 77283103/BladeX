@@ -297,7 +297,7 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoService.updateById(entity);
 		}
 		//增加履约计划信息
-		perServiceContentService.addPerData(contractFormInfo.getPerServiceContentList().get(0),entity.getId());
+		//perServiceContentService.addPerData(contractFormInfo.getPerServiceContentList().get(0),entity.getId());
 
 		contractFormInfo.setId(entity.getId());
 		/*保存相对方信息*/
