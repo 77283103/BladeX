@@ -11,6 +11,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractBondPlanEntity;
@@ -35,6 +36,7 @@ import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
@@ -65,6 +67,7 @@ import java.util.*;
  * @author : 史智伟
  * @date : 2020-09-23 18:04:37
  */
+@Log4j2
 @RestController
 @AllArgsConstructor
 @RequestMapping("/contractFormInfo")
@@ -84,6 +87,7 @@ public class ContractFormInfoController extends BladeController {
 	private IFileClient fileClient;
 	private ISysClient roleService;
 	private TemplateExportUntil templateExportUntil;
+	private IPerServiceContentService perServiceContentService;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
 	private static final String CONTRACT_REVIEW_STATUS = "20";
@@ -282,6 +286,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		log.info("独立起草新增开始:{}", JsonUtil.toJson(contractFormInfo));
 		R<ContractFormInfoEntity> r;
 		contractFormInfo.setContractSoure("10");
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
@@ -291,6 +296,9 @@ public class ContractFormInfoController extends BladeController {
 		} else {
 			contractFormInfoService.updateById(entity);
 		}
+		//增加履约计划信息
+		perServiceContentService.addPerData(contractFormInfo.getPerServiceContentList().get(0),entity.getId());
+
 		contractFormInfo.setId(entity.getId());
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
@@ -347,9 +355,11 @@ public class ContractFormInfoController extends BladeController {
 			});
 		}
 		//开始接口处理
+		log.info("独立起草新增-处理电子签章和oa流程：{}",entity.getContractStatus());
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			r = contractFormInfoService.SingleSign(R.data(entity));
+			log.info("独立起草新增-处理电子签章和oa流程结果:{}",JsonUtil.toJson(r));
 			if (r.getCode() != HttpStatus.OK.value()) {
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
