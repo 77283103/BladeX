@@ -941,6 +941,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//查询履约计划收付款
 		List<ContractPerformanceColPayEntity> contractPerformanceColPayList = contractPerformanceColPayMapper.selectByIds(contractFormInfoResponseVO.getId());
 		contractFormInfoResponseVO.setPerformanceColPayList(contractPerformanceColPayList);
+		//查询多方相对方的收付款信息
+
 		//查询解除信息
 		ContractRelieveEntity relieveEntity = relieveMapper.selectRelieveById(contractFormInfoResponseVO.getId());
 		if (Func.isNotEmpty(relieveEntity)) {
