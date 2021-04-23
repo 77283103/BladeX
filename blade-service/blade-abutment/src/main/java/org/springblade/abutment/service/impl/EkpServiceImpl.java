@@ -70,10 +70,9 @@ public class EkpServiceImpl implements IEkpService {
 			response = httpClient.execute(httpPost);
 			// 从响应模型中获取响应实体
 			HttpEntity responseEntity = response.getEntity();
-
-			System.out.println("响应状态为:" + response.getStatusLine());
+			log.info("响应状态为:{}",response.getStatusLine());
 			if (responseEntity != null) {
-				System.out.println("响应内容长度为:" + responseEntity.getContentLength());
+				log.info("响应内容长度为:{}",responseEntity.getContentLength());
 				json = EntityUtils.toString(responseEntity);
 				tokenJson = JSONUtil.parseObj(json);
 			}
