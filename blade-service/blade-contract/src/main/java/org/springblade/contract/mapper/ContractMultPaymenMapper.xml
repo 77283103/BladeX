@@ -51,4 +51,19 @@
         FROM contract_mult_paymen
         WHERE is_deleted = 0
     </select>
+
+    <!-- 列表 -->
+    <select id="selectByMultId" resultMap="contractMultPaymenResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM contract_mult_paymen
+        WHERE is_deleted = 0
+        AND contract_id=#{id};
+    </select>
+    <!--删除关联相对方-->
+    <delete id="deleteMult" parameterType="java.lang.Long">
+        DELETE
+        FROM contract_mult_paymen
+        WHERE contract_id = #{id}
+    </delete>
 </mapper>

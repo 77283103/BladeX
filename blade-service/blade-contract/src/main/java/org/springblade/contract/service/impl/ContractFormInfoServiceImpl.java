@@ -176,6 +176,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IMtbMarketResearchContract1Service iMtbMarketResearchContract1Service;
 	@Autowired
 	private IDraftContractCounterparService iDraftContractCounterparService;
+	@Autowired
+	private ContractMultPaymenMapper multPaymenMapper;
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -942,7 +944,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		List<ContractPerformanceColPayEntity> contractPerformanceColPayList = contractPerformanceColPayMapper.selectByIds(contractFormInfoResponseVO.getId());
 		contractFormInfoResponseVO.setPerformanceColPayList(contractPerformanceColPayList);
 		//查询多方相对方的收付款信息
-
+		List<ContractMultPaymenEntity> multPaymenEntityList=multPaymenMapper.selectByMultId(contractFormInfoResponseVO.getId());
+		if (Func.isNotEmpty(multPaymenEntityList)){
+			contractFormInfoResponseVO.setMultPaymenEntityList(multPaymenEntityList);
+		}
 		//查询解除信息
 		ContractRelieveEntity relieveEntity = relieveMapper.selectRelieveById(contractFormInfoResponseVO.getId());
 		if (Func.isNotEmpty(relieveEntity)) {

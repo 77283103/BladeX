@@ -18,6 +18,7 @@ import org.springblade.contract.entity.ContractBondPlanEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
+import org.springblade.contract.mapper.ContractMultPaymenMapper;
 import org.springblade.contract.mapper.DraftContractCounterpartMapper;
 import org.springblade.contract.service.*;
 import org.springblade.contract.util.TemplateExportUntil;
@@ -83,6 +84,8 @@ public class ContractFormInfoController extends BladeController {
 	private IContractChangeService changeService;
 	private IDraftContractCounterparService draftContractCounterparService;
 	private DraftContractCounterpartMapper draftContractCounterpartMapper;
+	private IContractMultPaymenService contractMultPaymenService;
+	private ContractMultPaymenMapper contractMultPaymenMapper;
 	private IDictBizClient bizClient;
 	private IFileClient fileClient;
 	private ISysClient roleService;
@@ -203,6 +206,15 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfo.getDraftContractCounterpartList().forEach(dcl -> {
 				dcl.setContractId(contractFormInfo.getId().toString());
 				draftContractCounterparService.save(dcl);
+			});
+		}
+		/*保存相对方收付款信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getMultPaymenEntityList())) {
+			contractMultPaymenMapper.deleteMult(contractFormInfo.getId());
+			contractFormInfo.getMultPaymenEntityList().forEach(mult -> {
+				mult.setCurrencyCategory(contractFormInfo.getCurrencyCategory());
+				mult.setContractId(contractFormInfo.getId().toString());
+				contractMultPaymenService.save(mult);
 			});
 		}
 		/*保存相对方信息*/
