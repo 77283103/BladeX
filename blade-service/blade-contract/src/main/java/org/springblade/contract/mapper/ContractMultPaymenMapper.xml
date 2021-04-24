@@ -5,6 +5,7 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="contractMultPaymenResultMap" type="org.springblade.contract.entity.ContractMultPaymenEntity">
         <result column="id" property="id"/>
+        <result column="counterpart_identity" property="counterpartIdentity"/>
         <result column="contract_id" property="contractId"/>
         <result column="currency_category" property="currencyCategory"/>
         <result column="contract_amount" property="contractAmount"/>
@@ -26,6 +27,7 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        counterpart_identity,
         contract_id,
         currency_category,
         contract_amount,

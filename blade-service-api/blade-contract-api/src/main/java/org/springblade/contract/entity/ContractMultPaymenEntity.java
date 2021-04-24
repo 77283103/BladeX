@@ -1,10 +1,5 @@
 package org.springblade.contract.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.springblade.core.mp.base.BaseEntity;
 import lombok.EqualsAndHashCode;
@@ -14,9 +9,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 
 /**
@@ -34,6 +26,11 @@ public class ContractMultPaymenEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
+	/**
+	 * 身份
+	 */
+	@ApiModelProperty(value = "身份")
+	private String counterpartIdentity;
 	/**
 	 * 合同ID
 	 */

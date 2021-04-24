@@ -196,10 +196,10 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
 			contractFormInfoService.save(entity);
+			contractFormInfo.setId(entity.getId());
 		} else {
 			contractFormInfoService.updateById(entity);
 		}
-		contractFormInfo.setId(entity.getId());
 		/*保存多方向对方身份信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getDraftContractCounterpartList())) {
 			draftContractCounterpartMapper.deleteDraftCounterpart(contractFormInfo.getId());
@@ -250,6 +250,7 @@ public class ContractFormInfoController extends BladeController {
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
 			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
 			contractAccording.setContractId(contractFormInfo.getId());
+			//判断是否为新合同保存
 			if (Func.isEmpty(contractFormInfo.getId())) {
 				accordingService.save(contractAccording);
 			} else {
@@ -310,7 +311,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		//增加履约计划信息
 		//perServiceContentService.addPerData(contractFormInfo.getPerServiceContentList().get(0),entity.getId());
-
 		contractFormInfo.setId(entity.getId());
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
