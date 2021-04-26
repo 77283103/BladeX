@@ -1,5 +1,5 @@
 server:
-  port: 7009
+  port: 7010
   servlet:
     context-path: /xxl-job-admin
 
@@ -44,8 +44,10 @@ mybatis:
 
 xxl:
   job:
+    ### 调度中心通讯TOKEN [选填]：非空时启用；
     accessToken: ''
-    i18n: ''
+    ### 调度中心国际化配置 [必填]： 默认为 "zh_CN"/中文简体, 可选范围为 "zh_CN"/中文简体, "zh_TC"/中文繁体 and "en"/英文；
+    i18n: zh_CN
     logretentiondays: 30
     triggerpool:
       fast:

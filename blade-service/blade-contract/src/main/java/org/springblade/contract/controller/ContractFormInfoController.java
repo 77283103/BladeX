@@ -140,10 +140,12 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, requestVO);
 		BladeUser user = AuthUtil.getUser();
 		List<String> realNameList = roleService.getRoleAliases(user.getRoleId()).getData();
+		log.info("当前登陆人的角色别名："+realNameList);
 		List<String> seal = new ArrayList<>();
 		if (realNameList.contains("contract_admin")) {
 			R<DataSealAuthorityResponseVO> responseVO = roleService.getByIdData(user.getUserId().toString(), user.getRoleId());
 			if (responseVO.getCode() == HttpStatus.OK.value()) {
+				log.info("根据用户id和用户角色ID查询该用户的数据权限："+responseVO.getCode());
 				responseVO.getData().getSealList().forEach(s -> {
 					seal.add(bizClient.getValue("application_seal", s).getData());
 				});
@@ -152,6 +154,7 @@ public class ContractFormInfoController extends BladeController {
 				return R.fail(HttpStatus.NOT_FOUND.value(), "该用户拥有合同管理员权限，但未配置管理合同数据");
 			}
 		}
+		log.info("该用户的数据权限内容："+seal);
 		IPage<ContractFormInfoResponseVO> pages = contractFormInfoService.pageList(Condition.getPage(query), requestVO);
 		return R.data(pages);
 	}
@@ -248,14 +251,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		/*保存依据信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
-			contractAccording.setContractId(contractFormInfo.getId());
-			//判断是否为新合同保存
-			if (Func.isEmpty(contractFormInfo.getId())) {
-				accordingService.save(contractAccording);
-			} else {
-				accordingService.updateById(contractAccording);
-			}
 			contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
@@ -339,13 +334,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		/*保存依据信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
-			contractAccording.setContractId(contractFormInfo.getId());
-			if (Func.isEmpty(contractAccording.getId())) {
-				accordingService.save(contractAccording);
-			} else {
-				accordingService.updateById(contractAccording);
-			}
 			contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
@@ -373,6 +361,7 @@ public class ContractFormInfoController extends BladeController {
 			r = contractFormInfoService.SingleSign(R.data(entity));
 			log.info("独立起草新增-处理电子签章和oa流程结果:{}",JsonUtil.toJson(r));
 			if (r.getCode() != HttpStatus.OK.value()) {
+				entity.setContractStatus(CHANGE_REVIEW_STATUS);
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
@@ -393,30 +382,7 @@ public class ContractFormInfoController extends BladeController {
 	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		R<ContractFormInfoEntity> r = null;
 		/*List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
-		JSONObject j = new JSONObject();
-		//处理合同的二级联动保存
-		for (TemplateFieldEntity templateField : templateFieldList) {
-			if (ContractFormInfoTemplateContract.CONTRACT_BIG_CATEGORY.equals(templateField.getRelationCode())) {
-				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
-				JSONObject json = JSON.parseObject(jsonObj.get("template").toString());
-				j.put("contractBigCategory", jsonObj.get("first"));
-				j.put("contractSmallCategory", jsonObj.get("second"));
-				if(null!=json){
-					j.put("contractTemplateId", json.get("id"));
-				}
-			} else if (ContractFormInfoTemplateContract.CONTRACT_COL_PAY.equals(templateField.getRelationCode())) {
-				JSONObject jsonObj = JSON.parseObject(templateField.getSecondSelectData());
-				j.put("colPayType", jsonObj.get("first"));
-				j.put("colPayTerm", jsonObj.get("second"));
-				j.put("days", jsonObj.get("days"));
-			} else if ("id".equals(templateField.getComponentType())) {
-				j.put("id", templateField.getFieldValue());
-			} else if ("upload".equals(templateField.getComponentType())) {
-				//j.put("id", templateField.getFieldValue());
-			} else {
-				j.put(templateField.getFieldName(), templateField.getFieldValue());
-			}
-		}*/
+		JSONObject j = new JSONObject();*/
 		//把json串转换成一个对象
 		TemplateRequestVO template = contractFormInfo.getTemplate();
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
@@ -457,15 +423,8 @@ public class ContractFormInfoController extends BladeController {
 			contractBondService.saveBond(list, contractFormInfo.getId());
 		}
 		/*保存依据信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording()) && contractFormInfo.getAccording().get(0) != null) {
-			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
-			contractAccording.setContractId(contractFormInfo.getId());
-			if (Func.isEmpty(contractAccording.getId())) {
-				accordingService.save(contractAccording);
-			} else {
-				accordingService.updateById(contractAccording);
-			}
-			//contractFormInfoService.saveAccording(contractFormInfo);
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
+			contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
@@ -1021,9 +980,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		/*保存依据信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
-			contractAccording.setContractId(contractFormInfo.getId());
-			accordingService.updateById(contractAccording);
 			contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
@@ -1139,14 +1095,8 @@ public class ContractFormInfoController extends BladeController {
 			contractBondService.saveBond(list, contractFormInfo.getId());
 		}
 		/*保存依据信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording()) && contractFormInfo.getAccording().get(0) != null) {
-			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
-			contractAccording.setContractId(contractFormInfo.getId());
-			if (Func.isEmpty(contractAccording.getId())) {
-				accordingService.save(contractAccording);
-			} else {
-				accordingService.updateById(contractAccording);
-			}
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
+			contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
@@ -1215,9 +1165,6 @@ public class ContractFormInfoController extends BladeController {
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> multiAddChange(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		R<ContractFormInfoEntity> r;
-//		contractFormInfo.setContractSoure("20");
-		//String sealName = StringUtils.join(contractFormInfo.getSealNameList(), ",");
-		//contractFormInfo.setSealName(sealName);
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
@@ -1233,6 +1180,23 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoService.updateById(entity);
 		}
 		contractFormInfo.setId(entity.getId());
+		/*保存多方向对方身份信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getDraftContractCounterpartList())) {
+			draftContractCounterpartMapper.deleteDraftCounterpart(contractFormInfo.getId());
+			contractFormInfo.getDraftContractCounterpartList().forEach(dcl -> {
+				dcl.setContractId(contractFormInfo.getId().toString());
+				draftContractCounterparService.save(dcl);
+			});
+		}
+		/*保存相对方收付款信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getMultPaymenEntityList())) {
+			contractMultPaymenMapper.deleteMult(contractFormInfo.getId());
+			contractFormInfo.getMultPaymenEntityList().forEach(mult -> {
+				mult.setCurrencyCategory(contractFormInfo.getCurrencyCategory());
+				mult.setContractId(contractFormInfo.getId().toString());
+				contractMultPaymenService.save(mult);
+			});
+		}
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
 			contractFormInfoService.saveCounterpart(contractFormInfo);
@@ -1263,9 +1227,7 @@ public class ContractFormInfoController extends BladeController {
 		}
 		/*保存依据信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			ContractAccordingEntity contractAccording = contractFormInfo.getAccording().get(0);
-			contractAccording.setContractId(contractFormInfo.getId());
-			accordingService.updateById(contractAccording);
+			contractFormInfoService.saveAccording(contractFormInfo);
 		}
 		/*保存履约信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {

@@ -439,10 +439,20 @@
         values
         <foreach collection="accordingIds" item="item" index="index" open="" close="" separator=",">
             (#{id},
-            #{item})
+            #{item.id})
         </foreach>
     </insert>
-
+    <!--保存关联依据-->
+    <insert id="saveAccordingIds">
+        insert into contract_according_setting
+        (contract_id,
+        contract_according_id)
+        values
+        <foreach collection="accordingIds" item="ids" index="index" open="" close="" separator=",">
+            (#{id},
+            #{ids})
+        </foreach>
+    </insert>
     <!--保存关联用印-->
     <insert id="saveSeal">
         insert into contract_seal_using_setting

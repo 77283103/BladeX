@@ -4,9 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.fasterxml.jackson.core.type.TypeReference;
 import feign.form.ContentType;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -70,10 +68,6 @@ import java.util.regex.Pattern;
 public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInfoMapper, ContractFormInfoEntity> implements IContractFormInfoService {
 	@Value("${api.file.ftlPath}")
 	private String ftlPath;
-	//模板路径
-	//private String ftlPath;
-	//private static final String ftlPath="D:/ftl/";
-	//private static final String ftlPath="/ftl/";
 	@Autowired
 	private IFileClient fileClient;
 	@Autowired
@@ -178,6 +172,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IDraftContractCounterparService iDraftContractCounterparService;
 	@Autowired
 	private ContractMultPaymenMapper multPaymenMapper;
+	@Autowired
+	private IContractAccordingService accordingService;
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -833,9 +829,38 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contractFormInfoMapper.saveCounterpart(vo.getId(), vo.getCounterpart());
 	}
 
+	/**
+	 * 处理依据保存信息
+	 * @param vo 合同信
+	 */
 	@Override
 	public void saveAccording(ContractFormInfoRequestVO vo) {
-		//contractFormInfoMapper.saveAccording(vo.getId(),vo.getAccording());
+		List<ContractAccordingEntity> list=new ArrayList<>();
+		List<String> acList=new ArrayList<>();
+		List<String> acIdList=new ArrayList<>();
+		//根据合同ID查询关联依据  用于处理新增，修改操作所产生的脏数据
+		Integer count=contractAccordingMapper.selectByContractIds(vo.getId());
+		if(count!=0){
+			contractAccordingMapper.deleteAccording(vo.getId());
+		}
+		/********保存新新依据数据到依据库 START*******/
+		//根据依据的文件编号查询依据是否已经存在于依据库
+		vo.getAccording().forEach(acc->{
+			acList.add(acc.getFileId());
+		});
+		List<ContractAccordingEntity> ac=contractAccordingMapper.selectByFileId(acList);
+		if (Func.isEmpty(ac)) {
+			accordingService.saveBatch(vo.getAccording());
+			//并把新增的依据set替换到合同依据
+			list.addAll(vo.getAccording());
+			contractFormInfoMapper.saveAccording(vo.getId(),list);
+		}else {
+			ac.forEach(foe->{
+				acIdList.add(foe.getId().toString());
+			});
+			contractFormInfoMapper.saveAccordingIds(vo.getId(),acIdList);
+		}
+		/**********保存新新依据数据到依据库END********/
 	}
 
 	/**
@@ -904,11 +929,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		} else {
 			contractFormInfoResponseVO = ContractFormInfoWrapper.build().entityPV(contractFormInfo);
 		}
-		//处理首付款类型的字典值
-//		contractFormInfoResponseVO.setColPayTerm(bizClient.getById(Long.parseLong(
-//			Func.isNotEmpty(changeFormInfoEntity) &&
-//				CONTRACT_CHANGE_REVIEW.equals(changeFormInfoEntity.getContractStatus()) ?
-//				changeFormInfoEntity.getColPayTerm() : contractFormInfo.getColPayTerm())).getData().getDictValue());
 		//查询申请单位的
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getSealName())) {
 			String[] sealNameList = contractFormInfoResponseVO.getSealName().split(",");
@@ -1137,6 +1157,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	/**
 	 * 电子签章业务处理
 	 *
+	 * 1.获取合同文本文件
+	 * 2.
+	 *
 	 * @param r 合同信息
 	 * @return 状态
 	 */
@@ -1161,6 +1184,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			String suffix = "";
 			//doc转为pdf
 			if (CollectionUtil.isNotEmpty(fileVO)) {
+				log.info("TAG获取合同文本文件转换成PDF，前端已经处理判空，即断言此处文本获取成功！");
 				newFileDoc = fileVO.get(0).getLink();
 				int index = fileVO.get(0).getName().lastIndexOf(".");
 				suffix = fileVO.get(0).getName().substring(index + 1, fileVO.get(0).getName().length());
@@ -1180,12 +1204,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
 				}
 			}
 		} else {
 			filePDF = new File(entity.getFilePDF());
 		}
+		log.info("TAG此时断言合同文本获取操作成功，开始");
 		InputStream in = null;
 		try {
 			in = new FileInputStream(filePDF);
@@ -1275,7 +1299,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		entity.setOtherInformation(fileVO.getData().getLink());
 		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
 		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
+		entity.setRelContractId(ekpVo.getData().getDoc_info());
 		if (ekpVo.getCode() == HttpStatus.OK.value()) {
+			log.info("ekp返回值code"+ekpVo.getCode());
+			log.info("ekp返回值code"+ekpVo.getCode());
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
 		} else {
 			r.setMsg(ekpVo.getMsg());
@@ -1331,7 +1358,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			if (ContractFormInfoTemplateContract.COMPONENT_TYPE.contains(templateField.getComponentType())) {
                 /*if (ContractFormInfoTemplateContract.CONTRACT_ACCORDING.equals(templateField.getRelationCode())) {
                     List<ContractAccordingEntity> accordingList = JSON.parseArray(templateField.getTableData(), ContractAccordingEntity.class);
-                    *//*保存依据信息*//*
+                    //保存依据信息
                     if (CollectionUtil.isNotEmpty(accordingList)) {
                         ContractAccordingEntity contractAccording = accordingList.get(0);
                         contractAccording.setContractId(contractFormInfo.getId());
@@ -1361,7 +1388,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                             com.alibaba.fastjson.JSONArray contractBondArry = obj.getJSONArray(ContractFormInfoTemplateContract.CONTRACT_COUNTERPART_SUB_CONTRACTBOND);
                             List<ContractBondEntity> contractBond = JSON.parseArray(contractBondArry.toString(), ContractBondEntity.class);
 							contractFormInfo.setContractBond(contractBond);
-                            *//*保存保证金信息*//*
+                            //保存保证金信息
                             if (CollectionUtil.isNotEmpty(contractBond)) {
                                 List<Long> list = new ArrayList<>();
                                 List<ContractBondEntity> bondList = new ArrayList<>();
@@ -1390,7 +1417,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         templateField.setTableDataObjectList(obj);
                     }
                 }
-                //*保存履约信息
+                //保存履约信息
                 if (ContractFormInfoTemplateContract.CONTRACT_PERFORMANCE.equals(templateField.getRelationCode())) {
                     List<ContractPerformanceEntity> performanceList = JSON.parseArray(templateField.getTableData(), ContractPerformanceEntity.class);
                     if (CollectionUtil.isNotEmpty(performanceList)) {
@@ -1405,7 +1432,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
                         templateField.setTableDataList(list);
                     }
                 }
-                //*保存履约计划收付款
+                //保存履约计划收付款
                 if (ContractFormInfoTemplateContract.CONTRACT_PERFORMANCE_COLPAY.equals(templateField.getRelationCode())) {
                     List<ContractPerformanceColPayEntity> performanceColPayList = JSON.parseArray(templateField.getTableData(), ContractPerformanceColPayEntity.class);
                     if (CollectionUtil.isNotEmpty(performanceColPayList)) {

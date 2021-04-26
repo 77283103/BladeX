@@ -92,7 +92,7 @@ public class AbutmentClient implements IAbutmentClient {
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
 		pushEkpEntity.setFdTemplateId(fdTemplateId);
-		if (entity != null) {
+		if (null != entity) {
 			//17090089是登录人的编号
 			//entity.getPersonCodeContract()
 			if (StrUtil.isNotEmpty(entity.getPersonCodeContract()) && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
@@ -373,7 +373,7 @@ public class AbutmentClient implements IAbutmentClient {
 				formValuesEntity.setFd_address(entity.getAddressPerson());
 				pushEkpEntity.setFormValues(formValuesEntity);
 				try {
-					//处理合同附件
+					//处理合同补充依据
 					if (!Func.isEmpty(entity.getAttachedFiles())) {
 						List<FileVO> fileVOs = fileClient.getByIds(entity.getAttachedFiles()).getData();
 						String[] fileIds = new String[0];
@@ -458,6 +458,7 @@ public class AbutmentClient implements IAbutmentClient {
 			}
 		}
 		rEkpVo.setData(ekpVo);
+		log.info("HttpStatus.OK.value()"+HttpStatus.OK.value());
 		rEkpVo.setCode(HttpStatus.OK.value());
 		rEkpVo.setSuccess(true);
 		return rEkpVo;

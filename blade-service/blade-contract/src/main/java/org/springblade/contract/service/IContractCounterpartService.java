@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.excel.ContractCounterpartExcel;
 import org.springblade.contract.vo.ContractCounterpartRequestVO;
@@ -25,6 +26,13 @@ public interface IContractCounterpartService extends BaseService<ContractCounter
 	 */
 	IPage<ContractCounterpartResponseVO> pageList(IPage<ContractCounterpartEntity> page, ContractCounterpartRequestVO counterpart);
 
+	/**
+	 * 根据相对方名称获取集合
+	 * @param unifiedSocialCreditCode 信用代码
+	 * @param name
+	 * @return
+	 */
+	List<ContractCounterpartEntity> getByUnifiedSocialCreditCode(String unifiedSocialCreditCode, String name);
 	/**
 	 * 重写向对方vo 返回附件列表到视图
 	 * @param id

@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "xxl.job.logretentiondays",
+      "type": "java.lang.String",
+      "description": "Description for xxl.job.logretentiondays."
+  }
+] }

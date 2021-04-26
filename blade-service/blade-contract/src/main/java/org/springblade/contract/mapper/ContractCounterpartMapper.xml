@@ -132,6 +132,7 @@
         <include refid="baseColumnList"> </include>
         FROM contract_counterpart
         WHERE is_deleted = 0
+        -- 相对方名称查询
         <if test="counterpart.name != null and counterpart.name != ''">
             AND name like concat('%', #{counterpart.name}, '%')
         </if>
@@ -149,6 +150,10 @@
         </if>
         <if test="counterpart.establishDateString != null and counterpart.establishDateString != ''">
             AND DATE_FORMAT(establish_date,'%Y-%m-%d') = #{counterpart.establishDateString}
+        </if>
+--       社会统一代码查询
+        <if test="counterpart.unifiedSocialCreditCode != null and counterpart.unifiedSocialCreditCode != ''">
+            AND name like concat('%', #{counterpart.unifiedSocialCreditCode}, '%')
         </if>
     </select>
     <!--根据合同id查询相对方集合-->
@@ -170,6 +175,18 @@
     </select>
 
     <!--根相对方统一信用代码吗查询黁相对方是否存在-->
+    <select id="selectByUnifiedSocialCreditCode" resultMap="counterpartResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_counterpart
+        WHERE is_deleted = 0
+        AND
+        unified_social_credit_code = #{unifiedSocialCreditCode}
+        OR
+        name = #{name}
+    </select>
+
+    <!--根相对方统一信用代码吗查询黁相对方是否存在-->
     <select id="selectByName" resultMap="counterpartResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
@@ -178,7 +195,6 @@
         AND
         unified_social_credit_code = #{unifiedSocialCreditCode}
     </select>
-
     <!--根相对方统一信用代码修改i相对方信息-->
     <update id="updateByName">
         UPDATE contract_counterpart

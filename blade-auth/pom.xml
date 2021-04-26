@@ -97,11 +97,11 @@
             <version>4.5.13</version>
         </dependency>
         <!-- 链路追踪、服务监控 -->
-        <!--<dependency>
+        <dependency>
             <groupId>org.springblade</groupId>
             <artifactId>blade-starter-trace</artifactId>
         </dependency>
-         解决Java11无法运行的问题
+<!--         解决Java11无法运行的问题 START-->
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
@@ -121,7 +121,8 @@
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>
             <version>1.1.1</version>
-        </dependency>-->
+        </dependency>
+<!--        解决Java11无法运行的问题 END-->
         <dependency>
             <groupId>com.bcprov</groupId>
             <artifactId>com.bcprov</artifactId>

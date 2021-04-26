@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.excel.ContractCounterpartExcel;
 import org.springblade.contract.excel.CounterpartImporter;
+import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.service.IContractCounterpartService;
 import org.springblade.contract.vo.ContractCounterpartRequestVO;
 import org.springblade.contract.vo.ContractCounterpartResponseVO;
@@ -44,6 +45,7 @@ import java.util.List;
 public class ContractCounterpartController extends BladeController {
 
 	private IContractCounterpartService counterpartService;
+	private ContractCounterpartMapper counterpartMapper;
 
 	/**
 	 * 详情
@@ -79,7 +81,12 @@ public class ContractCounterpartController extends BladeController {
 	public R save(@Valid @RequestBody ContractCounterpartRequestVO counterpart) {
         ContractCounterpartEntity entity = new ContractCounterpartEntity();
         BeanUtil.copy(counterpart,entity);
-		return R.status(counterpartService.save(entity));
+        List<ContractCounterpartEntity> counterpartEntityList=counterpartService.getByUnifiedSocialCreditCode(counterpart.getUnifiedSocialCreditCode(),counterpart.getName());
+        if (Func.isNotEmpty(counterpartEntityList)){
+        	return R.fail("该相对方统一信用代码已经存在，请确认是否重复添加！");
+		}else {
+			return R.status(counterpartService.save(entity));
+		}
 	}
 
 	/**

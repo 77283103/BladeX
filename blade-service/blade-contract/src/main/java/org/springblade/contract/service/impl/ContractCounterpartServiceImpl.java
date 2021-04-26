@@ -44,7 +44,12 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
         return pages;
     }
 
-    /**
+	@Override
+	public List<ContractCounterpartEntity> getByUnifiedSocialCreditCode(String unifiedSocialCreditCode, String name) {
+		return contractCounterpartMapper.selectByUnifiedSocialCreditCode(unifiedSocialCreditCode, name);
+	}
+
+	/**
      * 重写向对方vo方法返回附件 包装返回视图层
      *
      * @param id

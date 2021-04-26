@@ -58,19 +58,39 @@
             AND use_status = #{according.useStatus}
         </if>
     </select>
+    <select id="selectByContractIds" resultType="java.lang.Integer">
+        SELECT
+        count(*)
+        FROM contract_according_setting
+        WHERE
+        contract_id = #{id}
+    </select>
+    <!-- 根据依据文件编号查询是否已存在的依据 -->
     <select id="selectByIds" resultMap="accordingResultMap">
         SELECT
         <include refid="baseColumnList"> </include>
         FROM contract_according
         WHERE is_deleted = 0
         AND
-        contract_id = #{id}
+        id IN (SELECT c.contract_according_id FROM contract_according_setting c WHERE c.contract_id =#{contractId})
     </select>
-    <!--根据合同删除依据-->
+<!-- 根据依据文件编号查询是否已存在的依据 -->
+    <select id="selectByFileId" resultMap="accordingResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_according
+        WHERE is_deleted = 0
+        <foreach collection="acList" item="file_id" index="index" open="and file_id in ("
+                 separator="," close=")">
+            #{file_id}
+        </foreach>
+    </select>
+    <!--根据合同id删除依据关联信息-->
     <delete id="deleteAccording" parameterType="java.lang.Long">
        DELETE FROM
-       contract_according
-       where id IN (SELECT c.contract_according_id FROM  contract_according_setting c WHERE c.contract_id = #{id})
+       contract_according_setting
+       WHERE
+       contract_id=#{id}
     </delete>
 
 </mapper>

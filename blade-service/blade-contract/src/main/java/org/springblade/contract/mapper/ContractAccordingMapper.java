@@ -2,6 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractAccordingResponseVO;
@@ -31,17 +32,31 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 	 * @param id
 	 * @return
 	 */
-	List<ContractAccordingEntity> selectByIds(Long id);
-
-
+	Integer selectByContractIds(@Param("id") Long id);
 
 	/**
-	 * 根据合同id查询查询相关依据信息
+	 * 根据依据文件编号查询是否已存在的依据
+	 *
+	 * @param contractId
+	 * @return
+	 */
+	List<ContractAccordingEntity> selectByIds(@Param("contractId") Long contractId);
+
+	/**
+	 * 根据依据文件编号查询是否已存在的依据
+	 *
+	 * @param acList
+	 * @return
+	 */
+	List<ContractAccordingEntity> selectByFileId(@Param("acList") List<String> acList);
+
+	/**
+	 * 根据合同id查询删除相关依据信息
 	 *
 	 * @param id
 	 * @return
 	 */
-	void deleteAccording(Long id);
+	void deleteAccording(@Param("id") Long id);
 
 
 }

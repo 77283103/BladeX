@@ -40,11 +40,19 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 
 	/**
 	 * 根据相对方名称获取集合
-	 * @param unifiedSocialCreditCode 合同name
+	 * @param unifiedSocialCreditCode 信用代码
+	 * @param name
 	 * @return
 	 */
-	List<ContractCounterpartEntity> selectByName(String unifiedSocialCreditCode);
+	List<ContractCounterpartEntity> selectByUnifiedSocialCreditCode(@Param("unifiedSocialCreditCode") String unifiedSocialCreditCode,
+												                    @Param("name") String name);
 
+	/**
+	 * 根据相对方名称获取集合
+	 * @param unifiedSocialCreditCode 信用代码
+	 * @return
+	 */
+	List<ContractCounterpartEntity> selectByName(@Param("unifiedSocialCreditCode") String unifiedSocialCreditCode);
 	/**
 	 *
 	 * @param contractCounterpartEntity 相对方信息
@@ -58,4 +66,5 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	 * @return
 	 */
 	boolean saveBatchPost(@Param("ContractCounterpartList") List<ContractCounterpartEntity> postList);
+
 }
