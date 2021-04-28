@@ -152,6 +152,11 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	}
 
 	@Override
+	public User userByCode(String tenantId, String code) {
+		return baseMapper.selectOne(Wrappers.<User>query().lambda().eq(User::getTenantId, tenantId).eq(User::getCode, code).eq(User::getIsDeleted, BladeConstant.DB_NOT_DELETED));
+	}
+
+	@Override
 	public User getByUserName(String userName) {
 		User user = baseMapper.getByUserName(userName);
 		return user;

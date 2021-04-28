@@ -103,6 +103,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 */
 	private List<FileVO> signingAttachedFileVOList;
 	/**
+	 * 合同模板
+	 */
+	private List<ContractTemplateEntity> templateEntity;
+	/**
 	 *  根据合同id查询变更原合同历史版本列表
 	 */
 	private List<ContractFormInfoEntity> formInfosEntityOldVOList;
@@ -183,4 +187,8 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 統計查詢類型
 	 */
 	private String statisticsType;
+	/**
+	 * 合同负责人的部门
+	 */
+	private String personContractDept;
 }

@@ -29,6 +29,7 @@ import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -108,6 +109,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private ContractRelieveMapper relieveMapper;
 	@Autowired
 	private ContractTemplateMapper contractTemplateMapper;
+	@Autowired
+	private IContractTemplateService templateService;
 	@Resource
 	private RedisCacheUtil redisCacheUtil;
 	@Autowired
@@ -275,7 +278,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			//查询多方起草关联相对方的身份信息
 			List<DraftContractCounterpartEntity> dcc = iDraftContractCounterparService.selectByContractId(v.getId());
 			if (Func.isNotEmpty(dcc)) {
+				List<ContractCounterpartEntity> listAcc=new ArrayList<>();
+				dcc.forEach(d->{
+					listAcc.add(contractCounterpartMapper.selectById(d.getCounterpartId()));
+				});
 				v.setDraftContractCounterpartList(dcc);
+				v.setCounterpart(listAcc);
+			}
+			//查询独立起草起草关联相对方的身份信息
+			List<ContractCounterpartEntity> acc =contractCounterpartMapper.selectByIds(v.getId());
+			if (Func.isNotEmpty(acc)) {
+				v.setCounterpart(acc);
 			}
 			//查询保证金
 			List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(v.getId());
@@ -304,6 +317,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 						v.setSigningAttachedFileVOList(result.getData());
 					}
 				}
+			}
+			if (v.getContractSoure().equals("30")){
+				List<ContractTemplateEntity> list=new ArrayList<>();
+				ContractTemplateEntity templateEntity=templateService.getById(v.getContractTemplateId());
+				list.add(templateEntity);
+				v.setTemplateEntity(list);
+			}
+			R<User> user1=userClient.userByCode("000000",v.getPersonCodeContract());
+			if (Func.isNotEmpty(user1.getData())){
+				v.setPersonContractDept(user1.getData().getDeptNm());
 			}
 			recordList.add(v);
 		}

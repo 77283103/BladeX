@@ -66,6 +66,12 @@ public class UserClient implements IUserClient {
 	}
 
 	@Override
+	@GetMapping(USER_INFO_BY_COED)
+	public R<User> userByCode(String tenantId, String code) {
+		return R.data(service.userByCode(tenantId, code));
+	}
+
+	@Override
 	@GetMapping(USER_INFO)
 	public R<UserInfo> userInfo(String tenantId, String account) {
 		return R.data(service.userInfo(tenantId, account));

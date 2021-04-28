@@ -8,6 +8,7 @@
         <result column="file_id" property="fileId"/>
         <result column="according_name" property="accordingName"/>
         <result column="synch_date" property="synchDate"/>
+        <result column="code" property="code"/>
         <result column="theme_context" property="themeContext"/>
         <result column="document_type" property="documentType"/>
         <result column="use_status" property="useStatus"/>
@@ -26,6 +27,7 @@
     <sql id="baseColumnList">
         id,
         file_id,
+        code,
         according_name,
         synch_date,
         document_type,
@@ -48,6 +50,9 @@
             <include refid="baseColumnList"></include>
         FROM contract_according
         WHERE is_deleted = 0
+        <if test="according.code != null and according.code != ''">
+            AND code like concat('%', #{according.code}, '%')
+        </if>
         <if test="according.accordingName != null and according.accordingName != ''">
             AND according_name like concat('%', #{according.accordingName}, '%')
         </if>

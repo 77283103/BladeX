@@ -370,7 +370,7 @@
             AND DATE_FORMAT(seal.sign_time,'%Y-%m-%d') BETWEEN #{contractFormInfo.yearStart} and
             #{contractFormInfo.yearEnd})
         </if>
-        ORDER BY create_time DESC
+        ORDER BY update_time DESC
     </select>
     <!--修改合同状态-->
     <update id="updateExportStatus">

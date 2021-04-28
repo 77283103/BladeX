@@ -683,11 +683,13 @@ public class ContractFormInfoController extends BladeController {
 		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 		Integer fileExportCount = infoEntity.getFileExportCount();
 		fileExportCount += 1;
+		//修改合同下载次数 下载状态
 		contractFormInfoService.textExportCount(id, fileExportCount, FILE_EXPORT_CATEGORY);
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		return R.status(contractFormInfoService.updateExportStatus(CONTRACT_EXPORT_STATUS, id));
+		infoEntity.setContractStatus(CONTRACT_EXPORT_STATUS);
+		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
 	/**
@@ -704,8 +706,10 @@ public class ContractFormInfoController extends BladeController {
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
+		//统计到导出次数
 		contractFormInfoService.textExportCount(id, fileExportCount, FILE_EXPORT_CATEGORY);
 		infoEntity.setFileExportCount(fileExportCount);
+		contractFormInfoService.updateById(infoEntity);
 		ContractFormInfoResponseVO formInfoResponseVO = ContractFormInfoWrapper.build().entityPV(infoEntity);
 		return R.data(formInfoResponseVO);
 	}
@@ -720,11 +724,12 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAuditStatus')")
 	public R auditStatus(@RequestParam Long id) {
+		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		String contractStatus = CONTRACT_AUDIT_QUALITY;
-		return R.status(contractFormInfoService.updateExportStatus(contractStatus, id));
+		infoEntity.setContractStatus(CONTRACT_AUDIT_QUALITY);
+		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
 	/**
@@ -736,11 +741,12 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateSealStatus')")
 	public R sealStatus(@RequestParam Long id) {
+		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		String contractStatus = CONTRACT_SEAL_USING_INFO_STATUS;
-		return R.status(contractFormInfoService.updateExportStatus(contractStatus, id));
+		infoEntity.setContractStatus(CONTRACT_SEAL_USING_INFO_STATUS);
+		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
 	/**
@@ -752,11 +758,12 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateSigningStatus')")
 	public R signingStatus(@RequestParam Long id) {
+		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		String contractStatus = CONTRACT_SIGNING_STATUS;
-		return R.status(contractFormInfoService.updateExportStatus(contractStatus, id));
+		infoEntity.setContractStatus(CONTRACT_SIGNING_STATUS);
+		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
 	/**
@@ -768,11 +775,12 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateArchiveStatus')")
 	public R archiveStatus(@RequestParam Long id) {
+		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		String contractStatus = CONTRACT_ARCHIVE_STATUS;
-		return R.status(contractFormInfoService.updateExportStatus(contractStatus, id));
+		infoEntity.setContractStatus(CONTRACT_ARCHIVE_STATUS);
+		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
 	/**
@@ -784,11 +792,12 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAssessmentStatus')")
 	public R assessmentStatus(@RequestParam Long id) {
+		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		String contractStatus = CONTRACT_ASSESSMENT_STATUS;
-		return R.status(contractFormInfoService.updateExportStatus(contractStatus, id));
+		infoEntity.setContractStatus(CONTRACT_ASSESSMENT_STATUS);
+		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
 	/**

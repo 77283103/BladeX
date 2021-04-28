@@ -57,6 +57,4 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 	 * @return
 	 */
 	void deleteAccording(@Param("id") Long id);
-
-
 }

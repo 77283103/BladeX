@@ -88,7 +88,14 @@ public interface IUserService extends BaseService<User> {
 	 * @return
 	 */
 	User userByAccount(String tenantId, String account);
-
+	/**
+	 * 根据账号获取用户
+	 *
+	 * @param tenantId
+	 * @param code
+	 * @return
+	 */
+	User userByCode(String tenantId, String code);
 	/**
 	 * 根据账号获取用户
 	 *
