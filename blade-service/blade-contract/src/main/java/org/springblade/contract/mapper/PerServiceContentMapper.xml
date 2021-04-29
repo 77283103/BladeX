@@ -6,6 +6,7 @@
     <resultMap id="perServiceContentResultMap" type="org.springblade.contract.entity.PerServiceContentEntity">
         <result column="id" property="id"/>
         <result column="service_content" property="serviceContent"/>
+        <result column="contract_tran_type" property="contractTranType" />
         <result column="contract_id" property="contractId"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
@@ -14,18 +15,39 @@
         <result column="update_user" property="updateUser"/>
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
+        <result column="service" property="service"/>
     </resultMap>
+
+    <!-- 接收/提供服务计划清单实体 -->
+    <resultMap id="perServiceContentListMap" type="org.springblade.contract.vo.PerServiceContentListResponseVO">
+        <result column="id" property="id"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="service" property="service"/>
+        <result column="contract_tran_type" property="contractTranType"/>
+        <result column="contract_status" property="contractStatus"/>
+        <result column="service_content" property="serviceContent"/>
+        <result column="plan_finsh_time" property="planFinshTime"/>
+        <result column="plan_finsh_content" property="planFinshContent"/>
+        <result column="finsh_time_up" property="finshTimeUp"/>
+        <result column="finsh_content_up" property="finshContentUp"/>
+        <result column="service_content_id" property="serviceContentId" />
+        <result column="plan_finsh_time_id" property="planFinshTimeId" />
+    </resultMap>
+
+
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
         service_content,
+        contract_tran_type,
         contract_id,
         status,
         is_deleted,
         create_user,
         update_user,
         update_time,
-        create_dept
+        create_dept,
+        service
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="perServiceContentResultMap">
@@ -34,4 +56,37 @@
         FROM per_service_content
         WHERE is_deleted = 0
     </select>
+
+    <select id="serviceContentList" resultMap="perServiceContentListMap">
+        SELECT
+            cinfo.id,
+            cinfo.contract_name,
+            psc.service,
+            psc.contract_tran_type,
+            cinfo.contract_status,
+            psc.id as service_content_id,
+            psc.service_content,
+            pft.id as plan_finsh_time_id,
+            pft.plan_finsh_time,
+            pfc.plan_finsh_content,
+            pfc.finsh_time_up,
+            pfc.finsh_content_up
+        FROM
+            contract_form_info cinfo
+                LEFT JOIN per_service_content psc ON cinfo.id = psc.contract_id
+                LEFT JOIN per_plan_finsh_time pft ON psc.id = pft.service_content_id
+                LEFT JOIN per_plan_finsh_content pfc ON pft.id = pfc.plan_finsh_time_id
+        WHERE
+            cinfo.is_deleted = 0
+          AND psc.is_deleted = 0
+          AND pft.is_deleted = 0
+          AND pfc.is_deleted = 0
+        <if test="perServiceContent.contractTranType != null and perServiceContent.contractTranType != ''">
+            and psc.contract_tran_type = #{perServiceContent.contractTranType}
+        </if>
+        <if test="perServiceContent.serviceContent != null and perServiceContent.serviceContent != ''">
+            and psc.service_content like concat('%',#{perServiceContent.serviceContent},'%')
+        </if>
+    </select>
+
 </mapper>

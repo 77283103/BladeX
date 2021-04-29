@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.PerBondMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="perBondResultMap" type="org.springblade.contract.entity.PerBondEntity">
+        <result column="id" property="id"/>
+        <result column="actual_pay_time" property="actualPayTime"/>
+        <result column="actual_pay_amount" property="actualPayAmount"/>
+        <result column="actual_close_time" property="actualCloseTime"/>
+        <result column="remarks" property="remarks"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="bond_id" property="bondId"/>
+        <result column="already_collect_pay" property="alreadyCollectPay"/>
+    </resultMap>
+
+
+    <!-- 履约计划-保证金信息列表 -->
+    <resultMap id="perBondListMap" type="org.springblade.contract.vo.PerBondListVo">
+        <result column="id" property="id"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="col_pay_type" property="colPayType"/>
+        <result column="type" property="type"/>
+        <result column="contract_status" property="contractStatus"/>
+        <result column="contract_bond_id" property="contractBondId"/>
+        <result column="plan_pay_time" property="planPayTime"/>
+        <result column="plan_pay_amount" property="planPayAmount"/>
+        <result column="close_case_date" property="closeCaseDate"/>
+        <result column="actual_pay_time" property="actualPayTime"/>
+        <result column="actual_close_time" property="actualCloseTime"/>
+        <result column="actual_pay_amount" property="actualPayAmount"/>
+        <result column="remarks" property="remarks"/>
+        <result column="already_collect_pay" property="alreadyCollectPay"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        actual_pay_time,
+        actual_pay_amount,
+        actual_close_time,
+        remarks,
+        contract_id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        bond_id,
+        already_collect_pay
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="perBondResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM per_bond
+        WHERE is_deleted = 0
+    </select>
+
+    <select id="perBondList" resultMap="perBondListMap">
+        SELECT
+            cinfo.id,
+            cinfo.contract_name,
+            cinfo.col_pay_type,
+            cb.type,
+            cinfo.contract_status,
+            cb.id as contract_bond_id,
+            cb.plan_pay_time,
+            cb.plan_pay_amount,
+            ccc.close_case_date,
+            pb.actual_pay_time,
+            pb.actual_close_time,
+            pb.actual_pay_amount,
+            pb.remarks,
+            pb.already_collect_pay
+        FROM
+            contract_form_info cinfo
+                LEFT JOIN contract_bond_setting cbs ON cinfo.id = cbs.contract_id
+                LEFT JOIN contract_bond cb ON cb.id = cbs.bond_id
+                LEFT JOIN contract_case_registration ccr on ccr.associated_contract = cinfo.id
+                LEFT JOIN contract_case_closed ccc on ccr.id = ccc.close_case_id
+                left join per_bond pb on cb.id = pb.bond_id
+        WHERE
+            cinfo.is_deleted = 0
+    </select>
+
+
+</mapper>

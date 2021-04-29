@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.PerCollectPayMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="perCollectPayResultMap" type="org.springblade.contract.entity.PerCollectPayEntity">
+        <result column="id" property="id"/>
+        <result column="content" property="content"/>
+        <result column="plan_finsh_time" property="planFinshTime"/>
+        <result column="plan_amount" property="planAmount"/>
+        <result column="finsh_time" property="finshTime"/>
+        <result column="finsh_amount" property="finshAmount"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+
+    <!-- 履约信息收付款计划 -->
+    <resultMap id="perCollectPayListMap" type="org.springblade.contract.vo.PerCollectPayListResponseVO">
+        <result column="id" property="id"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="col_pay_type" property="colPayType"/>
+        <result column="contract_status" property="contractStatus"/>
+        <result column="collect_pay_id" property="collectPayId"/>
+        <result column="contract_tran_type" property="contractTranType"/>
+        <result column="content" property="content"/>
+        <result column="plan_finsh_time" property="planFinshTime"/>
+        <result column="plan_amount" property="planAmount"/>
+        <result column="finsh_time" property="finshTime"/>
+        <result column="finsh_amount" property="finshAmount"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        content,
+        plan_finsh_time,
+        plan_amount,
+        finsh_time,
+        finsh_amount,
+        contract_id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="perCollectPayResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM per_collect_pay
+        WHERE is_deleted = 0
+    </select>
+
+
+    <select id="perCollectPayList" resultMap="perCollectPayListMap">
+        SELECT
+            cinfo.id,
+            cinfo.contract_name,
+            cinfo.col_pay_type,
+            cinfo.contract_status,
+            pcp.contract_tran_type,
+            pcp.id as collect_pay_id,
+            pcp.content,
+            pcp.plan_finsh_time,
+            pcp.plan_amount,
+            pcp.finsh_time,
+            pcp.finsh_amount
+        FROM
+            contract_form_info cinfo
+                LEFT JOIN per_collect_pay pcp ON cinfo.id = pcp.contract_id
+        WHERE
+            cinfo.is_deleted = 0
+          AND pcp.is_deleted = 0
+        <if test="perCollectPay.contractName != null and perCollectPay.contractName != ''">
+            cinfo.contract_name like concat('%',#{perCollectPay.contractName},'%')
+        </if>
+    </select>
+
+</mapper>

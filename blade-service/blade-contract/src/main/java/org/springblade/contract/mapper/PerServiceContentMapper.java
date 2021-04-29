@@ -3,6 +3,7 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.PerServiceContentEntity;
+import org.springblade.contract.vo.PerServiceContentListResponseVO;
 import org.springblade.contract.vo.PerServiceContentRequestVO;
 
 /**
@@ -20,5 +21,13 @@ public interface PerServiceContentMapper extends BaseMapper<PerServiceContentEnt
 	 * @return
 	 */
 	IPage<PerServiceContentEntity> pageList(IPage<PerServiceContentEntity> page, PerServiceContentRequestVO perServiceContent);
+
+	/**
+	 * 履约计划 接收/提供服务清单
+	 * @param page
+	 * @param perServiceContent
+	 * @return
+	 */
+	IPage<PerServiceContentListResponseVO> serviceContentList(IPage<PerServiceContentEntity> page, PerServiceContentRequestVO perServiceContent);
 
 }

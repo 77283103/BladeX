@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.vo.PerServiceContentListResponseVO;
 import org.springblade.contract.vo.PerServiceContentRequestVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.PerServiceContentEntity;
@@ -21,6 +22,15 @@ public interface IPerServiceContentService extends BaseService<PerServiceContent
 	 * @return
 	 */
 	IPage<PerServiceContentEntity> pageList(IPage<PerServiceContentEntity> page, PerServiceContentRequestVO perServiceContent);
+
+	/**
+	 * 履约接收/提供服务计划清单
+	 * @param page
+	 * @param perServiceContent
+	 * @return
+	 */
+	IPage<PerServiceContentListResponseVO> serviceContentList(IPage<PerServiceContentEntity> page, PerServiceContentRequestVO perServiceContent);
+
 
 	/**
 	 * 保存履约信息

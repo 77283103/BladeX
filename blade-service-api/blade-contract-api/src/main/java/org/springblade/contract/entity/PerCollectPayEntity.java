@@ -5,41 +5,63 @@ import org.springblade.core.tool.utils.DateUtil;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
 import org.springblade.core.mp.base.BaseEntity;
 import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
-import java.time.LocalDateTime;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 
 /**
- * 履约服务内容 实体类
+ * 履约收付款 实体类
  *
  * @author chenzy
- * @date : 2021-04-20 16:02:05
+ * @date : 2021-04-25 10:32:27
  */
 @Getter
 @Setter
-@TableName("per_service_content")
+@TableName("per_collect_pay")
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "PerServiceContent对象", description = "履约服务内容")
-public class PerServiceContentEntity extends BaseEntity {
+@ApiModel(value = "PerCollectPay对象", description = "履约收付款")
+public class PerCollectPayEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * 服务内容
+	 * 内容
 	 */
-    @ApiModelProperty(value="服务内容")
-	private String serviceContent;
+    @ApiModelProperty(value="内容")
+	private String content;
+	/**
+	 * 计划完成时间
+	 */
+    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
+    @ApiModelProperty(value="计划完成时间")
+	private Date planFinshTime;
+	/**
+	 * 计划金额
+	 */
+    @ApiModelProperty(value="计划金额")
+	private BigDecimal planAmount;
+	/**
+	 * 完成时间
+	 */
+    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
+    @ApiModelProperty(value="完成时间")
+	private Date finshTime;
+	/**
+	 * 完成金额
+	 */
+    @ApiModelProperty(value="完成金额")
+	private BigDecimal finshAmount;
 	/**
 	 * 合同标识
 	 */
@@ -49,14 +71,7 @@ public class PerServiceContentEntity extends BaseEntity {
 	/**
 	 * 合同交易类型
 	 */
-	@JsonSerialize(using = ToStringSerializer.class)
 	@ApiModelProperty(value="合同交易类型")
     private String contractTranType;
-
-	/**
-	 * 服务
-	 */
-	@ApiModelProperty(value="服务")
-	private String service;
 
 }

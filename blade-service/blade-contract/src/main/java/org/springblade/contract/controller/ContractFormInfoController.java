@@ -88,6 +88,7 @@ public class ContractFormInfoController extends BladeController {
 	private ISysClient roleService;
 	private TemplateExportUntil templateExportUntil;
 	private IPerServiceContentService perServiceContentService;
+	private IPerCollectPayService perCollectPayService;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
 	private static final String CONTRACT_REVIEW_STATUS = "20";
@@ -193,6 +194,11 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
 			contractFormInfoService.save(entity);
+			//增加履约计划信息
+			perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList())?null:
+				contractFormInfo.getPerServiceContentList().get(0),entity.getId());
+			//增加履约收付款信息
+			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(),entity.getId());
 		} else {
 			contractFormInfoService.updateById(entity);
 		}
@@ -293,11 +299,14 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, entity);
 		if (Func.isEmpty(contractFormInfo.getId())) {
 			contractFormInfoService.save(entity);
+			//增加履约计划信息
+			perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList())?null:
+				contractFormInfo.getPerServiceContentList().get(0),entity.getId());
+			//增加履约收付款信息
+			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(),entity.getId());
 		} else {
 			contractFormInfoService.updateById(entity);
 		}
-		//增加履约计划信息
-		//perServiceContentService.addPerData(contractFormInfo.getPerServiceContentList().get(0),entity.getId());
 
 		contractFormInfo.setId(entity.getId());
 		/*保存相对方信息*/
@@ -494,6 +503,11 @@ public class ContractFormInfoController extends BladeController {
 		}
 		assert r != null;
 		contractFormInfoService.updateById(contractFormInfoEntity);
+		//增加履约计划信息
+		perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList())?null:
+			contractFormInfo.getPerServiceContentList().get(0),contractFormInfoEntity.getId());
+		//增加履约收付款信息
+		perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(),contractFormInfoEntity.getId());
 		return R.data(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 	}
 
