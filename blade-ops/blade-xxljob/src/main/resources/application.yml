@@ -8,7 +8,7 @@ xxl:
   job:
     accessToken: ''
     admin:
-      addresses: http://127.0.0.1:7009/xxl-job-admin
+      addresses: http://127.0.0.1:7010/xxl-job-admin
     executor:
       appname: blade-xxljob
       ip: 127.0.0.1

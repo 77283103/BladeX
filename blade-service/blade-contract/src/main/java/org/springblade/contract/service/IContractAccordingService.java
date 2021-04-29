@@ -40,4 +40,11 @@ public interface IContractAccordingService extends BaseService<ContractAccording
 	 */
 	void deleteByContractId(Long id);
 
+	/**
+	 *
+	 * @param id
+	 * @return
+	 */
+	ContractAccordingEntity selectAccordingById(Long id);
+
 }

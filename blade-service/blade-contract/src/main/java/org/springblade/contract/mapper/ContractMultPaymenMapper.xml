@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractMultPaymenMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractMultPaymenResultMap" type="org.springblade.contract.entity.ContractMultPaymenEntity">
+        <result column="id" property="id"/>
+        <result column="counterpart_identity" property="counterpartIdentity"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="currency_category" property="currencyCategory"/>
+        <result column="contract_amount" property="contractAmount"/>
+        <result column="contract_tax_amount" property="contractTaxAmount"/>
+        <result column="contract_tax_rate" property="contractTaxRate"/>
+        <result column="col_pay_type" property="colPayType"/>
+        <result column="col_pay_term" property="colPayTerm"/>
+        <result column="days" property="days"/>
+        <result column="counterpart_id" property="counterpartId"/>
+        <result column="counterpart_name" property="counterpartName"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        counterpart_identity,
+        contract_id,
+        currency_category,
+        contract_amount,
+        contract_tax_amount,
+        contract_tax_rate,
+        col_pay_type,
+        col_pay_term,
+        days,
+        counterpart_id,
+        counterpart_name,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractMultPaymenResultMap">
+        SELECT
+            <include refid="baseColumnList"/>
+        FROM contract_mult_paymen
+        WHERE is_deleted = 0
+    </select>
+
+    <!-- 列表 -->
+    <select id="selectByMultId" resultMap="contractMultPaymenResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM contract_mult_paymen
+        WHERE is_deleted = 0
+        AND contract_id=#{id};
+    </select>
+    <!--删除关联相对方-->
+    <delete id="deleteMult" parameterType="java.lang.Long">
+        DELETE
+        FROM contract_mult_paymen
+        WHERE contract_id = #{id}
+    </delete>
+</mapper>

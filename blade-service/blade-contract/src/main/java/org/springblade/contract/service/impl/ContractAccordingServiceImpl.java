@@ -1,6 +1,7 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.mapper.ContractAccordingMapper;
@@ -8,6 +9,8 @@ import org.springblade.contract.service.IContractAccordingService;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.tool.constant.BladeConstant;
+import org.springblade.system.user.entity.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,5 +41,9 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 	public void deleteByContractId(Long id) {
 		//baseMapper.selectByContractId(id);
 		baseMapper.deleteAccording(id);
+	}
+	@Override
+	public ContractAccordingEntity selectAccordingById(Long id) {
+		return baseMapper.selectOne(Wrappers.<ContractAccordingEntity>query().lambda().eq(ContractAccordingEntity::getContractId, id).eq(ContractAccordingEntity::getIsDeleted, BladeConstant.DB_NOT_DELETED));
 	}
 }

@@ -47,6 +47,8 @@ public class ContractAccordingRequestVO extends BaseEntity {
 
 	@ApiModelProperty(value = "主题内容")
 	private String themeContext;
+	@ApiModelProperty(value = "依据code")
+	private String code;
 
 	@ApiModelProperty(value = "使用状态")
 	private String useStatus;

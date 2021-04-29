@@ -1,3 +1,14 @@
+server:
+  port: 8012
+
+oss:
+  enable: true
+  name: minio
+  tenant-mode: true
+  endpoint: http://minio.pec.com.cn:9000
+  access-key: cms
+  secret-key: Yd8tqj62
+  bucket-name: bladex
 #数据源配置
 spring:
   datasource:

@@ -1,16 +1,19 @@
 package org.springblade.contract.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.ContractArchiveNotEntity;
 import io.swagger.annotations.ApiModel;
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 未归档原因 返回模型VO
@@ -37,4 +40,9 @@ public class ContractArchiveNotResponseVO extends ContractArchiveNotEntity {
 	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	private Date createSystemTime;
 
+	/**
+	 * 对方公司
+	 */
+	@ApiModelProperty(value="对方公司")
+	private List<ContractCounterpartEntity> otherCompanyNameList;
 }

@@ -335,7 +335,12 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@ApiModelProperty(value = "签订信息")
 	@TableField(exist = false)
 	private ContractSigningEntity signingEntity;
-
+	/**
+	 * 多方相对方收付款
+	 */
+	@ApiModelProperty(value = "多方相对方收付款")
+	@TableField(exist = false)
+	private List<ContractMultPaymenEntity> multPaymenEntityList;
 	/**
 	 * 关联合同解除信息
 	 */

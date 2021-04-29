@@ -18,7 +18,10 @@
         </sequenceFlow>
         <userTask id="userTask" name="调整申请" flowable:assignee="${applyUser}">
             <extensionElements>
-                <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"><![CDATA[false]]></modeler:initiator-can-complete>
+                <modeler:initiator-can-complete xmlns:modeler="http://flowable.org/modeler"
+                                                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                                                xsi:schemaLocation="http://flowable.org/modeler ">
+                    <![CDATA[false]]></modeler:initiator-can-complete>
             </extensionElements>
         </userTask>
         <sequenceFlow id="bossPassFlow" name="通过" sourceRef="bossTask" targetRef="end">

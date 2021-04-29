@@ -1,19 +1,19 @@
 #服务器端口
-server:
-  port: 8012
-
-oss:
-  enable: true
-  name: minio
+#server:
+#  port: 8012
+#
+#oss:
+#  enable: true
+#  name: minio
 #  tenant-mode: true
 #  endpoint: http://minio.pec.com.cn:9000
 #  access-key: cms
 #  secret-key: Yd8tqj62
 #  bucket-name: bladex
-  endpoint: http://10.93.1.43:9000
-  access-key: ADMIN
-  secret-key: PASSWORD
-  bucket-name: bladex
+#  endpoint: http://10.93.1.43:9000
+#  access-key: ADMIN
+#  secret-key: PASSWORD
+#  bucket-name: bladex
 #  endpoint: http://49.232.102.198:9000
 #  access-key: minioadmin
 #  secret-key: minioadmin

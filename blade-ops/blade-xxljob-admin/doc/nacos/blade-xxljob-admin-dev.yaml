@@ -11,6 +11,6 @@ blade:
     job:
       dev:
         # MySql
-        url: jdbc:mysql://127.0.0.1:3306/xxl_job?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8
-        username: root
-        password: root
+        url: jdbc:mysql://rm-2ze70dw1hzl8at1hvto.mysql.rds.aliyuncs.com:3306/xxl_job?useSSL=false&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&transformedBitIsBoolean=true&tinyInt1isBit=false&allowMultiQueries=true&serverTimezone=GMT%2B8&allowPublicKeyRetrieval=true
+        username: bladex01
+        password: P@ssw0rd

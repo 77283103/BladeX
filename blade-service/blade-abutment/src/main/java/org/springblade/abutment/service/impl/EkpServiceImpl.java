@@ -122,7 +122,7 @@ public class EkpServiceImpl implements IEkpService {
 			log.info("推送ekp数据结果:{}", JsonUtil.toJson(response));
 			// 从响应模型中获取响应实体
 			HttpEntity responseEntity = response.getEntity();
-			if (responseEntity != null) {
+			if (null != responseEntity) {
 				json = EntityUtils.toString(responseEntity);
 				docInfoJson = JSONUtil.parseObj(json);
 				log.info("从响应模型中获取响应实体："+docInfoJson.toString());
@@ -144,6 +144,6 @@ public class EkpServiceImpl implements IEkpService {
 		}
 		assert docInfoJson != null;
 		log.info("获取推送EKP的数据返回的JSON数据："+docInfoJson.toString());
-		return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo")) : null;
+		return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo")) : new EkpVo("");
 	}
 }

@@ -2,6 +2,8 @@ package org.springblade.system.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -22,6 +24,7 @@ import java.util.Arrays;
  * @author xhb
  * @date : 2021-04-12 16:51:01
  */
+@Slf4j
 @AllArgsConstructor
 @Service
 public class DataSealAuthorityServiceImpl extends BaseServiceImpl<DataSealAuthorityMapper, DataSealAuthorityEntity> implements IDataSealAuthorityService {
@@ -52,6 +55,7 @@ private DataSealAuthorityMapper dataSealAuthorityMapper;
 	public R<DataSealAuthorityResponseVO> getUserId(String id, String roleId) {
 		DataSealAuthorityEntity dataSealAuthorityEntity=dataSealAuthorityMapper.selectByUserIds(id,roleId);
 		DataSealAuthorityResponseVO responseVO= DataSealAuthorityWrapper.build().entityPV(dataSealAuthorityEntity);
+		log.info("根据用户id和用户角色ID查询该用户的数据权限："+responseVO);
 		if (Func.isNotEmpty(dataSealAuthorityEntity)) {
 			String[] code = dataSealAuthorityEntity.getSeal().split(",");
 			responseVO.setSealList(Arrays.asList(code));

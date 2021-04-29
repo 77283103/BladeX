@@ -3,6 +3,7 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
+import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.MonthTypeSelect;
@@ -125,8 +126,14 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @param accordingIds 相对方id
 	 * @param id 合同id
 	 */
-	void saveAccording(Long  id, List<Long> accordingIds);
+	void saveAccording(Long  id, List<ContractAccordingEntity> accordingIds);
 
+	/**
+	 * 保存合同依据关联表
+	 * @param accordingIds 相对方id
+	 * @param id 合同id
+	 */
+	void saveAccordingIds(Long  id, List<String> accordingIds);
 	/**
 	 * 保存合同用印关联表
 	 * @param refContractId
