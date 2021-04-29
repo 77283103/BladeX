@@ -4,6 +4,7 @@ server:
 oss:
   enable: true
   name: minio
+  #是否开启租户模式，true：桶名称默认使用租户id+桶名称（000000-bladex） false:取桶名称
   tenant-mode: false
   endpoint: http://49.232.102.198:9000
   access-key: minioadmin

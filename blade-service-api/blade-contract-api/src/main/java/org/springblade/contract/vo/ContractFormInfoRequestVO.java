@@ -108,6 +108,9 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="相对方名称")
 	private String counterpartName;
 
-	@ApiModelProperty(value = "履约信息")
+	@ApiModelProperty(value = "履约信息-接收/提供服务")
 	private List<PerServiceContentRequestVO> perServiceContentList;
+
+	@ApiModelProperty(value = "履约信息-收付款")
+	private List<PerCollectPayRequestVO> perCollectPayList;
 }

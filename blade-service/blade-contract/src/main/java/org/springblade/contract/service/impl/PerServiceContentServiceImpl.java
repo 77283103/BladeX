@@ -9,6 +9,7 @@ import org.springblade.contract.service.IPerServiceContentService;
 import org.springblade.contract.util.IdGenUtil;
 
 import org.springblade.contract.vo.PerPlanFinshTimeRequestVO;
+import org.springblade.contract.vo.PerServiceContentListResponseVO;
 import org.springblade.contract.vo.PerServiceContentRequestVO;
 import org.springblade.contract.wrapper.PerServiceContentWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -41,9 +42,14 @@ public class PerServiceContentServiceImpl extends BaseServiceImpl<PerServiceCont
 	}
 
 	@Override
+	public IPage<PerServiceContentListResponseVO> serviceContentList(IPage<PerServiceContentEntity> page, PerServiceContentRequestVO perServiceContent) {
+		return baseMapper.serviceContentList(page, perServiceContent);
+	}
+
+	@Override
 	public R addPerData(PerServiceContentRequestVO serviceContentRequestVO,Long contractId) {
 		if(Func.isEmpty(contractId)){
-			log.error("添加合同履约计划信息-false，合同标识为空");
+			log.error("履约信息-接受/提供服务信息-false，合同标识为空");
 			return R.status(false);
 		}
 		if(!this.verificationPerData(serviceContentRequestVO)){
@@ -56,9 +62,9 @@ public class PerServiceContentServiceImpl extends BaseServiceImpl<PerServiceCont
 		this.save(perServiceContentEntity);
 		perPlanFinshTimeService.addListByRequest(serviceContentRequestVO.getPerPlanFinshTimeRequestVOList(),
 			serviceContentRequestVO.getContractId(),serviceContentRequestVO.getId());
+		log.info("履约信息-接受/提供服务信息入库成功:{}",JsonUtil.toJson(serviceContentRequestVO));
 		return R.success("添加完成");
 	}
-
 
 	@Override
 	public void deleteByContractId(Long contractId){
@@ -70,21 +76,21 @@ public class PerServiceContentServiceImpl extends BaseServiceImpl<PerServiceCont
 
 
 	public Boolean verificationPerData(PerServiceContentRequestVO serviceContentRequestVO){
-		log.info("履约请求信息验证:{}",JsonUtil.toJson(serviceContentRequestVO));
 		if(null == serviceContentRequestVO){
-			log.error("履约请求信息验证-false,请求信息为空:{}",JsonUtil.toJson(serviceContentRequestVO));
+			log.error("履约信息-接受/提供服务信息入库验证-false,请求信息为空:{}",JsonUtil.toJson(serviceContentRequestVO));
 			return false;
 		}
 		if(Func.isEmpty(serviceContentRequestVO.getPerPlanFinshTimeRequestVOList())){
-			log.error("履约请求信息验证-false，缺失计划完成时间:{}", JsonUtil.toJson(serviceContentRequestVO));
+			log.error("履约信息-接受/提供服务信息入库验证-false，缺失计划完成时间:{}", JsonUtil.toJson(serviceContentRequestVO));
 			return false;
 		}
 		for(PerPlanFinshTimeRequestVO perPlanFinshTimeRequestVO:serviceContentRequestVO.getPerPlanFinshTimeRequestVOList()){
 			if(Func.isEmpty(perPlanFinshTimeRequestVO.getPerPlanFinshContentRequestVOList())){
-				log.error("履约请求信息验证-false，计划完成时间:{}缺失计划完成内容", JsonUtil.toJson(perPlanFinshTimeRequestVO));
+				log.error("履约信息-接受/提供服务信息入库验证-false，计划完成时间:{}缺失计划完成内容", JsonUtil.toJson(perPlanFinshTimeRequestVO));
 				return false;
 			}
 		}
+		log.info("履约信息-接受/提供服务信息入库验证-true:{}",JsonUtil.toJson(serviceContentRequestVO));
 		return true;
 	}
 
