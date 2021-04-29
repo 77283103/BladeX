@@ -156,7 +156,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	 * @return
 	 */
 	@Override
-	//@Scheduled(cron = "0 0 2 * * ?")
+	@Scheduled(cron = "0 0 2 * * ?")
 	public List<OrganizationVo> getOrganizationInfoIncrement() {
 		OrganizationEntity entity = new OrganizationEntity();
 		List<OrganizationVo> organizationList = null;
