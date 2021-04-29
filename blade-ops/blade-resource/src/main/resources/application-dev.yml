@@ -4,7 +4,7 @@ server:
 oss:
   enable: true
   name: minio
-  tenant-mode: true
+  tenant-mode: false
   endpoint: http://49.232.102.198:9000
   access-key: minioadmin
   secret-key: minioadmin
