@@ -4,7 +4,7 @@ server:
 oss:
   enable: true
   name: minio
-  tenant-mode: true
+  tenant-mode: false
   endpoint: http://10.93.1.43:9000
   access-key: ADMIN
   secret-key: PASSWORD

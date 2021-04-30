@@ -3,6 +3,7 @@ package org.springblade.contract.feign;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import feign.form.ContentType;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractSigningEntity;
@@ -42,6 +43,7 @@ import java.util.List;
  *
  * @author Chill
  */
+@Slf4j
 @ApiIgnore
 @RestController
 @AllArgsConstructor
@@ -80,7 +82,9 @@ public class ContractClient implements IContractClient{
 		List<ContractTemplateEntity> list = templateService.list(queryWrapper);
 		for (ContractTemplateEntity v : list) {
 			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
+				//模板生成后修改成带使用  用作审批使用
 				v.setTemplateStatus("10");
+				//并将范本编号存入范本
 				v.setTemplateCode(entity.getTemplateCode());
 				v.setJson(entity.getJson());
 				templateService.updateById(v);
@@ -96,8 +100,11 @@ public class ContractClient implements IContractClient{
 		if(Func.isEmpty(contractFormInfo)){
 			return R.fail("合同信息不存在");
 		}
+		//审批通过
 		if("30".equals(status)){
+			log.info("审批状态为25说明为驳回，30说明为审批通过，140说明为起草废除,此节点状态为："+status);
 			if("1".equals(contractFormInfo.getContractForm())){
+				log.info("合同形式为1表示为电子签章-我司平台，审批通过后直接转到已归档节点（待结案），至此合同形式为："+contractFormInfo.getContractForm());
 				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 				String date = df.format(new Date());
 				ContractSigningEntity entity = new ContractSigningEntity();
@@ -128,10 +135,13 @@ public class ContractClient implements IContractClient{
 				entity.setSubmissionType(" ");
 				entity.setAddressee(" ");
 				contractSigningService.save(entity);
+				log.info("并创建保存对应合同的归档信息："+entity.getContractId());
 				contractFormInfo.setContractStatus("60");
 			}else if("3".equals(contractFormInfo.getContractForm())){
+				log.info("合同形式为3表示为电子合同-对方平台，审批通过后直接转到用印节点（带手动归档），至此合同形式为："+contractFormInfo.getContractForm());
 				contractFormInfo.setContractStatus("50");
 			}else{
+				log.info("合同形式为2，4表示为实体签章-我司不用电子印/实体签章-我司用电子印，审批通过后转到印节，至此合同形式为："+contractFormInfo.getContractForm());
 				contractFormInfo.setContractStatus("30");
 			}
 		}else{

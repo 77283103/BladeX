@@ -26,10 +26,7 @@ import org.springblade.system.user.feign.IUserClient;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * <p>
@@ -57,6 +54,7 @@ public class EkpController {
 	public R queryOrganization(@RequestBody ContractSubmit contractSubmit) {
 		String status=contractSubmit.getSubmitStatus();
 		Long id=Long.valueOf(contractSubmit.getContractId());
+		log.info("epk通过后返回给合同平台合同状态接口[返回的合同状态为]"+id+"执行时间为"+new Date());
 		return R.data(contractClient.saveContractFormInfo(id,status));
 	}
 

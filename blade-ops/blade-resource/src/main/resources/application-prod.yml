@@ -4,7 +4,7 @@ server:
 oss:
   enable: true
   name: minio
-  tenant-mode: true
+  tenant-mode: false
   endpoint: http://minio.pec.com.cn:9000
   access-key: cms
   secret-key: Yd8tqj62

@@ -6,6 +6,7 @@ import cn.hutool.json.JSONUtil;
 import com.landray.sso.client.EKPSSOUserData;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.jasig.cas.client.validation.Assertion;
 import org.jasig.cas.client.validation.Cas10TicketValidator;
@@ -13,6 +14,7 @@ import org.jasig.cas.client.validation.TicketValidationException;
 import org.jasig.cas.client.validation.TicketValidator;
 import org.springblade.auth.feign.SSOClient;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.system.user.entity.UserInfo;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,7 +28,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -67,6 +69,14 @@ public class Auth {
 				}
 				setToken(username,response);
 				response.sendRedirect(ssoUrl+"/#/singleLogin");
+			}
+			if (Func.isNull(redisTemplate.opsForValue().get(username+"-accorging"))){
+				String accValue= (String) redisTemplate.opsForValue().get(username+"-accorging");
+				log.info("对应用户的依据信息："+accValue);
+				if(StringUtils.isNotBlank(accValue)){
+					Boolean status=redisTemplate.delete(username+"-accorging");
+					log.info("非签呈类型单点合同平台，删除用户的之前的redis依据信息："+status);
+				}
 			}
 		}else {//id不为空为跳转起草页面
 			//查看缓存里是否有依据信息
