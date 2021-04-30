@@ -168,8 +168,4 @@ public class OrganizationController {
 	public R<List<OrganizationVo>> queryOrganization() {
 		return R.data(organizationService.getOrganizationInfoIncrement());
 	}
-
-
-
-
 }

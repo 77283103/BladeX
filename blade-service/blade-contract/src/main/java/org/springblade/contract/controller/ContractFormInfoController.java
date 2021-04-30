@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.EkpVo;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractBondPlanEntity;
@@ -74,7 +76,8 @@ import java.util.*;
 @RequestMapping("/contractFormInfo")
 @Api(value = "", tags = "")
 public class ContractFormInfoController extends BladeController {
-
+	//EKP推送信息
+	private IAbutmentClient abutmentClient;
 	private IContractFormInfoService contractFormInfoService;
 	private IContractPerformanceService performanceService;
 	private IContractAccordingService accordingService;
@@ -705,7 +708,17 @@ public class ContractFormInfoController extends BladeController {
 			throw new ServiceException("id不能为空");
 		}
 		infoEntity.setContractStatus(CONTRACT_EXPORT_STATUS);
-		return R.status(contractFormInfoService.updateById(infoEntity));
+		ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(infoEntity);
+		//合同文本导出打印推送EKP代办
+		R<EkpVo> ekpVo = abutmentClient.nodeEkpFormPost(formInfoResponseVO);
+		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
+		if (ekpVo.getCode() == HttpStatus.OK.value()) {
+			contractFormInfoService.updateById(infoEntity);
+			log.info("ekp返回值code"+ekpVo.getCode());
+			return R.data(200,ekpVo,"EKP推送数据成功");
+		} else {
+			return R.data(401, null, "EKP推送数据超时，操作失败");
+		}
 	}
 
 	/**

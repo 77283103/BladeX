@@ -3,7 +3,7 @@ package org.springblade.abutment.feign;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.feign.IContractFallback;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +24,14 @@ import java.util.List;
 public interface IAbutmentClient {
 
     String API_PREFIX = "/client/abutment";
+    String ORG="/org";
 	String EKP = "/ekp";
 	String DOC = "/doc";
 	String E_SEAL = "/eSeal";
+	String ORGANIZATION_INFO_INCREMENT=API_PREFIX +ORG+"/getOrganization";
 	String EKP_SEND_FORM = API_PREFIX + EKP + "/sendForm";
 	String EKP_SEND_FORM_POST = API_PREFIX + EKP + "/sendFormPost";
+	String EKP_NODE_FORM_POST = API_PREFIX + EKP + "/nodeFormPost";
 	String DOC_QUERY_INFO = API_PREFIX + DOC + "/queryInfo";
 	String E_SEAL_UPLOAD_FILE = API_PREFIX + E_SEAL + "/uploadFiles";
 	String E_SEAL_SINGLE_SIGN = API_PREFIX + E_SEAL + "/singleSign";
@@ -47,7 +50,13 @@ public interface IAbutmentClient {
 	 */
 	@PostMapping(EKP_SEND_FORM_POST)
 	R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity);
-
+	/**
+	 * 推送EKP节点信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(EKP_NODE_FORM_POST)
+	R<EkpVo> nodeEkpFormPost(@RequestBody ContractFormInfoResponseVO entity);
 	/**
 	 * 获取依据信息
 	 * @param entity
@@ -118,4 +127,11 @@ public interface IAbutmentClient {
 	 */
 	@GetMapping(E_SEAL_TOKEN)
 	R<String> token();
+
+	/**
+	 * 增量更新组织及人员信息数据
+	 * @return
+	 */
+	@PostMapping(ORGANIZATION_INFO_INCREMENT)
+	R<List<OrganizationVo>> getOrganizationInfoIncrement();
 }
