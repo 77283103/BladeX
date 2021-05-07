@@ -50,6 +50,13 @@ public class PerServiceContentServiceImpl extends BaseServiceImpl<PerServiceCont
 	}
 
 	@Override
+	public List<PerServiceContentResponseVO> findWarningList(){
+		return baseMapper.findWarningList();
+	}
+
+
+
+	@Override
 	public R addPerData(PerServiceContentRequestVO serviceContentRequestVO,Long contractId) {
 		if(Func.isEmpty(contractId)){
 			log.error("履约信息-接受/提供服务信息-false，合同标识为空");

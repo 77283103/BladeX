@@ -28,18 +28,6 @@
             <groupId>org.springblade</groupId>
             <artifactId>blade-core-launch</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-contract-api</artifactId>
-            <version>${bladex.project.version}</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springblade</groupId>
-            <artifactId>blade-contract</artifactId>
-            <version>${bladex.project.version}</version>
-            <scope>compile</scope>
-        </dependency>
         <!--Job-->
         <dependency>
             <groupId>com.xuxueli</groupId>

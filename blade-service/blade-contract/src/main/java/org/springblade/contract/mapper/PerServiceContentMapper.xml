@@ -114,6 +114,36 @@
     </select>
 
 
+    <select id="findWarningList" resultMap="perServiceContentDetailResultMap">
+        SELECT
+        psc.service_content,
+        psc.contract_tran_type,
+        psc.service,
+        psc.contract_id,
+        ppft.plan_finsh_time,
+        ppft.service_content_id,
+        ppfc.plan_finsh_content,
+        ppfc.finsh_time_up,
+        ppfc.finsh_content_up,
+        ppfc.plan_finsh_time_id
+        FROM
+        per_service_content psc
+        LEFT JOIN per_plan_finsh_time ppft ON psc.id = ppft.service_content_id
+        LEFT JOIN per_plan_finsh_content ppfc ON ppft.id = ppfc.plan_finsh_time_id
+        WHERE
+        psc.is_deleted = 0
+        AND
+        ppft.is_deleted = 0
+        AND
+        ppfc.is_deleted = 0
+        and
+        DATE_ADD(ppft.plan_finsh_time,INTERVAL 30 DAY) &lt; NOW()
+        and
+        ppfc.finsh_time_up is null
+    </select>
+
+
+
 
 
 

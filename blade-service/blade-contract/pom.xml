@@ -265,7 +265,7 @@
             <version>4.1.2</version>
         </dependency>
         <dependency>
-            <groupId>poi-ooxml</groupId>
+            <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>4.1.2</version>
         </dependency>
@@ -278,6 +278,11 @@
             <groupId>com.deepoove</groupId>
             <artifactId>poi-tl</artifactId>
             <version>1.9.1</version>
+        </dependency>
+        <!--Job-->
+        <dependency>
+            <groupId>com.xuxueli</groupId>
+            <artifactId>xxl-job-core</artifactId>
         </dependency>
     </dependencies>
     <build>

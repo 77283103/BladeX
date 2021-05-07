@@ -40,4 +40,11 @@ public interface PerServiceContentMapper extends BaseMapper<PerServiceContentEnt
 	 */
 	List<PerServiceContentResponseVO> findInfoByContractId(Long contractId);
 
+	/**
+	 * 预警查询（获取超期未更新数据集合）
+	 * @return
+	 */
+	List<PerServiceContentResponseVO> findWarningList();
+
+
 }
