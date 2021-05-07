@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.PerServiceContentEntity;
 import org.springblade.contract.vo.PerServiceContentListResponseVO;
 import org.springblade.contract.vo.PerServiceContentRequestVO;
+import org.springblade.contract.vo.PerServiceContentResponseVO;
+
+import java.util.List;
 
 /**
  * 履约服务内容 Mapper 接口
@@ -29,5 +32,12 @@ public interface PerServiceContentMapper extends BaseMapper<PerServiceContentEnt
 	 * @return
 	 */
 	IPage<PerServiceContentListResponseVO> serviceContentList(IPage<PerServiceContentEntity> page, PerServiceContentRequestVO perServiceContent);
+
+	/**
+	 * 根据合同标识获取详情
+	 * @param contractId
+	 * @return
+	 */
+	List<PerServiceContentResponseVO> findInfoByContractId(Long contractId);
 
 }

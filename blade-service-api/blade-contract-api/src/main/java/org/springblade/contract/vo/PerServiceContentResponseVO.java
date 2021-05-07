@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.PerServiceContentEntity;
 import io.swagger.annotations.ApiModel;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 履约服务内容 返回模型VO
@@ -28,4 +29,6 @@ public class PerServiceContentResponseVO extends PerServiceContentEntity {
 	private String createDeptName;
 
 	private String updateUserName;
+
+	private List<PerPlanFinshTimeResponseVO> perPlanFinshTimeRequestVOList;
 }

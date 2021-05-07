@@ -3,6 +3,7 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.vo.PerCollectPayListResponseVO;
 import org.springblade.contract.vo.PerCollectPayRequestVO;
+import org.springblade.contract.vo.PerCollectPayResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.PerCollectPayEntity;
 
@@ -40,4 +41,11 @@ public interface IPerCollectPayService extends BaseService<PerCollectPayEntity> 
 	 * @return
 	 */
 	Boolean addListData(List<PerCollectPayRequestVO> perCollectPayRequestVOList,Long contractId);
+
+	/**
+	 * 根据合同id获取集合信息
+	 * @param contractId
+	 * @return
+	 */
+	List<PerCollectPayResponseVO> findListByContractId(Long contractId);
 }

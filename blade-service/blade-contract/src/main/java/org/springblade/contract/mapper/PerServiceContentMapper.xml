@@ -35,6 +35,34 @@
     </resultMap>
 
 
+    <!-- 详情查询结果 -->
+    <resultMap id="perServiceContentDetailResultMap" type="org.springblade.contract.vo.PerServiceContentResponseVO">
+        <result column="id" property="id"/>
+        <result column="service_content" property="serviceContent"/>
+        <result column="contract_tran_type" property="contractTranType" />
+        <result column="contract_id" property="contractId"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="service" property="service"/>
+        <collection property="perPlanFinshTimeRequestVOList" javaType="java.util.ArrayList" ofType="org.springblade.contract.vo.PerPlanFinshTimeResponseVO">
+            <result column="plan_finsh_time" property="planFinshTime"/>
+            <result column="service_content_id" property="serviceContentId" />
+            <collection property="perPlanFinshContentRequestVOList" javaType="java.util.ArrayList" ofType="org.springblade.contract.vo.PerPlanFinshContentResponseVO">
+                <result column="plan_finsh_content" property="planFinshContent"/>
+                <result column="finsh_time_up" property="finshTimeUp" />
+                <result column="finsh_content_up" property="finshContentUp" />
+                <result column="plan_finsh_time_id" property="planFinshTimeId"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+
+
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
@@ -56,6 +84,38 @@
         FROM per_service_content
         WHERE is_deleted = 0
     </select>
+
+
+
+    <select id="findInfoByContractId" resultMap="perServiceContentDetailResultMap">
+        SELECT
+            psc.service_content,
+            psc.contract_tran_type,
+            psc.service,
+            psc.contract_id,
+            ppft.plan_finsh_time,
+            ppft.service_content_id,
+            ppfc.plan_finsh_content,
+            ppfc.finsh_time_up,
+            ppfc.finsh_content_up,
+            ppfc.plan_finsh_time_id
+        FROM
+            per_service_content psc
+                LEFT JOIN per_plan_finsh_time ppft ON psc.id = ppft.service_content_id
+                LEFT JOIN per_plan_finsh_content ppfc ON ppft.id = ppfc.plan_finsh_time_id
+        WHERE
+            psc.is_deleted = 0
+          AND
+            ppft.is_deleted = 0
+          AND
+            ppfc.is_deleted = 0
+          AND
+            psc.contract_id = #{contractId}
+    </select>
+
+
+
+
 
     <select id="serviceContentList" resultMap="perServiceContentListMap">
         SELECT

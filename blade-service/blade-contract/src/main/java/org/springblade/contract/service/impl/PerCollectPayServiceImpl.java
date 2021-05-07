@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.log4j.Log4j2;
 import org.springblade.contract.vo.PerCollectPayListResponseVO;
 import org.springblade.contract.vo.PerCollectPayRequestVO;
+import org.springblade.contract.vo.PerCollectPayResponseVO;
 import org.springblade.contract.wrapper.PerCollectPayWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.PerCollectPayEntity;
@@ -13,7 +14,10 @@ import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -46,6 +50,14 @@ public class PerCollectPayServiceImpl extends BaseServiceImpl<PerCollectPayMappe
 		});
 		List<PerCollectPayEntity>perCollectPayEntityList = PerCollectPayWrapper.build().QVEntityList(perCollectPayRequestVOList);
 		return this.saveBatch(perCollectPayEntityList);
+	}
+
+	@Override
+	public List<PerCollectPayResponseVO> findListByContractId(Long contractId) {
+		Map<String,Object> columnMap = new HashMap<>();
+		columnMap.put("contract_id",contractId);
+		List<PerCollectPayEntity>perCollectPayEntityList = this.baseMapper.selectByMap(columnMap);
+		return Func.isEmpty(perCollectPayEntityList)?new ArrayList<>():PerCollectPayWrapper.build().entityPVList(perCollectPayEntityList);
 	}
 
 
