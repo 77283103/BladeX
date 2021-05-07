@@ -3,9 +3,12 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.vo.PerServiceContentListResponseVO;
 import org.springblade.contract.vo.PerServiceContentRequestVO;
+import org.springblade.contract.vo.PerServiceContentResponseVO;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.PerServiceContentEntity;
 import org.springblade.core.tool.api.R;
+
+import java.util.List;
 
 /**
  * 履约服务内容 服务类
@@ -44,5 +47,17 @@ public interface IPerServiceContentService extends BaseService<PerServiceContent
 	 * @param contractId
 	 */
 	void deleteByContractId(Long contractId);
+
+	/**
+	 * 根据合同标识获取详情信息
+	 * @param contractId
+	 */
+	List<PerServiceContentResponseVO> findInfoByContractId(Long contractId);
+
+	/**
+	 * 预警查询（获取超期未更新数据集合）
+	 * @return
+	 */
+	List<PerServiceContentResponseVO> findWarningList();
 
 }

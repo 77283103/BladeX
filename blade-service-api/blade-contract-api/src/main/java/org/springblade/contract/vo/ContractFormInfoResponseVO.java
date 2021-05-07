@@ -2,6 +2,7 @@ package org.springblade.contract.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -191,4 +192,13 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 合同负责人的部门
 	 */
 	private String personContractDept;
+	/**
+	 * 履约计划-接收\提供信息集合
+	 */
+	private List<PerServiceContentResponseVO> perServiceContentList;
+
+	/**
+	 * 履约信息-收付款
+	 */
+	private List<PerCollectPayResponseVO> perCollectPayList;
 }

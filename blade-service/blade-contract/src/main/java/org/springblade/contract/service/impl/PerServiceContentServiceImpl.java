@@ -11,6 +11,7 @@ import org.springblade.contract.util.IdGenUtil;
 import org.springblade.contract.vo.PerPlanFinshTimeRequestVO;
 import org.springblade.contract.vo.PerServiceContentListResponseVO;
 import org.springblade.contract.vo.PerServiceContentRequestVO;
+import org.springblade.contract.vo.PerServiceContentResponseVO;
 import org.springblade.contract.wrapper.PerServiceContentWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.tool.api.R;
@@ -19,7 +20,9 @@ import org.springblade.core.tool.utils.Func;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -45,6 +48,13 @@ public class PerServiceContentServiceImpl extends BaseServiceImpl<PerServiceCont
 	public IPage<PerServiceContentListResponseVO> serviceContentList(IPage<PerServiceContentEntity> page, PerServiceContentRequestVO perServiceContent) {
 		return baseMapper.serviceContentList(page, perServiceContent);
 	}
+
+	@Override
+	public List<PerServiceContentResponseVO> findWarningList(){
+		return baseMapper.findWarningList();
+	}
+
+
 
 	@Override
 	public R addPerData(PerServiceContentRequestVO serviceContentRequestVO,Long contractId) {
@@ -73,6 +83,11 @@ public class PerServiceContentServiceImpl extends BaseServiceImpl<PerServiceCont
 		this.baseMapper.deleteByMap(columnMap);
 	}
 
+	@Override
+	public List<PerServiceContentResponseVO> findInfoByContractId(Long contractId) {
+		List<PerServiceContentResponseVO> perServiceContentResponseVOS = baseMapper.findInfoByContractId(contractId);
+		return Func.isEmpty(perServiceContentResponseVOS)?new ArrayList<>():perServiceContentResponseVOS;
+	}
 
 
 	public Boolean verificationPerData(PerServiceContentRequestVO serviceContentRequestVO){

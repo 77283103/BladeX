@@ -175,7 +175,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Autowired
 	private ContractMultPaymenMapper multPaymenMapper;
 	@Autowired
+	private IPerServiceContentService perServiceContentService;
+	@Autowired
 	private IContractAccordingService accordingService;
+	@Autowired
+	private IPerCollectPayService perCollectPayService;
+
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -1117,10 +1122,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		}
-
+		//履约计划信息
+		contractFormInfoResponseVO.setPerServiceContentList(perServiceContentService.findInfoByContractId(contractFormInfoResponseVO.getId()));
+		contractFormInfoResponseVO.setPerCollectPayList(perCollectPayService.findListByContractId(contractFormInfoResponseVO.getId()));
 		return contractFormInfoResponseVO;
 	}
-
 	/**
 	 * 根据合同状态查询合同列表
 	 * @param status 合同状态

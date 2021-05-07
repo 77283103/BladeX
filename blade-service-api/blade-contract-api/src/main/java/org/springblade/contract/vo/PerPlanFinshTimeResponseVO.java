@@ -1,5 +1,6 @@
 package org.springblade.contract.vo;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -7,6 +8,7 @@ import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.PerPlanFinshTimeEntity;
 import io.swagger.annotations.ApiModel;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 履约计划完成时间 返回模型VO
@@ -28,4 +30,6 @@ public class PerPlanFinshTimeResponseVO extends PerPlanFinshTimeEntity {
 	private String createDeptName;
 
 	private String updateUserName;
+
+	private List<PerPlanFinshContentResponseVO> perPlanFinshContentRequestVOList;
 }
