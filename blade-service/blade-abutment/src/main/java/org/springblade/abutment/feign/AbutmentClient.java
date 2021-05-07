@@ -14,10 +14,7 @@ import org.csource.fastdfs.TrackerClient;
 import org.csource.fastdfs.TrackerServer;
 import org.json.simple.JSONObject;
 import org.springblade.abutment.entity.*;
-import org.springblade.abutment.service.IDocService;
-import org.springblade.abutment.service.IESealService;
-import org.springblade.abutment.service.IEkpService;
-import org.springblade.abutment.service.IOrganizationService;
+import org.springblade.abutment.service.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractPerformanceColPayEntity;
@@ -79,6 +76,8 @@ public class AbutmentClient implements IAbutmentClient {
 	private TrackerClient trackerClient;
 	@Autowired
 	private IOrganizationService iOrganizationService;
+	@Autowired
+	private ICounterpartService counterpartService;
 
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
@@ -480,17 +479,17 @@ public class AbutmentClient implements IAbutmentClient {
 	public R<EkpVo> nodeEkpFormPost(ContractFormInfoResponseVO entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
-        //KEP接口传输的入参
+		//KEP接口传输的入参
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
 		pushEkpEntity.setFdTemplateId(fdTemplateId);
 		if (null != entity) {
 			//17090089是登录人的编号
 			//entity.getPersonCodeContract()
-			if (StrUtil.isNotEmpty(entity.getPersonCodeContract()) && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
+			if (StrUtil.isNotEmpty(entity.getPersonCodeContract())) {
 				DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 				//人员编号
 				R<User> user = userClient.userInfoById(AuthUtil.getUserId());
-				docCreatorEntity.setEmplno(Func.isEmpty(entity.getPersonCodeContract())?user.getData().getCode():entity.getPersonCodeContract());
+				docCreatorEntity.setEmplno(Func.isEmpty(entity.getPersonCodeContract()) ? user.getData().getCode() : entity.getPersonCodeContract());
 				pushEkpEntity.setDocCreator(docCreatorEntity);
 				//===数据实体===
 				FormValuesEntity formValuesEntity = new FormValuesEntity();
@@ -568,8 +567,6 @@ public class AbutmentClient implements IAbutmentClient {
 						}
 						pushEkpEntity.setFd_attachment(listAttachment);
 					}
-				} else {
-					//待用印，待归档
 				}
 			}
 			//获取ekp的token
@@ -582,11 +579,9 @@ public class AbutmentClient implements IAbutmentClient {
 				rEkpVo.setData(null);
 				return rEkpVo;
 			}
-
 			//推送数据
 			ekpVo = ekpService.pushData(pushEkpEntity);
 			log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
-			//
 			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 				rEkpVo.setCode(2);
 				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
@@ -639,8 +634,8 @@ public class AbutmentClient implements IAbutmentClient {
 						arrays = new String[]{"甲", "丙", "丁"};
 						s.put("统一集团","乙方（签章）");
 					}
-					for (int i=0;i<entity.getCounterpart().size();i++) {
-						s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方（签章）");
+					for (int i=0;i<entity.getInsert().size();i++) {
+						s.put(entity.getInsert().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方（签章）");
 					}
 					formValuesEntity.setFd_keyword(s.toJSONString());
 				}else if((-1!=ay&&-1!=by)){
@@ -651,8 +646,8 @@ public class AbutmentClient implements IAbutmentClient {
 						arrays = new String[]{"甲", "丙", "丁"};
 						s.put("统一集团","乙方(签章)");
 					}
-					for (int i=0;i<entity.getCounterpart().size();i++) {
-						s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方(签章)");
+					for (int i=0;i<entity.getInsert().size();i++) {
+						s.put(entity.getInsert().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方(签章)");
 					}
 					formValuesEntity.setFd_keyword(s.toJSONString());
 				}
@@ -884,6 +879,7 @@ public class AbutmentClient implements IAbutmentClient {
 
 	/**
 	 * 增量更新组织及人员信息数据
+	 *
 	 * @return
 	 */
 	@Override
@@ -892,4 +888,45 @@ public class AbutmentClient implements IAbutmentClient {
 		return R.data(iOrganizationService.getOrganizationInfoIncrement());
 	}
 
+	/**
+	 * 相对方数据新增更新
+	 *
+	 * @param entity
+	 * @return
+	 */
+	@SneakyThrows
+	@Override
+	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
+	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
+		CounterpartVo counterpartVo = new CounterpartVo();
+		String token = counterpartService.getToken();
+		if (StrUtil.isNotEmpty(token)) {
+			counterpartVo.setInsert(counterpartService.getInsert(entity));
+			counterpartVo.setUpdate(counterpartService.getUpdate(entity));
+		}
+		String counterpart = contractClient.inOrUp().getData();
+		if ("success".equals(counterpart)) {
+			return R.data(counterpartVo);
+		} else {
+			return R.data(404, null, "存储失败！");
+		}
+	}
+
+	@Override
+	@GetMapping(E_EKP_TOKEN)
+	public R<String> tokenEkp() {
+		String token = null;
+		try {
+			token = ekpService.getToken();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return R.data(token);
+	}
+
+	@Override
+	@PostMapping(EKP_SEND_FORM)
+	public R<EkpVo> pushData(PushEkpEntity entity) throws Exception {
+		return R.data(ekpService.pushData(entity));
+	}
 }

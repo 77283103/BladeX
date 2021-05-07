@@ -8,10 +8,20 @@ xxl:
   job:
     accessToken: ''
     admin:
-      addresses: http://127.0.0.1:7010/xxl-job-admin
+      addresses: http://127.0.0.1:7019/xxl-job-admin
     executor:
       appname: blade-xxljob
       ip: 127.0.0.1
       logpath: ../data/applogs/xxl-job/jobhandler
       logretentiondays: -1
       port: 7018
+
+api:
+  ekp:
+    tokenUrl: https://oa-interface.pec.com.cn/restful/ekp/getToken
+    #ekpUrl: https://oa-interface.pec.com.cn/restful/ekp/genhrbill
+    ekpUrl: https://oa-interface.pec.com.cn/restful/ekp/genhrbillouts
+    account: GenFlowNm
+    password: o!a@e@k#p
+    fdTemplateId: 1780054e40b82ff3f5f9e0c4bcfa9eac
+    ftlPath: /ftl/

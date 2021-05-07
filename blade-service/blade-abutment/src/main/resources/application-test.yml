@@ -9,12 +9,16 @@ spring:
     password: ${blade.datasource.test.password}
 api:
   doc:
-    tokenUrl: http://oatest.pec.com.cn:9080/query/openapi/getToken
-    docInfoUrl: http://oatest.pec.com.cn:9080/query/openapi/queryDocInfo
+    tokenUrl: https://oatest-interface.pec.com.cn/common/pursuant/token
+    docInfoUrl: https://oatest-interface.pec.com.cn/common/pursuant/docs
+    #相对方资料接口
+    counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
+    username: dev_c_p
+    password: oa0/YNY374PKB53+IUmjiw==
   ekp:
-    tokenUrl: http://oatest.pec.com.cn:9080/restful/ekp/getToken
-    ekpUrl: http://oatest.pec.com.cn:9080/restful/ekp/genhrbill
+    tokenUrl: https://oatest-interface.pec.com.cn/restful/ekp/getToken
+    ekpUrl: https://oatest-interface.pec.com.cn/restful/ekp/genhrbillouts
     account: iHR
     password: oaekp
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344

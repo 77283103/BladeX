@@ -105,6 +105,12 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	ContractFormInfoResponseVO getById(Long id);
 
 	/**
+	 * 合同详情
+	 * @param status 合同状态
+	 * @return
+	 */
+	List<ContractFormInfoEntity> getByStatus(String  status);
+	/**
 	 * 根据合同id查询变更原合同历史版本列表
 	 * @param id
 	 * @return

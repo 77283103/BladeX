@@ -52,14 +52,21 @@ public class Auth {
 						   @RequestParam(value ="name",required=false) String name,
 						   @RequestParam(value ="accType",required=false) String accType,
 						   @RequestParam(value ="sourceOfContract",required=false) String sourceOfContract,
-						   @RequestParam(value ="code",required=false) String code) throws IOException {
+						   @RequestParam(value ="code",required=false) String code,
+						   @RequestParam(value ="conType",required=false) String conType,
+						   @RequestParam(value ="contractNumber",required=false) String contractNumber) throws IOException {
 		String username="";
 		//id为空为单点登录
 		if (StringUtils.isBlank(id)) {
 			if (StringUtils.isBlank(ticket)) {
 				//跳转到SSO登录
-				response.sendRedirect("http://sso.pec.com.cn/sso/login?service="+ssoUrl+"/api/blade-auth/auth/login");
-				return R.success("false");
+				if (StringUtils.isNotBlank(conType) && StringUtils.isNotBlank(contractNumber)) {
+					response.sendRedirect(ssoUrl+"/#/singleLogin?type="+conType+"&contractNumber="+contractNumber);
+					return R.success("");
+				}else {
+					response.sendRedirect("http://sso.pec.com.cn/sso/login?service="+ssoUrl+"/api/blade-auth/auth/login");
+					return R.success("false");
+				}
 			} else {
 				String validator = iSSOClient.validate(ticket,serviceURL);
 				System.out.println(validator);
@@ -68,13 +75,24 @@ public class Auth {
 					System.out.println(username);
 				}
 				setToken(username,response);
-				response.sendRedirect(ssoUrl+"/#/singleLogin");
-			}
-			if (Func.isNull(redisTemplate.opsForValue().get(username+"-accorging"))){
-				String accValue= (String) redisTemplate.opsForValue().get(username+"-accorging");
+				String accValue= (String) redisTemplate.opsForValue().get(username+"-according");
 				log.info("对应用户的依据信息："+accValue);
 				if(StringUtils.isNotBlank(accValue)){
-					Boolean status=redisTemplate.delete(username+"-accorging");
+					Boolean status=redisTemplate.delete(username+"-according");
+					log.info("非签呈类型单点合同平台，删除用户的之前的redis依据信息："+status);
+				}
+				if (StringUtils.isNotBlank(conType) && StringUtils.isNotBlank(contractNumber)) {
+					response.sendRedirect(ssoUrl+"/#/singleLogin?type="+conType+"&contractNumber="+contractNumber);
+				}else {
+					response.sendRedirect(ssoUrl+"/#/singleLogin");
+				}
+				log.info("72TAG："+username);
+			}
+			if (Func.notNull(redisTemplate.opsForValue().get(username+"-according"))){
+				String accValue= (String) redisTemplate.opsForValue().get(username+"-according");
+				log.info("对应用户的依据信息："+accValue);
+				if(StringUtils.isNotBlank(accValue)){
+					Boolean status=redisTemplate.delete(username+"-according");
 					log.info("非签呈类型单点合同平台，删除用户的之前的redis依据信息："+status);
 				}
 			}
@@ -162,6 +180,7 @@ public class Auth {
 			.form(param)
 			.execute()
 			.body());
+		log.info("请求头的内容："+docInfoJson.toString());
 		//保存信息到access_token中
 		Cookie access_token=new Cookie("access_token",docInfoJson.getStr("access_token"));
 		access_token.setMaxAge(60*60*24);

@@ -29,7 +29,6 @@ import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
-import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -193,16 +192,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 		//合同管理员根据长
 		if (Func.isNotEmpty(contractFormInfo.getSealNames())) {
-			contractFormInfo.setSealNames(contractFormInfo.getSealNames());
+			log.info("195TAG"+contractFormInfo.getSealNames());
 		} else {
 			List<String> stringList = new ArrayList<>();
 			contractFormInfo.setSealNames(stringList);
+			log.info("200TAG"+contractFormInfo.getSealNames());
 		}
-		page = baseMapper.pageList(page, contractFormInfo);
+		log.info("202TAG"+contractFormInfo.toString());
+		page = contractFormInfoMapper.pageList(page, contractFormInfo);
+		log.info("204TAG"+page.getRecords().toString());
 		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
 		List<ContractFormInfoResponseVO> records = pages.getRecords();
+		log.info("207TAG"+records.toString());
 		List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
-
 		for (ContractFormInfoResponseVO v : records) {
 			/*为每个对象，设置创建者名字和组织名字*/
 			v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
@@ -318,7 +320,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					}
 				}
 			}
-			if (v.getContractSoure().equals("30")){
+			if ("30".equals(v.getContractSoure())){
 				List<ContractTemplateEntity> list=new ArrayList<>();
 				ContractTemplateEntity templateEntity=templateService.getById(v.getContractTemplateId());
 				list.add(templateEntity);
@@ -331,6 +333,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
+		log.info("338TAG"+page.getRecords().toString());
 		return pages;
 	}
 
@@ -1116,6 +1119,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 
 		return contractFormInfoResponseVO;
+	}
+
+	/**
+	 * 根据合同状态查询合同列表
+	 * @param status 合同状态
+	 * @return
+	 */
+	@Override
+	public List<ContractFormInfoEntity> getByStatus(String status) {
+		return contractFormInfoMapper.selectByStatus(status);
 	}
 
 	/**

@@ -68,7 +68,22 @@ public class IAbutmentFallback implements IAbutmentClient {
 		return R.fail("获取数据失败");	}
 
 	@Override
+	public R<String> tokenEkp() {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<EkpVo> pushData(PushEkpEntity entity) throws Exception {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
 		return R.fail("获取数据失败");
 	}
 }

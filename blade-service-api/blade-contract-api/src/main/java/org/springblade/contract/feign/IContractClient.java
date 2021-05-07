@@ -21,17 +21,19 @@ import java.util.List;
  * @author xhb
  */
 @FeignClient(
-	value = AppConstant.APPLICATION_CONTRACT_NAME
-	//fallback = IContractFallback.class
+	value = AppConstant.APPLICATION_CONTRACT_NAME,
+	fallback = IContractFallback.class
 )
 public interface IContractClient {
 
 	String API_PREFIX = "/client";
 	String CONTRACT = API_PREFIX + "/contractFormInfo";
+	String STATUS=API_PREFIX +"/signingNot";
 	String TEMPLATE_UPDATE = API_PREFIX + "/template_update";
 	String CHOOSE=API_PREFIX + "/getChooseList";
 	String CONTRACT_SAVE = API_PREFIX + "/contractSave";
 	String TEMPLATE_GET_ID = API_PREFIX + "/template_getId";
+	String COUNTERPART_UPDATE_OR_INSERT=API_PREFIX+"/inOrUp";
 	/**
 	 * 获取合同信息
 	 * @param id
@@ -39,6 +41,13 @@ public interface IContractClient {
 	 */
 	@GetMapping(CONTRACT)
 	R<ContractFormInfoResponseVO> getById(@RequestParam("id") Long id);
+	/**
+	 * 获取合同节点信息
+	 * @param status
+	 * @return
+	 */
+	@GetMapping(STATUS)
+	R<List<ContractFormInfoEntity>> getByStatus(@RequestParam("status") String  status);
 	/**
 	 * 動態返回合同選擇的下拉選
 	 * @return list
@@ -67,4 +76,11 @@ public interface IContractClient {
 	 */
 	@GetMapping(TEMPLATE_GET_ID)
 	R<ContractTemplateEntity> getByTemplateId(@RequestParam("id") Long id);
+
+	/**
+	 * 相对方新增更新数据
+	 * @return
+	 */
+	@PostMapping(COUNTERPART_UPDATE_OR_INSERT)
+	R<String> inOrUp();
 }

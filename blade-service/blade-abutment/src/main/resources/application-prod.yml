@@ -11,6 +11,8 @@ api:
   doc:
     tokenUrl: http://oa.pec.com.cn:9080/query/openapi/getToken
     docInfoUrl: http://oa.pec.com.cn:9080/query/openapi/queryDocInfo
+    #相对方资料接口
+    counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
   ekp:
     tokenUrl: https://oa-interface.pec.com.cn/restful/ekp/getToken

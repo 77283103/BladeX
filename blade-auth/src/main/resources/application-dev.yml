@@ -9,6 +9,6 @@ spring:
     username: ${blade.datasource.dev.username}
     password: ${blade.datasource.dev.password}
 api:
-  ssoUrl: http://upht.pec.com.cn
-  serviceURL: http://upht.pec.com.cn/api/blade-auth/auth/login
-  tokenUrl: http://upht.pec.com.cn/api/blade-auth/oauth/token
+  ssoUrl: http://localhost:1888
+  serviceURL: http://localhost:8080/api/blade-auth/auth/login
+  tokenUrl: http://localhost:8080/api/blade-auth/oauth/token

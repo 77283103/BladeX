@@ -191,6 +191,13 @@
         WHERE is_deleted=0
         AND id=#{id}
     </select>
+    <select id="selectByStatus" resultMap="formInfoResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM contract_form_info
+        WHERE is_deleted=0
+        AND contract_status=#{status}
+    </select>
     <!--  变更合同详情  -->
     <select id="selectByChangeId" resultMap="formInfoResultMap">
         SELECT

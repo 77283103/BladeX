@@ -1,40 +1,35 @@
 package org.springblade.contract.feign;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import feign.form.ContentType;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.CounterpartVo;
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractSigningEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
+import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.mapper.ContractTemplateMapper;
+import org.springblade.contract.service.IContractCounterpartService;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.service.IContractSigningService;
 import org.springblade.contract.service.IContractTemplateService;
-import org.springblade.contract.util.AsposeWordToPdfUtils;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
-import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.TemplateEntity;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import springfox.documentation.annotations.ApiIgnore;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -56,6 +51,8 @@ public class ContractClient implements IContractClient{
 	private IContractTemplateService templateService;
 	private ContractTemplateMapper templateMapper;
 	private IContractSigningService contractSigningService;
+	private IContractCounterpartService iContractCounterpartService;
+	private ContractCounterpartMapper counterpartMapper;
 	private static final String ftlPath="D:/ftl/";//模板路径
 	//private static final String ftlPath="/ftl/";
     @Override
@@ -63,6 +60,12 @@ public class ContractClient implements IContractClient{
     public R<ContractFormInfoResponseVO> getById(Long id) {
         return R.data(formInfoService.getById(id));
     }
+
+	@Override
+	@GetMapping(STATUS)
+	public R<List<ContractFormInfoEntity>> getByStatus(String status) {
+		return R.data(formInfoService.getByStatus(status));
+	}
 
 	@Override
 	@GetMapping(CHOOSE)
@@ -156,6 +159,36 @@ public class ContractClient implements IContractClient{
 	public R<ContractTemplateEntity> getByTemplateId(Long id) {
 		ContractTemplateEntity templateFieldEntity=templateService.getById(id);
 		return R.data(templateFieldEntity);
+	}
+
+	@Override
+	@PostMapping(COUNTERPART_UPDATE_OR_INSERT)
+	public R<String> inOrUp() {
+    	CounterpartVo vo=new CounterpartVo();
+    	List<ContractCounterpartEntity> listInsert=new ArrayList<>();
+		List<ContractCounterpartEntity> listUpdate=new ArrayList<>();
+    	ContractCounterpartEntity entity=new ContractCounterpartEntity();
+    	vo.getInsert().forEach(i->{
+    		entity.setName(i.getCustNm());
+    		entity.setUnifiedSocialCreditCode(i.getBusinessId());
+    		entity.setOrganizationCode(i.getBusinessId());
+			listInsert.add(entity);
+		});
+		iContractCounterpartService.saveBatch(listInsert);
+    	vo.getUpdate().forEach(u->{
+			entity.setName(u.getCustNm());
+			entity.setUnifiedSocialCreditCode(u.getBusinessId());
+			entity.setOrganizationCode(u.getBusinessId());
+			listUpdate.add(entity);
+		});
+		listUpdate.forEach(l->{
+			List<ContractCounterpartEntity> entityList=counterpartMapper.selectByName(l.getUnifiedSocialCreditCode());
+			if (Func.isNotEmpty(entityList)){
+				l.setId(entityList.get(0).getId());
+				iContractCounterpartService.updateById(l);
+			}
+		});
+		return R.data("success");
 	}
 
 

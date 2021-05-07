@@ -28,9 +28,11 @@ public interface IAbutmentClient {
 	String EKP = "/ekp";
 	String DOC = "/doc";
 	String E_SEAL = "/eSeal";
+	String COUNTERPART_INSERT_OR_UPDATE=API_PREFIX+"getCounterpart";
 	String ORGANIZATION_INFO_INCREMENT=API_PREFIX +ORG+"/getOrganization";
 	String EKP_SEND_FORM = API_PREFIX + EKP + "/sendForm";
 	String EKP_SEND_FORM_POST = API_PREFIX + EKP + "/sendFormPost";
+	String E_EKP_TOKEN =API_PREFIX +EKP +"/token";
 	String EKP_NODE_FORM_POST = API_PREFIX + EKP + "/nodeFormPost";
 	String DOC_QUERY_INFO = API_PREFIX + DOC + "/queryInfo";
 	String E_SEAL_UPLOAD_FILE = API_PREFIX + E_SEAL + "/uploadFiles";
@@ -41,6 +43,7 @@ public interface IAbutmentClient {
 	String E_SEAL_READ_SIGNED = API_PREFIX + E_SEAL + "/readSigned";
 	String E_SEAL_COMPANY_INFO = API_PREFIX + E_SEAL + "/queryCompanyInfo";
 	String E_SEAL_TOKEN = API_PREFIX + E_SEAL + "/token";
+
 
 
 	/**
@@ -129,9 +132,28 @@ public interface IAbutmentClient {
 	R<String> token();
 
 	/**
+	 * 获取电子签章token
+	 * @return
+	 */
+	@GetMapping(E_SEAL_TOKEN)
+	R<String> tokenEkp();
+	/**
+	 * 推送数据
+	 * @return
+	 */
+	@PostMapping(EKP_SEND_FORM)
+	R<EkpVo> pushData(PushEkpEntity entity) throws Exception;
+	/**
 	 * 增量更新组织及人员信息数据
 	 * @return
 	 */
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
 	R<List<OrganizationVo>> getOrganizationInfoIncrement();
+	/**
+	 * 获取相对方信息的数据
+	 * @return
+	 * @param entity
+	 */
+	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
+	R<CounterpartVo> getCounterpart(CounterpartEntity entity);
 }

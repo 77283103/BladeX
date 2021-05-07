@@ -59,9 +59,9 @@ import java.util.*;
 @Api(value = "合同归档", tags = "合同归档")
 public class ContractArchiveController extends BladeController {
 
-	private IDictBizClient dictBizClient;
-	private IContractArchiveService contractArchiveService;
-	private IContractFormInfoService contractFormInfoService;
+	private final IDictBizClient dictBizClient;
+	private final IContractArchiveService contractArchiveService;
+	private final IContractFormInfoService contractFormInfoService;
 	private static final String CONTRACT_ARCHIVE_SAVE_STATUS="110";
 
 	/**
@@ -97,8 +97,7 @@ public class ContractArchiveController extends BladeController {
 	@PreAuth("hasPermission('contract:archive:add')")
 	@Transactional(rollbackFor = Exception.class)
 	public R save(@Valid @RequestBody ContractArchiveResponseVO contractArchive) {
-		String contractStatus=CONTRACT_ARCHIVE_SAVE_STATUS;
-		contractFormInfoService.updateExportStatus(contractStatus,contractArchive.getContractId());
+		contractFormInfoService.updateExportStatus(CONTRACT_ARCHIVE_SAVE_STATUS,contractArchive.getContractId());
 		return R.status(contractArchiveService.save(ContractArchiveWrapper.build().PVEntity(contractArchive)));
 	}
 
@@ -137,7 +136,7 @@ public class ContractArchiveController extends BladeController {
 	public R<ContractArchiveResponseVO> logInfo() {
 		ContractArchiveResponseVO responseVO = ContractArchiveWrapper.build().createPV();
 		BladeUser user = AuthUtil.getUser();
-		Long userId = Long.valueOf(user.getUserId());
+		Long userId = user.getUserId();
 		Long deptId = Long.valueOf(AuthUtil.getDeptId());
 		Date now = new Date();
 		responseVO.setCreateUserName(UserCache.getUser(userId).getRealName());
