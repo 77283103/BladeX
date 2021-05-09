@@ -95,7 +95,6 @@ public class EkpServiceImpl implements IEkpService {
 		log.info("result:" + tokenJson.toString());
 		return tokenJson.getBool("success") ? tokenJson.getStr("tokenInfo") : null;
 	}
-
 	@Override
 	public EkpVo pushData(PushEkpEntity entity) {
 		String paramStr = JSONUtil.toJsonStr(entity);

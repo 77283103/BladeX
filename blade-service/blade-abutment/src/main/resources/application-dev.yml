@@ -9,10 +9,10 @@ spring:
     password: ${blade.datasource.dev.password}
 api:
   doc:
-    tokenUrl: https://oatest-interface.pec.com.cn/common/pursuant/token
-    docInfoUrl: https://oatest-interface.pec.com.cn/common/pursuant/docs
+    tokenUrl: http://oatest-interface.pec.com.cn/common/pursuant/token
+    docInfoUrl: http://oatest-interface.pec.com.cn/common/pursuant/docs
     #相对方资料接口
-    counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
+    counterpartUrl: http://oatest-interface.pec.com.cn/common/opposite/data
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
     username: dev_c_p
     password: oa0/YNY374PKB53+IUmjiw==

@@ -47,7 +47,7 @@ public class IContractFallback implements IContractClient {
 	}
 
 	@Override
-	public R<String> inOrUp() {
+	public R<String> inOrUp(Object obj) {
 		return  R.fail("获取数据失败！");
 	}
 }

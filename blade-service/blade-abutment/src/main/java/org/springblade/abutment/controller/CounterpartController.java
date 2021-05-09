@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springblade.abutment.common.annotation.AutoLog;
 import org.springblade.abutment.entity.CounterpartEntity;
 import org.springblade.abutment.service.ICounterpartService;
 import org.springblade.abutment.vo.CounterpartVo;
@@ -39,7 +38,7 @@ public class CounterpartController {
 			counterpartVo.setInsert(counterpartService.getInsert(entity));
 			counterpartVo.setUpdate(counterpartService.getUpdate(entity));
 		}
-		String counterpart = contractClient.inOrUp().getData();
+		String counterpart = contractClient.inOrUp(counterpartVo).getData();
 		if ("success".equals(counterpart)) {
 			return R.data(200,counterpart,"储存成功！");
 		} else {

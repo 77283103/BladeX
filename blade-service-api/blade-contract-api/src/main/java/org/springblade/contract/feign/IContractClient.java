@@ -82,5 +82,5 @@ public interface IContractClient {
 	 * @return
 	 */
 	@PostMapping(COUNTERPART_UPDATE_OR_INSERT)
-	R<String> inOrUp();
+	R<String> inOrUp(Object obj);
 }

@@ -1,5 +1,5 @@
 server:
-  port: 7010
+  port: 7019
   servlet:
     context-path: /xxl-job-admin
 

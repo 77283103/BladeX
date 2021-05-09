@@ -163,23 +163,24 @@ public class ContractClient implements IContractClient{
 
 	@Override
 	@PostMapping(COUNTERPART_UPDATE_OR_INSERT)
-	public R<String> inOrUp() {
-    	CounterpartVo vo=new CounterpartVo();
+	public R<String> inOrUp(Object obj) {
+    	CounterpartVo vo= (CounterpartVo) obj;
     	List<ContractCounterpartEntity> listInsert=new ArrayList<>();
 		List<ContractCounterpartEntity> listUpdate=new ArrayList<>();
-    	ContractCounterpartEntity entity=new ContractCounterpartEntity();
     	vo.getInsert().forEach(i->{
-    		entity.setName(i.getCustNm());
-    		entity.setUnifiedSocialCreditCode(i.getBusinessId());
-    		entity.setOrganizationCode(i.getBusinessId());
-			listInsert.add(entity);
+			ContractCounterpartEntity in=new ContractCounterpartEntity();
+			in.setName(i.getCustNm());
+			in.setUnifiedSocialCreditCode(i.getBusinessId());
+			in.setOrganizationCode(i.getBusinessId());
+			listInsert.add(in);
 		});
 		iContractCounterpartService.saveBatch(listInsert);
     	vo.getUpdate().forEach(u->{
-			entity.setName(u.getCustNm());
-			entity.setUnifiedSocialCreditCode(u.getBusinessId());
-			entity.setOrganizationCode(u.getBusinessId());
-			listUpdate.add(entity);
+			ContractCounterpartEntity up=new ContractCounterpartEntity();
+			up.setName(u.getCustNm());
+			up.setUnifiedSocialCreditCode(u.getBusinessId());
+			up.setOrganizationCode(u.getBusinessId());
+			listUpdate.add(up);
 		});
 		listUpdate.forEach(l->{
 			List<ContractCounterpartEntity> entityList=counterpartMapper.selectByName(l.getUnifiedSocialCreditCode());

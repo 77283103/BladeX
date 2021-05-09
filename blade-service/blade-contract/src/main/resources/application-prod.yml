@@ -11,3 +11,18 @@ spring:
 api:
   file:
     ftlPath: /ftl/
+
+
+logging:
+  config: classpath:logback.xml
+xxl:
+  job:
+    accessToken: ''
+    admin:
+      addresses: http://cms.pec.com.cn:7019/xxl-job-admin
+    executor:
+      appname: blade-contract
+      ip: 110.96.115.181,10.96.115.182
+      logpath: ../data/applogs/xxl-job/jobhandler
+      logretentiondays: -1
+      port: 7018

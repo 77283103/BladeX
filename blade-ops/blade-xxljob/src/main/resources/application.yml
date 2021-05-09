@@ -16,12 +16,3 @@ xxl:
       logretentiondays: -1
       port: 7018
 
-api:
-  ekp:
-    tokenUrl: https://oa-interface.pec.com.cn/restful/ekp/getToken
-    #ekpUrl: https://oa-interface.pec.com.cn/restful/ekp/genhrbill
-    ekpUrl: https://oa-interface.pec.com.cn/restful/ekp/genhrbillouts
-    account: GenFlowNm
-    password: o!a@e@k#p
-    fdTemplateId: 1780054e40b82ff3f5f9e0c4bcfa9eac
-    ftlPath: /ftl/

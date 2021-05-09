@@ -34,6 +34,7 @@ public interface IAbutmentClient {
 	String EKP_SEND_FORM_POST = API_PREFIX + EKP + "/sendFormPost";
 	String E_EKP_TOKEN =API_PREFIX +EKP +"/token";
 	String EKP_NODE_FORM_POST = API_PREFIX + EKP + "/nodeFormPost";
+	String EKP_SIG_FORM_POST=API_PREFIX+EKP+"pushNotSig";
 	String DOC_QUERY_INFO = API_PREFIX + DOC + "/queryInfo";
 	String E_SEAL_UPLOAD_FILE = API_PREFIX + E_SEAL + "/uploadFiles";
 	String E_SEAL_SINGLE_SIGN = API_PREFIX + E_SEAL + "/singleSign";
@@ -60,6 +61,13 @@ public interface IAbutmentClient {
 	 */
 	@PostMapping(EKP_NODE_FORM_POST)
 	R<EkpVo> nodeEkpFormPost(@RequestBody ContractFormInfoResponseVO entity);
+
+	/**
+	 * 推送EKP节点信息
+	 * @return
+	 */
+	@PostMapping(EKP_SIG_FORM_POST)
+	R<List<EkpVo>> pushNotSig();
 	/**
 	 * 获取依据信息
 	 * @param entity

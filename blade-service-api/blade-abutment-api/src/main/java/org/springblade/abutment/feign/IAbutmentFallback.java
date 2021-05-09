@@ -25,6 +25,11 @@ public class IAbutmentFallback implements IAbutmentClient {
 	}
 
 	@Override
+	public R<List<EkpVo>> pushNotSig() {
+		return R.fail("请求超时，获取数据失败");
+	}
+
+	@Override
 	public R<List<DocVo>> queryDocInfo(DocEntity entity) {
 		return R.fail("获取数据失败");
 	}

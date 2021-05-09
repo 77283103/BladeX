@@ -10,12 +10,16 @@ spring:
     password: ${blade.datasource.dev.password}
 api:
   file:
-    ftlPath: C:/ftl/
+    ftlPath: D:/ftl/
+
+logging:
+  config: classpath:logback.xml
+
 xxl:
   job:
     accessToken: ''
     admin:
-      addresses: http://127.0.0.1:7010/xxl-job-admin
+      addresses: http://127.0.0.1:7019/xxl-job-admin
     executor:
       appname: blade-contract
       ip: 127.0.0.1
