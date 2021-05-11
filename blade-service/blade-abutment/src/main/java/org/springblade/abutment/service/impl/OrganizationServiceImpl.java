@@ -8,16 +8,13 @@ import cn.hutool.json.JSONUtil;
 import cn.hutool.json.XML;
 import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
-import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springblade.abutment.common.annotation.AutoLog;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
-import org.springblade.resource.feign.IFileClient;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.Post;
 import org.springblade.system.entity.UserDepartEntity;
@@ -26,9 +23,7 @@ import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPHeaderElement;
@@ -155,23 +150,28 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	 *
 	 * @return
 	 */
-//	@Scheduled(cron = "0 0 2 * * ?")
 	@Override
-	public List<OrganizationVo> getOrganizationInfoIncrement() {
+	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
 		OrganizationEntity entity = new OrganizationEntity();
 		List<OrganizationVo> organizationList = null;
 		//保存组织机构
 		try {
 			entity.setOrgType("2");
 			organizationList = getOrganizationInfo(entity);
+			if (Func.isNull(organizationList)){
+				return R.data(404,null,"TAG2:getOrganizationInfo()链接获取信息的方法异常，请检查");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		assert organizationList != null;
+		log.info("上面处理了NULL的判断，所以走到这里说明接口没问题："+JSONUtil.toJsonStr(organizationList));
 		sysClient.saveOrUpdateBatchDept(getOrgListUpdate(organizationList));
 		//保存岗位
 		try {
 			entity.setOrgType("4");
 			organizationList = getOrganizationInfo(entity);
+			return R.data(404,null,"TAG4:getOrganizationInfo()链接获取信息的方法异常，请检查");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -180,11 +180,12 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		try {
 			entity.setOrgType("8");
 			organizationList = getOrganizationInfo(entity);
+			return R.data(404,null,"TAG8:getOrganizationInfo()链接获取信息的方法异常，请检查");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		getPersonListUpdate(organizationList);
-		return organizationList;
+		return R.data(organizationList);
 	}
 
 

@@ -30,6 +30,8 @@ api:
     password: 80372a095c16319ce09ef7cc2c871b53
   eSeal:
     tokenUrl: https://unici.pec.com.cn/common/user/access
+    tokenSY: http://unici.pec.com.cn/common/file/addWatermark
+    tokenXZ: http://unici.pec.com.cn/common/file/downloadWaterMarkDoc/
     orgInfoByCodeUrl: https://unici.pec.com.cn/common/apply/company/getByOrganCode
     orgInfoBySysUidUrl: https://unici.pec.com.cn/common/apply/company/getBySysUid
     uploadFileDivideUrl: https://unici.pec.com.cn/common/file/upload/divide

@@ -166,6 +166,6 @@ public class OrganizationController {
 	@AutoLog
 	@ApiOperation(value = "获取组织及人员信息的接口")
 	public R<List<OrganizationVo>> queryOrganization() {
-		return R.data(organizationService.getOrganizationInfoIncrement());
+		return R.data(organizationService.getOrganizationInfoIncrement().getData());
 	}
 }

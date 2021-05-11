@@ -4,6 +4,7 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
+import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.HttpHead;
 import org.springblade.abutment.entity.CounterpartEntity;
@@ -22,7 +23,7 @@ import java.util.List;
  * 相对方数据实现类
  * @author xhbbo
  */
-@Slf4j
+@Log4j2
 @Service
 public class CounterpartServiceImpl implements ICounterpartService{
 	@Autowired
@@ -48,7 +49,7 @@ public class CounterpartServiceImpl implements ICounterpartService{
 		param.set("password", this.password);
 		JSONObject tokenJson = JSONUtil.parseObj(HttpUtil.createPost(this.tokenUrl).body(param.toString(),"application/json").execute().body());
 		log.info(tokenJson.toString());
-		return "success".equals(tokenJson.getStr("status")) ? tokenJson.getStr("token") : null;
+		return "success".equals(tokenJson.getStr("msg")) ? tokenJson.getStr("token") : null;
 	}
 
 	/**
@@ -78,9 +79,10 @@ public class CounterpartServiceImpl implements ICounterpartService{
 
 	@Override
 	public R<CounterpartVo> getInsOrUp(CounterpartEntity entity) throws Exception {
+		log.info("查看token是否传进来："+JSONUtil.toJsonStr(entity));
 		CounterpartVo vo=new CounterpartVo();
 		JSONObject docInfoJson = JSONUtil.parseObj(HttpUtil.createPost(this.counterpartUrl).body(JSONUtil.toJsonStr(entity), "application/json").execute().body());
-		log.info(docInfoJson.toString());
+		log.info(""+docInfoJson.toString());
 		if ("success".equals(docInfoJson.getStr("msg"))){
 			vo.setInsert(docInfoJson.get("insert", List.class));
 			vo.setUpdate(docInfoJson.get("update", List.class));

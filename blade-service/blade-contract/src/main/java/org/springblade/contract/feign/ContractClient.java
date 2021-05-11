@@ -20,6 +20,7 @@ import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.system.entity.TemplateEntity;
@@ -174,6 +175,7 @@ public class ContractClient implements IContractClient{
 			in.setOrganizationCode(i.getBusinessId());
 			listInsert.add(in);
 		});
+    	log.info("新增的数据："+JsonUtil.toJson(listInsert));
 		iContractCounterpartService.saveBatch(listInsert);
     	vo.getUpdate().forEach(u->{
 			ContractCounterpartEntity up=new ContractCounterpartEntity();
@@ -182,6 +184,7 @@ public class ContractClient implements IContractClient{
 			up.setOrganizationCode(u.getBusinessId());
 			listUpdate.add(up);
 		});
+		log.info("更新的数据："+ JsonUtil.toJson(listUpdate));
 		listUpdate.forEach(l->{
 			List<ContractCounterpartEntity> entityList=counterpartMapper.selectByName(l.getUnifiedSocialCreditCode());
 			if (Func.isNotEmpty(entityList)){

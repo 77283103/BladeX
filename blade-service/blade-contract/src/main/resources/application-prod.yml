@@ -11,7 +11,10 @@ spring:
 api:
   file:
     ftlPath: /ftl/
-
+  eSeal:
+    tokenUrl: https://unici.pec.com.cn/common/user/access
+    tokenSY: https://unici.pec.com.cn/common/file/addWatermark
+    tokenXZ: https://unici.pec.com.cn/common/file/downloadWaterMarkDoc/
 
 logging:
   config: classpath:logback.xml

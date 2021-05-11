@@ -11,6 +11,12 @@ spring:
 api:
   file:
     ftlPath: D:/ftl/
+  eSeal:
+    tokenUrl: https://sa.pec.com.cn:9080/common/user/access
+    tokenSY: https://sa.pec.com.cn:9080/common/file/addWatermark
+    tokenXZ: https://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/
+    username: admin_ekp
+    password: c5c85e7ef7747ce3f1649f44feb8b3bf
 
 logging:
   config: classpath:logback.xml

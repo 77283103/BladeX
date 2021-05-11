@@ -13,6 +13,9 @@ import java.io.Serializable;
 @Data
 @ApiModel(value = "相对方增量数据更新")
 public class CounterpartEntity implements Serializable {
+	/**token自动获取*/
+	@ApiModelProperty(hidden = true)
+	private String token;
 	@ApiModelProperty(value = "相对方数据编号")
 	private String custNo;
 	@ApiModelProperty(value = "相对方名称")

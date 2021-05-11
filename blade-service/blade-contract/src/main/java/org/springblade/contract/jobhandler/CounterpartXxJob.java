@@ -12,6 +12,7 @@ import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import springfox.documentation.spring.web.json.Json;
 
 /**
  * @author xhbbo
@@ -28,6 +29,7 @@ public class CounterpartXxJob {
 	public ReturnT<CounterpartVo> inOrUp(String param) throws Exception {
 		log.info("启动相对方增量更新任务");
 		CounterpartEntity entity=new CounterpartEntity();
+		log.info("相对方模板实体："+JsonUtil.toJson(entity));
 		R<CounterpartVo> vo=abutmentClient.getCounterpart(entity);
 		if (HttpStatus.OK.value()==vo.getCode()  && Func.isNotEmpty(vo.getData())) {
 			log.info("获取相对方新增信息集合结果:{}", JsonUtil.toJson(vo.getData().getInsert()));

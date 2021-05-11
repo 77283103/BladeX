@@ -39,11 +39,11 @@ public class SigningXxJob {
 		log.info("启动未归档信息扫面任务");
 		R<List<EkpVo>> r=abutmentClient.pushNotSig();
 		if (HttpStatus.OK.value()==r.getCode() && Func.isNotEmpty(r.getData())) {
-			log.info("获取未归档信息推送返回集合结果:{}", JsonUtil.toJson(r.getData()));
-			XxlJobLogger.log("获取未归档信息推送返回集合结果:{}", JsonUtil.toJson(r.getData()));
+			log.info("获取未归档信息推送返回集合结果:"+JsonUtil.toJson(r.getData()));
+			XxlJobLogger.log("获取未归档信息推送返回集合结果:"+JsonUtil.toJson(r.getData()));
 			return new ReturnT<>(r.getData());
 		}
-		XxlJobLogger.log("获取未归档信息推送失败",r.getMsg());
+		XxlJobLogger.log(r.getMsg());
 		return new ReturnT<>(r.getCode(),r.getMsg());
 	}
 }
