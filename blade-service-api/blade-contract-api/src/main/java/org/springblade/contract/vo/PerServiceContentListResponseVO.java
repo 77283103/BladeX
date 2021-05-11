@@ -71,6 +71,10 @@ public class PerServiceContentListResponseVO implements Serializable {
 		using = ToStringSerializer.class,
 		nullsUsing = NullSerializer.class
 	)
+
 	@ApiModelProperty("计划完成时间id")
 	private Long planFinshTimeId;
+
+	@ApiModelProperty("关联业务标识表达式")
+	private String businessIds;
 }

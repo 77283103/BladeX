@@ -46,5 +46,12 @@ public interface PerServiceContentMapper extends BaseMapper<PerServiceContentEnt
 	 */
 	List<PerServiceContentResponseVO> findWarningList();
 
+	/**
+	 * businessId转names
+	 * @param businessIds
+	 * @return
+	 */
+	List<String> businessIdsToNames(String businessIds);
+
 
 }

@@ -5,9 +5,12 @@ import lombok.ToString;
 import lombok.Getter;
 import lombok.Setter;
 import io.swagger.annotations.ApiModel;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springblade.core.tool.utils.DateUtil;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import org.springblade.core.mp.base.BaseEntity;
@@ -48,7 +51,18 @@ public class PerServiceContentRequestVO extends BaseEntity{
 	@ApiModelProperty(value="服务")
 	private String service;
 
+	@ApiModelProperty(value="关联业务标识表达式")
+	private List<String> businessIdList;
+
 	@ApiModelProperty(value="计划完成时间集合")
 	private List<PerPlanFinshTimeRequestVO> perPlanFinshTimeRequestVOList;
+
+
+	public String generateBusinessIds(){
+		if(!StringUtil.isEmpty(this.businessIdList)){
+			return String.join(",", this.businessIdList);
+		}
+		return "";
+	}
 
 }

@@ -73,5 +73,10 @@ public class PerCollectPayEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value="合同交易类型")
     private String contractTranType;
+	/**
+	 * 关联业务标识表达式
+	 */
+	@ApiModelProperty(value="关联业务标识表达式")
+	private String businessIds;
 
 }
