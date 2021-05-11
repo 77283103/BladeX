@@ -195,6 +195,24 @@
             </plugin>
         </plugins>
     </build>
+    <developers>
+        <developer>
+            <id>xhb</id>
+            <name>xuhongbin</name>
+            <email>outlookme@163.com</email>
+        </developer>
+    </developers>
+    <!-- 发布项目到 Nexus -->
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <url>http://nexus.funtl.com/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <url>http://nexus.funtl.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     <repositories>
         <repository>
             <id>aliyun-repos</id>
