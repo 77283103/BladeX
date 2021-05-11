@@ -12,6 +12,7 @@
         <result column="finsh_amount" property="finshAmount"/>
         <result column="contract_id" property="contractId"/>
         <result column="status" property="status"/>
+        <result column="business_ids" property="businessIds"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
@@ -83,6 +84,7 @@
         <if test="perCollectPay.contractName != null and perCollectPay.contractName != ''">
             cinfo.contract_name like concat('%',#{perCollectPay.contractName},'%')
         </if>
+          order by cinfo.create_time desc
     </select>
 
 </mapper>

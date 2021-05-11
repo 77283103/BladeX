@@ -8,7 +8,10 @@ import io.swagger.annotations.ApiModel;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 import org.springblade.core.tool.utils.DateUtil;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import org.springblade.core.mp.base.BaseEntity;
@@ -82,5 +85,19 @@ public class PerCollectPayRequestVO extends BaseEntity{
 	 */
 	@ApiModelProperty(value = "合同名称")
 	private String contractName;
+
+	/**
+	 * 关联业务数据标识集合
+	 */
+	private List<String> businessIdList;
+
+
+	public String generateBusinessIds(){
+		if(!StringUtil.isEmpty(this.businessIdList)){
+			return String.join(",", this.businessIdList);
+		}
+		return "";
+	}
+
 
 }

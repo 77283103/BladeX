@@ -60,4 +60,10 @@ public interface IPerServiceContentService extends BaseService<PerServiceContent
 	 */
 	List<PerServiceContentResponseVO> findWarningList();
 
+	/**
+	 * 关联业务标识转名称
+	 * @return
+	 */
+	List<String> businessIdsToNames(String businessIds);
+
 }

@@ -16,6 +16,7 @@
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
         <result column="service" property="service"/>
+        <result column="business_ids" property="businessIds"/>
     </resultMap>
 
     <!-- 接收/提供服务计划清单实体 -->
@@ -24,6 +25,7 @@
         <result column="contract_name" property="contractName"/>
         <result column="service" property="service"/>
         <result column="contract_tran_type" property="contractTranType"/>
+        <result column="business_ids" property="businessIds"/>
         <result column="contract_status" property="contractStatus"/>
         <result column="service_content" property="serviceContent"/>
         <result column="plan_finsh_time" property="planFinshTime"/>
@@ -32,6 +34,7 @@
         <result column="finsh_content_up" property="finshContentUp"/>
         <result column="service_content_id" property="serviceContentId" />
         <result column="plan_finsh_time_id" property="planFinshTimeId" />
+        <result column="business_ids" property="businessIds"/>
     </resultMap>
 
 
@@ -49,6 +52,8 @@
         <result column="update_time" property="updateTime"/>
         <result column="create_dept" property="createDept"/>
         <result column="service" property="service"/>
+        <result column="business_ids" property="businessIds"/>
+        <collection property="businessNames" javaType="java.util.ArrayList" ofType="java.lang.String" column="business_ids" select="businessIdsToNames" />
         <collection property="perPlanFinshTimeRequestVOList" javaType="java.util.ArrayList" ofType="org.springblade.contract.vo.PerPlanFinshTimeResponseVO">
             <result column="plan_finsh_time" property="planFinshTime"/>
             <result column="service_content_id" property="serviceContentId" />
@@ -75,7 +80,8 @@
         update_user,
         update_time,
         create_dept,
-        service
+        service,
+        business_ids
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="perServiceContentResultMap">
@@ -93,6 +99,7 @@
             psc.contract_tran_type,
             psc.service,
             psc.contract_id,
+            psc.business_ids,
             ppft.plan_finsh_time,
             ppft.service_content_id,
             ppfc.plan_finsh_content,
@@ -120,6 +127,7 @@
         psc.contract_tran_type,
         psc.service,
         psc.contract_id,
+        psc.business_ids,
         ppft.plan_finsh_time,
         ppft.service_content_id,
         ppfc.plan_finsh_content,
@@ -142,17 +150,13 @@
         ppfc.finsh_time_up is null
     </select>
 
-
-
-
-
-
     <select id="serviceContentList" resultMap="perServiceContentListMap">
         SELECT
             cinfo.id,
             cinfo.contract_name,
             psc.service,
             psc.contract_tran_type,
+            psc.business_ids,
             cinfo.contract_status,
             psc.id as service_content_id,
             psc.service_content,
@@ -177,6 +181,20 @@
         <if test="perServiceContent.serviceContent != null and perServiceContent.serviceContent != ''">
             and psc.service_content like concat('%',#{perServiceContent.serviceContent},'%')
         </if>
+            order by cinfo.create_time desc
+    </select>
+
+
+    <select id="businessIdsToNames" resultType="java.lang.String">
+        select name from contract_counterpart where id in
+        <foreach collection="businessIds.split(’,’)" item="businessId" index="index" open="(" close=")" separator=",">
+            #{businessId}
+        </foreach>
+        union all
+        select dict_value as name from blade_dict_biz where id in
+        <foreach collection="businessIds.split(’,’)" item="businessId" index="index" open="(" close=")" separator=",">
+            #{businessId}
+        </foreach>
     </select>
 
 </mapper>

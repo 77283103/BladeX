@@ -59,4 +59,7 @@ public class PerServiceContentEntity extends BaseEntity {
 	@ApiModelProperty(value="服务")
 	private String service;
 
+	@ApiModelProperty(value="关联业务标识表达式")
+	private String businessIds;
+
 }

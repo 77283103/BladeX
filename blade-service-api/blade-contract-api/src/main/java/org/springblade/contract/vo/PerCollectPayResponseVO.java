@@ -6,7 +6,11 @@ import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.PerCollectPayEntity;
 import io.swagger.annotations.ApiModel;
+import org.springblade.core.tool.utils.StringUtil;
+
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 履约收付款 返回模型VO
@@ -28,4 +32,15 @@ public class PerCollectPayResponseVO extends PerCollectPayEntity {
 	private String createDeptName;
 
 	private String updateUserName;
+
+	private List<String> businessNames;
+
+	private List<String> businessIdList;
+
+	public List<String> getBusinessIdList(){
+		if(!StringUtil.isEmpty(getBusinessIds())){
+			return Arrays.asList(getBusinessIds().split(","));
+		}
+		return this.businessIdList;
+	}
 }

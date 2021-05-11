@@ -54,6 +54,10 @@ public class PerServiceContentServiceImpl extends BaseServiceImpl<PerServiceCont
 		return baseMapper.findWarningList();
 	}
 
+	@Override
+	public List<String> businessIdsToNames(String businessIds) {
+		return baseMapper.businessIdsToNames(businessIds);
+	}
 
 
 	@Override
@@ -69,6 +73,7 @@ public class PerServiceContentServiceImpl extends BaseServiceImpl<PerServiceCont
 		serviceContentRequestVO.setId(IdGenUtil.generateId());
 		serviceContentRequestVO.setContractId(contractId);
 		PerServiceContentEntity perServiceContentEntity = PerServiceContentWrapper.build().QVEntity(serviceContentRequestVO);
+		perServiceContentEntity.setBusinessIds(serviceContentRequestVO.generateBusinessIds());
 		this.save(perServiceContentEntity);
 		perPlanFinshTimeService.addListByRequest(serviceContentRequestVO.getPerPlanFinshTimeRequestVOList(),
 			serviceContentRequestVO.getContractId(),serviceContentRequestVO.getId());

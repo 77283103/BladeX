@@ -92,6 +92,7 @@
                 left join per_bond pb on cb.id = pb.bond_id
         WHERE
             cinfo.is_deleted = 0
+        order by cinfo.create_time desc
     </select>
 
 

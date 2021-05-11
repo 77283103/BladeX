@@ -6,6 +6,9 @@ import lombok.ToString;
 import lombok.EqualsAndHashCode;
 import org.springblade.contract.entity.PerServiceContentEntity;
 import io.swagger.annotations.ApiModel;
+import org.springblade.core.tool.utils.StringUtil;
+
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -31,4 +34,15 @@ public class PerServiceContentResponseVO extends PerServiceContentEntity {
 	private String updateUserName;
 
 	private List<PerPlanFinshTimeResponseVO> perPlanFinshTimeRequestVOList;
+
+	private List<String> businessNames;
+
+	private List<String> businessIdList;
+
+	public List<String> getBusinessIdList(){
+		if(!StringUtil.isEmpty(getBusinessIds())){
+			return Arrays.asList(getBusinessIds().split(","));
+		}
+		return this.businessIdList;
+	}
 }
