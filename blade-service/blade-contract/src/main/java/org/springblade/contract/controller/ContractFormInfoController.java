@@ -12,6 +12,8 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.EkpVo;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractBondPlanEntity;
@@ -74,7 +76,8 @@ import java.util.*;
 @RequestMapping("/contractFormInfo")
 @Api(value = "", tags = "")
 public class ContractFormInfoController extends BladeController {
-
+	//EKP推送信息
+	private IAbutmentClient abutmentClient;
 	private IContractFormInfoService contractFormInfoService;
 	private IContractPerformanceService performanceService;
 	private IContractAccordingService accordingService;
@@ -285,6 +288,7 @@ public class ContractFormInfoController extends BladeController {
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
+			r.getData().setCreateTime(new Date());
 			contractFormInfoService.updateById(r.getData());
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
@@ -376,6 +380,7 @@ public class ContractFormInfoController extends BladeController {
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
+			r.getData().setCreateTime(new Date());
 			contractFormInfoService.updateById(r.getData());
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
@@ -472,6 +477,7 @@ public class ContractFormInfoController extends BladeController {
 				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 				return r;
 			}
+			r.getData().setCreateTime(new Date());
 			contractFormInfoEntity = r.getData();
 		}
 		assert r != null;
@@ -706,6 +712,17 @@ public class ContractFormInfoController extends BladeController {
 		}
 		infoEntity.setContractStatus(CONTRACT_EXPORT_STATUS);
 		return R.status(contractFormInfoService.updateById(infoEntity));
+		/*ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(infoEntity);
+		//合同文本导出打印推送EKP代办
+		R<EkpVo> ekpVo = abutmentClient.nodeEkpFormPost(formInfoResponseVO);
+		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
+		if (ekpVo.getCode() == HttpStatus.OK.value()) {
+			contractFormInfoService.updateById(infoEntity);
+			log.info("ekp返回值code"+ekpVo.getCode());
+			return R.data(200,ekpVo,"EKP推送数据成功");
+		} else {
+			return R.data(401, null, "EKP推送数据超时，操作失败");
+		}*/
 	}
 
 	/**
@@ -725,6 +742,10 @@ public class ContractFormInfoController extends BladeController {
 		//统计到导出次数
 		contractFormInfoService.textExportCount(id, fileExportCount, FILE_EXPORT_CATEGORY);
 		infoEntity.setFileExportCount(fileExportCount);
+		//附加条件解决BUG
+		if (CONTRACT_AUDIT_QUALITY.equals(infoEntity.getContractStatus())){
+			infoEntity.setContractStatus(CONTRACT_EXPORT_STATUS);
+		}
 		contractFormInfoService.updateById(infoEntity);
 		ContractFormInfoResponseVO formInfoResponseVO = ContractFormInfoWrapper.build().entityPV(infoEntity);
 		return R.data(formInfoResponseVO);
@@ -763,6 +784,17 @@ public class ContractFormInfoController extends BladeController {
 		}
 		infoEntity.setContractStatus(CONTRACT_SEAL_USING_INFO_STATUS);
 		return R.status(contractFormInfoService.updateById(infoEntity));
+		/*ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(infoEntity);
+		//合同文本导出打印推送EKP代办
+		R<EkpVo> ekpVo = abutmentClient.nodeEkpFormPost(formInfoResponseVO);
+		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
+		if (ekpVo.getCode() == HttpStatus.OK.value()) {
+			contractFormInfoService.updateById(infoEntity);
+			log.info("ekp返回值code"+ekpVo.getCode());
+			return R.data(200,ekpVo,"EKP推送数据成功");
+		} else {
+			return R.data(401, null, "EKP推送数据超时，操作失败");
+		}*/
 	}
 
 	/**
@@ -780,6 +812,17 @@ public class ContractFormInfoController extends BladeController {
 		}
 		infoEntity.setContractStatus(CONTRACT_SIGNING_STATUS);
 		return R.status(contractFormInfoService.updateById(infoEntity));
+		/*ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(infoEntity);
+		//合同文本导出打印推送EKP代办
+		R<EkpVo> ekpVo = abutmentClient.nodeEkpFormPost(formInfoResponseVO);
+		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
+		if (ekpVo.getCode() == HttpStatus.OK.value()) {
+			contractFormInfoService.updateById(infoEntity);
+			log.info("ekp返回值code"+ekpVo.getCode());
+			return R.data(200,ekpVo,"EKP推送数据成功");
+		} else {
+			return R.data(401, null, "EKP推送数据超时，操作失败");
+		}*/
 	}
 
 	/**
@@ -1038,6 +1081,7 @@ public class ContractFormInfoController extends BladeController {
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
+			r.getData().setCreateTime(new Date());
 			entity = r.getData();
 			entity.setChangeCategory(CHANGE_REVIEW_STATUS);
 			//注意**因为合同送审时生成合同编号，变更合同编号需要与原合同编号有关联性 即需要覆盖自动生成的合同编号 使用原合同原合同编号加后缀编号(-1+n)
@@ -1160,6 +1204,7 @@ public class ContractFormInfoController extends BladeController {
 				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 				return r;
 			}
+			r.getData().setCreateTime(new Date());
 			contractFormInfoEntity = r.getData();
 			//覆盖自动生成的合同编号
 			contractFormInfoEntity.setContractNumber(
@@ -1283,6 +1328,7 @@ public class ContractFormInfoController extends BladeController {
 			r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 			return r;
 		}
+		r.getData().setCreateTime(new Date());
 		entity = r.getData();
 		//判断满足已变更新合同的条件 修改原合同状态
 		if (CHANGE_REVIEW_STATUS.equals(contractFormInfo.getChangeCategory()) && APPROVE_REVIEW_STATUS.equals(contractFormInfo.getSubmitStatus())

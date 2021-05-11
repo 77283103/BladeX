@@ -98,7 +98,12 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @return
 	 */
 	ContractFormInfoEntity selectById(Long id);
-
+	/**
+	 * 合同详情
+	 * @param status
+	 * @return
+	 */
+	List<ContractFormInfoEntity> selectByStatus(@Param("status") String  status);
 	/**
 	 * 变更合同详情
 	 * @param id

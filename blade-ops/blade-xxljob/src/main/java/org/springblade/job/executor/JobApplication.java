@@ -17,6 +17,7 @@
 package org.springblade.job.executor;
 
 import org.springblade.common.constant.LauncherConstant;
+import org.springblade.core.cloud.feign.EnableBladeFeign;
 import org.springblade.core.launch.BladeApplication;
 import org.springframework.cloud.client.SpringCloudApplication;
 
@@ -25,6 +26,7 @@ import org.springframework.cloud.client.SpringCloudApplication;
  *
  * @author Chill
  */
+@EnableBladeFeign
 @SpringCloudApplication
 public class JobApplication {
 

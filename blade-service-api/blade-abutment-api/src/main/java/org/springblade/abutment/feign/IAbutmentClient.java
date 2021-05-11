@@ -3,7 +3,7 @@ package org.springblade.abutment.feign;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.feign.IContractFallback;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +24,17 @@ import java.util.List;
 public interface IAbutmentClient {
 
     String API_PREFIX = "/client/abutment";
+    String ORG="/org";
 	String EKP = "/ekp";
 	String DOC = "/doc";
 	String E_SEAL = "/eSeal";
+	String COUNTERPART_INSERT_OR_UPDATE=API_PREFIX+"getCounterpart";
+	String ORGANIZATION_INFO_INCREMENT=API_PREFIX +ORG+"/getOrganization";
 	String EKP_SEND_FORM = API_PREFIX + EKP + "/sendForm";
 	String EKP_SEND_FORM_POST = API_PREFIX + EKP + "/sendFormPost";
+	String E_EKP_TOKEN =API_PREFIX +EKP +"/token";
+	String EKP_NODE_FORM_POST = API_PREFIX + EKP + "/nodeFormPost";
+	String EKP_SIG_FORM_POST=API_PREFIX+EKP+"pushNotSig";
 	String DOC_QUERY_INFO = API_PREFIX + DOC + "/queryInfo";
 	String E_SEAL_UPLOAD_FILE = API_PREFIX + E_SEAL + "/uploadFiles";
 	String E_SEAL_SINGLE_SIGN = API_PREFIX + E_SEAL + "/singleSign";
@@ -40,6 +46,7 @@ public interface IAbutmentClient {
 	String E_SEAL_TOKEN = API_PREFIX + E_SEAL + "/token";
 
 
+
 	/**
 	 * 推送EKP信息
 	 * @param entity
@@ -47,7 +54,20 @@ public interface IAbutmentClient {
 	 */
 	@PostMapping(EKP_SEND_FORM_POST)
 	R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity);
+	/**
+	 * 推送EKP节点信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(EKP_NODE_FORM_POST)
+	R<EkpVo> nodeEkpFormPost(@RequestBody ContractFormInfoResponseVO entity);
 
+	/**
+	 * 推送EKP节点信息
+	 * @return
+	 */
+	@PostMapping(EKP_SIG_FORM_POST)
+	R<List<EkpVo>> pushNotSig();
 	/**
 	 * 获取依据信息
 	 * @param entity
@@ -118,4 +138,30 @@ public interface IAbutmentClient {
 	 */
 	@GetMapping(E_SEAL_TOKEN)
 	R<String> token();
+
+	/**
+	 * 获取电子签章token
+	 * @return
+	 */
+	@GetMapping(E_SEAL_TOKEN)
+	R<String> tokenEkp();
+	/**
+	 * 推送数据
+	 * @return
+	 */
+	@PostMapping(EKP_SEND_FORM)
+	R<EkpVo> pushData(PushEkpEntity entity) throws Exception;
+	/**
+	 * 增量更新组织及人员信息数据
+	 * @return
+	 */
+	@PostMapping(ORGANIZATION_INFO_INCREMENT)
+	R<List<OrganizationVo>> getOrganizationInfoIncrement();
+	/**
+	 * 获取相对方信息的数据
+	 * @return
+	 * @param entity
+	 */
+	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
+	R<CounterpartVo> getCounterpart(CounterpartEntity entity);
 }

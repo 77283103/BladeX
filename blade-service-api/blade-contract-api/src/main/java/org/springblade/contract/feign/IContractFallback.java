@@ -22,6 +22,11 @@ public class IContractFallback implements IContractClient {
 	}
 
 	@Override
+	public R<List<ContractFormInfoEntity>> getByStatus(String status) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
 	public R<List<ContractFormInfoEntity>> getChooseList() {
 		return R.fail("获取数据失败");
 	}
@@ -39,5 +44,10 @@ public class IContractFallback implements IContractClient {
 	@Override
 	public R<ContractTemplateEntity> getByTemplateId(Long id) {
 		return R.fail("更新模板json信息失败！");
+	}
+
+	@Override
+	public R<String> inOrUp(Object obj) {
+		return  R.fail("获取数据失败！");
 	}
 }

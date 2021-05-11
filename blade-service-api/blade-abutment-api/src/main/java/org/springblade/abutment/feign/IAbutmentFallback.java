@@ -3,12 +3,8 @@ package org.springblade.abutment.feign;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractTemplateEntity;
-import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
-import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.tool.api.R;
-import org.springblade.system.entity.TemplateEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -20,6 +16,16 @@ import java.util.List;
 public class IAbutmentFallback implements IAbutmentClient {
 	@Override
 	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
+		return R.fail("请求超时，获取数据失败");
+	}
+
+	@Override
+	public R<EkpVo> nodeEkpFormPost(ContractFormInfoResponseVO entity) {
+		return R.fail("请求超时，获取数据失败");
+	}
+
+	@Override
+	public R<List<EkpVo>> pushNotSig() {
 		return R.fail("请求超时，获取数据失败");
 	}
 
@@ -65,4 +71,24 @@ public class IAbutmentFallback implements IAbutmentClient {
 	@Override
 	public R<String> token() {
 		return R.fail("获取数据失败");	}
+
+	@Override
+	public R<String> tokenEkp() {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<EkpVo> pushData(PushEkpEntity entity) throws Exception {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
+		return R.fail("获取数据失败");
+	}
 }

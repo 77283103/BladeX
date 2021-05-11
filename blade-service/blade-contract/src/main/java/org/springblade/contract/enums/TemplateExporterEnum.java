@@ -2267,6 +2267,7 @@ public enum TemplateExporterEnum {
 	WLFW_59("WLFW_59") {
 		@Override
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map modle=new HashMap();
 			Map dataModel = new HashMap();
 			//迭代器遍历json对象
 			Iterator iter = j.entrySet().iterator();
@@ -2278,9 +2279,13 @@ public enum TemplateExporterEnum {
 				log.info("==key" + entry.getKey().toString());
 				log.info("==value" + entry.getKey().toString());
 				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
-
 			}
-			return setFile(filepaths, dataModel);
+			dataModel.put("sclStartTime", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclStartTime"))));
+			dataModel.put("sclEndOfTime", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclEndOfTime"))));
+			dataModel.put("sclSigningDate", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclSigningDate"))));
+			dataModel.put("sclMarginRmb2", MoneyToChiness.tenThousand(String.valueOf(j.get("sclMarginRmb"))));
+			modle.put("dataModel",setFile(filepaths, dataModel));
+			return modle;
 		}
 	};
 

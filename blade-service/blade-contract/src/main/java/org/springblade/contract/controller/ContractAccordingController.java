@@ -47,7 +47,7 @@ import java.util.List;
 public class ContractAccordingController extends BladeController {
 	private RedisTemplate redisTemplate;
 	private IContractAccordingService accordingService;
-	private IAbutmentClient abutmentClient;
+	/**private IAbutmentClient abutmentClient;**/
 
 	/**
 	 * 详情

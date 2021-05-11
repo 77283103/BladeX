@@ -29,11 +29,16 @@ public class DocServiceImpl implements IDocService {
     private String tokenUrl;
     @Value("${api.doc.docInfoUrl}")
     private String docInfoUrl;
-
+	@Value("${api.doc.username}")
+	private String userName;
+	@Value("${api.doc.password}")
+	private String password;
     @Override
     public String getToken() throws Exception {
         JSONObject param = new JSONObject();
         param.set("securityKey", this.SecurityKey);
+		param.set("username", this.userName);
+		param.set("password", this.password);
         JSONObject tokenJson = JSONUtil.parseObj(HttpUtil.createPost(this.tokenUrl).body(param.toString(),"application/json").execute().body());
         log.info(tokenJson.toString());
         return tokenJson == null ? null : tokenJson.getStr("status").equals("success") ? tokenJson.getStr("token") : null;

@@ -31,6 +31,7 @@
         <result column="scl_some_day" property="sclSomeDay"/>
         <result column="scl_name_of_the_company" property="sclNameOfTheCompany"/>
         <result column="scl_name_of_the_company2" property="sclNameOfTheCompany2"/>
+        <result column="annex" property="annex"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -68,6 +69,7 @@
         scl_some_day,
         scl_name_of_the_company,
         scl_name_of_the_company2,
+        annex,
         status,
         is_deleted,
         create_user,

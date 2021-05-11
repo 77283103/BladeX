@@ -1,6 +1,7 @@
 package org.springblade.abutment.feign;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -13,18 +14,19 @@ import org.csource.fastdfs.TrackerClient;
 import org.csource.fastdfs.TrackerServer;
 import org.json.simple.JSONObject;
 import org.springblade.abutment.entity.*;
-import org.springblade.abutment.service.IDocService;
-import org.springblade.abutment.service.IESealService;
-import org.springblade.abutment.service.IEkpService;
+import org.springblade.abutment.service.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractPerformanceColPayEntity;
 import org.springblade.contract.entity.ContractPerformanceEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.feign.IContractClient;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
@@ -46,7 +48,9 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 对接Feign实现类
@@ -74,6 +78,10 @@ public class AbutmentClient implements IAbutmentClient {
 	private IUserClient userClient;
 	@Autowired
 	private TrackerClient trackerClient;
+	@Autowired
+	private IOrganizationService iOrganizationService;
+	@Autowired
+	private ICounterpartService counterpartService;
 
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
@@ -93,14 +101,13 @@ public class AbutmentClient implements IAbutmentClient {
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
 		pushEkpEntity.setFdTemplateId(fdTemplateId);
 		if (null != entity) {
-			//17090089是登录人的编号
 			//entity.getPersonCodeContract()
 			if (StrUtil.isNotEmpty(entity.getPersonCodeContract()) && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 				//人员编号
-				R<User> user=userClient.userInfoById(AuthUtil.getUserId());
-				docCreatorEntity.setEmplno(String.valueOf("".equals(user.getData().getCode())?17090089:user.getData().getCode()));
+				R<User> user = userClient.userInfoById(AuthUtil.getUserId());
+				docCreatorEntity.setEmplno(String.valueOf("".equals(user.getData().getCode()) ? 17090089 : user.getData().getCode()));
 				pushEkpEntity.setDocCreator(docCreatorEntity);
 				FormValuesEntity formValuesEntity = new FormValuesEntity();
 				//依据编号
@@ -433,8 +440,8 @@ public class AbutmentClient implements IAbutmentClient {
 						pushEkpEntity.setFd_attachment(listAttachment);
 					}
 					pushEkpEntity.setToken(ekpService.getToken());
-					log.info("获取ekp的token："+pushEkpEntity.getToken());
-					if(StrUtil.isEmpty(pushEkpEntity.getToken())){
+					log.info("获取ekp的token：" + pushEkpEntity.getToken());
+					if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
 						rEkpVo.setCode(1);
 						rEkpVo.setMsg("token获取失败，连接超时");
 						rEkpVo.setSuccess(false);
@@ -444,8 +451,8 @@ public class AbutmentClient implements IAbutmentClient {
 					pushEkpEntity.setDocSubject(entity.getContractName());
 					pushEkpEntity.setFdTemplateId(fdTemplateId);
 					ekpVo = ekpService.pushData(pushEkpEntity);
-					log.info("获取ekpVo的内容："+ekpVo.getDoc_info());
-					if(StrUtil.isEmpty(ekpVo.getDoc_info())){
+					log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
+					if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 						rEkpVo.setCode(2);
 						rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
 						rEkpVo.setSuccess(false);
@@ -458,12 +465,205 @@ public class AbutmentClient implements IAbutmentClient {
 			}
 		}
 		rEkpVo.setData(ekpVo);
-		log.info("HttpStatus.OK.value()"+HttpStatus.OK.value());
+		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
 		rEkpVo.setCode(HttpStatus.OK.value());
 		rEkpVo.setSuccess(true);
 		return rEkpVo;
 	}
 
+	/**
+	 * 推送EKP节点信息
+	 *
+	 * @param entity
+	 * @return
+	 */
+	@SneakyThrows
+	@Override
+	@PostMapping(EKP_NODE_FORM_POST)
+	public R<EkpVo> nodeEkpFormPost(ContractFormInfoResponseVO entity) {
+		R<EkpVo> rEkpVo = new R<>();
+		EkpVo ekpVo = null;
+		//KEP接口传输的入参
+		PushEkpEntity pushEkpEntity = new PushEkpEntity();
+		pushEkpEntity.setFdTemplateId(fdTemplateId);
+		if (null != entity) {
+			//17090089是登录人的编号
+			//entity.getPersonCodeContract()
+			if (StrUtil.isNotEmpty(entity.getPersonCodeContract())) {
+				DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
+				//人员编号
+				R<User> user = userClient.userInfoById(AuthUtil.getUserId());
+				docCreatorEntity.setEmplno(Func.isEmpty(entity.getPersonCodeContract()) ? user.getData().getCode() : entity.getPersonCodeContract());
+				pushEkpEntity.setDocCreator(docCreatorEntity);
+				//===数据实体===
+				FormValuesEntity formValuesEntity = new FormValuesEntity();
+				//1.合同状态
+				formValuesEntity.setFd_contract_status(entity.getContractStatus());
+				//2.合同主旨
+				pushEkpEntity.setDocSubject(entity.getContractName());
+				//3.表单模版ID
+				pushEkpEntity.setFdTemplateId(fdTemplateId);
+				//4.不同条件参数(归档所需的附件--上传到哪需要对接)
+				if (entity.getContractStatus().equals("60")) {
+					//4-1.合同归档的合同文本扫面件附件ID
+					formValuesEntity.setFd_archive_file(entity.getSigningEntity().getAttachedFiles());
+					//已归档处理合同文本扫面件
+					if (Func.isNotEmpty(entity.getAttachedFiles())) {
+						List<FileVO> fileVOs = fileClient.getByIds(entity.getAttachedFiles()).getData();
+						String[] fileIds = new String[0];
+						List<Attachment> listAttachment = new ArrayList<>();
+						for (FileVO fileVO : fileVOs) {
+							// 开始上传fastDFS服务器
+							Attachment attachment = new Attachment();
+							NameValuePair[] nvp = new NameValuePair[5];
+							int index = fileVO.getName().lastIndexOf(".");
+							String fileSuffix = fileVO.getName().substring(index + 1);
+							//文件名称
+							nvp[0] = new NameValuePair("fdFileName", fileVO.getName());
+							//文件后缀
+							nvp[1] = new NameValuePair("fileSuffix", fileSuffix);
+							//文件key？？
+							nvp[2] = new NameValuePair("fdKey", "");
+							//文件大小
+							nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());
+							//文件类型
+							nvp[4] = new NameValuePair("fileType", "");
+							//3.创建trackerServer
+							TrackerServer trackerServer = null;
+							try {
+								trackerServer = trackerClient.getConnection();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							// 4、创建一个 StorageServer 的引用，值为 null
+							StorageServer storageServer = null;
+							// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+							StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+							InputStream in = null;
+							BufferedInputStream bin = null;
+							ByteArrayOutputStream baos = null;
+							BufferedOutputStream bout = null;
+							byte[] bytes = null;
+							try {
+								URL url = new URL(fileVO.getLink());
+								URLConnection conn = url.openConnection();
+								in = conn.getInputStream();
+								bin = new BufferedInputStream(in);
+								baos = new ByteArrayOutputStream();
+								bout = new BufferedOutputStream(baos);
+								byte[] buffer = new byte[1024];
+								int len = bin.read(buffer);
+								while (len != -1) {
+									bout.write(buffer, 0, len);
+									len = bin.read(buffer);
+								}
+								//刷新此输出流并强制写出所有缓冲的输出字节
+								bout.flush();
+								bytes = baos.toByteArray();
+								// 上传
+								fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+							} catch (IOException | MyException e) {
+								e.printStackTrace();
+							}
+							attachment.setFilename(fileVO.getName());
+							attachment.setFilePath(fileIds[0] + '/' + fileIds[1]);
+							listAttachment.add(attachment);
+						}
+						pushEkpEntity.setFd_attachment(listAttachment);
+					}
+				}
+			}
+			//获取ekp的token
+			pushEkpEntity.setToken(ekpService.getToken());
+			log.info("获取ekp的token：" + pushEkpEntity.getToken());
+			if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
+				rEkpVo.setCode(1);
+				rEkpVo.setMsg("token获取失败，连接超时");
+				rEkpVo.setSuccess(false);
+				rEkpVo.setData(null);
+				return rEkpVo;
+			}
+			//推送数据
+			ekpVo = ekpService.pushData(pushEkpEntity);
+			log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
+			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
+				rEkpVo.setCode(2);
+				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+				rEkpVo.setSuccess(false);
+				rEkpVo.setData(null);
+				return rEkpVo;
+			}
+		}
+		rEkpVo.setData(ekpVo);
+		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setCode(HttpStatus.OK.value());
+		rEkpVo.setSuccess(true);
+		return rEkpVo;
+	}
+
+	@SneakyThrows
+	@Override
+	@PostMapping(EKP_SIG_FORM_POST)
+	public R<List<EkpVo>> pushNotSig() {
+		R<List<EkpVo>> ekpVo = new R<>();
+		HashMap<String, String> mapVo = new HashMap<>();
+		//KEP接口传输的入参
+		PushEkpEntity pushEkpEntity = new PushEkpEntity();
+		List<ContractFormInfoEntity> formInfoEntities = contractClient.getByStatus("50").getData();
+		log.info("需要推送的符合条件的数据：{}" + JsonUtil.toJson(formInfoEntities));
+		if (Func.isEmpty(formInfoEntities)){
+			return R.data(200, null,"没有需要推送的数据：");
+		}
+		//获取TOKEN
+		pushEkpEntity.setToken(ekpService.getToken());
+		if (StrUtil.isEmpty(pushEkpEntity.getToken())){
+			return R.data(404, null,"获取token失败");
+		}
+		log.info("获取一次token信息：" + JsonUtil.toJson(pushEkpEntity.getToken()));
+		formInfoEntities.forEach(f -> {
+			//此处判断创建时间为送审时间
+			int day = differentDaysByMillisecond(f.getCreateTime(), new Date());
+			mapVo.put("day", String.valueOf(day));
+			mapVo.put("contractName", f.getContractName());
+			if (day >= 60) {
+				EkpVo ekp = null;
+				try {
+					//docCreator 人员编号
+					DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
+					docCreatorEntity.setEmplno(f.getPersonCodeContract());
+					pushEkpEntity.setDocCreator(docCreatorEntity);
+					//fdTemplateId 表单模版ID
+					pushEkpEntity.setFdTemplateId(this.fdTemplateId);
+					//formValues 主要内容
+					FormValuesEntity formValuesEntity = new FormValuesEntity();
+					formValuesEntity.setFd_contract_id(f.getId().toString());
+					// docSubject 合同主旨
+					pushEkpEntity.setDocSubject(f.getContractName());
+					//推送数据
+					ekp = ekpService.pushData(pushEkpEntity);
+					if (Func.isNotEmpty(ekp)) {
+						ekpVo.getData().add(ekp);
+					}
+					TimeUnit.SECONDS.sleep(8);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		log.info("推送完成返回的依据信息：{}" + JsonUtil.toJson(ekpVo));
+		return R.data(200, ekpVo.getData(),"数据推送成功");
+	}
+
+	/**
+	 * 通过时间秒毫秒数判断两个时间的间隔
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
+	public static int differentDaysByMillisecond(Date date1, Date date2) {
+		int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+		return days;
+	}
 	/*public FormValuesEntity fileText(FormValuesEntity formValuesEntity,ContractFormInfoEntity entity) {
 		StringBuilder downLoadUrl = new StringBuilder();
 		downLoadUrl.append(downloadUrl).append(entity.getTextFilePdf()).append("&token=").append(token().getData());
@@ -501,8 +701,8 @@ public class AbutmentClient implements IAbutmentClient {
 						arrays = new String[]{"甲", "丙", "丁"};
 						s.put("统一集团","乙方（签章）");
 					}
-					for (int i=0;i<entity.getCounterpart().size();i++) {
-						s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方（签章）");
+					for (int i=0;i<entity.getInsert().size();i++) {
+						s.put(entity.getInsert().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方（签章）");
 					}
 					formValuesEntity.setFd_keyword(s.toJSONString());
 				}else if((-1!=ay&&-1!=by)){
@@ -513,8 +713,8 @@ public class AbutmentClient implements IAbutmentClient {
 						arrays = new String[]{"甲", "丙", "丁"};
 						s.put("统一集团","乙方(签章)");
 					}
-					for (int i=0;i<entity.getCounterpart().size();i++) {
-						s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方(签章)");
+					for (int i=0;i<entity.getInsert().size();i++) {
+						s.put(entity.getInsert().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方(签章)");
 					}
 					formValuesEntity.setFd_keyword(s.toJSONString());
 				}
@@ -634,7 +834,7 @@ public class AbutmentClient implements IAbutmentClient {
 			if (StrUtil.isNotEmpty(token)) {
 				if (StrUtil.isNotEmpty(entity.getIsMerge())) {
 					uploadFileVo = eSealService.uploadFiles(token, entity);
-					System.out.println(uploadFileVo.size()+"/n"+uploadFileVo.get(0).getId());
+					System.out.println(uploadFileVo.size() + "/n" + uploadFileVo.get(0).getId());
 				}
 			}
 		} catch (Exception e) {
@@ -744,4 +944,57 @@ public class AbutmentClient implements IAbutmentClient {
 		return R.data(token);
 	}
 
+	/**
+	 * 增量更新组织及人员信息数据
+	 *
+	 * @return
+	 */
+	@Override
+	@PostMapping(ORGANIZATION_INFO_INCREMENT)
+	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
+		return R.data(iOrganizationService.getOrganizationInfoIncrement());
+	}
+
+	/**
+	 * 相对方数据新增更新
+	 *
+	 * @param entity
+	 * @return
+	 */
+	@SneakyThrows
+	@Override
+	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
+	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
+		CounterpartVo counterpartVo = null;
+		String token = counterpartService.getToken();
+		if (StrUtil.isNotEmpty(token)) {
+			counterpartVo=counterpartService.getInsOrUp(entity).getData();
+		}else {
+			return R.data(404,null,"获取token失败！");
+		}
+		String counterpart = contractClient.inOrUp(counterpartVo).getData();
+		if ("success".equals(counterpart)) {
+			return R.data(200,counterpartVo,"获取数据成功！");
+		} else {
+			return R.data(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, "存储失败！");
+		}
+	}
+
+	@Override
+	@GetMapping(E_EKP_TOKEN)
+	public R<String> tokenEkp() {
+		String token = null;
+		try {
+			token = ekpService.getToken();
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return R.data(token);
+	}
+
+	@Override
+	@PostMapping(EKP_SEND_FORM)
+	public R<EkpVo> pushData(PushEkpEntity entity) throws Exception {
+		return R.data(ekpService.pushData(entity));
+	}
 }

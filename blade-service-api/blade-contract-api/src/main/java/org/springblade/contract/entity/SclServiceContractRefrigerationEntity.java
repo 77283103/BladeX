@@ -175,5 +175,9 @@ public class SclServiceContractRefrigerationEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value="广东省【？】小时通知乙方")
 	private String sclNotified;
+	/**附件
+	 */
+	@ApiModelProperty(value="附件")
+	private String annex;
 
 }

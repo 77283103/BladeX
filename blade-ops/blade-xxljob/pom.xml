@@ -28,10 +28,34 @@
             <groupId>org.springblade</groupId>
             <artifactId>blade-core-launch</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-contract-api</artifactId>
+            <version>${bladex.project.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-contract</artifactId>
+            <version>${bladex.project.version}</version>
+            <scope>compile</scope>
+        </dependency>
         <!--Job-->
         <dependency>
             <groupId>com.xuxueli</groupId>
             <artifactId>xxl-job-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-abutment-api</artifactId>
+            <version>2.5.0.RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-abutment</artifactId>
+            <version>2.5.0.RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

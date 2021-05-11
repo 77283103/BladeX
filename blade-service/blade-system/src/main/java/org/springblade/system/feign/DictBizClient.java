@@ -38,7 +38,7 @@ import java.util.List;
 @AllArgsConstructor
 public class DictBizClient implements IDictBizClient {
 
-	private IDictBizService service;
+	private final IDictBizService service;
 
 	@Override
 	@GetMapping(GET_BY_ID)
