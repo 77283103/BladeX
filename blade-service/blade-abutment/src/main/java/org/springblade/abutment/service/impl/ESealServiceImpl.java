@@ -86,10 +86,12 @@ public class ESealServiceImpl implements IESealService {
 			param.set("sysUid", companyInfoEntity.getSysUid());
 			param.set("sysType", companyInfoEntity.getSysType());
 		}
-		JSONObject companyInfoJson = JSONUtil.parseObj(HttpUtil.createPost(companyInfoEntity.getQueryType().equals("1") ? this.orgInfoByCodeUrl : this.orgInfoBySysUidUrl).body(param.toString(), "application/json").header("token", token).execute().body());
-		log.info(companyInfoJson.toString());
+		log.info("查询的企业相关信息："+JSONUtil.toJsonStr(param));
+		JSONObject companyInfoJson = JSONUtil.parseObj(HttpUtil.createPost("1".equals(companyInfoEntity.getQueryType()) ? this.orgInfoByCodeUrl : this.orgInfoBySysUidUrl).body(param.toString(), "application/json").header("token", token).execute().body());
+		log.info("电子签章查询结果"+JSONUtil.toJsonStr(companyInfoJson));
 		CompanyInfoVo companyInfoVo = new CompanyInfoVo();
 		companyInfoVo.setOrganCode(companyInfoJson.get("code").toString());
+		companyInfoVo.setAvailable(companyInfoJson.get("available").toString());
 		return companyInfoJson == null ? null : companyInfoVo;
 		//return companyInfoJson == null ? null : companyInfoJson.getStr("code").equals("0") ? companyInfoJson.getJSONObject("data").get("company", CompanyInfoVo.class) : null;
 	}

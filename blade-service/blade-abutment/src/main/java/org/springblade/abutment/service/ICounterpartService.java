@@ -37,8 +37,8 @@ public interface ICounterpartService {
 	R<CounterpartVo> getInsOrUp(CounterpartEntity entity) throws Exception;
 	/**
 	 * 保存数据
-	 * @param entity vo
-	 * @return 状态
+	 *
+	 * @param counterpartVo@return 状态
 	 */
-	boolean insOrUp(CounterpartEntity entity);
+	boolean insOrUp(CounterpartVo counterpartVo);
 }

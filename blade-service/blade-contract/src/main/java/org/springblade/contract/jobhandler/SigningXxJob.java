@@ -43,7 +43,7 @@ public class SigningXxJob {
 			XxlJobLogger.log("获取未归档信息推送返回集合结果:"+JsonUtil.toJson(r.getData()));
 			return new ReturnT<>(r.getData());
 		}
-		XxlJobLogger.log(r.getMsg());
+		XxlJobLogger.log(r.getMsg()+r.getData());
 		return new ReturnT<>(r.getCode(),r.getMsg());
 	}
 }

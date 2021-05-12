@@ -54,7 +54,25 @@ public class ContractClient implements IContractClient{
 	private IContractSigningService contractSigningService;
 	private IContractCounterpartService iContractCounterpartService;
 	private ContractCounterpartMapper counterpartMapper;
-	private static final String ftlPath="D:/ftl/";//模板路径
+	private IContractCounterpartService counterpartService;
+	//模板路径
+	private static final String ftlPath="D:/ftl/";
+
+	@Override
+	public R<Boolean> saveBatch(List<ContractCounterpartEntity> listInsert) {
+		return R.data(counterpartService.saveBatch(listInsert));
+	}
+
+	@Override
+	public R<Boolean> updateById(ContractCounterpartEntity updateCounterpart) {
+		return R.data(counterpartService.updateById(updateCounterpart));
+	}
+
+	@Override
+	public R<List<ContractCounterpartEntity>> selectByName(String unifiedSocialCreditCode) {
+		return R.data(counterpartMapper.selectByName(unifiedSocialCreditCode));
+	}
+
 	//private static final String ftlPath="/ftl/";
     @Override
     @GetMapping(CONTRACT)
@@ -161,39 +179,4 @@ public class ContractClient implements IContractClient{
 		ContractTemplateEntity templateFieldEntity=templateService.getById(id);
 		return R.data(templateFieldEntity);
 	}
-
-	@Override
-	@PostMapping(COUNTERPART_UPDATE_OR_INSERT)
-	public R<String> inOrUp(Object obj) {
-    	CounterpartVo vo= (CounterpartVo) obj;
-    	List<ContractCounterpartEntity> listInsert=new ArrayList<>();
-		List<ContractCounterpartEntity> listUpdate=new ArrayList<>();
-    	vo.getInsert().forEach(i->{
-			ContractCounterpartEntity in=new ContractCounterpartEntity();
-			in.setName(i.getCustNm());
-			in.setUnifiedSocialCreditCode(i.getBusinessId());
-			in.setOrganizationCode(i.getBusinessId());
-			listInsert.add(in);
-		});
-    	log.info("新增的数据："+JsonUtil.toJson(listInsert));
-		iContractCounterpartService.saveBatch(listInsert);
-    	vo.getUpdate().forEach(u->{
-			ContractCounterpartEntity up=new ContractCounterpartEntity();
-			up.setName(u.getCustNm());
-			up.setUnifiedSocialCreditCode(u.getBusinessId());
-			up.setOrganizationCode(u.getBusinessId());
-			listUpdate.add(up);
-		});
-		log.info("更新的数据："+ JsonUtil.toJson(listUpdate));
-		listUpdate.forEach(l->{
-			List<ContractCounterpartEntity> entityList=counterpartMapper.selectByName(l.getUnifiedSocialCreditCode());
-			if (Func.isNotEmpty(entityList)){
-				l.setId(entityList.get(0).getId());
-				iContractCounterpartService.updateById(l);
-			}
-		});
-		return R.data("success");
-	}
-
-
 }

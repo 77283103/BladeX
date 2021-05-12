@@ -10,13 +10,17 @@ import org.apache.http.client.methods.HttpHead;
 import org.springblade.abutment.entity.CounterpartEntity;
 import org.springblade.abutment.service.ICounterpartService;
 import org.springblade.abutment.vo.CounterpartVo;
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -95,8 +99,33 @@ public class CounterpartServiceImpl implements ICounterpartService{
 
 	@SneakyThrows
 	@Override
-	public boolean insOrUp(CounterpartEntity entity) {
-
+	public boolean insOrUp(CounterpartVo counterpartVo) {
+		List<ContractCounterpartEntity> listInsert = new ArrayList<>();
+		List<ContractCounterpartEntity> listUpdate = new ArrayList<>();
+		counterpartVo.getInsert().forEach(i -> {
+			ContractCounterpartEntity in = new ContractCounterpartEntity();
+			in.setName(i.getCustNm());
+			in.setUnifiedSocialCreditCode(i.getBusinessId());
+			in.setOrganizationCode(i.getBusinessId());
+			listInsert.add(in);
+		});
+		log.info("新增的数据：" + JsonUtil.toJson(listInsert));
+		contractClient.saveBatch(listInsert);
+		counterpartVo.getUpdate().forEach(u -> {
+			ContractCounterpartEntity up = new ContractCounterpartEntity();
+			up.setName(u.getCustNm());
+			up.setUnifiedSocialCreditCode(u.getBusinessId());
+			up.setOrganizationCode(u.getBusinessId());
+			listUpdate.add(up);
+		});
+		log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
+		listUpdate.forEach(l -> {
+			List<ContractCounterpartEntity> entityList=contractClient.selectByName(l.getUnifiedSocialCreditCode()).getData();
+			if (Func.isNotEmpty(entityList)){
+				l.setId(entityList.get(0).getId());
+				contractClient.updateById(l);
+			}
+		});
 		return false;
 	}
 }

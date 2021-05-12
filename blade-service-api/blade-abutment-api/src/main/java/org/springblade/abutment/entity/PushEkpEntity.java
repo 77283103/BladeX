@@ -17,4 +17,5 @@ public class PushEkpEntity implements Serializable {
     private String token;
 	private List<Attachment> fd_attachment;
     private FormValuesEntity formValues;
+    private BorrowAc borrowAc;
 }

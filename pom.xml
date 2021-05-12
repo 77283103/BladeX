@@ -93,7 +93,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
     <build>
         <finalName>${project.name}</finalName>
         <resources>
@@ -164,7 +163,7 @@
                                     <!--suppress UnresolvedMavenProperty -->
                                     <copy overwrite="true"
                                           tofile="${session.executionRootDirectory}/target/${project.artifactId}.jar"
-                                          file="${project.build.directory}/${project.artifactId}.jar" />
+                                          file="${project.build.directory}/${project.artifactId}.jar"/>
                                 </tasks>
                             </configuration>
                         </execution>

@@ -1,5 +1,6 @@
 package org.springblade.contract.feign;
 
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -27,13 +28,38 @@ import java.util.List;
 public interface IContractClient {
 
 	String API_PREFIX = "/client";
+	String SAVEBATCH=API_PREFIX+"/savebatch";
+	String UPDATEBYID=API_PREFIX+"/updatebyid";
+	String SELECTBYNAME=API_PREFIX+"/selectbyname";
 	String CONTRACT = API_PREFIX + "/contractFormInfo";
 	String STATUS=API_PREFIX +"/signingNot";
 	String TEMPLATE_UPDATE = API_PREFIX + "/template_update";
 	String CHOOSE=API_PREFIX + "/getChooseList";
 	String CONTRACT_SAVE = API_PREFIX + "/contractSave";
 	String TEMPLATE_GET_ID = API_PREFIX + "/template_getId";
-	String COUNTERPART_UPDATE_OR_INSERT=API_PREFIX+"/inOrUp";
+
+	/**
+	 * 保存相对方
+	 * @param listInsert
+	 * @return
+	 */
+	@GetMapping(SAVEBATCH)
+	R<Boolean> saveBatch(@RequestBody List<ContractCounterpartEntity> listInsert);
+	/**
+	 * 修改相对方
+	 * @param updateCounterpart
+	 * @return
+	 */
+	@GetMapping(UPDATEBYID)
+	R<Boolean> updateById(@RequestBody ContractCounterpartEntity updateCounterpart);
+
+	/**
+	 * 根据一统一代码查询
+	 * @param unifiedSocialCreditCode
+	 * @return
+	 */
+	@GetMapping(SELECTBYNAME)
+	R<List<ContractCounterpartEntity>> selectByName(@RequestParam("unifiedSocialCreditCode") String  unifiedSocialCreditCode);
 	/**
 	 * 获取合同信息
 	 * @param id
@@ -77,10 +103,4 @@ public interface IContractClient {
 	@GetMapping(TEMPLATE_GET_ID)
 	R<ContractTemplateEntity> getByTemplateId(@RequestParam("id") Long id);
 
-	/**
-	 * 相对方新增更新数据
-	 * @return
-	 */
-	@PostMapping(COUNTERPART_UPDATE_OR_INSERT)
-	R<String> inOrUp(Object obj);
 }

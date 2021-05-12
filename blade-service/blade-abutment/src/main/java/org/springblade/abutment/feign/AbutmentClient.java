@@ -82,7 +82,6 @@ public class AbutmentClient implements IAbutmentClient {
 	private IOrganizationService iOrganizationService;
 	@Autowired
 	private ICounterpartService counterpartService;
-
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
 
@@ -92,9 +91,77 @@ public class AbutmentClient implements IAbutmentClient {
 	@Value("${api.ekp.ftlPath}")
 	private String ftlPath;
 
+	/**
+	 * 合同借阅申请
+	 * @param entity
+	 * @return
+	 */
+	@SneakyThrows
+	@PostMapping(CONTRACT_BORROWING)
+	@Override
+	public R<EkpVo> borEkpFormPost(ContractBorrowApplicationEntity entity) {
+		R<EkpVo> rEkpVo = new R<>();
+		EkpVo ekpVo = null;
+		PushEkpEntity pushEkpEntity = new PushEkpEntity();
+		if (Func.isNotEmpty(entity)) {
+			//表单模版ID
+			pushEkpEntity.setFdTemplateId(fdTemplateId);
+			//人员编号
+			DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
+			R<User> user = userClient.userInfoById(AuthUtil.getUserId());
+			docCreatorEntity.setEmplno(String.valueOf(user.getData().getCode()));
+			pushEkpEntity.setDocCreator(docCreatorEntity);
+			//文档主题
+			pushEkpEntity.setDocSubject("借阅申请：--"+entity.getDataName());
+			//文档主要内容
+			BorrowAc ac=new BorrowAc();
+			//
+			ac.setExplanation(entity.getExplanation());
+			//申请编号
+			ac.setApplicationId(entity.getApplicationId());
+			//申请编号
+			ac.setDataType(entity.getDataType());
+			//申请编号
+			ac.setBorrowMode(entity.getBorrowMode());
+			//申请编号
+			ac.setAppDepartment(entity.getApplicationDepartment());
+			//申请编号
+			ac.setAcCycleStart(entity.getBorrowCycleStart().toString());
+			//申请编号
+			ac.setAcCycleEnd(entity.getBorrowCycleEnd().toString());
+			//申请编号
+			ac.setApplicant(entity.getApplicant());
+			pushEkpEntity.setBorrowAc(ac);
+			//获取token
+			pushEkpEntity.setToken(ekpService.getToken());
+			log.info("获取ekp的token：" + pushEkpEntity.getToken());
+			if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
+				rEkpVo.setCode(1);
+				rEkpVo.setMsg("token获取失败，连接超时");
+				rEkpVo.setSuccess(false);
+				rEkpVo.setData(null);
+				return rEkpVo;
+			}
+			ekpVo = ekpService.pushData(pushEkpEntity);
+			log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
+			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
+				rEkpVo.setCode(2);
+				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+				rEkpVo.setSuccess(false);
+				rEkpVo.setData(null);
+				return rEkpVo;
+			}
+		}
+		rEkpVo.setData(ekpVo);
+		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setCode(HttpStatus.OK.value());
+		rEkpVo.setSuccess(true);
+		return rEkpVo;
+	}
+
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
-	//推送代办
+    //推送代办
 	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
@@ -614,7 +681,7 @@ public class AbutmentClient implements IAbutmentClient {
 		formInfoEntities.forEach(l -> {
 			int day = differentDaysByMillisecond(l.getCreateTime(), new Date());
 			mapVo.put("day", String.valueOf(day));
-			mapVo.put("contractName", l.getContractName()+"---（归档预警：请及时归档）");
+			mapVo.put("contractName", l.getContractName() + "---（归档预警：请及时归档）");
 			if (day >= 60) {
 				infoEntityList.add(l);
 			}
@@ -639,7 +706,7 @@ public class AbutmentClient implements IAbutmentClient {
 				//fdTemplateId 表单模版ID
 				pushEkpEntity.setFdTemplateId(this.fdTemplateId);
 				//docSubject 合同主旨
-				pushEkpEntity.setDocSubject("---（归档预警：请及时归档）"+f.getContractName());
+				pushEkpEntity.setDocSubject("---（归档预警：请及时归档）" + f.getContractName());
 				//formValues 主要内容
 				FormValuesEntity formValuesEntity = new FormValuesEntity();
 				formValuesEntity.setFd_contract_id(f.getId().toString());
@@ -983,17 +1050,45 @@ public class AbutmentClient implements IAbutmentClient {
 		entity.setToken(token);
 		if (StrUtil.isNotEmpty(entity.getToken())) {
 			counterpartVo = counterpartService.getInsOrUp(entity).getData();
+			if (Func.isNull(counterpartVo)) {
+				return R.data(500, null, "获取数据失败！");
+			}
+			if (Func.isEmpty(counterpartVo.getInsert()) & Func.isEmpty(counterpartVo.getUpdate())) {
+				return R.data(200, counterpartVo, "获取数据成功,暂时没有需要更新的数据！");
+			}
 			log.info("更新到的向对方数据：" + JsonUtil.toJson(counterpartVo));
+			List<ContractCounterpartEntity> listInsert = new ArrayList<>();
+			List<ContractCounterpartEntity> listUpdate = new ArrayList<>();
+			counterpartVo.getInsert().forEach(i -> {
+				ContractCounterpartEntity in = new ContractCounterpartEntity();
+				in.setName(i.getCustNm());
+				in.setUnifiedSocialCreditCode(i.getBusinessId());
+				in.setOrganizationCode(i.getBusinessId());
+				listInsert.add(in);
+			});
+			if (Func.isNotEmpty(listInsert)) {
+				contractClient.saveBatch(listInsert);
+			}
+			log.info("新增的数据：" + JsonUtil.toJson(listInsert));
+			counterpartVo.getUpdate().forEach(u -> {
+				ContractCounterpartEntity up = new ContractCounterpartEntity();
+				up.setName(u.getCustNm());
+				up.setUnifiedSocialCreditCode(u.getBusinessId());
+				up.setOrganizationCode(u.getBusinessId());
+				listUpdate.add(up);
+			});
+			log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
+			listUpdate.forEach(l -> {
+				List<ContractCounterpartEntity> entityList = contractClient.selectByName(l.getUnifiedSocialCreditCode()).getData();
+				if (Func.isNotEmpty(entityList)) {
+					l.setId(entityList.get(0).getId());
+					contractClient.updateById(l);
+				}
+			});
 		} else {
 			return R.data(404, null, "获取token失败！");
 		}
-		String counterpart = contractClient.inOrUp(counterpartVo).getData();
-		log.info("处理更新的数据返回的处理状态：" + counterpart);
-		if ("success".equals(counterpart)) {
-			return R.data(200, counterpartVo, "获取数据成功！");
-		} else {
-			return R.data(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, "存储失败！");
-		}
+		return R.data(200, counterpartVo, "获取数据成功！");
 	}
 
 	@Override

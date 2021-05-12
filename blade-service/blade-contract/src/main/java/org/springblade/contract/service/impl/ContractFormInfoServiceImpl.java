@@ -197,18 +197,18 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 		//合同管理员根据长
 		if (Func.isNotEmpty(contractFormInfo.getSealNames())) {
-			log.info("195TAG"+contractFormInfo.getSealNames());
+			log.info("195TAG" + contractFormInfo.getSealNames());
 		} else {
 			List<String> stringList = new ArrayList<>();
 			contractFormInfo.setSealNames(stringList);
-			log.info("200TAG"+contractFormInfo.getSealNames());
+			log.info("200TAG" + contractFormInfo.getSealNames());
 		}
-		log.info("202TAG"+contractFormInfo.toString());
+		log.info("202TAG" + contractFormInfo.toString());
 		page = contractFormInfoMapper.pageList(page, contractFormInfo);
-		log.info("204TAG"+page.getRecords().toString());
+		log.info("204TAG" + page.getRecords().toString());
 		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
 		List<ContractFormInfoResponseVO> records = pages.getRecords();
-		log.info("207TAG"+records.toString());
+		log.info("207TAG" + records.toString());
 		List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
 		for (ContractFormInfoResponseVO v : records) {
 			/*为每个对象，设置创建者名字和组织名字*/
@@ -240,6 +240,14 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				v.setPrintCompany(archiveEntity.getPrintCompany());
 				v.setContractPrintInitDept(archiveEntity.getContractPrintInitDept());
 				v.setArchiveEntity(archiveEntity);
+			}else if ("1".equals(v.getContractForm())){
+				v.setArchiveMonth(new SimpleDateFormat("yyyy-MM-dd").format(v.getCreateTime()));
+				String col=bizClient.getById( (Long.parseLong(v.getColPayTerm()))).getData().getDictKey();
+				if ("s2".equals(col)){
+					v.setColPayTerm("是");
+				}else {
+					v.setColPayTerm("否");
+				}
 			}
 			//将签订信息存入合同分页 获取邮寄日期
 			ContractSigningEntity signingEntity = signingMapper.selectSigningById(v.getId());
@@ -285,15 +293,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			//查询多方起草关联相对方的身份信息
 			List<DraftContractCounterpartEntity> dcc = iDraftContractCounterparService.selectByContractId(v.getId());
 			if (Func.isNotEmpty(dcc)) {
-				List<ContractCounterpartEntity> listAcc=new ArrayList<>();
-				dcc.forEach(d->{
+				List<ContractCounterpartEntity> listAcc = new ArrayList<>();
+				dcc.forEach(d -> {
 					listAcc.add(contractCounterpartMapper.selectById(d.getCounterpartId()));
 				});
 				v.setDraftContractCounterpartList(dcc);
 				v.setCounterpart(listAcc);
 			}
 			//查询独立起草起草关联相对方的身份信息
-			List<ContractCounterpartEntity> acc =contractCounterpartMapper.selectByIds(v.getId());
+			List<ContractCounterpartEntity> acc = contractCounterpartMapper.selectByIds(v.getId());
 			if (Func.isNotEmpty(acc)) {
 				v.setCounterpart(acc);
 			}
@@ -325,20 +333,20 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					}
 				}
 			}
-			if ("30".equals(v.getContractSoure())){
-				List<ContractTemplateEntity> list=new ArrayList<>();
-				ContractTemplateEntity templateEntity=templateService.getById(v.getContractTemplateId());
+			if ("30".equals(v.getContractSoure())) {
+				List<ContractTemplateEntity> list = new ArrayList<>();
+				ContractTemplateEntity templateEntity = templateService.getById(v.getContractTemplateId());
 				list.add(templateEntity);
 				v.setTemplateEntity(list);
 			}
-			R<User> user1=userClient.userByCode("000000",v.getPersonCodeContract());
-			if (Func.isNotEmpty(user1.getData())){
+			R<User> user1 = userClient.userByCode("000000", v.getPersonCodeContract());
+			if (Func.isNotEmpty(user1.getData())) {
 				v.setPersonContractDept(user1.getData().getDeptNm());
 			}
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
-		log.info("338TAG"+page.getRecords().toString());
+		log.info("338TAG" + page.getRecords().toString());
 		return pages;
 	}
 
@@ -862,34 +870,35 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	/**
 	 * 处理依据保存信息
+	 *
 	 * @param vo 合同信
 	 */
 	@Override
 	public void saveAccording(ContractFormInfoRequestVO vo) {
-		List<ContractAccordingEntity> list=new ArrayList<>();
-		List<String> acList=new ArrayList<>();
-		List<String> acIdList=new ArrayList<>();
+		List<ContractAccordingEntity> list = new ArrayList<>();
+		List<String> acList = new ArrayList<>();
+		List<String> acIdList = new ArrayList<>();
 		//根据合同ID查询关联依据  用于处理新增，修改操作所产生的脏数据
-		Integer count=contractAccordingMapper.selectByContractIds(vo.getId());
-		if(count!=0){
+		Integer count = contractAccordingMapper.selectByContractIds(vo.getId());
+		if (count != 0) {
 			contractAccordingMapper.deleteAccording(vo.getId());
 		}
 		/********保存新新依据数据到依据库 START*******/
 		//根据依据的文件编号查询依据是否已经存在于依据库
-		vo.getAccording().forEach(acc->{
+		vo.getAccording().forEach(acc -> {
 			acList.add(acc.getFileId());
 		});
-		List<ContractAccordingEntity> ac=contractAccordingMapper.selectByFileId(acList);
+		List<ContractAccordingEntity> ac = contractAccordingMapper.selectByFileId(acList);
 		if (Func.isEmpty(ac)) {
 			accordingService.saveBatch(vo.getAccording());
 			//并把新增的依据set替换到合同依据
 			list.addAll(vo.getAccording());
-			contractFormInfoMapper.saveAccording(vo.getId(),list);
-		}else {
-			ac.forEach(foe->{
+			contractFormInfoMapper.saveAccording(vo.getId(), list);
+		} else {
+			ac.forEach(foe -> {
 				acIdList.add(foe.getId().toString());
 			});
-			contractFormInfoMapper.saveAccordingIds(vo.getId(),acIdList);
+			contractFormInfoMapper.saveAccordingIds(vo.getId(), acIdList);
 		}
 		/**********保存新新依据数据到依据库END********/
 	}
@@ -995,8 +1004,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		List<ContractPerformanceColPayEntity> contractPerformanceColPayList = contractPerformanceColPayMapper.selectByIds(contractFormInfoResponseVO.getId());
 		contractFormInfoResponseVO.setPerformanceColPayList(contractPerformanceColPayList);
 		//查询多方相对方的收付款信息
-		List<ContractMultPaymenEntity> multPaymenEntityList=multPaymenMapper.selectByMultId(contractFormInfoResponseVO.getId());
-		if (Func.isNotEmpty(multPaymenEntityList)){
+		List<ContractMultPaymenEntity> multPaymenEntityList = multPaymenMapper.selectByMultId(contractFormInfoResponseVO.getId());
+		if (Func.isNotEmpty(multPaymenEntityList)) {
 			contractFormInfoResponseVO.setMultPaymenEntityList(multPaymenEntityList);
 		}
 		//查询解除信息
@@ -1127,8 +1136,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contractFormInfoResponseVO.setPerCollectPayList(perCollectPayService.findListByContractId(contractFormInfoResponseVO.getId()));
 		return contractFormInfoResponseVO;
 	}
+
 	/**
 	 * 根据合同状态查询合同列表
+	 *
 	 * @param status 合同状态
 	 * @return
 	 */
@@ -1198,7 +1209,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	/**
 	 * 电子签章业务处理
-	 *
+	 * <p>
 	 * 1.获取合同文本文件
 	 * 2.
 	 *
@@ -1343,8 +1354,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
 		entity.setRelContractId(ekpVo.getData().getDoc_info());
 		if (ekpVo.getCode() == HttpStatus.OK.value()) {
-			log.info("ekp返回值code"+ekpVo.getCode());
-			log.info("ekp返回值code"+ekpVo.getCode());
+			log.info("ekp返回值code" + ekpVo.getCode());
+			log.info("ekp返回值code" + ekpVo.getCode());
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
 		} else {
 			r.setMsg(ekpVo.getMsg());
@@ -1896,15 +1907,21 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			companyInfoEntity.setOrganCode(counterpart.getUnifiedSocialCreditCode());
 			// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
 			CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+			log.info("TAG01:查询电子签章信息的返回数据：" + JsonUtil.toJson(companyInfoVo));
 			if (null == companyInfoVo) {
 				companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+				log.info("TAG02:查询电子签章信息的返回数据：" + JsonUtil.toJson(companyInfoVo));
 			}
 			if (null != companyInfoVo) {
+				boolean code = "0".equals(companyInfoVo.getOrganCode());
+				boolean available = "1".equals(companyInfoVo.getAvailable());
+				boolean contractForm1 = "1".equals(contractFormInfo.getContractForm());
+				boolean contractForm2 = "2".equals(contractFormInfo.getContractForm());
 				//不等于0就是没有电子签章
-				if ((!"0".equals(companyInfoVo.getOrganCode())) && ("1".equals(contractFormInfo.getContractForm()))) {
+				if ((code == available) && contractForm1) {
 					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
 				}
-				if (("0".equals(companyInfoVo.getOrganCode())) && ("2".equals(contractFormInfo.getContractForm()))) {
+				if ((code == available) && contractForm2) {
 					return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
 				}
 			}

@@ -2,6 +2,7 @@ package org.springblade.abutment.feign;
 
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
+import org.springblade.contract.entity.ContractBorrowApplicationEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.tool.api.R;
@@ -44,10 +45,20 @@ public interface IAbutmentClient {
 	String E_SEAL_READ_SIGNED = API_PREFIX + E_SEAL + "/readSigned";
 	String E_SEAL_COMPANY_INFO = API_PREFIX + E_SEAL + "/queryCompanyInfo";
 	String E_SEAL_TOKEN = API_PREFIX + E_SEAL + "/token";
+	String CONTRACT_BORROWING=API_PREFIX+"/appContract";
 
 
 
 	/**
+	 * 合同借阅
+	 * 推送EKP信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(CONTRACT_BORROWING)
+	R<EkpVo> borEkpFormPost(@RequestBody ContractBorrowApplicationEntity entity);
+	/**
+	 * 合同起草
 	 * 推送EKP信息
 	 * @param entity
 	 * @return
@@ -55,6 +66,7 @@ public interface IAbutmentClient {
 	@PostMapping(EKP_SEND_FORM_POST)
 	R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity);
 	/**
+	 * 合同节点
 	 * 推送EKP节点信息
 	 * @param entity
 	 * @return
@@ -63,6 +75,7 @@ public interface IAbutmentClient {
 	R<EkpVo> nodeEkpFormPost(@RequestBody ContractFormInfoResponseVO entity);
 
 	/**
+	 * 归档预警
 	 * 推送EKP节点信息
 	 * @return
 	 */
