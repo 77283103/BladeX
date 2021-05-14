@@ -30,14 +30,14 @@ api:
     account: shebake_test
     password: d65937df2000cc755253956bd1403aa5
   eSeal:
-    tokenUrl: https://sa.pec.com.cn:9080/common/user/access
-    tokenSY: https://sa.pec.com.cn:9080/common/file/addWatermark
-    tokenXZ: https://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/
-    orgInfoByCodeUrl: https://sa.pec.com.cn:9080/common/apply/company/getByOrganCode
-    orgInfoBySysUidUrl: https://sa.pec.com.cn:9080/common/apply/company/getBySysUid
-    uploadFileDivideUrl: https://sa.pec.com.cn:9080/common/file/upload/divide
-    uploadFileMergeUrl: https://sa.pec.com.cn:9080/common/file/upload/merge
-    viewUrl: https://sa.pec.com.cn:9080/common/file/contract/view
+    tokenUrl: http://sa.pec.com.cn:9080/common/user/access
+    tokenSY: http://sa.pec.com.cn:9080/common/file/addWatermark
+    tokenXZ: http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/
+    orgInfoByCodeUrl: http://sa.pec.com.cn:9080/common/apply/company/getByOrganCode
+    orgInfoBySysUidUrl: http://sa.pec.com.cn:9080/common/apply/company/getBySysUid
+    uploadFileDivideUrl: http://sa.pec.com.cn:9080/common/file/upload/divide
+    uploadFileMergeUrl: http://sa.pec.com.cn:9080/common/file/upload/merge
+    viewUrl: http://sa.pec.com.cn:9080/common/file/contract/view
     downloadUrl: https://sa.pec.com.cn:9080/common/file/downloadSinged
     singleSignUrl: https://sa.pec.com.cn:9080/common/run/esign/singleSign
     sendSmsUrl: https://sa.pec.com.cn:9080/common/run/esign/sendSms

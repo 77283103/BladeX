@@ -1402,6 +1402,9 @@ public enum TemplateExporterEnum {
 			return modle;
 		}
 	},
+	/**
+	 * TAG-2021-05-02
+	 */
 	//广告制作安装合同模板
 	GGZZ_04("GGZZ_04") {
 		@Override
@@ -2262,8 +2265,10 @@ public enum TemplateExporterEnum {
 			return modle;
 		}
 	},
-
-	//物流服务合同（冷冻）
+	/**
+	 * TAG-21-05-00
+	 * 物流服务合同（冷冻）
+	 */
 	WLFW_59("WLFW_59") {
 		@Override
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
@@ -2285,6 +2290,126 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclSigningDate", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclSigningDate"))));
 			dataModel.put("sclMarginRmb2", MoneyToChiness.tenThousand(String.valueOf(j.get("sclMarginRmb"))));
 			modle.put("dataModel",setFile(filepaths, dataModel));
+			return modle;
+		}
+	},
+	/**
+	 * TAG-21-05-01
+	 */
+	//统一e商城平台入驻服务协议（统一经销商）目前使用模板
+	FWXY_29("FWXY_29") {
+		@Override
+		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map modle=new HashMap();
+			Map dataModel = new HashMap();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			modle.put("dataModel",setFile(filepaths, dataModel));
+			return modle;
+		}
+	},
+	/**
+	 * TAG-21-05-05
+	 * 2021年统一e商城平台入驻服务协议（统一经销商）
+	 */
+	FWXY_50("FWXY_50") {
+		@Override
+		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map modle=new HashMap();
+			Map dataModel = new HashMap();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			modle.put("dataModel",setFile(filepaths, dataModel));
+			return modle;
+		}
+	},
+	/**
+	 * TAG-21-05-03
+	 * 	//买卖合同（行销品）
+	 */
+	MMHT_07("MMHT_07") {
+		@Override
+		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map modle=new HashMap();
+			Map dataModel = new HashMap();
+			List<CglCategorySalesContracts1ResponseVO> CglCategorySalesContracts1 = new ArrayList();
+			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+			for (TemplateFieldJsonEntity templateField : templateFieldList) {
+				//买卖合同（行销品）(关联表1)
+				if (ContractFormInfoTemplateContract.CONTRACT_CGLCATEGORYSALESCONTRACTS1.equals(templateField.getRelationCode())) {
+					CglCategorySalesContracts1 = JSON.parseArray(templateField.getTableData(), CglCategorySalesContracts1ResponseVO.class);
+				}
+			}
+			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
+			Configure config = Configure.builder().bind("CglCategorySalesContracts1", policy).build();
+			dataModel.put("CglCategorySalesContracts1", CglCategorySalesContracts1);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			modle.put("dataModel",setFile(filepaths, dataModel));
+			modle.put("config",config);
+			return modle;
+		}
+	},
+	/**
+	 * TAG-21-05-04
+	 * 	买卖合同（国内设备购买）
+	 */
+	MMHT_06("MMHT_06") {
+		@Override
+		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map modle=new HashMap();
+			Map dataModel = new HashMap();
+			List<CglSalesContract1ResponseVO> CglSalesContract1 = new ArrayList();
+			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+			for (TemplateFieldJsonEntity templateField : templateFieldList) {
+				//买卖合同（国内设备购买）(关联表1)
+				if (ContractFormInfoTemplateContract.CONTRACT_CGLSALESCONTRACT1ENTITY.equals(templateField.getRelationCode())) {
+					CglSalesContract1 = JSON.parseArray(templateField.getTableData(), CglSalesContract1ResponseVO.class);
+				}
+			}
+			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
+			Configure config = Configure.builder().bind("CglSalesContract1", policy).build();
+			dataModel.put("CglSalesContract1", CglSalesContract1);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			modle.put("dataModel",setFile(filepaths, dataModel));
+			modle.put("config",config);
 			return modle;
 		}
 	};

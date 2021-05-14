@@ -171,6 +171,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Autowired
 	private IMtbMarketResearchContract1Service iMtbMarketResearchContract1Service;
 	@Autowired
+	private IContractMmhtxxpf1Service iContractMmhtxxpf1Service;
+	@Autowired
+	private IContractMmht1Service iContractMmht1Service;
+	@Autowired
 	private IDraftContractCounterparService iDraftContractCounterparService;
 	@Autowired
 	private ContractMultPaymenMapper multPaymenMapper;
@@ -180,6 +184,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IContractAccordingService accordingService;
 	@Autowired
 	private IPerCollectPayService perCollectPayService;
+	@Autowired
+	private IBusServiceContract1Service busServiceContract1Service;
 
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
@@ -240,14 +246,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				v.setPrintCompany(archiveEntity.getPrintCompany());
 				v.setContractPrintInitDept(archiveEntity.getContractPrintInitDept());
 				v.setArchiveEntity(archiveEntity);
-			}else if ("1".equals(v.getContractForm())){
-				v.setArchiveMonth(new SimpleDateFormat("yyyy-MM-dd").format(v.getCreateTime()));
-				String col=bizClient.getById( (Long.parseLong(v.getColPayTerm()))).getData().getDictKey();
-				if ("s2".equals(col)){
-					v.setColPayTerm("是");
-				}else {
-					v.setColPayTerm("否");
-				}
 			}
 			//将签订信息存入合同分页 获取邮寄日期
 			ContractSigningEntity signingEntity = signingMapper.selectSigningById(v.getId());
@@ -256,6 +254,14 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				v.setContractStartingTime(signingEntity.getContractStartTime());
 				v.setContractEndTime(signingEntity.getContractEndTime());
 				v.setSigningEntity(signingEntity);
+			}else if ("1".equals(v.getContractForm()) && "60".equals(v.getContractStatus())){
+				v.setArchiveMonth(new SimpleDateFormat("yyyy-MM-dd").format(v.getCreateTime()));
+				String col=bizClient.getById("".equals(v.getColPayTerm()) ?1L:Long.parseLong(v.getColPayTerm())).getData().getDictKey();
+				if ("s2".equals(col)){
+					v.setColPayTerm("是");
+				}else {
+					v.setColPayTerm("否");
+				}
 			}
 			//将未归档信息存入合同分页  获取未归档原因
 			List<ContractArchiveNotEntity> archiveNotEntity = contractArchiveNotMapper.selectArchiveNotById(v.getId());
@@ -1318,17 +1324,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		/*R<FileVO> filePDFVO = null;
-		try {
-			MultipartFile multipartFile = new MockMultipartFile("file", filePDF.getName(),
-				ContentType.MULTIPART.toString(), new FileInputStream(fileBH));
-			filePDFVO = fileClient.save(multipartFile);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		*//* 上传文件 *//*
-		assert filePDFVO != null;
-		entity.setTextFilePdf(filePDFVO.getData().getId() + ",");*/
 		// 入参是个file文件
 		List<File> files = new ArrayList<File>();
 		files.add(fileBH);
@@ -1350,7 +1345,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		/* 上传文件 */
 		R<FileVO> fileVO = fileClient.save(multipartFile);
 		entity.setOtherInformation(fileVO.getData().getLink());
-		R<EkpVo> ekpVo = abutmentClient.sendEkpFormPost(entity);
+		R<EkpVo> ekpVo =null;
+		//判断合同类型进行信息处理推送
+		if ("20".equals(entity.getContractSoure())){
+			ekpVo = abutmentClient.sendEkpMultiPost(entity);
+		}else {
+			ekpVo = abutmentClient.sendEkpFormPost(entity);
+		}
 		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
 		entity.setRelContractId(ekpVo.getData().getDoc_info());
 		if (ekpVo.getCode() == HttpStatus.OK.value()) {
@@ -1365,9 +1366,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		log.info("ekp返回的code:{}", ekpVo.getCode());
 		log.info("ekp返回的依据ID:{}", ekpVo.getData().getDoc_info());
 		log.info("ekp原依据ID:{}", entity.getRelContractId());
-		/*R<EkpVo> ekpVo=new R<EkpVo>();
-		ekpVo.setCode(0);
-		entity.setRelContractId("123");*/
 		r.setData(entity);
 		r.setCode(ekpVo.getCode());
 		return r;
@@ -1780,22 +1778,48 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 						templateField.setTableDataList(list);
 					}
 				}
-//                //*班车服务合同(关联表1）
-//                if (ContractFormInfoTemplateContract.CONTRACT_BUSSERVICECONTRACT1.equals(templateField.getRelationCode())) {
-//                    List<BusServiceContract1ResponseVO> busServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), BusServiceContract1ResponseVO.class);
-//                    if (CollectionUtil.isNotEmpty(busServiceContract1ResponseVOList)) {
-//                        busServiceContract1Service.saveBatchByRefId(contractFormInfo.getId(), busServiceContract1ResponseVOList);
-//                        List<BusServiceContract1ResponseVO> list = busServiceContract1Service.selectRefList(contractFormInfo.getId());
-//                        templateField.setTableData(JSONObject.toJSONString(list));
-//                        templateField.setTableDataList(list);
-//                    }
-//                }
+                //*班车服务合同(关联表1）
+                if (ContractFormInfoTemplateContract.CONTRACT_BUSSERVICECONTRACT1.equals(templateField.getRelationCode())) {
+                    List<BusServiceContract1ResponseVO> busServiceContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), BusServiceContract1ResponseVO.class);
+                    if (CollectionUtil.isNotEmpty(busServiceContract1ResponseVOList)) {
+                        busServiceContract1Service.saveBatchByRefId(contractFormInfo.getId(), busServiceContract1ResponseVOList);
+                        List<BusServiceContract1ResponseVO> list = busServiceContract1Service.selectRefList(contractFormInfo.getId());
+                        templateField.setTableData(JSONObject.toJSONString(list));
+                        templateField.setTableDataList(list);
+                    }
+                }
 				//*市调合同（定性+定量）(关联表1）
 				if (ContractFormInfoTemplateContract.CONTRAT_IMTBMARKETRESEARCHCONTRACT1.equals(templateField.getRelationCode())) {
 					List<MtbMarketResearchContract1ResponseVO> mtbMarketResearchContract1ResponseVOList = JSON.parseArray(templateField.getTableData(), MtbMarketResearchContract1ResponseVO.class);
 					if (CollectionUtil.isNotEmpty(mtbMarketResearchContract1ResponseVOList)) {
 						iMtbMarketResearchContract1Service.saveBatchByRefId(contractFormInfo.getId(), mtbMarketResearchContract1ResponseVOList);
 						List<MtbMarketResearchContract1ResponseVO> list = iMtbMarketResearchContract1Service.selectRefList(contractFormInfo.getId());
+						templateField.setTableData(JSONObject.toJSONString(list));
+						templateField.setTableDataList(list);
+					}
+				}
+				/**
+				 * TAG-21-05-03
+				 * 	买卖合同（行销品） 关联表1
+				 */
+				if (ContractFormInfoTemplateContract.CONTRAT_CONTRACTMMHTXXPF1.equals(templateField.getRelationCode())) {
+					List<ContractMmhtxxpf1ResponseVO> contractMmhtxxpf1ResponseVOList = JSON.parseArray(templateField.getTableData(), ContractMmhtxxpf1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(contractMmhtxxpf1ResponseVOList)) {
+						iContractMmhtxxpf1Service.saveBatchByRefId(contractFormInfo.getId(), contractMmhtxxpf1ResponseVOList);
+						List<ContractMmhtxxpf1ResponseVO> list = iContractMmhtxxpf1Service.selectRefList(contractFormInfo.getId());
+						templateField.setTableData(JSONObject.toJSONString(list));
+						templateField.setTableDataList(list);
+					}
+				}
+				/**
+				 * TAG-21-05-04
+				 * 	买卖合同（国内设备购买） 关联表1
+				 */
+				if (ContractFormInfoTemplateContract.CONTRACT_CONTRACTMMHT1.equals(templateField.getRelationCode())) {
+					List<ContractMmht1ResponseVO> contractMmht1ResponseVOS = JSON.parseArray(templateField.getTableData(), ContractMmht1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(contractMmht1ResponseVOS)) {
+						iContractMmht1Service.saveBatchByRefId(contractFormInfo.getId(), contractMmht1ResponseVOS);
+						List<ContractMmht1ResponseVO> list = iContractMmht1Service.selectRefList(contractFormInfo.getId());
 						templateField.setTableData(JSONObject.toJSONString(list));
 						templateField.setTableDataList(list);
 					}
@@ -1914,11 +1938,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			}
 			if (null != companyInfoVo) {
 				boolean code = "0".equals(companyInfoVo.getOrganCode());
-				boolean available = "1".equals(companyInfoVo.getAvailable());
+				boolean available = "1".equals(companyInfoVo.getCompany().getAvailable());
 				boolean contractForm1 = "1".equals(contractFormInfo.getContractForm());
 				boolean contractForm2 = "2".equals(contractFormInfo.getContractForm());
 				//不等于0就是没有电子签章
-				if ((code == available) && contractForm1) {
+				if ((!code || !available) && contractForm1) {
 					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
 				}
 				if ((code == available) && contractForm2) {

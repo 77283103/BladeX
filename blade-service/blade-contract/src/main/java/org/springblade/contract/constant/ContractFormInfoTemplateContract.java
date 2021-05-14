@@ -48,6 +48,10 @@ public interface ContractFormInfoTemplateContract {
 	String CONTRACT_BUSSERVICECONTRACT1="BusServiceContract1";
 	//市调合同（定性+定量）(关联表1)
 	String CONTRAT_IMTBMARKETRESEARCHCONTRACT1="IMtbMarketResearchContract1";
+	//买卖合同（行销品）(关联表1)
+	String CONTRAT_CONTRACTMMHTXXPF1="Contractmmhtxxpf1";
+	//买卖合同（国内设备购买）(关联表1)
+	String CONTRACT_CONTRACTMMHT1="ContractMmht1";
 	//平面广告拍摄制作合同 关联表1
 	String CONTRACT_MTBPRODUCTIONCONTRACT1="MtbProductionContract1";
 	//平面广告拍摄制作合同 关联表2

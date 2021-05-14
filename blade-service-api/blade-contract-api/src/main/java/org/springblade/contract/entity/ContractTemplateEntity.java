@@ -144,6 +144,16 @@ public class ContractTemplateEntity extends BaseEntity {
 	@ApiModelProperty(value = "是否启用")
 	private String enabled;
 	/**
+	 * 审批编号
+	 */
+	@ApiModelProperty(value = "审批编号")
+	private String appCode;
+	/**
+	 * 申请人员编号
+	 */
+	@ApiModelProperty(value = "申请人员编号")
+	private String appNumber;
+	/**
 	 * 范本使用的合同集合
 	 */
 	@ApiModelProperty(value = "范本使用的合同集合")

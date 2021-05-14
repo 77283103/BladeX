@@ -1,9 +1,11 @@
 package org.springblade.abutment.service.impl;
 
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
@@ -20,6 +22,7 @@ import org.apache.http.util.EntityUtils;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.vo.*;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.beans.factory.annotation.Value;
@@ -90,10 +93,17 @@ public class ESealServiceImpl implements IESealService {
 		JSONObject companyInfoJson = JSONUtil.parseObj(HttpUtil.createPost("1".equals(companyInfoEntity.getQueryType()) ? this.orgInfoByCodeUrl : this.orgInfoBySysUidUrl).body(param.toString(), "application/json").header("token", token).execute().body());
 		log.info("电子签章查询结果"+JSONUtil.toJsonStr(companyInfoJson));
 		CompanyInfoVo companyInfoVo = new CompanyInfoVo();
+		Company company =new Company();
+		if ("0".equals(companyInfoJson.get("code").toString())) {
+			JSONObject companyInfoJsonCode = (JSONObject) companyInfoJson.get("data");
+			JSONObject companyInfoJsonCompany = (JSONObject) companyInfoJsonCode.get("company");
+			company = JsonUtil.toPojo(companyInfoJsonCompany,Company.class);
+		}else {
+			company.setAvailable("0");
+		}
 		companyInfoVo.setOrganCode(companyInfoJson.get("code").toString());
-		companyInfoVo.setAvailable(companyInfoJson.get("available").toString());
-		return companyInfoJson == null ? null : companyInfoVo;
-		//return companyInfoJson == null ? null : companyInfoJson.getStr("code").equals("0") ? companyInfoJson.getJSONObject("data").get("company", CompanyInfoVo.class) : null;
+		companyInfoVo.setCompany(company);
+		return companyInfoVo;
 	}
 
 	@Override

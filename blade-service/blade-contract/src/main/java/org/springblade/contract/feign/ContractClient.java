@@ -106,8 +106,6 @@ public class ContractClient implements IContractClient{
 			if (Func.isEmpty(templateMapper.latestById(v.getId()))) {
 				//模板生成后修改成带使用  用作审批使用
 				v.setTemplateStatus("10");
-				//并将范本编号存入范本
-				v.setTemplateCode(entity.getTemplateCode());
 				v.setJson(entity.getJson());
 				templateService.updateById(v);
 			}

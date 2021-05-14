@@ -1,10 +1,8 @@
 package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.CglCategorySalesContracts1Entity;
 import org.springblade.contract.vo.CglTheSalesContract1RequestVO;
 import org.springblade.contract.vo.CglTheSalesContract1ResponseVO;
-import org.springblade.contract.wrapper.CglCategorySalesContracts1Wrapper;
 import org.springblade.contract.wrapper.CglTheSalesContract1Wrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.CglTheSalesContract1Entity;
@@ -37,7 +35,6 @@ public class CglTheSalesContract1ServiceImpl extends BaseServiceImpl<CglTheSales
 	public void saveBatchByRefId(Long refId, List<CglTheSalesContract1ResponseVO> responseVOList) {
 		this.saveBatchByRefId(refId,REF_COLUMN_NAME, CglTheSalesContract1Wrapper.build().PVEntityList(responseVOList),this);
 	}
-
 	@Override
 	public List<CglTheSalesContract1ResponseVO> selectRefList(Long refId) {
 		List<CglTheSalesContract1Entity> casesAgentEntityList = this.selectRefList(refId, REF_COLUMN_NAME, this);

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.*;
+import org.springblade.contract.service.impl.IContractMmhtService;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.vo.TemplateRequestVO;
@@ -114,6 +115,10 @@ public class TemplateSaveUntil {
 	private ILaborDispatchService laborDispatchService;
 	@Autowired
 	private ISclServiceContractRefrigerationService sclServiceContractRefrigerationService;
+	@Autowired
+	private IContractMmhtService iContractMmhtService;
+	@Autowired
+	private IContractMmhtxxpfService iContractMmhtxxpfService;
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -217,12 +222,6 @@ public class TemplateSaveUntil {
 			//视频制作合同
 			else if ("ZZHT_16".equals(template.getTemplateCode())) {
 				MtlVideoProductionContractEntity mtlVideoProductionContract= JSONObject.toJavaObject(j, MtlVideoProductionContractEntity.class);
-				/*if(null!=bizClient.getValue("bond",mtlVideoProductionContract.getMtlHaveHasNot())){
-					mtlVideoProductionContract.setMtlHaveHasNot(bizClient.getValue("bond",mtlVideoProductionContract.getMtlHaveHasNot()).getData());
-				}
-				if(null!=bizClient.getValue("mtl_term",mtlVideoProductionContract.getMtlPaymentMethod())){
-					mtlVideoProductionContract.setMtlPaymentMethod(bizClient.getValue("mtl_term",mtlVideoProductionContract.getMtlHaveHasNot()).getData());
-				}*/
 				templateSaveUntil.mtlVideoProductionContractService.save(mtlVideoProductionContract);
 				id = mtlVideoProductionContract.getId();
 			}
@@ -322,7 +321,10 @@ public class TemplateSaveUntil {
 				templateSaveUntil.shjbOnlinePaymentOffsetService.save(shjbOnlinePaymentOffset);
 				id = shjbOnlinePaymentOffset.getId();
 			}
-			//2021年统一e商城平台入驻服务协议（统一经销商）
+			/**
+			 *TAG-21-05-01
+			 * 2021年统一e商城平台入驻服务协议（统一经销商）
+			 */
 			else if ("FWXY_50".equals(template.getTemplateCode())) {
 				YwbUnifiedAgreementEntity ywbUnifiedAgreement= JSONObject.toJavaObject(j, YwbUnifiedAgreementEntity.class);
 				templateSaveUntil.ywbUnifiedAgreementService.save(ywbUnifiedAgreement);
@@ -358,6 +360,9 @@ public class TemplateSaveUntil {
 				j.put("infTimeStart",infTimeStart);
 				j.put("infTimeEnd",infTimeEnd);
 			}
+			/**
+			 * TAG-2021-05-02
+			 */
 			//广告制作安装合同模板
 			else if ("GGZZ_04".equals(template.getTemplateCode())) {
 				CglAdvertisementProductionEntity cglAdvertisementProduction= JSONObject.toJavaObject(j, CglAdvertisementProductionEntity.class);
@@ -406,8 +411,20 @@ public class TemplateSaveUntil {
 				templateSaveUntil.laborDispatchService.save(laborDispatchEntity);
 				id = laborDispatchEntity.getId();
 			}
-			//劳务派遣合同
+			/**
+			 * TAG-21-05-00
+			 * 物流服务合同（冷冻）
+			 */
 			else if ("WLFW_59".equals(template.getTemplateCode())) {
+				SclServiceContractRefrigerationEntity sclServiceContractRefrigeration= JSONObject.toJavaObject(j, SclServiceContractRefrigerationEntity.class);
+				templateSaveUntil.sclServiceContractRefrigerationService.save(sclServiceContractRefrigeration);
+				id = sclServiceContractRefrigeration.getId();
+			}
+			/**
+			 * TAG-21-05-01
+			 * 统一e商城平台入驻服务协议（统一经销商）目前使用模板
+			 */
+			else if ("FWXY_29".equals(template.getTemplateCode())) {
 				SclServiceContractRefrigerationEntity sclServiceContractRefrigeration= JSONObject.toJavaObject(j, SclServiceContractRefrigerationEntity.class);
 				templateSaveUntil.sclServiceContractRefrigerationService.save(sclServiceContractRefrigeration);
 				id = sclServiceContractRefrigeration.getId();

@@ -44,6 +44,7 @@ public class CounterpartXxJob {
 		}
 		XxlJobLogger.log("获取相对方新增信息集合结果:"+JsonUtil.toJson(vo.getData().getInsert()));
 		XxlJobLogger.log("获取相对方更新信息集合结果:"+JsonUtil.toJson(vo.getData().getUpdate()));
+		XxlJobLogger.log(vo.getMsg()+vo.getData());
 		return new ReturnT<>(vo.getCode(),vo.getMsg());
 
 	}

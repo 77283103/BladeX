@@ -32,6 +32,8 @@
         <result column="create_dept" property="createDept"/>
         <result column="enabled" property="enabled"/>
         <result column="template_file_id" property="templateFileId"/>
+        <result column="app_code" property="appCode"/>
+        <result column="app_number" property="appNumber"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -62,7 +64,9 @@
         update_time,
         create_dept,
         enabled,
-        template_file_id
+        template_file_id,
+app_code,
+app_number
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="templateResultMap">

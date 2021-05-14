@@ -3,7 +3,9 @@ package org.springblade.abutment.feign;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractBorrowApplicationEntity;
+import org.springblade.contract.entity.ContractBorrowHandleEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -33,6 +35,7 @@ public interface IAbutmentClient {
 	String ORGANIZATION_INFO_INCREMENT=API_PREFIX +ORG+"/getOrganization";
 	String EKP_SEND_FORM = API_PREFIX + EKP + "/sendForm";
 	String EKP_SEND_FORM_POST = API_PREFIX + EKP + "/sendFormPost";
+	String EKP_SEND_MULTI_POST =API_PREFIX +EKP+"/sendMultiPost";
 	String E_EKP_TOKEN =API_PREFIX +EKP +"/token";
 	String EKP_NODE_FORM_POST = API_PREFIX + EKP + "/nodeFormPost";
 	String EKP_SIG_FORM_POST=API_PREFIX+EKP+"pushNotSig";
@@ -46,9 +49,18 @@ public interface IAbutmentClient {
 	String E_SEAL_COMPANY_INFO = API_PREFIX + E_SEAL + "/queryCompanyInfo";
 	String E_SEAL_TOKEN = API_PREFIX + E_SEAL + "/token";
 	String CONTRACT_BORROWING=API_PREFIX+"/appContract";
+	String TEMPLATE_APP=API_PREFIX+"/templateApp";
 
 
 
+	/**
+	 * 模板审批
+	 * 推送EKP信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(TEMPLATE_APP)
+	R<EkpVo> temEkpFormPost(@RequestBody ContractTemplateEntity entity);
 	/**
 	 * 合同借阅
 	 * 推送EKP信息
@@ -58,13 +70,21 @@ public interface IAbutmentClient {
 	@PostMapping(CONTRACT_BORROWING)
 	R<EkpVo> borEkpFormPost(@RequestBody ContractBorrowApplicationEntity entity);
 	/**
-	 * 合同起草
+	 * 合同起草-(独立、范本）
 	 * 推送EKP信息
 	 * @param entity
 	 * @return
 	 */
 	@PostMapping(EKP_SEND_FORM_POST)
 	R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity);
+	/**
+	 * 合同起草-多方
+	 * 推送EKP信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(EKP_SEND_MULTI_POST)
+	R<EkpVo> sendEkpMultiPost(@RequestBody ContractFormInfoEntity entity);
 	/**
 	 * 合同节点
 	 * 推送EKP节点信息

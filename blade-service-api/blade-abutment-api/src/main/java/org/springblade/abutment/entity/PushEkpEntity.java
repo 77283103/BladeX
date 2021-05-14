@@ -18,4 +18,6 @@ public class PushEkpEntity implements Serializable {
 	private List<Attachment> fd_attachment;
     private FormValuesEntity formValues;
     private BorrowAc borrowAc;
+    private TemplateAc templateAc;
+    private FormMultiEntity formMulti;
 }
