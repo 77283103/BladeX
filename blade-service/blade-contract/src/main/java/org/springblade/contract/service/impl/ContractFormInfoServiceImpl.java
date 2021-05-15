@@ -1353,8 +1353,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			ekpVo = abutmentClient.sendEkpFormPost(entity);
 		}
 		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
-		entity.setRelContractId(ekpVo.getData().getDoc_info());
 		if (ekpVo.getCode() == HttpStatus.OK.value()) {
+			entity.setRelContractId(ekpVo.getData().getDoc_info());
 			log.info("ekp返回值code" + ekpVo.getCode());
 			log.info("ekp返回值code" + ekpVo.getCode());
 			entity.setRelContractId(ekpVo.getData().getDoc_info());

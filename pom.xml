@@ -16,7 +16,7 @@
         <maven.plugin.version>3.8.1</maven.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
+        <project.org.projectlombok>1.18.10</project.org.projectlombok>
         <flowable.version>6.4.2</flowable.version>
 
         <spring.boot.version>2.1.13.RELEASE</spring.boot.version>
@@ -90,6 +90,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${project.org.projectlombok}</version>
             <scope>provided</scope>
         </dependency>
     </dependencies>
