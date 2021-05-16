@@ -173,8 +173,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Autowired
 	private IContractMmhtxxpf1Service iContractMmhtxxpf1Service;
 	@Autowired
-	private IContractMmht1Service iContractMmht1Service;
-	@Autowired
 	private IDraftContractCounterparService iDraftContractCounterparService;
 	@Autowired
 	private ContractMultPaymenMapper multPaymenMapper;
@@ -1807,19 +1805,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					if (CollectionUtil.isNotEmpty(contractMmhtxxpf1ResponseVOList)) {
 						iContractMmhtxxpf1Service.saveBatchByRefId(contractFormInfo.getId(), contractMmhtxxpf1ResponseVOList);
 						List<ContractMmhtxxpf1ResponseVO> list = iContractMmhtxxpf1Service.selectRefList(contractFormInfo.getId());
-						templateField.setTableData(JSONObject.toJSONString(list));
-						templateField.setTableDataList(list);
-					}
-				}
-				/**
-				 * TAG-21-05-04
-				 * 	买卖合同（国内设备购买） 关联表1
-				 */
-				if (ContractFormInfoTemplateContract.CONTRACT_CONTRACTMMHT1.equals(templateField.getRelationCode())) {
-					List<ContractMmht1ResponseVO> contractMmht1ResponseVOS = JSON.parseArray(templateField.getTableData(), ContractMmht1ResponseVO.class);
-					if (CollectionUtil.isNotEmpty(contractMmht1ResponseVOS)) {
-						iContractMmht1Service.saveBatchByRefId(contractFormInfo.getId(), contractMmht1ResponseVOS);
-						List<ContractMmht1ResponseVO> list = iContractMmht1Service.selectRefList(contractFormInfo.getId());
 						templateField.setTableData(JSONObject.toJSONString(list));
 						templateField.setTableDataList(list);
 					}
