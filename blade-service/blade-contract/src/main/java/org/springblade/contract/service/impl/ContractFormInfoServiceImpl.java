@@ -173,6 +173,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Autowired
 	private IContractMmhtxxpf1Service iContractMmhtxxpf1Service;
 	@Autowired
+	private IContractWbht1Service iContractWbht1Service;
+	@Autowired
 	private IDraftContractCounterparService iDraftContractCounterparService;
 	@Autowired
 	private ContractMultPaymenMapper multPaymenMapper;
@@ -184,7 +186,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IPerCollectPayService perCollectPayService;
 	@Autowired
 	private IBusServiceContract1Service busServiceContract1Service;
-
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -1686,6 +1687,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 						templateField.setTableDataList(list);
 					}
 				}
+				//MMHT_06
 				//*买卖合同（国内设备购买）关联表1
 				if (ContractFormInfoTemplateContract.CONTRACT_CGLSALESCONTRACT1ENTITY.equals(templateField.getRelationCode())) {
 					List<CglSalesContract1ResponseVO> cglSalesContract1List = JSON.parseArray(templateField.getTableData(), CglSalesContract1ResponseVO.class);
@@ -1797,6 +1799,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					}
 				}
 				/**
+				 * 多余的  暂时废弃
 				 * TAG-21-05-03
 				 * 	买卖合同（行销品） 关联表1
 				 */
@@ -1805,6 +1808,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					if (CollectionUtil.isNotEmpty(contractMmhtxxpf1ResponseVOList)) {
 						iContractMmhtxxpf1Service.saveBatchByRefId(contractFormInfo.getId(), contractMmhtxxpf1ResponseVOList);
 						List<ContractMmhtxxpf1ResponseVO> list = iContractMmhtxxpf1Service.selectRefList(contractFormInfo.getId());
+						templateField.setTableData(JSONObject.toJSONString(list));
+						templateField.setTableDataList(list);
+					}
+				}
+				/**
+				 * TAG-21-05-24
+				 * 	消防设施维修保养服务合同 关联表1
+				 */
+				if (ContractFormInfoTemplateContract.CONTRACT_CONTRACTWBHT1.equals(templateField.getRelationCode())) {
+					List<ContractWbht1ResponseVO> contractWbht1ResponseVOS = JSON.parseArray(templateField.getTableData(), ContractWbht1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(contractWbht1ResponseVOS)) {
+						iContractWbht1Service.saveBatchByRefId(contractFormInfo.getId(), contractWbht1ResponseVOS);
+						List<ContractWbht1ResponseVO> list = iContractWbht1Service.selectRefList(contractFormInfo.getId());
 						templateField.setTableData(JSONObject.toJSONString(list));
 						templateField.setTableDataList(list);
 					}
@@ -1930,7 +1946,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				if ((!code || !available) && contractForm1) {
 					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
 				}
-				if ((code == available) && contractForm2) {
+				if (code && available && contractForm2) {
 					return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
 				}
 			}

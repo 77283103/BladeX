@@ -22,10 +22,10 @@ xxl:
   job:
     accessToken: ''
     admin:
-      addresses: http://cms.pec.com.cn:7019/xxl-job-admin
+      addresses: http://localhost:7019/xxl-job-admin
     executor:
       appname: blade-contract
-      ip: 110.96.115.181,10.96.115.182
+      ip: 127.0.0.1
       logpath: ../data/applogs/xxl-job/jobhandler
       logretentiondays: -1
       port: 7018

@@ -14,6 +14,8 @@ api:
     #相对方资料接口
     counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
+    username: prod_c_p
+    password: T3TlIq9tP6EU4SV9hQ/ong==
   ekp:
     tokenUrl: https://oa-interface.pec.com.cn/restful/ekp/getToken
     #ekpUrl: https://oa-interface.pec.com.cn/restful/ekp/genhrbill

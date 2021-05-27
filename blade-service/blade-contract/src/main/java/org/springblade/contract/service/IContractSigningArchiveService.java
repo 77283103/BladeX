@@ -5,6 +5,8 @@ import org.springblade.contract.entity.ContractSigningArchiveEntity;
 import org.springblade.contract.vo.ContractSigningArchiveRequestVO;
 import org.springblade.core.mp.base.BaseService;
 
+import java.util.List;
+
 /**
  * 合同签订表 服务类
  *
@@ -22,4 +24,5 @@ public interface IContractSigningArchiveService extends BaseService<ContractSign
 	IPage<ContractSigningArchiveEntity> pageList(IPage<ContractSigningArchiveEntity> page, ContractSigningArchiveRequestVO signing);
 
 
+	List<ContractSigningArchiveEntity> getByContractId(Long id);
 }

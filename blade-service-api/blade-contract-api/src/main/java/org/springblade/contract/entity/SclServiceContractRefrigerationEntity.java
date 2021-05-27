@@ -74,7 +74,7 @@ public class SclServiceContractRefrigerationEntity extends BaseEntity {
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="每月与甲方核对日期（D+)")
-	private Integer sclCheckTheDate;
+	private String sclCheckTheDate;
 	/**
 	 * 油价标准
 	 */
@@ -85,31 +85,31 @@ public class SclServiceContractRefrigerationEntity extends BaseEntity {
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="违约金为总结的倍数")
-	private Integer sclMultiple;
+	private String sclMultiple;
 	/**
 	 * 需更改送货地址的，应由甲方授权人员至少提前上海市内【？】小时
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="需更改送货地址的，应由甲方授权人员至少提前上海市内【？】小时")
-	private Integer sclFewHours;
+	private String sclFewHours;
 	/**
 	 * 华东区（即   ？ 省、    省）
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="华东区（即   ？ 省、    省）")
-	private Integer sclEast;
+	private String sclEast;
 	/**
 	 * 华东区（即   省、   ？ 省）
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="华东区（即   省、   ？ 省）")
-	private Integer sclEast2;
+	private String sclEast2;
 	/**
 	 * 乙方缴纳保证金人民币
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="乙方缴纳保证金人民币")
-	private Integer sclMarginRmb;
+	private String sclMarginRmb;
 	/**
 	 * 乙方缴纳保证金人民币（大写）
 	 */
@@ -158,8 +158,10 @@ public class SclServiceContractRefrigerationEntity extends BaseEntity {
 	/**
 	 * 立约日
 	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value="立约日")
-	private String sclSomeDay;
+	private Date sclSomeDay;
 	/**
 	 * ？公司
 	 */

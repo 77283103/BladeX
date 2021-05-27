@@ -310,7 +310,11 @@
         <if test="contractFormInfo.contractName != null and contractFormInfo.contractName != ''">
             AND contract_name like concat('%', #{contractFormInfo.contractName}, '%')
         </if>
---         相对方名称查询
+--         合同名称查询
+        <if test="contractFormInfo.contractNumber != null and contractFormInfo.contractNumber != ''">
+        AND contract_number like concat('%', #{contractFormInfo.contractNumber}, '%')
+        </if>
+        --         相对方名称查询
         <if test="contractFormInfo.counterpartName != null and contractFormInfo.counterpartName != ''">
             AND id IN(SELECT contract_id FROM contract_counterpart_setting WHERE counterpart_id IN(SELECT id FROM
             contract_counterpart WHERE `name` like concat('%', #{contractFormInfo.counterpartName}, '%')))
@@ -628,7 +632,6 @@
             AND DATE_FORMAT(info.create_time,'%Y') BETWEEN #{contractFormInfo.yearStart} and #{contractFormInfo.yearEnd}
         </if>
         GROUP BY info.contract_big_category
-        ORDER BY info.update_time DESC
     </select>
     <!--根據支付類型計算合同金額-->
     <select id="payTypeAmount" resultType="java.math.BigDecimal">

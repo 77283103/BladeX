@@ -46,6 +46,8 @@
         <result column="inf_surf" property="infSurf"/>
         <result column="inf_oil" property="infOil"/>
         <result column="inf_tea_surf" property="infTeaSurf"/>
+        <result column="inf_ybl" property="infYbl"/>
+        <result column="sig_date" property="sigDate"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -90,7 +92,9 @@
         inf_buyer_person,
         inf_surf,
         inf_oil,
-        inf_tea_surf
+        inf_tea_surf,
+        inf_ybl,
+        sig_date
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="inferiorProductContractResultMap">

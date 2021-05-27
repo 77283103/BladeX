@@ -57,13 +57,13 @@ public class FormMultiEntity implements Serializable {
 	@ApiModelProperty(value = "单据内容:合同形式（电子合同|1 实体合同|2）")
 	private String fd_contract_no;
 	@ApiModelProperty(value = "相对方企业信息（关联表）")
-	private List<MultiCo> multi_cos;
+	private List<MultiCo> fd_multico;
 	@ApiModelProperty(value = "相对方角色信息列表（关联表）")
-	private List<MultiRo> multi_ros;
+	private List<MultiRo> fd_multiro;
 	@ApiModelProperty(value = "多方收付款信息（关联表）")
-	private List<MultiPay> multi_pays;
+	private List<MultiPay> fd_multipay;
 	@ApiModelProperty(value = "多方保证金信息（关联表）")
-	private List<MultiBon> multi_bons;
+	private List<MultiBon> fd_multibon;
 	@ApiModelProperty(value = "单据内容:履约清单")
 	private List<KeepList> fd_keep_list;
 	@ApiModelProperty(value = "单据内容:收付款清单")

@@ -114,7 +114,7 @@ app_number
     </update>
     <!--修改范本状态-->
     <update id="updateTemplateStatus">
-        UPDATE contract_template SET template_status = #{templateStatus} WHERE id =#{id}
+        UPDATE contract_template SET template_status = #{templateStatus},enabled=#{enabled} WHERE id =#{id}
     </update>
     <!--修改范本是否启用-->
     <update id="updateTemplateEnabled">

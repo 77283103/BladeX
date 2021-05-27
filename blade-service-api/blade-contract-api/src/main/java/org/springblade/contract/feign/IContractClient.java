@@ -102,5 +102,4 @@ public interface IContractClient {
 	 */
 	@GetMapping(TEMPLATE_GET_ID)
 	R<ContractTemplateEntity> getByTemplateId(@RequestParam("id") Long id);
-
 }

@@ -11,7 +11,7 @@ import lombok.Data;
 @ApiModel(value = "多方相对方企业信息列表")
 public class MultiCo {
 	@ApiModelProperty(value = "单据内容:相对方名称(必填)")
-	private String fd_full_name;
+	private String fd_opposite_name;
 	@ApiModelProperty(value = "单据内容:乙方信用代码或税籍编号(必填)")
-	private String fd_b_taxno;
+	private String fd_opposite_taxno;
 }

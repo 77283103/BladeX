@@ -24,13 +24,12 @@ import org.springblade.system.user.feign.IUserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPHeaderElement;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * <p>
@@ -122,7 +121,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
             whereList.add(this.getWhereMap("alterTime", entity.getAlterTime()));
         }
         paramMap.put("where",whereList);
-        SoapClient client = SoapClient.create(this.wsdl).setMethod(method).setParam("arg0", JSONUtil.toJsonStr(paramMap));
+        //使用SoapUI解析WSDL地址，找到WebService方法和参数。
+		//新建客户端
+        SoapClient client = SoapClient.create(this.wsdl)
+        //设置要请求的方法
+			.setMethod(method)
+        //设置参数，此处自动添加方法的前缀：web
+			.setParam("arg0", JSONUtil.toJsonStr(paramMap));
         SOAPHeaderElement element = client.addSOAPHeader(new QName(this.namespace,"RequestSOAPHeader","tns"));
         element.addChildElement("user","tns").addTextNode(this.account);
         element.addChildElement("password","tns").addTextNode(this.password);
@@ -151,8 +156,12 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	 * @return
 	 */
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
 		OrganizationEntity entity = new OrganizationEntity();
+//		entity.setAlterTime(format.format(new Date()));
+		entity.setIsAvailable("1");
 		List<OrganizationVo> organizationList = null;
 		//保存组织机构
 		try {
@@ -166,26 +175,36 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		}
 		assert organizationList != null;
 		log.info("上面处理了NULL的判断，所以走到这里说明接口没问题："+JSONUtil.toJsonStr(organizationList));
-		sysClient.saveOrUpdateBatchDept(getOrgListUpdate(organizationList));
+		if (Func.isNotEmpty(organizationList)) {
+			sysClient.saveOrUpdateBatchDept(getOrgListUpdate(organizationList));
+		}
 		//保存岗位
 		try {
 			entity.setOrgType("4");
 			organizationList = getOrganizationInfo(entity);
-			return R.data(404,null,"TAG4:getOrganizationInfo()链接获取信息的方法异常，请检查");
+			if (Func.isNull(organizationList)){
+				return R.data(404,null,"TAG4:getOrganizationInfo()链接获取信息的方法异常，请检查");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));
+		if (Func.isNotEmpty(organizationList)){
+			sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));
+		}
 		//保存个人
 		try {
 			entity.setOrgType("8");
 			organizationList = getOrganizationInfo(entity);
-			return R.data(404,null,"TAG8:getOrganizationInfo()链接获取信息的方法异常，请检查");
+			if (Func.isNull(organizationList)){
+				return R.data(404,null,"TAG8:getOrganizationInfo()链接获取信息的方法异常，请检查");
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		getPersonListUpdate(organizationList);
-		return R.data(organizationList);
+		if (Func.isNotEmpty(organizationList)){
+			getPersonListUpdate(organizationList);
+		}
+		return R.data(200,organizationList,"数据更新成功");
 	}
 
 

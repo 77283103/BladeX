@@ -118,8 +118,8 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 	 * @return
 	 */
 	@Override
-	public boolean updateTemplateStatus(String templateStatus, Long id) {
-		return templateMapper.updateTemplateStatus(templateStatus, id);
+	public boolean updateTemplateStatus(String templateStatus, Long id,String enabled) {
+		return templateMapper.updateTemplateStatus(templateStatus, id,enabled);
 	}
 
 	/**

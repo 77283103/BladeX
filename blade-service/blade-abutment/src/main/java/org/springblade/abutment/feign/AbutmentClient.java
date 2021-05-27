@@ -1,8 +1,10 @@
 package org.springblade.abutment.feign;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
@@ -12,7 +14,6 @@ import org.csource.fastdfs.StorageClient;
 import org.csource.fastdfs.StorageServer;
 import org.csource.fastdfs.TrackerClient;
 import org.csource.fastdfs.TrackerServer;
-import org.json.simple.JSONObject;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.*;
 import org.springblade.abutment.vo.*;
@@ -106,7 +107,8 @@ public class AbutmentClient implements IAbutmentClient {
 			pushEkpEntity.setFdTemplateId(fdTemplateId);
 			DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 			//人员编号
-			docCreatorEntity.setEmplno(entity.getAppNumber());
+			R<User> user = userClient.userInfoById(AuthUtil.getUserId());
+			docCreatorEntity.setEmplno(user.getData().getCode());
 			pushEkpEntity.setDocCreator(docCreatorEntity);
 			//文档主题
 			pushEkpEntity.setDocSubject("模板建档申请" + entity.getName());
@@ -195,7 +197,8 @@ public class AbutmentClient implements IAbutmentClient {
 			pushEkpEntity.setFdTemplateId(fdTemplateId);
 			DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 			//人员编号
-			docCreatorEntity.setEmplno(entity.getApplicantCode());
+			R<User> user = userClient.userInfoById(AuthUtil.getUserId());
+			docCreatorEntity.setEmplno(user.getData().getCode());
 			pushEkpEntity.setDocCreator(docCreatorEntity);
 			//文档主题
 			pushEkpEntity.setDocSubject("借阅申请：--" + entity.getDataName());
@@ -651,7 +654,7 @@ public class AbutmentClient implements IAbutmentClient {
 				//人员编号
 				docCreatorEntity.setEmplno(entity.getPersonCodeContract());
 				pushEkpEntity.setDocCreator(docCreatorEntity);
-				FormMultiEntity formValuesEntity = new FormMultiEntity();
+				FormValuesEntity formValuesEntity = new FormValuesEntity();
 				//合同方对应关系
 				if ("甲".equals(entity.getContractRoles())) {
 					formValuesEntity.setFd_onetoone("1");
@@ -677,10 +680,8 @@ public class AbutmentClient implements IAbutmentClient {
 				if (fileText.size() > 0) {
 					formValuesEntity.setFd_contract_name(fileText.get(0).getName());
 				}
-				//合同起草类型
-				if ("10".equals(entity.getContractSoure())) {
-					formValuesEntity.setFd_contract_type("10");
-				} else {
+				//合同起草类型  可能设计变更暂时做判断
+				if("20".equals(entity.getContractSoure())){
 					formValuesEntity.setFd_contract_type("40");
 				}
 				//合同主旨
@@ -753,136 +754,136 @@ public class AbutmentClient implements IAbutmentClient {
 				entity.getCounterpart().forEach(c -> {
 					MultiCo co = new MultiCo();
 					//相对方名称
-					co.setFd_full_name(c.getName());
+					co.setFd_opposite_name(c.getName());
 					//乙方税籍编号(必填)
-					co.setFd_b_taxno(c.getUnifiedSocialCreditCode());
+					co.setFd_opposite_taxno(c.getUnifiedSocialCreditCode());
 					cos.add(co);
 				});
-				formValuesEntity.setMulti_cos(cos);
+				formValuesEntity.setFd_multico(cos);
 				//多方相对方身份信息列表
 				List<MultiRo> ros = new ArrayList<>();
 				entity.getDraftContractCounterpartList().forEach(r -> {
 					MultiRo ro = new MultiRo();
 					//相对方身份
-					ro.setFd_roles(r.getCounterpartIdentity());
+					ro.setFd_role_identity(r.getCounterpartIdentity());
 					//相对方联系人
-					ro.setFd_linkman(r.getCounterpartPerson());
+					ro.setFd_role_name(r.getCounterpartPerson());
 					//相对方联系电话
-					ro.setFd_contact_number(entity.getTelephonePerson());
+					ro.setFd_role_number(entity.getTelephonePerson());
 					//相对方邮箱
-					ro.setFd_email(r.getEmailPerson());
+					ro.setFd_role_email(r.getEmailPerson());
 					//相对方联系地址
-					ro.setFd_address(r.getAddressPerson());
+					ro.setFd_role_email(r.getAddressPerson());
 					ros.add(ro);
 				});
-				formValuesEntity.setMulti_ros(ros);
+				formValuesEntity.setFd_multiro(ros);
 				//多方收付款信息
 				List<MultiPay> pays = new ArrayList<>();
 				entity.getMultPaymenEntityList().forEach(p -> {
 					MultiPay pay = new MultiPay();
 					//相对方名称
-					pay.setFd_linkman(p.getCounterpartName());
+					pay.setFd_pay_name(p.getCounterpartName());
 					//收付款
 					switch (p.getColPayType()) {
 						case "1323239541401841666":
-							pay.setFd_payment("1");
+							pay.setFd_pay_type("1");
 							break;
 						case "1323239469884764161":
-							pay.setFd_payment("2");
+							pay.setFd_pay_type("2");
 							break;
 						case "1323239716493062146":
-							pay.setFd_payment("3");
+							pay.setFd_pay_type("3");
 							break;
 						default:
 					}
 					//收付款条件
 					switch (entity.getColPayTerm()) {
 						case "1323242418597916674":
-							pay.setFd_condition("1");
+							pay.setFd_receive_condition("1");
 							break;
 						case "1323243129146568706":
-							pay.setFd_condition("2");
+							pay.setFd_receive_condition("2");
 							break;
 						case "1323243216736219137":
-							pay.setFd_condition("3");
+							pay.setFd_receive_condition("3");
 							break;
 						case "1323243330431217665":
-							pay.setFd_condition("4");
+							pay.setFd_receive_condition("4");
 							break;
 						case "1323243409321881601":
-							pay.setFd_condition("5");
+							pay.setFd_receive_condition("5");
 							break;
 						case "1323242740267479042":
-							pay.setFd_condition("6");
+							pay.setFd_receive_condition("6");
 							break;
 						case "1323242875978379265":
-							pay.setFd_condition("7");
+							pay.setFd_receive_condition("7");
 							break;
 						case "1323240326596521986":
-							pay.setFd_payee_condition("1");
+							pay.setFd_pay_condition("1");
 							break;
 						case "1323240755069841410":
-							pay.setFd_payee_condition("2");
+							pay.setFd_pay_condition("2");
 							break;
 						case "1323241507062411265":
-							pay.setFd_payee_condition("3");
+							pay.setFd_pay_condition("3");
 							break;
 						default:
 					}
 					if (Func.isNotEmpty(p.getDays())) {
 						//收付款天数
-						pay.setFd_payee_days(p.getDays().toString());
+						pay.setFd_pay_days(p.getDays().toString());
 					}
 					if (Func.isNotEmpty(p.getContractAmount())) {
 						//合同未税金额
-						pay.setFd_taxed_price(p.getContractAmount().toString());
+						pay.setFd_pay_untaxed(p.getContractAmount().toString());
 					}
 					if (Func.isNotEmpty(p.getContractTaxRate())) {
 						//税率
-						pay.setFd_tax_rate(p.getContractTaxRate().toString());
+						pay.setFd_pay_rate(p.getContractTaxRate().toString());
 					}
 					if (Func.isNotEmpty(p.getContractTaxAmount())) {
 						//含税金额
-						pay.setFd_tax_include(p.getContractTaxAmount().toString());
+						pay.setFd_pay_include(p.getContractTaxAmount().toString());
 					}
 					pays.add(pay);
 				});
-				formValuesEntity.setMulti_pays(pays);
+				formValuesEntity.setFd_multipay(pays);
 				//多方保证金信息
 				List<MultiBon> bons = new ArrayList<>();
 				entity.getContractBond().forEach(b -> {
 					MultiBon bon = new MultiBon();
 					//相对方名称
-					bon.setFd_linkman(b.getCounterpartName());
+					bon.setFd_bon_name(b.getCounterpartName());
 					//计划缴纳金额
 					if (Func.isNotEmpty(b.getPlanPayAmount())) {
-						bon.setFd_cash(b.getPlanPayAmount().toString());
+						bon.setFd_bon_cash(b.getPlanPayAmount().toString());
 					}
 					//保证金类别
-					bon.setFd_deposit_type(b.getType());
+					bon.setFd_bon_type(b.getType());
 					//保证金编号
-					bon.setFd_number(b.getId().toString());
+					bon.setFd_bon_id(b.getId().toString());
 					//有无押金
 					if ("0".equals(b.getIsNotBond())) {
-						bon.setFd_cash_pledge("1");
+						bon.setFd_bon_pledge("1");
 					} else if ("1".equals(b.getIsNotBond())) {
-						bon.setFd_cash_pledge("2");
+						bon.setFd_bon_pledge("2");
 						//押金
-						bon.setFd_cash("");
+						bon.setFd_bon_cash("");
 					} else {
-						bon.setFd_cash_pledge("3");
+						bon.setFd_bon_pledge("3");
 					}
 					if (Func.isNotEmpty(b.getPlanPayTime())) {
 						//缴交时间
-						bon.setFd_pay_time(sdf.format(b.getPlanPayTime()));
+						bon.setFd_bon_paytime(sdf.format(b.getPlanPayTime()));
 					}
 					if (Func.isNotEmpty(b.getPlanReturnTime())) {
 						//退回时间
-						bon.setFd_back_time(sdf.format(b.getPlanReturnTime()));
+						bon.setFd_bon_backtime(sdf.format(b.getPlanReturnTime()));
 					}
 					bons.add(bon);
 				});
-				formValuesEntity.setMulti_bons(bons);
+				formValuesEntity.setFd_multibon(bons);
 				//履约信息
 				List<KeepList> keepList = new ArrayList<KeepList>();
 				List<PayList> payList = new ArrayList<PayList>();
@@ -932,11 +933,12 @@ public class AbutmentClient implements IAbutmentClient {
 					pay.setFd_plan_psum(performanceColPay.getPlanPayAmount().toString());
 					payList.add(pay);
 				}
+				//处理签章关键字 和多页合同
 				formValuesEntity.setFd_keep_list(keepList);
 				formValuesEntity.setFd_pay_list(payList);
 				//处理签章关键字 和多页合同
 				formValuesEntity = fileTextMulti(formValuesEntity, entity);
-				pushEkpEntity.setFormMulti(formValuesEntity);
+				pushEkpEntity.setFormValues(formValuesEntity);
 				try {
 					//处理合同补充依据
 					if (!Func.isEmpty(entity.getAttachedFiles())) {
@@ -1172,27 +1174,23 @@ public class AbutmentClient implements IAbutmentClient {
 		HashMap<String, String> mapVo = new HashMap<>();
 		//KEP接口传输的入参
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
-		List<ContractFormInfoEntity> infoEntityList = new ArrayList<>();
 		List<ContractFormInfoEntity> formInfoEntities = contractClient.getByStatus("50").getData();
+		if (Func.isNull(formInfoEntities) || Func.isEmpty(formInfoEntities)){
+			return R.data(200,ekpVo,"暂无数据推送");
+		}
 		formInfoEntities.forEach(l -> {
 			int day = differentDaysByMillisecond(l.getCreateTime(), new Date());
 			mapVo.put("day", String.valueOf(day));
 			mapVo.put("contractName", l.getContractName() + "---（归档预警：请及时归档）");
-			if (day >= 60) {
-				infoEntityList.add(l);
-			}
 		});
-		if (Func.isEmpty(infoEntityList)) {
-			return R.data(200, null, "没有需要推送的数据：");
-		}
-		log.info("需要推送的符合条件的数据：" + JsonUtil.toJson(infoEntityList));
+		log.info("需要推送的符合条件的数据：" + JsonUtil.toJson(formInfoEntities));
 		//获取TOKEN
 		pushEkpEntity.setToken(ekpService.getToken());
 		if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
 			return R.data(404, null, "获取token失败");
 		}
 		log.info("获取一次token信息：" + JsonUtil.toJson(pushEkpEntity.getToken()));
-		infoEntityList.forEach(f -> {
+		formInfoEntities.forEach(f -> {
 			EkpVo ekp = null;
 			try {
 				//docCreator 人员编号
@@ -1235,7 +1233,7 @@ public class AbutmentClient implements IAbutmentClient {
 	 * @param date2
 	 * @return
 	 */
-	public static int differentDaysByMillisecond(Date date1, Date date2) {
+	public int differentDaysByMillisecond(Date date1, Date date2) {
 		int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
 		return days;
 	}
@@ -1284,7 +1282,7 @@ public class AbutmentClient implements IAbutmentClient {
 				for (int i = 0; i < entity.getCounterpart().size(); i++) {
 					s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(), arrays[i] + "方（签章）");
 				}
-				formValuesEntity.setFd_keyword(s.toJSONString());
+				formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
 			} else if ((-1 != ay && -1 != by)) {
 				if ("1".equals(formValuesEntity.getFd_onetoone())) {
 					arrays = new String[]{"乙", "丙", "丁"};
@@ -1296,9 +1294,8 @@ public class AbutmentClient implements IAbutmentClient {
 				for (int i = 0; i < entity.getCounterpart().size(); i++) {
 					s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(), arrays[i] + "方(签章)");
 				}
-				formValuesEntity.setFd_keyword(s.toJSONString());
+				formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
 			}
-			document.close();
 			document.close();
 			inputStream.close();
 		} catch (IOException e) {
@@ -1314,7 +1311,7 @@ public class AbutmentClient implements IAbutmentClient {
 	 * @param entity           entity
 	 * @return FormMultiEntity
 	 */
-	public FormMultiEntity fileTextMulti(FormMultiEntity formValuesEntity, ContractFormInfoEntity entity) {
+	public FormValuesEntity fileTextMulti(FormValuesEntity formValuesEntity, ContractFormInfoEntity entity) {
 		File filePDF = new File(ftlPath + entity.getContractName() + getDf() + ".pdf");
 		//建立输出字节流
 		FileOutputStream fos = null;
@@ -1349,7 +1346,7 @@ public class AbutmentClient implements IAbutmentClient {
 			//全角 （半角）判断--四方
 			boolean fourHalf = (-1 != ay) && (-1 != by) && (-1 != cy) && (-1 != dy);
 			//给统一集团设置-角色
-			if (formValuesEntity.getMulti_cos().size() == 3) {
+			if (formValuesEntity.getFd_multico().size() <= 3) {
 				if ((threeFull)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
 						s.put("统一集团", "甲方（签章）");
@@ -1430,14 +1427,21 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_keyword(s.toJSONString());
 				}
 			}
-
-			document.close();
 			document.close();
 			inputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return formValuesEntity;
+	}
+	public static String deleteCharString0(String sourceString, char chElemData,char chElemDate1,char chElemDate2) {
+		StringBuilder deleteString = new StringBuilder();
+		for (int i = 0; i < sourceString.length(); i++) {
+			if (sourceString.charAt(i) != chElemData && sourceString.charAt(i) != chElemDate1  && sourceString.charAt(i) != chElemDate2) {
+				deleteString.append(sourceString.charAt(i));
+			}
+		}
+		return deleteString.toString();
 	}
 
 	public byte[] getUrlFileData(String fileUrl) {
@@ -1607,7 +1611,7 @@ public class AbutmentClient implements IAbutmentClient {
 	@Override
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
-		return R.data(iOrganizationService.getOrganizationInfoIncrement().getData());
+		return iOrganizationService.getOrganizationInfoIncrement();
 	}
 
 	/**

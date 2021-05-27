@@ -59,6 +59,7 @@
         <result column="file3" property="file3"/>
         <result column="file4" property="file4"/>
         <result column="file5" property="file5"/>
+        <result column="annex" property="annex"/>
 
     </resultMap>
     <!-- 通用查询结果列 -->
@@ -116,7 +117,8 @@
         file2,
         file3,
         file4,
-        file5
+        file5,
+        annex
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="laborDispatchResultMap">

@@ -115,6 +115,11 @@ public class MtbProductionContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "含税金额人民币")
 	private BigDecimal mtbTaxInclusiveInRmb;
 	/**
+	 * 含税金额人民币大写
+	 */
+	@ApiModelProperty(value = "含税金额人民币大写")
+	private BigDecimal mtbTaxInclusiveInRmbD;
+	/**
 	 * 合同付款时间及比例依以下第【？】项执行
 	 */
 	@ApiModelProperty(value = "合同付款时间及比例依以下第【？】项执行")

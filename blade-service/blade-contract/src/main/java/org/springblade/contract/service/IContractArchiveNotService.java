@@ -1,11 +1,10 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.vo.ContractArchiveNotResponseVO;
-import org.springblade.contract.vo.ContractArchiveResponseVO;
-import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractArchiveNotEntity;
 import org.springblade.contract.vo.ContractArchiveNotRequestVO;
+import org.springblade.contract.vo.ContractArchiveNotResponseVO;
+import org.springblade.core.mp.base.BaseService;
 
 import java.util.List;
 
@@ -31,5 +30,11 @@ public interface IContractArchiveNotService extends BaseService<ContractArchiveN
 	 * @return
 	 */
 	List<ContractArchiveNotResponseVO> getOldById(Long id);
+	/**
+	 * 查询未归档原因最新一条数据
+	 * @param id
+	 * @return
+	 */
+	ContractArchiveNotResponseVO getLastById(Long id);
 }
 

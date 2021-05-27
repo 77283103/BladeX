@@ -18,7 +18,7 @@ api:
     password: oa0/YNY374PKB53+IUmjiw==
   ekp:
     tokenUrl: https://oatest-interface.pec.com.cn/restful/ekp/getToken
-    ekpUrl: https://oatest-interface.pec.com.cn/restful/ekp/genhrbillouts
+    ekpUrl: https://oatest-interface.pec.com.cn/restful/ekp/genhrbill
     account: iHR
     password: oaekp
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344

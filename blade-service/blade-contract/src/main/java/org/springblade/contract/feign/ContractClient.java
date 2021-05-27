@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.feign.IAbutmentClient;
-import org.springblade.abutment.vo.CounterpartVo;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractSigningEntity;
@@ -12,15 +11,12 @@ import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.mapper.ContractTemplateMapper;
-import org.springblade.contract.service.IContractCounterpartService;
-import org.springblade.contract.service.IContractFormInfoService;
-import org.springblade.contract.service.IContractSigningService;
-import org.springblade.contract.service.IContractTemplateService;
+import org.springblade.contract.service.*;
+import org.springblade.contract.vo.ContractArchiveNotResponseVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.system.entity.TemplateEntity;
@@ -47,6 +43,7 @@ public class ContractClient implements IContractClient{
 
 	private IFileClient fileClient;
 	private IAbutmentClient abutmentClient;
+	private IContractArchiveNotService notService;
     private IContractFormInfoService formInfoService;
 	private ContractFormInfoMapper contractFormInfoMapper;
 	private IContractTemplateService templateService;
@@ -83,9 +80,39 @@ public class ContractClient implements IContractClient{
 	@Override
 	@GetMapping(STATUS)
 	public R<List<ContractFormInfoEntity>> getByStatus(String status) {
-		return R.data(formInfoService.getByStatus(status));
+		List<ContractFormInfoEntity> infoEntityList = new ArrayList<>();
+		List<ContractFormInfoEntity> formInfoEntities = formInfoService.getByStatus(status);
+		if (Func.isNull(formInfoEntities) || Func.isEmpty(formInfoEntities)){
+			return R.data(200,formInfoEntities,"暂无数据推送");
+		}
+		formInfoEntities.forEach(ls -> {
+			ContractArchiveNotResponseVO archiveNot=notService.getLastById(ls.getId());
+			if (Func.isEmpty(archiveNot) || Func.isNull(archiveNot)){
+				int day = differentDaysByMillisecond(ls.getCreateTime(), new Date());
+				if (day >= 60) {
+					infoEntityList.add(ls);
+				}
+			}else {
+				int archDay = differentDaysByMillisecond(archiveNot.getCreateTime(), archiveNot.getEstimateArchiveDate());
+				int notDay = differentDaysByMillisecond(archiveNot.getCreateTime(), new Date());
+				if (notDay >= archDay) {
+					infoEntityList.add(ls);
+				}
+			}
+		});
+		return R.data(200,infoEntityList,"需要推送的数据");
 	}
-
+	/**
+	 * 通过时间秒毫秒数判断两个时间的间隔
+	 *
+	 * @param date1
+	 * @param date2
+	 * @return
+	 */
+	public int differentDaysByMillisecond(Date date1, Date date2) {
+		int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+		return days;
+	}
 	@Override
 	@GetMapping(CHOOSE)
 	public R<List<ContractFormInfoEntity>> getChooseList() {

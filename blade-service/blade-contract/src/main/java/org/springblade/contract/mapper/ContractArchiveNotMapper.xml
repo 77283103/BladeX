@@ -66,4 +66,17 @@
     AND
     contract_id = #{id}
     </select>
+
+    <!--根据合同id查询未归档最新一条数据信息-->
+    <select id="selectArchiveNotLastById" resultMap="contractArchiveNotResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_archive_not
+        WHERE
+        create_time=(SELECT max(create_time) as create_time
+        FROM `contract_archive_not`
+        WHERE is_deleted=0
+        AND
+        contract_id = #{id})
+    </select>
 </mapper>

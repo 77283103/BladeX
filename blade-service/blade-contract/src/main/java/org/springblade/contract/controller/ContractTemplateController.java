@@ -8,7 +8,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.abutment.vo.EkpVo;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.service.IContractTemplateService;
@@ -20,16 +19,13 @@ import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
-import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
-import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,6 +109,7 @@ public class ContractTemplateController extends BladeController {
 	public R save(@Valid @RequestBody ContractTemplateRequestVO template) {
 		ContractTemplateEntity entity = new ContractTemplateEntity();
 		BeanUtil.copy(template, entity);
+		entity.setEnabled("0");
 		if (Func.isEmpty(entity.getId())) {
 			if (TEMPLATE_STATUS.equals(entity.getTemplateStatus())) {
 				entity.setTemplateStatus(TEMPLATE_STATUS);
@@ -201,7 +198,7 @@ public class ContractTemplateController extends BladeController {
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		return R.status(templateService.updateTemplateStatus(templateStatus, id));
+		return R.status(templateService.updateTemplateStatus(templateStatus, id,"0"));
 	}
 
 	/**
@@ -218,9 +215,9 @@ public class ContractTemplateController extends BladeController {
 			throw new ServiceException("id不能为空");
 		}
 		if (Func.isNotEmpty(templateService.getById(id).getOriginalTemplateId())) {
-			templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS, id);
+			templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS, id,"0");
 		} else {
-			templateService.updateTemplateStatus(TEMPLATE_STATUS, id);
+			templateService.updateTemplateStatus(TEMPLATE_STATUS, id,"0");
 		}
 		return R.data(true);
 	}
@@ -244,7 +241,7 @@ public class ContractTemplateController extends BladeController {
 		entity.setOriginalTemplateId(template.getId());
 		entity.setTemplateStatus(TEMPLATE_REVISION_STATUS);
 		templateService.save(entity, "REVISION");
-		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD, entity.getOriginalTemplateId());
+		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD, entity.getOriginalTemplateId(),"0");
 		return R.data(entity);
 	}
 

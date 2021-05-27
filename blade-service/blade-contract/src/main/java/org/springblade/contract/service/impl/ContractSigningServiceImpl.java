@@ -2,15 +2,15 @@ package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
+import org.springblade.contract.entity.ContractSigningEntity;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
+import org.springblade.contract.mapper.ContractSigningMapper;
 import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.service.IContractSigningService;
 import org.springblade.contract.vo.ContractSigningRequestVO;
 import org.springblade.contract.vo.ContractSigningResponseVO;
 import org.springblade.contract.wrapper.ContractSigningWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.contract.entity.ContractSigningEntity;
-import org.springblade.contract.mapper.ContractSigningMapper;
-import org.springblade.contract.service.IContractSigningService;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -33,6 +33,7 @@ public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningM
 
 	private ContractFormInfoMapper contractFormInfoMapper;
 
+	private IFileClient fileClient;
 
 
 
@@ -65,7 +66,27 @@ public class ContractSigningServiceImpl extends BaseServiceImpl<ContractSigningM
 	 * @return
 	 */
 	@Override
-	public ContractSigningEntity selectSigningById(Long id) {
-		return baseMapper.selectSigningById(id);
+	public ContractSigningResponseVO selectSigningById(Long id) {
+		ContractSigningEntity signingEntity=baseMapper.selectSigningById(id);
+		ContractSigningResponseVO signingResponseVO = ContractSigningWrapper.build().entityPV(signingEntity);
+		//签订文本扫描件
+		if (!Func.isEmpty(signingEntity)) {
+			if (Func.isNoneBlank(signingEntity.getTextFiles())) {
+				R<List<FileVO>> result = fileClient.getByIds(signingEntity.getTextFiles());
+				if (result.isSuccess()) {
+					signingResponseVO.setSigningTextFileVOList(result.getData());
+				}
+			}
+		}
+		//签订附件扫描件
+		if (!Func.isEmpty(signingEntity)) {
+			if (Func.isNoneBlank(signingEntity.getAttachedFiles())) {
+				R<List<FileVO>> result = fileClient.getByIds(signingEntity.getAttachedFiles());
+				if (result.isSuccess()) {
+					signingResponseVO.setSigningAttachedFileVOList(result.getData());
+				}
+			}
+		}
+		return signingResponseVO;
 	}
 }

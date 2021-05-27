@@ -24,7 +24,7 @@ public class CglSalesContract1ServiceImpl extends BaseServiceImpl<CglSalesContra
 	/**
 	 * 合同关联字段
 	 */
-	private static final String REF_COLUMN_NAME = "contract_id";
+	private static final String REF_COLUMN_NAME = "ref_contract_id";
 	@Override
 	public IPage<CglSalesContract1Entity> pageList(IPage<CglSalesContract1Entity> page, CglSalesContract1RequestVO cglSalesContract1) {
 		return baseMapper.pageList(page, cglSalesContract1);

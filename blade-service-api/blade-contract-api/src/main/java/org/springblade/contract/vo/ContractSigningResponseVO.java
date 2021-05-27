@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springblade.contract.entity.ContractSigningEntity;
+import org.springblade.resource.vo.FileVO;
+
+import java.util.List;
 
 /**
  * 合同签订表 返回模型VO
@@ -27,4 +30,13 @@ public class ContractSigningResponseVO extends ContractSigningEntity {
 	private String createDeptName;
 
 	private String updateUserName;
+
+	/**
+	 * 签订文件扫描件列表
+	 */
+	private List<FileVO> signingTextFileVOList;
+	/**
+	 * 签订附件扫描件列表
+	 */
+	private List<FileVO> signingAttachedFileVOList;
 }

@@ -3,17 +3,15 @@ package org.springblade.contract.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractSigningArchiveEntity;
-import org.springblade.contract.entity.ContractSigningEntity;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.mapper.ContractSigningArchiveMapper;
-import org.springblade.contract.mapper.ContractSigningMapper;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.service.IContractSigningArchiveService;
-import org.springblade.contract.service.IContractSigningService;
 import org.springblade.contract.vo.ContractSigningArchiveRequestVO;
-import org.springblade.contract.vo.ContractSigningRequestVO;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 合同签订表 服务实现类
@@ -35,5 +33,10 @@ public class ContractSigningArchiveServiceImpl extends BaseServiceImpl<ContractS
 	@Override
 	public IPage<ContractSigningArchiveEntity> pageList(IPage<ContractSigningArchiveEntity> page, ContractSigningArchiveRequestVO signing) {
 		return baseMapper.pageList(page, signing);
+	}
+
+	@Override
+	public List<ContractSigningArchiveEntity> getByContractId(Long id) {
+		return baseMapper.selectBySigningArchiveId(id);
 	}
 }

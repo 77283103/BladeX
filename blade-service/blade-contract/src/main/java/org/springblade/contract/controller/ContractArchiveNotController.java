@@ -1,34 +1,26 @@
 package org.springblade.contract.controller;
 
-import io.swagger.annotations.Api;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import javax.validation.Valid;
-
-import org.springblade.contract.entity.ContractTemplateEntity;
-import org.springblade.contract.vo.ContractTemplateResponseVO;
-import org.springblade.contract.wrapper.ContractTemplateWrapper;
-import org.springblade.core.log.exception.ServiceException;
-import org.springblade.core.tool.utils.BeanUtil;
+import org.springblade.contract.entity.ContractArchiveNotEntity;
+import org.springblade.contract.service.IContractArchiveNotService;
+import org.springblade.contract.vo.ContractArchiveNotRequestVO;
+import org.springblade.contract.vo.ContractArchiveNotResponseVO;
+import org.springblade.contract.wrapper.ContractArchiveNotWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
-
+import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 
-import org.springblade.contract.entity.ContractArchiveNotEntity;
-import org.springblade.contract.wrapper.ContractArchiveNotWrapper;
-import org.springblade.contract.service.IContractArchiveNotService;
-import org.springblade.contract.vo.ContractArchiveNotRequestVO;
-import org.springblade.contract.vo.ContractArchiveNotResponseVO;
-
-import java.util.List;
+import javax.validation.Valid;
 
 
 /**
@@ -43,7 +35,7 @@ import java.util.List;
 @Api(value = "未归档原因", tags = "未归档原因")
 public class ContractArchiveNotController extends BladeController {
 
-	private IContractArchiveNotService contractArchiveNotService;
+	private final IContractArchiveNotService contractArchiveNotService;
 
 	/**
 	 * 详情

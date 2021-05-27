@@ -22,6 +22,7 @@
         <result column="mtb_unpaid_tax_rmb" property="mtbUnpaidTaxRmb"/>
         <result column="mtb_rate" property="mtbRate"/>
         <result column="mtb_tax_inclusive_in_rmb" property="mtbTaxInclusiveInRmb"/>
+        <result column="mtb_tax_inclusive_in_rmb_d" property="mtbTaxInclusiveInRmbD"/>
         <result column="mtb_many_items" property="mtbManyItems"/>
         <result column="mtb_legal_tax_invoice" property="mtbLegalTaxInvoice"/>
         <result column="mtb_pay_rmb" property="mtbPayRmb"/>
@@ -63,6 +64,7 @@
         mtb_unpaid_tax_rmb,
         mtb_rate,
         mtb_tax_inclusive_in_rmb,
+        mtb_tax_inclusive_in_rmb_d,
         mtb_many_items,
         mtb_legal_tax_invoice,
         mtb_pay_rmb,
