@@ -21,7 +21,9 @@ import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
-import org.springblade.contract.util.*;
+import org.springblade.contract.util.AsposeWordToPdfUtils;
+import org.springblade.contract.util.ExcelSaveUntil;
+import org.springblade.contract.util.RedisCacheUtil;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -1353,10 +1355,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
 		if (ekpVo.getCode() == HttpStatus.OK.value()) {
+			//保存送审返回的单据信息
 			entity.setRelContractId(ekpVo.getData().getDoc_info());
-			log.info("ekp返回值code" + ekpVo.getCode());
-			log.info("ekp返回值code" + ekpVo.getCode());
-			entity.setRelContractId(ekpVo.getData().getDoc_info());
+			entity.setEkpNumber(ekpVo.getData().getEkp_number());
+			log.info("ekp返回值code" + ekpVo.getData().getEkp_number());
+			log.info("ekp返回值code" + ekpVo.getData().getDoc_info());
 		} else {
 			r.setMsg(ekpVo.getMsg());
 			r.setSuccess(false);

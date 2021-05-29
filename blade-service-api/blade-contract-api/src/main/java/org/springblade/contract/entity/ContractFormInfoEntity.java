@@ -542,4 +542,10 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "合同起草方（字典）")
 	private String contractRoles;
+
+	/**
+	 * 合同EKP单号
+	 */
+	@ApiModelProperty(value = "合同EKP单号")
+	private String ekpNumber;
 }

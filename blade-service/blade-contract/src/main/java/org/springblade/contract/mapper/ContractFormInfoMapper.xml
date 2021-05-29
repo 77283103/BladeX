@@ -60,6 +60,7 @@
         <result column="a_bank_number" property="aBankNumber"/>
         <result column="a_bank_name" property="aBankName"/>
         <result column="a_account_name" property="aAccountName"/>
+        <result column="ekp_number" property="ekpNumber"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -122,7 +123,8 @@
         a_email,
         a_bank_number,
         a_bank_name,
-        a_account_name
+        a_account_name,
+        ekp_number
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">
