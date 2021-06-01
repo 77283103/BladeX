@@ -37,6 +37,7 @@ public interface IContractClient {
 	String CHOOSE=API_PREFIX + "/getChooseList";
 	String CONTRACT_SAVE = API_PREFIX + "/contractSave";
 	String TEMPLATE_GET_ID = API_PREFIX + "/template_getId";
+	String UTILS_FILE=API_PREFIX +"/utils_file";
 
 	/**
 	 * 保存相对方
@@ -102,4 +103,5 @@ public interface IContractClient {
 	 */
 	@GetMapping(TEMPLATE_GET_ID)
 	R<ContractTemplateEntity> getByTemplateId(@RequestParam("id") Long id);
+
 }

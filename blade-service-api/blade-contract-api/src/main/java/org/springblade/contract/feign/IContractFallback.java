@@ -60,4 +60,5 @@ public class IContractFallback implements IContractClient {
 	public R<ContractTemplateEntity> getByTemplateId(Long id) {
 		return R.fail("更新模板json信息失败！");
 	}
+
 }

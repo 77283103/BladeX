@@ -15,3 +15,6 @@ spring:
     url: ${blade.datasource.test.url}
     username: ${blade.datasource.test.username}
     password: ${blade.datasource.test.password}
+api:
+  file:
+    ftlPath: /ftl/

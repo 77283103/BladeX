@@ -1,13 +1,7 @@
 package org.springblade.abutment.entity;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springblade.contract.entity.ContractBorrowHandleEntity;
-import org.springblade.contract.entity.ContractBorrowReturnEntity;
-
-import java.util.Date;
 
 /**
  * @author xhbbo
@@ -15,11 +9,11 @@ import java.util.Date;
 @Data
 public class BorrowAc {
 	@ApiModelProperty(value = "资料类型")
-	private String dataType;
+	private String fd_type;
 	@ApiModelProperty(value = "借阅周期起始时间")
-	private String acCycleStart;
+	private String fd_begin;
 	@ApiModelProperty(value = "借阅周期结束时间")
-	private String acCycleEnd;
+	private String fd_end;
 	@ApiModelProperty(value = "申请编号")
 	private String applicationId;
 	@ApiModelProperty(value = "申请人")
@@ -27,9 +21,9 @@ public class BorrowAc {
 	@ApiModelProperty(value = "申请部门")
 	private String appDepartment;
 	@ApiModelProperty(value = "借阅方式")
-	private String borrowMode;
+	private String fd_method;
 	@ApiModelProperty(value = "资料名称")
-	private String dataName;
+	private String fd_name;
 	@ApiModelProperty(value = "事由说明")
-	private String explanation;
+	private String fd_reason;
 }

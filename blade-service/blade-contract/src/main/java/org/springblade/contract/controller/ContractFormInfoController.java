@@ -10,10 +10,8 @@ import com.github.xiaoymin.knife4j.annotations.ApiOperationSupport;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springblade.abutment.feign.IAbutmentClient;
-import org.springblade.abutment.vo.EkpVo;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractBondPlanEntity;
@@ -23,12 +21,12 @@ import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractMultPaymenMapper;
 import org.springblade.contract.mapper.DraftContractCounterpartMapper;
 import org.springblade.contract.service.*;
+import org.springblade.contract.util.AsposeWordToPdfUtils;
 import org.springblade.contract.util.TemplateExportUntil;
 import org.springblade.contract.util.TemplateSaveUntil;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
-import org.springblade.contract.wrapper.ContractBondWrapper;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.excel.util.ExcelUtil;
@@ -44,6 +42,7 @@ import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Charsets;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.resource.entity.FileEntity;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
@@ -52,6 +51,8 @@ import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.TemplateRequestVO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -59,8 +60,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
+import java.io.*;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -72,28 +74,45 @@ import java.util.*;
  */
 @Log4j2
 @RestController
-@AllArgsConstructor
 @RequestMapping("/contractFormInfo")
 @Api(value = "", tags = "")
 public class ContractFormInfoController extends BladeController {
 	//EKP推送信息
+	@Autowired
 	private IAbutmentClient abutmentClient;
+	@Autowired
 	private IContractFormInfoService contractFormInfoService;
+	@Autowired
 	private IContractPerformanceService performanceService;
+	@Autowired
 	private IContractAccordingService accordingService;
+	@Autowired
 	private IContractBondService contractBondService;
+	@Autowired
 	private IContractPerformanceColPayService contractPerformanceColPayService;
+	@Autowired
 	private IContractBondPlanService contractBondPlanService;
+	@Autowired
 	private IContractChangeService changeService;
+	@Autowired
 	private IDraftContractCounterparService draftContractCounterparService;
+	@Autowired
 	private DraftContractCounterpartMapper draftContractCounterpartMapper;
+	@Autowired
 	private IContractMultPaymenService contractMultPaymenService;
+	@Autowired
 	private ContractMultPaymenMapper contractMultPaymenMapper;
+	@Autowired
 	private IDictBizClient bizClient;
+	@Autowired
 	private IFileClient fileClient;
+	@Autowired
 	private ISysClient roleService;
+	@Autowired
 	private TemplateExportUntil templateExportUntil;
+	@Autowired
 	private IPerServiceContentService perServiceContentService;
+	@Autowired
 	private IPerCollectPayService perCollectPayService;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
@@ -107,6 +126,8 @@ public class ContractFormInfoController extends BladeController {
 	private static final String CONTRACT_ARCHIVE_STATUS = "110";
 	private static final String CONTRACT_ASSESSMENT_STATUS = "100";
 	private static final String ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS = "75";
+	@Value("${api.file.ftlPath}")
+	private String ftlPath;
 
 	/**
 	 * 详情
@@ -144,12 +165,12 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, requestVO);
 		BladeUser user = AuthUtil.getUser();
 		List<String> realNameList = roleService.getRoleAliases(user.getRoleId()).getData();
-		log.info("当前登陆人的角色别名："+realNameList);
+		log.info("当前登陆人的角色别名：" + realNameList);
 		List<String> seal = new ArrayList<>();
 		if (realNameList.contains("contract_admin")) {
 			R<DataSealAuthorityResponseVO> responseVO = roleService.getByIdData(user.getUserId().toString(), user.getRoleId());
 			if (responseVO.getCode() == HttpStatus.OK.value()) {
-				log.info("根据用户id和用户角色ID查询该用户的数据权限："+responseVO.getCode());
+				log.info("根据用户id和用户角色ID查询该用户的数据权限：" + responseVO.getCode());
 				responseVO.getData().getSealList().forEach(s -> {
 					seal.add(bizClient.getValue("application_seal", s).getData());
 				});
@@ -158,7 +179,7 @@ public class ContractFormInfoController extends BladeController {
 				return R.fail(HttpStatus.NOT_FOUND.value(), "该用户拥有合同管理员权限，但未配置管理合同数据");
 			}
 		}
-		log.info("该用户的数据权限内容："+seal);
+		log.info("该用户的数据权限内容：" + seal);
 		IPage<ContractFormInfoResponseVO> pages = contractFormInfoService.pageList(Condition.getPage(query), requestVO);
 		return R.data(pages);
 	}
@@ -205,10 +226,10 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoService.save(entity);
 			contractFormInfo.setId(entity.getId());
 			//增加履约计划信息
-			perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList())?null:
-				contractFormInfo.getPerServiceContentList().get(0),entity.getId());
+			perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList()) ? null :
+				contractFormInfo.getPerServiceContentList().get(0), entity.getId());
 			//增加履约收付款信息
-			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(),entity.getId());
+			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(), entity.getId());
 		} else {
 			contractFormInfoService.updateById(entity);
 		}
@@ -312,10 +333,10 @@ public class ContractFormInfoController extends BladeController {
 		if (Func.isEmpty(contractFormInfo.getId())) {
 			contractFormInfoService.save(entity);
 			//增加履约计划信息
-			perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList())?null:
-				contractFormInfo.getPerServiceContentList().get(0),entity.getId());
+			perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList()) ? null :
+				contractFormInfo.getPerServiceContentList().get(0), entity.getId());
 			//增加履约收付款信息
-			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(),entity.getId());
+			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(), entity.getId());
 		} else {
 			contractFormInfoService.updateById(entity);
 		}
@@ -370,11 +391,11 @@ public class ContractFormInfoController extends BladeController {
 			});
 		}
 		//开始接口处理
-		log.info("独立起草新增-处理电子签章和oa流程：{}",entity.getContractStatus());
+		log.info("独立起草新增-处理电子签章和oa流程：{}", entity.getContractStatus());
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			r = contractFormInfoService.SingleSign(R.data(entity));
-			log.info("独立起草新增-处理电子签章和oa流程结果:{}",JsonUtil.toJson(r));
+			log.info("独立起草新增-处理电子签章和oa流程结果:{}", JsonUtil.toJson(r));
 			if (r.getCode() != HttpStatus.OK.value()) {
 				entity.setContractStatus(CHANGE_REVIEW_STATUS);
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
@@ -483,10 +504,10 @@ public class ContractFormInfoController extends BladeController {
 		assert r != null;
 		contractFormInfoService.updateById(contractFormInfoEntity);
 		//增加履约计划信息
-		perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList())?null:
-			contractFormInfo.getPerServiceContentList().get(0),contractFormInfoEntity.getId());
+		perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList()) ? null :
+			contractFormInfo.getPerServiceContentList().get(0), contractFormInfoEntity.getId());
 		//增加履约收付款信息
-		perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(),contractFormInfoEntity.getId());
+		perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(), contractFormInfoEntity.getId());
 		return R.data(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 	}
 
@@ -646,7 +667,7 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "复用", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiplex')")
-	public R<ContractFormInfoEntity> multiplex(@RequestParam Long id) {
+	public R<ContractFormInfoResponseVO> multiplex(@RequestParam Long id) {
 		ContractFormInfoEntity entity = contractFormInfoService.getById(id);
 		ContractFormInfoEntity contractFormInfo = new ContractFormInfoEntity();
 		BeanUtil.copy(entity, contractFormInfo);
@@ -669,7 +690,7 @@ public class ContractFormInfoController extends BladeController {
 			json = objects.toJSONString();
 			contractFormInfo.setJson(json);
 		}
-		return R.data(contractFormInfo);
+		return R.data(ContractFormInfoWrapper.build().entityPV(contractFormInfo));
 	}
 
 
@@ -743,7 +764,7 @@ public class ContractFormInfoController extends BladeController {
 		contractFormInfoService.textExportCount(id, fileExportCount, FILE_EXPORT_CATEGORY);
 		infoEntity.setFileExportCount(fileExportCount);
 		//附加条件解决BUG
-		if (CONTRACT_AUDIT_QUALITY.equals(infoEntity.getContractStatus())){
+		if (CONTRACT_AUDIT_QUALITY.equals(infoEntity.getContractStatus())) {
 			infoEntity.setContractStatus(CONTRACT_EXPORT_STATUS);
 		}
 		contractFormInfoService.updateById(infoEntity);
@@ -1338,4 +1359,50 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(contractFormInfo);
 	}
 
+	/**
+	 * 下载文件
+	 */
+	@GetMapping("/downloadFiles")
+	@ApiOperationSupport(order = 4)
+	@ApiOperation(value = "下载文件", notes = "传入文件id")
+	public void downloadFiles(@RequestParam String id, HttpServletResponse response) {
+		try {
+			FileEntity fileEntity = fileClient.getById(Long.valueOf(id)).getData();
+			String fileName = fileEntity.getGenerateName();
+			int index = fileEntity.getName().lastIndexOf(".");
+			String suffix = fileEntity.getName().substring(index);
+			SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+			String pathname = ftlPath + fileEntity.getName().substring(0, index) + df.format(new Date()) + suffix;
+			//创建空docx文件
+			File filePDF = new File(pathname);
+			//建立输出字节流
+			FileOutputStream fosx = null;
+			try {
+				fosx = new FileOutputStream(filePDF);
+				//将根据URL获取到的数据流写到空docx文件
+				fosx.write(AsposeWordToPdfUtils.getUrlFileData(fileEntity.getLink()));
+				fosx.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			String pdf = ftlPath + fileEntity.getName().substring(0, index) + df.format(new Date()) + ".pdf";
+			AsposeWordToPdfUtils.doc2pdf(pathname, pdf);
+			File fileDoc = new File(pathname);
+			fileDoc.delete();
+			InputStream object = new FileInputStream(pdf);
+			byte buf[] = new byte[1024];
+			int length = 0;
+			response.reset();
+			response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileEntity.getName(), "UTF-8"));
+			response.setContentType("application/octet-stream");
+			response.setCharacterEncoding("utf-8");
+			OutputStream outputStream = response.getOutputStream();
+			while ((length = object.read(buf)) > 0) {
+				outputStream.write(buf, 0, length);
+			}
+			outputStream.close();
+		} catch (Exception ex) {
+			System.out.println("导出失败");
+		}
+	}
 }

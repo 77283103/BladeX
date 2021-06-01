@@ -1786,6 +1786,7 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
 			List<ProductOutServiceContract1ResponseVO> ProductOutServiceContract1 = new ArrayList();
 			List<ProductOutServiceContract2ResponseVO> ProductOutServiceContract2 = new ArrayList();
 			List<ProductOutServiceContract3ResponseVO> ProductOutServiceContract3 = new ArrayList();
@@ -1841,40 +1842,19 @@ public enum TemplateExporterEnum {
 			dataModel.put("ProductOutServiceContract3", ProductOutServiceContract3);
 			//主表
 			ProductOutServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, ProductOutServiceContractEntity.class);
-			dataModel.put("proSaler", j.get("proSaler"));
-			dataModel.put("proSalerAddr", j.get("proSalerAddr"));
-			dataModel.put("proBuyer", j.get("proBuyer"));
-			dataModel.put("proBuyerAddr", j.get("proBuyerAddr"));
-			dataModel.put("proTimeStart", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("proTimeStart"))));
-			dataModel.put("proTimeEnd", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("proTimeEnd"))));
-			dataModel.put("proAmount", j.get("proAmount"));
-			dataModel.put("proAgeRequire", j.get("proAgeRequire"));
-			dataModel.put("proMaxPercent", j.get("proMaxPercent"));
-			dataModel.put("proTimeAmount", j.get("proTimeAmount"));
-			dataModel.put("proBuyerPerson", j.get("proBuyerPerson"));
-			dataModel.put("proBuyerPhone", j.get("proBuyerPhone"));
-			dataModel.put("proLastDayFir", j.get("proLastDayFir"));
-			dataModel.put("proLastDaySec", j.get("proLastDaySec"));
-			dataModel.put("proLastDayThi", j.get("proLastDayThi"));
-			dataModel.put("inPayType", j.get("inPayType"));
-			dataModel.put("proBuyerAccountName", j.get("proBuyerAccountName"));
-			dataModel.put("proBuyerAccountId", j.get("proBuyerAccountId"));
-			dataModel.put("proBuyerAccountBank", j.get("proBuyerAccountBank"));
-			dataModel.put("proBondAmountFir", j.get("proBondAmountFir"));
-			dataModel.put("proLastDayFou", j.get("proLastDayFou"));
-			dataModel.put("proLastDayFiv", j.get("proLastDayFiv"));
-			dataModel.put("proSalerAccoutName", j.get("proSalerAccoutName"));
-			dataModel.put("proSalerAccoutId", j.get("proSalerAccoutId"));
-			dataModel.put("proSalerAccoutBank", j.get("proSalerAccoutBank"));
-			dataModel.put("proBondAmountSec", j.get("proBondAmountSec"));
-			dataModel.put("proBondAmountThi", j.get("proBondAmountThi"));
-			dataModel.put("proBondAmountFou", j.get("proBondAmountFou"));
-			dataModel.put("proBondAmountFiv", j.get("proBondAmountFiv"));
-			dataModel.put("proBondAmountSix", j.get("proBondAmountSix"));
-			dataModel.put("proSupplyArrange", j.get("proSupplyArrange"));
-			dataModel.put("proAnnexFir", j.get("proAnnexFir"));
-			dataModel.put("proAnnexSec", j.get("proAnnexSec"));
-
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			dataModel.put("proTimeStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("proTimeEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -2000,16 +1980,17 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
 			//主表
 			BusServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, BusServiceContractEntity.class);
 			dataModel.put("busSaler", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("busBuyer", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("busSalerAddr", j.get("busSalerAddr"));
 			dataModel.put("busBuyerAddr", j.get("busBuyerAddr"));
-			dataModel.put("busTimeA", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busTimeA"))));
-			dataModel.put("busTimeB", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busTimeB"))));
-			dataModel.put("busServiceTimeStart", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busServiceTimeStart"))));
-			dataModel.put("busServiceTimeEnd", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("busServiceTimeEnd"))));
+			dataModel.put("busTimeA", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("busTimeA"))));
+			dataModel.put("busTimeB", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("busTimeB"))));
+			dataModel.put("busServiceTimeStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("busServiceTimeEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
 			dataModel.put("busDateRequireFir", j.get("busDateRequireFir"));
 			dataModel.put("busInvoiceType", j.get("busInvoiceType"));
 			dataModel.put("busBuyerAccountName", j.get("busBuyerAccountName"));
@@ -2017,7 +1998,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("busBuyerAccountBank", j.get("busBuyerAccountBank"));
 			dataModel.put("busDateRequireSec", j.get("busDateRequireSec"));
 			dataModel.put("infAnnexFir", j.get("infAnnexFir"));
-
+			dataModel.put("annex", j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -2558,6 +2539,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("contactPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("contactTimeStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("contactTimeEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
+			modle.put("annex",j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;

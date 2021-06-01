@@ -81,6 +81,8 @@ public class AbutmentClient implements IAbutmentClient {
 	private ICounterpartService counterpartService;
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
+	@Value("${api.ekp.appTemplateId}")
+	private String appTemplateId;
 
 	@Value("${api.eSeal.downloadUrl}")
 	private String downloadUrl;
@@ -194,7 +196,7 @@ public class AbutmentClient implements IAbutmentClient {
 		if (Func.isNotEmpty(entity)) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			//表单模版ID
-			pushEkpEntity.setFdTemplateId(fdTemplateId);
+			pushEkpEntity.setFdTemplateId(appTemplateId);
 			DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 			//人员编号
 			R<User> user = userClient.userInfoById(AuthUtil.getUserId());
@@ -205,21 +207,15 @@ public class AbutmentClient implements IAbutmentClient {
 			//文档主要内容
 			BorrowAc ac = new BorrowAc();
 			//事由说明
-			ac.setExplanation(entity.getExplanation());
-			//申请编号
-			ac.setApplicationId(entity.getApplicationId());
+			ac.setFd_reason(entity.getExplanation());
 			//资料类型
-			ac.setDataType(bizClient.getValue("data_type", entity.getDataType()).getData());
+			ac.setFd_type(entity.getDataType());
 			//借阅方式
-			ac.setBorrowMode(bizClient.getValue("borrow_mode", entity.getBorrowMode()).getData());
-			//申请部门"
-			ac.setAppDepartment(entity.getApplicationDepartment());
+			ac.setFd_method(entity.getBorrowMode());
 			//借阅周期起始时间
-			ac.setAcCycleStart(sdf.format(entity.getBorrowCycleStart()));
+			ac.setFd_begin(sdf.format(entity.getBorrowCycleStart()));
 			//借阅周期截至时间
-			ac.setAcCycleEnd(sdf.format(entity.getBorrowCycleEnd()));
-			//申请人
-			ac.setApplicant(entity.getApplicant());
+			ac.setFd_end(sdf.format(entity.getBorrowCycleEnd()));
 			pushEkpEntity.setBorrowAc(ac);
 			//获取token
 			pushEkpEntity.setToken(ekpService.getToken());

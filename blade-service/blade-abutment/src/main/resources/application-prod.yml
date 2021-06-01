@@ -23,6 +23,7 @@ api:
     account: GenFlowNm
     password: o!a@e@k#p
     fdTemplateId: 1780054e40b82ff3f5f9e0c4bcfa9eac
+    appTemplateId: 179c63d15205aa3926282a5461f9def3
     ftlPath: /ftl/
   organization:
     wsdl: https://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
