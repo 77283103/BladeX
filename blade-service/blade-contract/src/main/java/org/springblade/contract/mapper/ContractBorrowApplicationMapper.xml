@@ -6,7 +6,7 @@
                type="org.springblade.contract.entity.ContractBorrowApplicationEntity">
         <result column="id" property="id"/>
         <result column="application_id" property="applicationId"/>
-        <result column="application_code" property="applicantCode"/>
+        <result column="applicant_code" property="applicantCode"/>
         <result column="applicant" property="applicant"/>
         <result column="application_department" property="applicationDepartment"/>
         <result column="data_type" property="dataType"/>
@@ -30,7 +30,7 @@
         id,
         application_id,
         applicant,
-        application_code,
+        applicant_code,
         application_department,
         data_type,
         borrow_cycle_start,

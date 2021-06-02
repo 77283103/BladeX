@@ -36,7 +36,6 @@ import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -114,8 +113,12 @@ public class ContractBorrowApplicationController extends BladeController {
 			entity.setApplicationId(ekpVo.getData().getDoc_info());
 			return R.status(contractBorrowApplicationService.save(entity));
 		} else if (ekpVo.getCode() == 2) {
+			entity.setBorrowStatus("5");
+			contractBorrowApplicationService.saveOrUpdate(entity);
 			return R.data(ekpVo.getCode(), null, "当前员工编号在系统中不存在，请换一个试试");
 		} else {
+			entity.setBorrowStatus("5");
+			contractBorrowApplicationService.saveOrUpdate(entity);
 			return R.data(ekpVo.getCode(), null, "token获取失败，连接超时");
 		}
 	}
