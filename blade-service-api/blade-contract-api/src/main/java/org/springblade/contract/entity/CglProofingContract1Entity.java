@@ -52,7 +52,7 @@ public class CglProofingContract1Entity extends BaseEntity {
 	 * 数量
 	 */
 	@ApiModelProperty(value = "数量")
-	private Long number;
+	private Double number;
 	/**
 	 * 合计金额（元，含税）
 	 */

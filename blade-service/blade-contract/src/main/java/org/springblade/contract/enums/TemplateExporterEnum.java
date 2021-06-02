@@ -381,7 +381,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("ywlAgreementPeriodStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("ywlAgreementPeriodEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
 			dataModel.put("ywlProductionCosts", j.get("ywlProductionCosts"));
-			dataModel.put("ywlAmountOf", MoneyToChiness.moneyToChinese(j.get("ywlProductionCosts").toString()));
+			dataModel.put("ywlAmountOf", MoneyToChiness.tenThousand(j.get("ywlProductionCosts").toString()));
 			dataModel.put("ywlOtherConventions", j.get("ywlOtherConventions"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
@@ -684,6 +684,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("mtlCompanyName", j.get("mtlCompanyName"));
 			dataModel.put("mtlWhereItIs", j.get("mtlWhereItIs"));
 			dataModel.put("mtlAccount", j.get("mtlAccount"));
+			dataModel.put("period",Func.isNull(contractFormInfoEntity.getDays()) ? "" : contractFormInfoEntity.getDays());
 			model.put("dataModel", setFile(filepaths, dataModel));
 			model.put("config", config);
 			return model;
@@ -1297,6 +1298,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclLianxirenyi", j.get("sclLianxirenyi"));
 			dataModel.put("sclLianxielejia", j.get("sclLianxielejia"));
 			dataModel.put("sclLianxieleyi", j.get("sclLianxieleyi"));
+			dataModel.put("annex",j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -2539,7 +2541,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("contactPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("contactTimeStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("contactTimeEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
-			modle.put("annex",j.get("annex"));
+			dataModel.put("annex",j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;

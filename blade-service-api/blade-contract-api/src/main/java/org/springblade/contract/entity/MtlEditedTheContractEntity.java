@@ -88,6 +88,11 @@ public class MtlEditedTheContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "乙方账号")
 	private String mtlAccount;
 	/**
+	 * 账期
+	 */
+	@ApiModelProperty(value = "账期")
+	private String period;
+	/**
 	 * 修图合同关联表
 	 */
 	@ApiModelProperty(value = "修图合同关联表")

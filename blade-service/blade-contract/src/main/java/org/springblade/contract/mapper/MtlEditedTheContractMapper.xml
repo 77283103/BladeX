@@ -22,6 +22,7 @@
         <result column="mtl_company_name" property="mtlCompanyName"/>
         <result column="mtl_where_it_is" property="mtlWhereItIs"/>
         <result column="mtl_account" property="mtlAccount"/>
+        <result column="period" property="period"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -50,6 +51,7 @@
         mtl_company_name,
         mtl_where_it_is,
         mtl_account,
+        period,
         status,
         is_deleted,
         create_user,
