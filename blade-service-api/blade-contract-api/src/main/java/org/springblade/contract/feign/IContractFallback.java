@@ -18,12 +18,12 @@ import java.util.List;
 public class IContractFallback implements IContractClient {
 	@Override
 	public R<Boolean> saveBatch(List<ContractCounterpartEntity> listInsert) {
-		return R.fail("获取合同信息失败！");
+		return R.fail("保存相对方增量信息失败！");
 	}
 
 	@Override
 	public R<Boolean> updateById(ContractCounterpartEntity updateCounterpart) {
-		return R.fail("获取合同信息失败！");
+		return R.fail("保存相对方修改信息失败！");
 	}
 
 	@Override

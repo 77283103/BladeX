@@ -62,4 +62,9 @@ public class DataScopeModelHandler implements ScopeModelHandler {
 	public List<Long> getDeptAncestors(Long deptId) {
 		return DataScopeCache.getDeptAncestors(deptId);
 	}
+
+	@Override
+	public Long getDeptCompany(Long deptId) {
+		return null;
+	}
 }

@@ -1,7 +1,6 @@
 package org.springblade.contract.feign;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.contract.entity.ContractCounterpartEntity;
@@ -20,6 +19,8 @@ import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.system.entity.TemplateEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,22 +39,33 @@ import java.util.List;
 @Slf4j
 @ApiIgnore
 @RestController
-@AllArgsConstructor
 public class ContractClient implements IContractClient{
-
+    @Autowired
 	private IFileClient fileClient;
+	@Autowired
 	private IAbutmentClient abutmentClient;
+	@Autowired
 	private IContractArchiveNotService notService;
+	@Autowired
     private IContractFormInfoService formInfoService;
+	@Autowired
 	private ContractFormInfoMapper contractFormInfoMapper;
+	@Autowired
 	private IContractTemplateService templateService;
+	@Autowired
 	private ContractTemplateMapper templateMapper;
+	@Autowired
 	private IContractSigningService contractSigningService;
+	@Autowired
 	private IContractCounterpartService iContractCounterpartService;
+	@Autowired
 	private ContractCounterpartMapper counterpartMapper;
+	@Autowired
 	private IContractCounterpartService counterpartService;
 	//模板路径
 	private static final String ftlPath="D:/ftl/";
+	@Value("${api.signing.day}")
+	private Integer signingDays;
 
 	@Override
 	public R<Boolean> saveBatch(List<ContractCounterpartEntity> listInsert) {
@@ -62,7 +74,7 @@ public class ContractClient implements IContractClient{
 
 	@Override
 	public R<Boolean> updateById(ContractCounterpartEntity updateCounterpart) {
-		return R.data(counterpartService.updateById(updateCounterpart));
+		return R.data(counterpartService.saveOrUpdate(updateCounterpart));
 	}
 
 	@Override
@@ -89,7 +101,7 @@ public class ContractClient implements IContractClient{
 			ContractArchiveNotResponseVO archiveNot=notService.getLastById(ls.getId());
 			if (Func.isEmpty(archiveNot) || Func.isNull(archiveNot)){
 				int day = differentDaysByMillisecond(ls.getCreateTime(), new Date());
-				if (day >= 60) {
+				if (day >= signingDays) {
 					infoEntityList.add(ls);
 				}
 			}else {

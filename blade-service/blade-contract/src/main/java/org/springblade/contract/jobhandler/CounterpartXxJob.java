@@ -15,7 +15,6 @@ import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import springfox.documentation.spring.web.json.Json;
 
 /**
  * @author xhbbo
@@ -42,8 +41,6 @@ public class CounterpartXxJob {
 			XxlJobLogger.log("获取相对方更新信息集合结果:"+JsonUtil.toJson(vo.getData().getUpdate()));
 			return new ReturnT<>(vo.getData());
 		}
-		XxlJobLogger.log("获取相对方新增信息集合结果:"+JsonUtil.toJson(vo.getData().getInsert()));
-		XxlJobLogger.log("获取相对方更新信息集合结果:"+JsonUtil.toJson(vo.getData().getUpdate()));
 		XxlJobLogger.log(vo.getMsg()+vo.getData());
 		return new ReturnT<>(vo.getCode(),vo.getMsg());
 

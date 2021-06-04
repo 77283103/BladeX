@@ -277,8 +277,8 @@ public enum TemplateExporterEnum {
 				dataModel.put("performanceA", "");
 			} else if (contractFormInfoEntity.getContractBond().size() == 1) {
 				if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("1")) {
-					dataModel.put("performance", "_");
-					dataModel.put("performanceA", "_");
+					dataModel.put("performance", "0");
+					dataModel.put("performanceA", "零万元");
 				} else if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("0")) {
 					String planPayAmount = String.valueOf(contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount().divide(BigDecimal.valueOf(10000)));
 					dataModel.put("performance", planPayAmount);
@@ -293,7 +293,7 @@ public enum TemplateExporterEnum {
 				dataModel.put("performanceA", MoneyToChiness.tenThousand(valuesD.toString()));
 			}
 			dataModel.put("fewDays", j.get("fewDays"));
-			dataModel.put("exceedterm", j.get("exceedterm"));
+			dataModel.put("exceedterm", j.get("fewDays"));
 			dataModel.put("vatinvoice", j.get("vatinvoice"));
 			dataModel.put("deliveredMonth", j.get("deliveredMonth"));
 			dataModel.put("receivesInvoice", j.get("receivesInvoice"));
@@ -412,6 +412,14 @@ public enum TemplateExporterEnum {
 				}
 				if (ContractFormInfoTemplateContract.CONTRACT_MTADAPTATIONCONTRACT2.equals(templateField.getRelationCode())) {
 					MtlAdaptationContract2 = JSON.parseArray(templateField.getTableData(), MtlAdaptationContract2ResponseVO.class);
+					if ("未".equals(j.get("mtlHaveHasNot"))){
+						MtlAdaptationContract2ResponseVO mtlAdaptationContract2=new MtlAdaptationContract2ResponseVO();
+						mtlAdaptationContract2.setIntellectualProperty("\\");
+						mtlAdaptationContract2.setSample("\\");
+						mtlAdaptationContract2.setUseArea("\\");
+						mtlAdaptationContract2.setServiceLife("\\");
+						MtlAdaptationContract2.add(mtlAdaptationContract2);
+					}
 //					for (int i = 0; i < jsonArr.size(); i++) {
 //						Map<String, Object> map = new HashMap();
 //						map.put("intellectualProperty", jsonArr.getJSONObject(i).get("intellectualProperty"));

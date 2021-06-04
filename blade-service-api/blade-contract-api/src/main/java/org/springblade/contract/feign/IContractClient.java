@@ -51,7 +51,7 @@ public interface IContractClient {
 	 * @param updateCounterpart
 	 * @return
 	 */
-	@GetMapping(UPDATEBYID)
+	@PostMapping(UPDATEBYID)
 	R<Boolean> updateById(@RequestBody ContractCounterpartEntity updateCounterpart);
 
 	/**

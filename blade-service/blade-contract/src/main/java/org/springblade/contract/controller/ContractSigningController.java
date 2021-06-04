@@ -9,10 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.contract.entity.ContractCounterpartEntity;
-import org.springblade.contract.entity.ContractSealUsingInfoEntity;
-import org.springblade.contract.entity.ContractSigningArchiveEntity;
-import org.springblade.contract.entity.ContractSigningEntity;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.service.*;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -130,6 +127,8 @@ public class ContractSigningController extends BladeController {
             signingArchive.setSigningId(contractSigning.getContractId());
             signingArchiveService.save(signingArchive);
         });
+		ContractFormInfoEntity formInfoEntity=contractFormInfoService.getById(contractSigning.getContractId());
+		contractFormInfoService.updateById(formInfoEntity);
         return R.data(entity);
     }
 

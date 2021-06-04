@@ -9,6 +9,7 @@ import org.springblade.contract.vo.ContractArchiveNotRequestVO;
 import org.springblade.contract.vo.ContractArchiveNotResponseVO;
 import org.springblade.contract.wrapper.ContractArchiveNotWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +39,10 @@ public class ContractArchiveNotServiceImpl extends BaseServiceImpl<ContractArchi
 	@Override
 	public ContractArchiveNotResponseVO getLastById(Long id) {
 		ContractArchiveNotEntity lastVoEntity=archiveNotMapper.selectArchiveNotLastById(id);
-		return ContractArchiveNotWrapper.build().entityPV(lastVoEntity);
+		if (Func.isNull(lastVoEntity)){
+			return null;
+		}else {
+			return ContractArchiveNotWrapper.build().entityPV(lastVoEntity);
+		}
 	}
 }

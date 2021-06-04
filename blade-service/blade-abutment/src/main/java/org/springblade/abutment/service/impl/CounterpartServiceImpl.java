@@ -5,8 +5,6 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.methods.HttpHead;
 import org.springblade.abutment.entity.CounterpartEntity;
 import org.springblade.abutment.service.ICounterpartService;
 import org.springblade.abutment.vo.CounterpartVo;
@@ -90,6 +88,7 @@ public class CounterpartServiceImpl implements ICounterpartService{
 		if ("success".equals(docInfoJson.getStr("msg"))){
 			vo.setInsert(docInfoJson.get("insert", List.class));
 			vo.setUpdate(docInfoJson.get("update", List.class));
+			vo=JSONUtil.toBean(docInfoJson,CounterpartVo.class);
 			return R.data(vo);
 		}else {
 			return R.data(HttpStatus.NOT_FOUND.value(),null,"未查到数据");

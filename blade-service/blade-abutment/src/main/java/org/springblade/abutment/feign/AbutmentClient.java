@@ -23,6 +23,7 @@ import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
@@ -1620,12 +1621,13 @@ public class AbutmentClient implements IAbutmentClient {
 	@Override
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
+		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
 		CounterpartVo counterpartVo = null;
 		String token = counterpartService.getToken();
 		log.info("获取相对方的token：" + JsonUtil.toJson(token));
 		entity.setToken(token);
 		if (StrUtil.isNotEmpty(entity.getToken())) {
-			counterpartVo = counterpartService.getInsOrUp(entity).getData();
+			counterpartVo =counterpartService.getInsOrUp(entity).getData();
 			if (Func.isNull(counterpartVo)) {
 				return R.data(500, null, "获取数据失败！");
 			}
@@ -1640,7 +1642,10 @@ public class AbutmentClient implements IAbutmentClient {
 				in.setName(i.getCustNm());
 				in.setUnifiedSocialCreditCode(i.getBusinessId());
 				in.setOrganizationCode(i.getBusinessId());
-				listInsert.add(in);
+				List<ContractCounterpartEntity> entityList = contractClient.selectByName(in.getUnifiedSocialCreditCode()).getData();
+				if (Func.isEmpty(entityList)){
+					listInsert.add(in);
+				}
 			});
 			if (Func.isNotEmpty(listInsert)) {
 				contractClient.saveBatch(listInsert);
@@ -1656,9 +1661,16 @@ public class AbutmentClient implements IAbutmentClient {
 			log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
 			listUpdate.forEach(l -> {
 				List<ContractCounterpartEntity> entityList = contractClient.selectByName(l.getUnifiedSocialCreditCode()).getData();
+				ContractCounterpartEntity ce=new ContractCounterpartEntity();
 				if (Func.isNotEmpty(entityList)) {
-					l.setId(entityList.get(0).getId());
-					contractClient.updateById(l);
+					BeanUtil.copy(entityList.get(0),ce);
+					//相对方名称
+					ce.setName(l.getName());
+					//更名每月检视(编号)
+					ce.setRenameReview(simpleDateFormat.format(new Date()));
+					//半角名称
+					ce.setHalfWidthName(l.getName());
+					contractClient.updateById(ce);
 				}
 			});
 		} else {

@@ -15,7 +15,8 @@ api:
     tokenUrl: https://unici.pec.com.cn/common/user/access
     tokenSY: https://unici.pec.com.cn/common/file/addWatermark
     tokenXZ: https://unici.pec.com.cn/common/file/downloadWaterMarkDoc/
-
+  signing:
+    day: 15
 logging:
   config: classpath:logback.xml
 xxl:

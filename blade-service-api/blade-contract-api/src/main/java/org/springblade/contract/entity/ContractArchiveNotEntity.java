@@ -58,8 +58,8 @@ public class ContractArchiveNotEntity extends BaseEntity {
 	/**
 	 * 预计归档时间
 	 */
-    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
+    @DateTimeFormat(pattern = DateUtil.PATTERN_DATETIME)
+    @JsonFormat(pattern = DateUtil.PATTERN_DATETIME)
     @ApiModelProperty(value="预计归档时间")
 	private Date estimateArchiveDate;
 	/**
