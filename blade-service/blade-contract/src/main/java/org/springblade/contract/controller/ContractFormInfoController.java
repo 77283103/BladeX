@@ -304,7 +304,11 @@ public class ContractFormInfoController extends BladeController {
 		//开始接口处理
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			r = contractFormInfoService.SingleSign(R.data(entity));
+			if ("1".equals(entity.getContractForm())){
+				r = contractFormInfoService.SingleSign(R.data(entity));
+			}else {
+				r = contractFormInfoService.SingleSignE(R.data(entity));
+			}
 			if (r.getCode() != HttpStatus.OK.value()) {
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
@@ -394,7 +398,11 @@ public class ContractFormInfoController extends BladeController {
 		log.info("独立起草新增-处理电子签章和oa流程：{}", entity.getContractStatus());
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			r = contractFormInfoService.SingleSign(R.data(entity));
+			if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm()) ){
+				r = contractFormInfoService.SingleSign(R.data(entity));
+			}else {
+				r = contractFormInfoService.SingleSignE(R.data(entity));
+			}
 			log.info("独立起草新增-处理电子签章和oa流程结果:{}", JsonUtil.toJson(r));
 			if (r.getCode() != HttpStatus.OK.value()) {
 				entity.setContractStatus(CHANGE_REVIEW_STATUS);

@@ -61,6 +61,7 @@
         <result column="a_bank_name" property="aBankName"/>
         <result column="a_account_name" property="aAccountName"/>
         <result column="ekp_number" property="ekpNumber"/>
+        <result column="file_person" property="filePerson"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -124,7 +125,8 @@
         a_bank_number,
         a_bank_name,
         a_account_name,
-        ekp_number
+        ekp_number,
+        file_person
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">
@@ -198,7 +200,8 @@
         <include refid="baseColumnList"/>
         FROM contract_form_info
         WHERE is_deleted=0
-        AND contract_status=#{status}
+        AND contract_status IN (#{status})
+        AND contract_form IN (2,4)
     </select>
     <!--  变更合同详情  -->
     <select id="selectByChangeId" resultMap="formInfoResultMap">

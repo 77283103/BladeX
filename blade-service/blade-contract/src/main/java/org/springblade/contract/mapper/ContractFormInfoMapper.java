@@ -99,7 +99,7 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	ContractFormInfoEntity selectById(Long id);
 	/**
-	 * 合同详情
+	 * 查询实体合同合同对应状态的信息
 	 * @param status
 	 * @return
 	 */

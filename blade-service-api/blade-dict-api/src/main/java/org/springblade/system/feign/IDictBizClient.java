@@ -22,6 +22,8 @@ import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.DictBiz;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -43,6 +45,7 @@ public interface IDictBizClient {
 	String GET_VALUES = API_PREFIX + "/dict-biz/get-values";
 	String GET_LIST = API_PREFIX + "/dict-biz/get-list";
 	String GET_KEY = API_PREFIX + "/dict-biz/get-key";
+	String INFO = API_PREFIX + "/dict-biz/info";
 
 	/**
 	 * 获取字典实体
@@ -62,24 +65,27 @@ public interface IDictBizClient {
 	 */
 	@GetMapping(GET_VALUE)
 	R<String> getValue(@RequestParam("code") String code, @RequestParam("dictKey") String dictKey);
+
 	/**
 	 * 获取字典表对应键
 	 *
-	 * @param code    字典编号
+	 * @param code      字典编号
 	 * @param dictValue 字典序号
 	 * @return
 	 */
 	@GetMapping(GET_KEY)
 	R<String> getKey(@RequestParam("code") String code, @RequestParam("dictValue") String dictValue);
+
 	/**
 	 * 获取字典表对应中文
 	 *
-	 * @param code    字典编号
-	 * @param id 父主键
+	 * @param code 字典编号
+	 * @param id   父主键
 	 * @return
 	 */
 	@GetMapping(GET_VALUES)
 	R<String> getValues(@RequestParam("code") String code, @RequestParam("id") Long id);
+
 	/**
 	 * 获取字典表
 	 *
@@ -89,4 +95,13 @@ public interface IDictBizClient {
 	@GetMapping(GET_LIST)
 	R<List<DictBiz>> getList(@RequestParam("code") String code);
 
+
+	/**
+	 * 新增或修改
+	 *
+	 * @param dict
+	 * @return
+	 */
+	@PostMapping(INFO)
+	R<Boolean> submit(@RequestBody DictBiz dict);
 }

@@ -381,7 +381,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("ywlAgreementPeriodStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("ywlAgreementPeriodEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
 			dataModel.put("ywlProductionCosts", j.get("ywlProductionCosts"));
-			dataModel.put("ywlAmountOf", MoneyToChiness.tenThousand(j.get("ywlProductionCosts").toString()));
+			dataModel.put("ywlAmountOf", MoneyToChiness.moneyToChinese(j.get("ywlProductionCosts").toString()));
 			dataModel.put("ywlOtherConventions", j.get("ywlOtherConventions"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
@@ -413,11 +413,12 @@ public enum TemplateExporterEnum {
 				if (ContractFormInfoTemplateContract.CONTRACT_MTADAPTATIONCONTRACT2.equals(templateField.getRelationCode())) {
 					MtlAdaptationContract2 = JSON.parseArray(templateField.getTableData(), MtlAdaptationContract2ResponseVO.class);
 					if ("未".equals(j.get("mtlHaveHasNot"))){
+						MtlAdaptationContract2.clear();
 						MtlAdaptationContract2ResponseVO mtlAdaptationContract2=new MtlAdaptationContract2ResponseVO();
-						mtlAdaptationContract2.setIntellectualProperty("\\");
-						mtlAdaptationContract2.setSample("\\");
-						mtlAdaptationContract2.setUseArea("\\");
-						mtlAdaptationContract2.setServiceLife("\\");
+						mtlAdaptationContract2.setIntellectualProperty("//");
+						mtlAdaptationContract2.setSample("//");
+						mtlAdaptationContract2.setUseArea("//");
+						mtlAdaptationContract2.setServiceLife("//");
 						MtlAdaptationContract2.add(mtlAdaptationContract2);
 					}
 //					for (int i = 0; i < jsonArr.size(); i++) {
@@ -469,6 +470,7 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 			List<SclConstructionProject1ResponseVO> SclConstructionProject1 = new ArrayList();
 			List<SclConstructionProject2ResponseVO> SclConstructionProject2 = new ArrayList();
 			List<SclConstructionProject3ResponseVO> SclConstructionProject3 = new ArrayList();
@@ -523,37 +525,22 @@ public enum TemplateExporterEnum {
 			dataModel.put("SclConstructionProject3", SclConstructionProject3);
 			//主表
 			SclConstructionProjectEntity sclConstructionProject = JSONObject.toJavaObject(j, SclConstructionProjectEntity.class);
-			dataModel.put("sclOrderingParty", j.get("sclOrderingParty"));
-			dataModel.put("sclPartyAddress", j.get("sclPartyAddress"));
-			dataModel.put("sclContractor", j.get("sclContractor"));
-			dataModel.put("sclAddressOfContractor", j.get("sclAddressOfContractor"));
-			dataModel.put("sclStartTime", j.get("sclStartTime"));
-			dataModel.put("sclCompletionTime", j.get("sclCompletionTime"));
-			dataModel.put("sclExpenseBearingParty", j.get("sclExpenseBearingParty"));
-			dataModel.put("sclExpenseBearingParty1", j.get("sclExpenseBearingParty1"));
-			dataModel.put("sclProcessingWay", j.get("sclProcessingWay"));
-			dataModel.put("sclRiskOfLoss", j.get("sclRiskOfLoss"));
-			dataModel.put("sclDateOfRequest", j.get("sclDateOfRequest"));
-			dataModel.put("sclNameOfBank", j.get("sclNameOfBank"));
-			dataModel.put("sclAccountName", j.get("sclAccountName"));
-			dataModel.put("sclBankNumber", j.get("sclBankNumber"));
-			dataModel.put("sclDeposit", j.get("sclDeposit"));
-			dataModel.put("sclDeposits", j.get("sclDeposits"));
-			dataModel.put("sclPenalties", j.get("sclPenalties"));
-			dataModel.put("sclBreachOfContract", j.get("sclBreachOfContract"));
-			dataModel.put("sclDatatime", j.get("sclDatatime"));
-			dataModel.put("sclPaymentTime", j.get("sclPaymentTime"));
-			dataModel.put("sclProcessingFee1", j.get("sclProcessingFee1"));
-			dataModel.put("sclBreachOfContract78", j.get("sclBreachOfContract78"));
-			dataModel.put("sclBreachOfContract711", j.get("sclBreachOfContract711"));
-			dataModel.put("sclBreachOfContract712", j.get("sclBreachOfContract712"));
-			dataModel.put("sclBreachOfContract7151", j.get("sclBreachOfContract7151"));
-			dataModel.put("sclBreachOfContract7152", j.get("sclBreachOfContract7152"));
-			dataModel.put("sclPaid", j.get("sclPaid"));
-			dataModel.put("sclOrderingParty", j.get("sclOrderingParty"));
-			dataModel.put("sclContractor", j.get("sclContractor"));
-			dataModel.put("sclPartyAddress", j.get("sclPartyAddress"));
-			dataModel.put("sclAddressOfContractor", j.get("sclAddressOfContractor"));
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			dataModel.put("sclOrderingParty", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+			dataModel.put("sclContractor", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
+			dataModel.put("sclStartTime", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("sclCompletionTime", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
+			dataModel.put("annex",j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -1113,6 +1100,16 @@ public enum TemplateExporterEnum {
 				//平面广告拍摄制作合同 关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_MTBPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
 					MtbProductionContract2 = JSON.parseArray(templateField.getTableData(), MtbProductionContract2ResponseVO.class);
+					MtbProductionContract2.clear();
+					if ("未".equals(j.get("mtbHaveHasNot"))){
+						MtbProductionContract2.clear();
+						MtbProductionContract2ResponseVO mtlAdaptationContract2=new MtbProductionContract2ResponseVO();
+						mtlAdaptationContract2.setIntellectualProperty("//");
+						mtlAdaptationContract2.setSmallKind("//");
+						mtlAdaptationContract2.setUseArea("//");
+						mtlAdaptationContract2.setServiceLife("//");
+						MtbProductionContract2.add(mtlAdaptationContract2);
+					}
 //					for (int i = 0; i < mtbProductionContract2List.size(); i++) {
 //						JSONObject mtbProductionContract2 = JSON.parseObject(JSON.toJSONString(mtbProductionContract2List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //						Map<String, Object> map = new HashMap();

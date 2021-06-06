@@ -84,12 +84,20 @@ public class AbutmentClient implements IAbutmentClient {
 	private String fdTemplateId;
 	@Value("${api.ekp.appTemplateId}")
 	private String appTemplateId;
-
 	@Value("${api.eSeal.downloadUrl}")
 	private String downloadUrl;
-
 	@Value("${api.ekp.ftlPath}")
 	private String ftlPath;
+	@Value("${api.contract.notSign.status}")
+	private String status;
+	@Value("${api.contract.notSign.firstWarning}")
+	private String firstWarning;
+	@Value("${api.contract.notSign.secondWarning}")
+	private String secondWarning;
+	@Value("${api.contract.notSign.thirdWarning}")
+	private String thirdWarning;
+	@Value("${api.contract.notSign.estimateWarning}")
+	private String estimateWarning;
 
 	/**
 	 * 模板审批
@@ -285,10 +293,22 @@ public class AbutmentClient implements IAbutmentClient {
 				formValuesEntity.setFd_contract_url("");
 				//合同起草流程类型
 				if ("10".equals(entity.getContractSoure()) || "20".equals(entity.getContractSoure())) {
-					//合同附件名称
+					//合同形式
+					formValuesEntity.setFd_contract_no(entity.getContractForm());
+					//合同附件名称   合同附件：电子合同 附件只上传一份需要盖章的合同文本     实体合同需要上传多份合同文本
 					List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
 					if (fileVO.size() > 0) {
-						formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
+						if ("2".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
+							StringBuilder name = new StringBuilder();
+							fileVO.forEach(f -> {
+								name.append(f.getName());
+								name.append(",");
+							});
+							name.substring(0, name.length());
+							formValuesEntity.setFd_contract_name(name.toString());
+						} else {
+							formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
+						}
 					}
 					if ("10".equals(entity.getContractSoure())) {
 						formValuesEntity.setFd_contract_type("10");
@@ -527,8 +547,6 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_back_time(sdf.format(entity.getContractBond().get(0).getPlanReturnTime()));
 					}
 				}
-				//合同形式
-				formValuesEntity.setFd_contract_no(entity.getContractForm());
 				//相对方联系人
 				formValuesEntity.setFd_linkman(entity.getCounterpartPerson());
 				//相对方联系电话
@@ -678,7 +696,7 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_contract_name(fileText.get(0).getName());
 				}
 				//合同起草类型  可能设计变更暂时做判断
-				if("20".equals(entity.getContractSoure())){
+				if ("20".equals(entity.getContractSoure())) {
 					formValuesEntity.setFd_contract_type("40");
 				}
 				//合同主旨
@@ -1166,21 +1184,28 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_SIG_FORM_POST)
-	public R<List<EkpVo>> pushNotSig() {
+	public R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity) {
 		List<EkpVo> ekpVo = new ArrayList<>();
 		HashMap<String, String> mapVo = new HashMap<>();
 		//KEP接口传输的入参
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
-		List<ContractFormInfoEntity> formInfoEntities = contractClient.getByStatus("50").getData();
-		if (Func.isNull(formInfoEntities) || Func.isEmpty(formInfoEntities)){
-			return R.data(200,ekpVo,"暂无数据推送");
+		List<ContractFormInfoEntity> formInfoEntities=new ArrayList<>();
+		if ("0".equals(entity.getFilePerson())) {
+			//第一次预警时机：合同用印审批流通过后即发出代办于申请人系统
+			formInfoEntities.add(entity);
+		} else {
+			 formInfoEntities = contractClient.getByStatus(this.status).getData();
+			if (Func.isNull(formInfoEntities) || Func.isEmpty(formInfoEntities)) {
+				return R.data(200, ekpVo, "暂无数据推送");
+			}
+			formInfoEntities.forEach(l -> {
+				int day = differentDaysByMillisecond(l.getCreateTime(), new Date());
+				mapVo.put("day", String.valueOf(day));
+
+				mapVo.put("contractName", l.getContractName() + "---（归档预警：请及时归档）");
+			});
+			log.info("需要推送的符合条件的数据：" + JsonUtil.toJson(formInfoEntities));
 		}
-		formInfoEntities.forEach(l -> {
-			int day = differentDaysByMillisecond(l.getCreateTime(), new Date());
-			mapVo.put("day", String.valueOf(day));
-			mapVo.put("contractName", l.getContractName() + "---（归档预警：请及时归档）");
-		});
-		log.info("需要推送的符合条件的数据：" + JsonUtil.toJson(formInfoEntities));
 		//获取TOKEN
 		pushEkpEntity.setToken(ekpService.getToken());
 		if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
@@ -1197,7 +1222,15 @@ public class AbutmentClient implements IAbutmentClient {
 				//fdTemplateId 表单模版ID
 				pushEkpEntity.setFdTemplateId(this.fdTemplateId);
 				//docSubject 合同主旨
-				pushEkpEntity.setDocSubject("---（归档预警：请及时归档）" + f.getContractName());
+				if ("0".equals(f.getFilePerson())){
+					pushEkpEntity.setDocSubject("《"+f.getContractName()+"》合同，合同编号为"+f.getContractNumber()+this.firstWarning);
+				}else if ("15".equals(f.getFilePerson())){
+					pushEkpEntity.setDocSubject("《"+f.getContractName()+"》合同，合同编号为"+f.getContractNumber()+this.secondWarning);
+				}else if ("45".equals(f.getFilePerson())){
+					pushEkpEntity.setDocSubject("对《"+f.getContractName()+"》合同，合同编号为"+f.getContractNumber()+this.thirdWarning);
+				}else {
+					pushEkpEntity.setDocSubject("《"+f.getContractName()+"》"+this.estimateWarning);
+				}
 				//formValues 主要内容
 				FormValuesEntity formValuesEntity = new FormValuesEntity();
 				formValuesEntity.setFd_contract_id(f.getId().toString());
@@ -1431,10 +1464,11 @@ public class AbutmentClient implements IAbutmentClient {
 		}
 		return formValuesEntity;
 	}
-	public static String deleteCharString0(String sourceString, char chElemData,char chElemDate1,char chElemDate2) {
+
+	public static String deleteCharString0(String sourceString, char chElemData, char chElemDate1, char chElemDate2) {
 		StringBuilder deleteString = new StringBuilder();
 		for (int i = 0; i < sourceString.length(); i++) {
-			if (sourceString.charAt(i) != chElemData && sourceString.charAt(i) != chElemDate1  && sourceString.charAt(i) != chElemDate2) {
+			if (sourceString.charAt(i) != chElemData && sourceString.charAt(i) != chElemDate1 && sourceString.charAt(i) != chElemDate2) {
 				deleteString.append(sourceString.charAt(i));
 			}
 		}
@@ -1621,13 +1655,13 @@ public class AbutmentClient implements IAbutmentClient {
 	@Override
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
-		SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		CounterpartVo counterpartVo = null;
 		String token = counterpartService.getToken();
 		log.info("获取相对方的token：" + JsonUtil.toJson(token));
 		entity.setToken(token);
 		if (StrUtil.isNotEmpty(entity.getToken())) {
-			counterpartVo =counterpartService.getInsOrUp(entity).getData();
+			counterpartVo = counterpartService.getInsOrUp(entity).getData();
 			if (Func.isNull(counterpartVo)) {
 				return R.data(500, null, "获取数据失败！");
 			}
@@ -1643,7 +1677,7 @@ public class AbutmentClient implements IAbutmentClient {
 				in.setUnifiedSocialCreditCode(i.getBusinessId());
 				in.setOrganizationCode(i.getBusinessId());
 				List<ContractCounterpartEntity> entityList = contractClient.selectByName(in.getUnifiedSocialCreditCode()).getData();
-				if (Func.isEmpty(entityList)){
+				if (Func.isEmpty(entityList)) {
 					listInsert.add(in);
 				}
 			});
@@ -1661,9 +1695,9 @@ public class AbutmentClient implements IAbutmentClient {
 			log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
 			listUpdate.forEach(l -> {
 				List<ContractCounterpartEntity> entityList = contractClient.selectByName(l.getUnifiedSocialCreditCode()).getData();
-				ContractCounterpartEntity ce=new ContractCounterpartEntity();
+				ContractCounterpartEntity ce = new ContractCounterpartEntity();
 				if (Func.isNotEmpty(entityList)) {
-					BeanUtil.copy(entityList.get(0),ce);
+					BeanUtil.copy(entityList.get(0), ce);
 					//相对方名称
 					ce.setName(l.getName());
 					//更名每月检视(编号)

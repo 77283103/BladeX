@@ -3,7 +3,6 @@ package org.springblade.abutment.feign;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.ContractBorrowApplicationEntity;
-import org.springblade.contract.entity.ContractBorrowHandleEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -100,7 +99,7 @@ public interface IAbutmentClient {
 	 * @return
 	 */
 	@PostMapping(EKP_SIG_FORM_POST)
-	R<List<EkpVo>> pushNotSig();
+	R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity);
 	/**
 	 * 获取依据信息
 	 * @param entity

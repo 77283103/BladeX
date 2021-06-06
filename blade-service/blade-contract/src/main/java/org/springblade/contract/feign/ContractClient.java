@@ -1,12 +1,10 @@
 package org.springblade.contract.feign;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.feign.IAbutmentClient;
-import org.springblade.contract.entity.ContractCounterpartEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractSigningEntity;
-import org.springblade.contract.entity.ContractTemplateEntity;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.mapper.ContractTemplateMapper;
@@ -39,15 +37,15 @@ import java.util.List;
 @Slf4j
 @ApiIgnore
 @RestController
-public class ContractClient implements IContractClient{
-    @Autowired
+public class ContractClient implements IContractClient {
+	@Autowired
 	private IFileClient fileClient;
 	@Autowired
 	private IAbutmentClient abutmentClient;
 	@Autowired
 	private IContractArchiveNotService notService;
 	@Autowired
-    private IContractFormInfoService formInfoService;
+	private IContractFormInfoService formInfoService;
 	@Autowired
 	private ContractFormInfoMapper contractFormInfoMapper;
 	@Autowired
@@ -57,15 +55,23 @@ public class ContractClient implements IContractClient{
 	@Autowired
 	private IContractSigningService contractSigningService;
 	@Autowired
+	private IContractSealUsingInfoService sealUsingInfoService;
+	@Autowired
 	private IContractCounterpartService iContractCounterpartService;
 	@Autowired
 	private ContractCounterpartMapper counterpartMapper;
 	@Autowired
 	private IContractCounterpartService counterpartService;
 	//模板路径
-	private static final String ftlPath="D:/ftl/";
-	@Value("${api.signing.day}")
-	private Integer signingDays;
+	private static final String ftlPath = "D:/ftl/";
+	@Value("${api.signing.day.fifteen}")
+	private Integer signingDaysFifteen;
+	@Value("${api.signing.day.fortyfive}")
+	private Integer signingDaysFortyFive;
+	@Value("${api.signing.day.zero}")
+	private Integer signingDaysZero;
+	@Value("${api.signing.day.estimate}")
+	private Integer estimate;
 
 	@Override
 	public R<Boolean> saveBatch(List<ContractCounterpartEntity> listInsert) {
@@ -82,38 +88,53 @@ public class ContractClient implements IContractClient{
 		return R.data(counterpartMapper.selectByName(unifiedSocialCreditCode));
 	}
 
-	//private static final String ftlPath="/ftl/";
-    @Override
-    @GetMapping(CONTRACT)
-    public R<ContractFormInfoResponseVO> getById(Long id) {
-        return R.data(formInfoService.getById(id));
-    }
+	@Override
+	@GetMapping(CONTRACT)
+	public R<ContractFormInfoResponseVO> getById(Long id) {
+		return R.data(formInfoService.getById(id));
+	}
 
 	@Override
 	@GetMapping(STATUS)
 	public R<List<ContractFormInfoEntity>> getByStatus(String status) {
 		List<ContractFormInfoEntity> infoEntityList = new ArrayList<>();
 		List<ContractFormInfoEntity> formInfoEntities = formInfoService.getByStatus(status);
-		if (Func.isNull(formInfoEntities) || Func.isEmpty(formInfoEntities)){
-			return R.data(200,formInfoEntities,"暂无数据推送");
+		if (Func.isNull(formInfoEntities) || Func.isEmpty(formInfoEntities)) {
+			return R.data(200, formInfoEntities, "暂无数据推送");
 		}
+		//查询出用印申请通过未归档的合同信息  根据超期时间分别提示不同信息内容
+		//情况一：   正常超期提示
+		//情况二：   合同续约的合同超期提示
 		formInfoEntities.forEach(ls -> {
-			ContractArchiveNotResponseVO archiveNot=notService.getLastById(ls.getId());
-			if (Func.isEmpty(archiveNot) || Func.isNull(archiveNot)){
+			ContractArchiveNotResponseVO archiveNot = notService.getLastById(ls.getId());
+			//查询是否填写未归档信息 没有
+			if (Func.isEmpty(archiveNot) || Func.isNull(archiveNot)) {
 				int day = differentDaysByMillisecond(ls.getCreateTime(), new Date());
-				if (day >= signingDays) {
+				if (day >= this.signingDaysFifteen) {
+					//超期十五天
+					ls.setFilePerson(String.valueOf(this.signingDaysFifteen));
+					infoEntityList.add(ls);
+				} else if (day > this.signingDaysFortyFive) {
+					//超期四十五天
+					ls.setFilePerson(String.valueOf(this.signingDaysFortyFive));
 					infoEntityList.add(ls);
 				}
-			}else {
+			} else {
+				//未归档信息填写时间与计划归档时间
 				int archDay = differentDaysByMillisecond(archiveNot.getCreateTime(), archiveNot.getEstimateArchiveDate());
+				//未归档信息填写时间与当前时间
 				int notDay = differentDaysByMillisecond(archiveNot.getCreateTime(), new Date());
+				//判断是否超过计划归档时间，是则添加到预警提示信息列表
 				if (notDay >= archDay) {
+					//超期预计归档时期
+					ls.setFilePerson(String.valueOf(this.estimate));
 					infoEntityList.add(ls);
 				}
 			}
 		});
-		return R.data(200,infoEntityList,"需要推送的数据");
+		return R.data(200, infoEntityList, "需要推送的数据");
 	}
+
 	/**
 	 * 通过时间秒毫秒数判断两个时间的间隔
 	 *
@@ -125,6 +146,7 @@ public class ContractClient implements IContractClient{
 		int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
 		return days;
 	}
+
 	@Override
 	@GetMapping(CHOOSE)
 	public R<List<ContractFormInfoEntity>> getChooseList() {
@@ -134,10 +156,10 @@ public class ContractClient implements IContractClient{
 	@Override
 	@PostMapping(TEMPLATE_UPDATE)
 	public R<ContractTemplateResponseVO> templateUpdate(TemplateEntity entity) {
-		ContractTemplateEntity templateFieldEntity=new ContractTemplateEntity();
+		ContractTemplateEntity templateFieldEntity = new ContractTemplateEntity();
 		QueryWrapper<ContractTemplateEntity> queryWrapper = Condition.getQueryWrapper(templateFieldEntity)
-			.eq("template_code",entity.getTemplateCode())
-			.eq("is_deleted",0);
+			.eq("template_code", entity.getTemplateCode())
+			.eq("is_deleted", 0);
 			/*.eq("template_status","10")
 			.or().eq("template_status","40");*/
 		List<ContractTemplateEntity> list = templateService.list(queryWrapper);
@@ -152,58 +174,59 @@ public class ContractClient implements IContractClient{
 		return null;
 	}
 
+	@SneakyThrows
 	@Override
 	@GetMapping(CONTRACT_SAVE)
 	public R saveContractFormInfo(Long id, String status) {
 		ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
-		if(Func.isEmpty(contractFormInfo)){
+		if (Func.isEmpty(contractFormInfo)) {
 			return R.fail("合同信息不存在");
 		}
 		//审批通过
-		if("30".equals(status)){
-			log.info("审批状态为25说明为驳回，30说明为审批通过，140说明为起草废除,此节点状态为："+status);
-			if("1".equals(contractFormInfo.getContractForm())){
-				log.info("合同形式为1表示为电子签章-我司平台，审批通过后直接转到已归档节点（待结案），至此合同形式为："+contractFormInfo.getContractForm());
+		if ("30".equals(status)) {
+			log.info("审批状态为25说明为驳回，30说明为审批通过，140说明为起草废除,此节点状态为：" + status);
+			if ("1".equals(contractFormInfo.getContractForm())) {
+				log.info("合同形式为1表示为电子签章-我司平台，审批通过后直接转到已归档节点（待结案），至此合同形式为：" + contractFormInfo.getContractForm());
 				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 				String date = df.format(new Date());
 				ContractSigningEntity entity = new ContractSigningEntity();
+				ContractSealUsingInfoEntity sealUsingInfoEntity=new ContractSealUsingInfoEntity();
+				//关联合同ID
 				entity.setContractId(contractFormInfo.getId());
-				/*File filePDF=null;
-				FileOutputStream fos = null;
-				try {
-					filePDF = new File(ftlPath + contractFormInfo.getContractListName() +date+ ".pdf");
-					fos = new FileOutputStream(filePDF);
-					R<String> token=abutmentClient.token();
-					String url="http://sa.pec.com.cn:9080/common/file/downloadSinged?id="+contractFormInfo.getTextFilePdf()+"&token="+token.getData();
-					fos.write(AsposeWordToPdfUtils.getUrlFileData(url));
-					fos.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				File filePDFNew=new File(ftlPath + contractFormInfo.getContractListName() +date+ ".pdf");
-				R<FileVO> filePDFVO = null;
-				try {
-					MultipartFile multipartFile = new MockMultipartFile("file", filePDFNew.getName(),
-						ContentType.MULTIPART.toString(), new FileInputStream(filePDFNew));
-					filePDFVO = fileClient.save(multipartFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				assert filePDFVO != null;
-				entity.setTextFiles(filePDFVO.getData().getId() + ",");*/
+				sealUsingInfoEntity.setRefContractId(contractFormInfo.getId());
+				//签订时间 用印时间
+				entity.setSignDate(new Date());
+				sealUsingInfoEntity.setSignTime(new Date());
+				//合同起止时间
+				entity.setContractStartTime(contractFormInfo.getStartingTime());
+				entity.setContractEndTime(contractFormInfo.getEndTime());
+				//用印申请人 部门
+				sealUsingInfoEntity.setSignPerson(contractFormInfo.getCreateUserName());
+				sealUsingInfoEntity.setManager(contractFormInfo.getCreateUserName());
+				sealUsingInfoEntity.setManageDept(contractFormInfo.getCreateDeptName());
+				sealUsingInfoEntity.setManageUnit(contractFormInfo.getCreateDeptName());
+				//备注
+				entity.setRemark("电子合同-我司用印");
+				sealUsingInfoEntity.setSignRemark("电子合同-我司用印");
+				//递交方式
 				entity.setSubmissionType(" ");
+				//收件人
 				entity.setAddressee(" ");
 				contractSigningService.save(entity);
-				log.info("并创建保存对应合同的归档信息："+entity.getContractId());
+				sealUsingInfoService.save(sealUsingInfoEntity);
+				log.info("并创建保存对应合同的归档信息：" + entity.getContractId());
 				contractFormInfo.setContractStatus("60");
-			}else if("3".equals(contractFormInfo.getContractForm())){
-				log.info("合同形式为3表示为电子合同-对方平台，审批通过后直接转到用印节点（带手动归档），至此合同形式为："+contractFormInfo.getContractForm());
+			} else if ("3".equals(contractFormInfo.getContractForm())) {
+				log.info("合同形式为3表示为电子合同-对方平台，审批通过后直接转到用印节点（需要手动归档），至此合同形式为：" + contractFormInfo.getContractForm());
 				contractFormInfo.setContractStatus("50");
-			}else{
-				log.info("合同形式为2，4表示为实体签章-我司不用电子印/实体签章-我司用电子印，审批通过后转到印节，至此合同形式为："+contractFormInfo.getContractForm());
+			} else {
+				log.info("合同形式为2，4表示为实体签章-我司不用电子印/实体签章-我司用电子印，审批通过后转到印节，至此合同形式为：" + contractFormInfo.getContractForm());
 				contractFormInfo.setContractStatus("30");
+				//实体合同需要第一次预警时机：合同用印审批流通过后即发出代办于申请人系统
+				contractFormInfo.setFilePerson(String.valueOf(this.signingDaysZero));
+				abutmentClient.pushNotSig(contractFormInfo);
 			}
-		}else{
+		} else {
 			contractFormInfo.setContractStatus(status);
 		}
 		formInfoService.saveOrUpdate(contractFormInfo);
@@ -213,7 +236,7 @@ public class ContractClient implements IContractClient{
 	@Override
 	@GetMapping(TEMPLATE_GET_ID)
 	public R<ContractTemplateEntity> getByTemplateId(Long id) {
-		ContractTemplateEntity templateFieldEntity=templateService.getById(id);
+		ContractTemplateEntity templateFieldEntity = templateService.getById(id);
 		return R.data(templateFieldEntity);
 	}
 }

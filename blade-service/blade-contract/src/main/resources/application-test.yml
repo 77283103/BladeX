@@ -17,8 +17,17 @@ api:
     tokenXZ: http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/
     username: admin_ekp
     password: c5c85e7ef7747ce3f1649f44feb8b3bf
+  #    合同未归档预警时机时间
+  #    fifteen   表示超期十五天二次预警
+  #    fortyfive 表示超期四十五天三次预警
+  #    zero      表示审批通过一次预警
+  #    estimate  表示超期预计归档时期预警
   signing:
-    day: 15
+    day:
+      fifteen: 15
+      fortyfive: 45
+      zero: 0
+      estimate: 1
 
 
 logging:

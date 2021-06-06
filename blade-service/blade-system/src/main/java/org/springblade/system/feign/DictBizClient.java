@@ -22,6 +22,7 @@ import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.service.IDictBizService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -66,6 +67,12 @@ public class DictBizClient implements IDictBizClient {
 	@GetMapping(GET_LIST)
 	public R<List<DictBiz>> getList(String code) {
 		return R.data(service.getList(code));
+	}
+
+	@Override
+	@PostMapping(INFO)
+	public R<Boolean> submit(DictBiz dict) {
+		return R.data(service.submit(dict));
 	}
 
 }

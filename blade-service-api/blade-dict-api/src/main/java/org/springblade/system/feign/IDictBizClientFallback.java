@@ -53,4 +53,9 @@ public class IDictBizClientFallback implements IDictBizClient {
 	public R<List<DictBiz>> getList(String code) {
 		return R.fail("获取数据失败");
 	}
+
+	@Override
+	public R<Boolean> submit(DictBiz dict) {
+		return R.fail("保存数据失败");
+	}
 }

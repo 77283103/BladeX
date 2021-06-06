@@ -358,4 +358,5 @@ public interface ISysClient {
 	@GetMapping(GET_DATA_SEAL_AUTHORITY)
 	R<DataSealAuthorityResponseVO> getByIdData(@RequestParam("userId") String userId,
 											   @RequestParam("roleId") String roleId );
+
 }

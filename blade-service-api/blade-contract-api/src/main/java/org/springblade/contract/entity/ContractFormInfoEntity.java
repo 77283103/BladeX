@@ -548,4 +548,9 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "合同EKP单号")
 	private String ekpNumber;
+	/**
+	 * 归档人(可用作归档预警时机的区分字段)
+	 */
+	@ApiModelProperty(value = "归档人(可用作归档预警时机的区分字段)")
+	private String filePerson;
 }

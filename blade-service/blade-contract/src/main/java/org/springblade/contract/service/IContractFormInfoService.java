@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 
 /**
- *  服务类
+ * 服务类
  *
  * @author 史智伟
  * @date : 2020-09-23 18:04:37
@@ -22,13 +22,16 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 分页查询
+	 *
 	 * @param page
 	 * @param contractFormInfo
 	 * @return
 	 */
 	IPage<ContractFormInfoResponseVO> pageList(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo);
+
 	/**
 	 * 統計分析查詢列表
+	 *
 	 * @param page
 	 * @param contractFormInfo
 	 * @return
@@ -37,20 +40,24 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 统计分析分页查询
+	 *
 	 * @param page
 	 * @param contractFormInfo
 	 * @return
 	 */
 	IPage<ContractFormInfoResponseVO> pageListStatistics(IPage<ContractFormInfoEntity> page, ContractFormInfoRequestVO contractFormInfo);
+
 	/**
 	 * 修改合同状态
+	 *
 	 * @param contractStatus,id
 	 * @return
 	 */
-	boolean updateExportStatus(String contractStatus,Long id);
+	boolean updateExportStatus(String contractStatus, Long id);
 
 	/**
 	 * 用印分页查询
+	 *
 	 * @param page
 	 * @param contractFormInfoRequestVO
 	 * @return
@@ -60,6 +67,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 相对方保存方法
+	 *
 	 * @param vo 合同信息
 	 * @return
 	 */
@@ -67,6 +75,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 依据保存方法
+	 *
 	 * @param vo 合同信息
 	 * @return
 	 */
@@ -74,12 +83,14 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 保存合同用印关联id数据方法
+	 *
 	 * @param vo
 	 */
 	void saveSeal(ContractFormInfoRequestVO vo);
 
 	/**
 	 * 合同评估保存方法
+	 *
 	 * @param vo
 	 */
 	void saveAssessment(ContractFormInfoRequestVO vo);
@@ -87,18 +98,21 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 合同归档保存方法
+	 *
 	 * @param vo 获取对应的合同id和归档id属性
 	 */
 	void saveArchive(ContractFormInfoRequestVO vo);
 
 	/**
 	 * 合同签订保存方法
+	 *
 	 * @param vo 从合同vo里面获取对应id数据
 	 */
 	void saveSigning(ContractFormInfoRequestVO vo);
 
 	/**
 	 * 合同详情
+	 *
 	 * @param id 合同id
 	 * @return
 	 */
@@ -106,63 +120,84 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 合同详情
+	 *
 	 * @param status 合同状态
 	 * @return
 	 */
-	List<ContractFormInfoEntity> getByStatus(String  status);
+	List<ContractFormInfoEntity> getByStatus(String status);
+
 	/**
 	 * 根据合同id查询变更原合同历史版本列表
+	 *
 	 * @param id
 	 * @return
 	 */
 	ContractFormInfoResponseVO getByChangeHistoryId(Long id);
+
 	/**
-	 *统计合同导出次数
-	 * @param id 合同id
-	 * @param fileExportCount 下载次数
+	 * 统计合同导出次数
+	 *
+	 * @param id                 合同id
+	 * @param fileExportCount    下载次数
 	 * @param fileExportCategory 下载状态
 	 */
-	boolean textExportCount(Long id,Integer fileExportCount,String  fileExportCategory);
+	boolean textExportCount(Long id, Integer fileExportCount, String fileExportCategory);
 
 	/**
 	 * 电子签章业务处理
 	 *
-	 * @param r            合同信息
+	 * @param r 合同信息
 	 * @return 返回统计状态
 	 */
 	R<ContractFormInfoEntity> SingleSign(R<ContractFormInfoEntity> r);
 
 	/**
-	 *范本起草保存
+	 * 电子签章业务处理 -实体合同-我司用印   不用印
+	 *
+	 * @param r 合同信息
+	 * @return 返回统计状态
+	 */
+	R<ContractFormInfoEntity> SingleSignE(R<ContractFormInfoEntity> r);
+
+	/**
+	 * 范本起草保存
+	 *
 	 * @param contractFormInfoEntity 合同模板
 	 */
-	ContractFormInfoEntity templateDraft(ContractFormInfoEntity contractFormInfoEntity,String json);
+	ContractFormInfoEntity templateDraft(ContractFormInfoEntity contractFormInfoEntity, String json);
+
 
 	/**
 	 * 合同大类金额
+	 *
 	 * @return list
 	 */
 	List<ContractFormInfoEntity> getAmountList();
 
 	/**
 	 * 合同大类数量
+	 *
 	 * @return list
 	 */
 	List<ContractFormInfoEntity> getNumList();
 
 	/**
 	 * 動態返回合同選擇的下拉選
+	 *
 	 * @return list
 	 */
 	List<ContractFormInfoEntity> getChooseList();
+
 	/**
 	 * 导入合同数据
+	 *
 	 * @param data
 	 */
 	void importContractFormInfo(List<ContractFormInfoImporter> data, MultipartFile file, String json, String contractTemplateId, String contractBigCategory, String contractSmallCategory);
 
 	/**
 	 * 根据合同类型查询已签订合同数量
+	 *
 	 * @param contractBigCategory
 	 * @return
 	 */
@@ -171,13 +206,24 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 查询有编号的合同
+	 *
 	 * @param entity
 	 * @return
 	 */
-	List<ContractFormInfoEntity>  selectByContractNumber(ContractFormInfoEntity entity);
+	List<ContractFormInfoEntity> selectByContractNumber(ContractFormInfoEntity entity);
+
+	/**
+	 * @param entity 合同信息
+	 * @return org.springblade.contract.entity.ContractFormInfoEntity
+	 * @author jitwxs
+	 * @date 2021/6/5 20:49
+	 */
+
+	ContractFormInfoEntity makeContractN(ContractFormInfoEntity entity);
 
 	/**
 	 * 判断电子签章
+	 *
 	 * @param entity
 	 * @param file
 	 * @return
@@ -186,6 +232,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 变更合同详情
+	 *
 	 * @param id
 	 * @return
 	 */

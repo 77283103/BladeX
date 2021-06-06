@@ -42,7 +42,7 @@ public class IAbutmentFallback implements IAbutmentClient {
 	}
 
 	@Override
-	public R<List<EkpVo>> pushNotSig() {
+	public R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity) {
 		return R.fail("请求超时，获取数据失败");
 	}
 
