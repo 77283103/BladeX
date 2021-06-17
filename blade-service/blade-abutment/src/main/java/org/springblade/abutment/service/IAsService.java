@@ -1,9 +1,7 @@
 package org.springblade.abutment.service;
 
 import org.springblade.abutment.vo.AsDictVo;
-import org.springblade.system.entity.DictBiz;
-
-import java.util.List;
+import org.springblade.core.tool.api.R;
 
 /**
  * 用印单位更新接口
@@ -12,5 +10,16 @@ import java.util.List;
  */
 public interface IAsService {
 
-	List<DictBiz> submit(AsDictVo dict);
+	/**
+	 * 获取用印单位更新接口的token
+	 * @return
+	 */
+	String getToken() throws Exception;
+
+	/**
+	 * 获取用印单位更新接口
+	 * @return
+	 * @param token
+	 */
+	R<AsDictVo> getDocInfo(String  token) throws Exception;
 }

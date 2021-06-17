@@ -203,6 +203,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			String[] code = contractFormInfo.getContractStatus().split(",");
 			contractFormInfo.setCode(Arrays.asList(code));
 		}
+		if (Func.isNotEmpty(contractFormInfo.getCreateUserName())){
+			User user = userClient.userInfoByUserName(contractFormInfo.getCreateUserName()).getData();
+			contractFormInfo.setCreateUser(user.getId());
+		}
 		//合同管理员根据长
 		if (Func.isNotEmpty(contractFormInfo.getSealNames())) {
 			log.info("195TAG" + contractFormInfo.getSealNames());
@@ -1364,7 +1368,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		} else {
 			r.setMsg(ekpVo.getMsg());
 			r.setSuccess(false);
-			return R.data(2, null, "EKP推送数据超时，操作失败");
+			r.setCode(ekpVo.getCode());
+			return r;
 		}
 		log.info("ekp返回的code:{}", ekpVo.getCode());
 		log.info("ekp返回的依据ID:{}", ekpVo.getData().getDoc_info());
@@ -1411,8 +1416,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			//doc转为pdf
 			log.info("TAG获取合同文本文件转换成PDF，前端已经处理判空，即断言此处文本获取成功！");
 			newFileDoc =  f.getLink();
+			int suffixL= f.getName().length();
+			log.info("合同文本文件名称的长度："+suffixL);
 			int index = f.getName().lastIndexOf(".");
-			suffix = fileVO.get(0).getName().substring(index + 1,  f.getName().length());
+			log.info("合同文本文件名称不带后缀的长度："+index);
+			suffix = f.getName().substring(suffixL -3,suffixL);
+			log.info("合同文本文件名称的后三位（判断文件后缀类型" +
+				"）："+suffix);
 			//判断是否为pdf文件，pdf文件不需要转换
 			if (!"pdf".equals(suffix)) {
 				newFilePdf = ftlPath +  f.getName().substring(0, index) + date + ".pdf";

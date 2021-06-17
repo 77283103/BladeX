@@ -34,4 +34,6 @@ public class OrganizationEntity {
     private String parentid;
     @ApiModelProperty(value = "查询条件:alterTime(最后修改时间,选填,不填写则返回所有)")
     private String alterTime;
+	@ApiModelProperty(value = "查询条件:ins_date(创建时间,选填,不填写则返回所有)")
+	private String ins_date;
 }

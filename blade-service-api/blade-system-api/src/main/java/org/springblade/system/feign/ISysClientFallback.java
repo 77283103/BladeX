@@ -192,4 +192,8 @@ public class ISysClientFallback implements ISysClient {
 		return R.fail("获取数据失败");
 	}
 
+	@Override
+	public R<String> adminInfo(String sealVale) {
+		return R.fail("获取数据失败");
+	}
 }

@@ -16,7 +16,10 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
+import org.springblade.system.cache.SysCache;
 import org.springblade.system.entity.TemplateEntity;
+import org.springblade.system.user.cache.UserCache;
+import org.springblade.system.user.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +31,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 合同Feign实现类
@@ -109,7 +113,7 @@ public class ContractClient implements IContractClient {
 			ContractArchiveNotResponseVO archiveNot = notService.getLastById(ls.getId());
 			//查询是否填写未归档信息 没有
 			if (Func.isEmpty(archiveNot) || Func.isNull(archiveNot)) {
-				int day = differentDaysByMillisecond(ls.getCreateTime(), new Date());
+				int day = differentDaysByMillisecond(ls.getUpdateTime(), new Date());
 				if (day >= this.signingDaysFifteen) {
 					//超期十五天
 					ls.setFilePerson(String.valueOf(this.signingDaysFifteen));
@@ -190,7 +194,7 @@ public class ContractClient implements IContractClient {
 				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 				String date = df.format(new Date());
 				ContractSigningEntity entity = new ContractSigningEntity();
-				ContractSealUsingInfoEntity sealUsingInfoEntity=new ContractSealUsingInfoEntity();
+				ContractSealUsingInfoEntity sealUsingInfoEntity = new ContractSealUsingInfoEntity();
 				//关联合同ID
 				entity.setContractId(contractFormInfo.getId());
 				sealUsingInfoEntity.setRefContractId(contractFormInfo.getId());
@@ -224,6 +228,10 @@ public class ContractClient implements IContractClient {
 				contractFormInfo.setContractStatus("30");
 				//实体合同需要第一次预警时机：合同用印审批流通过后即发出代办于申请人系统
 				contractFormInfo.setFilePerson(String.valueOf(this.signingDaysZero));
+				//更新合同信息的审核时间
+				formInfoService.updateById(contractFormInfo);
+				log.info("审批通过后查看合同的修改时间是否更新："+formInfoService);
+				//使用更新后的合同信息的审核时间来计算预警时间和预警内容
 				abutmentClient.pushNotSig(contractFormInfo);
 			}
 		} else {
@@ -238,5 +246,52 @@ public class ContractClient implements IContractClient {
 	public R<ContractTemplateEntity> getByTemplateId(Long id) {
 		ContractTemplateEntity templateFieldEntity = templateService.getById(id);
 		return R.data(templateFieldEntity);
+	}
+
+	/**
+	 * epk返回给合同平台未归档信息
+	 * @param id 合同ID
+	 * @param estimateArchiveDate 计划完成时间
+	 * @param notArchiveReason 未归档原因
+	 * @return org.springblade.core.tool.api.R
+	 * @author jitwxs
+	 * @date 2021/6/16 11:28
+	 */
+	@Override
+	@GetMapping(NOT_ARCHIVE_SAVE)
+	public R saverArchiveNot(Long id, Date estimateArchiveDate, String notArchiveReason) {
+		ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
+		if (Func.isEmpty(contractFormInfo)) {
+			return R.fail("合同信息不存在");
+		}
+		ContractArchiveNotEntity notEntity=new ContractArchiveNotEntity();
+		List<ContractCounterpartEntity> contractCounterpartList = counterpartMapper.selectByIds(contractFormInfo.getId());
+		if (Func.isNotEmpty(contractCounterpartList)) {
+			contractFormInfo.setCounterpart(contractCounterpartList);
+			StringBuilder name = new StringBuilder();
+			for (ContractCounterpartEntity counterpartEntity : contractCounterpartList) {
+				name.append(counterpartEntity.getName());
+				name.append(",");
+			}
+			name.substring(0, name.length());
+			contractFormInfo.setCounterpartName(name.toString());
+		}
+		notEntity.setOtherCompanyName(contractFormInfo.getCounterpartName());
+		notEntity.setContractId(contractFormInfo.getId());
+		notEntity.setContractNumber(contractFormInfo.getContractNumber());
+		if (Func.isNotEmpty(contractFormInfo.getSealInfoEntity())){
+			notEntity.setPrintDate(contractFormInfo.getSealInfoEntity().getSignTime());
+		}else {
+			notEntity.setPrintDate(new Date());
+		}
+		notEntity.setEstimateArchiveDate(estimateArchiveDate);
+		notEntity.setArchiveReason(notArchiveReason);
+		notEntity.setRemark("选填EKP返回给合同平台未归档信息");
+		notEntity.setManager(contractFormInfo.getPersonContract());
+		notEntity.setManageDept(Optional.ofNullable(UserCache.getUser(contractFormInfo.getUpdateUser())).orElse(new User()).getRealName());
+		notEntity.setManageUnit(SysCache.getDeptName(contractFormInfo.getCreateDept()));
+		notEntity.setManageDate(new Date());
+		notService.save(notEntity);
+		return R.success("提交成功");
 	}
 }

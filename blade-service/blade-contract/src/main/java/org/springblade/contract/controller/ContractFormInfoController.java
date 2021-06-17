@@ -218,7 +218,7 @@ public class ContractFormInfoController extends BladeController {
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiAdd')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> multiAdd(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
-		R<ContractFormInfoEntity> r;
+		R<ContractFormInfoEntity> r = null;
 		contractFormInfo.setContractSoure("20");
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, entity);
@@ -304,19 +304,22 @@ public class ContractFormInfoController extends BladeController {
 		//开始接口处理
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			if ("1".equals(entity.getContractForm())){
+			if ("1".equals(entity.getContractForm())) {
 				r = contractFormInfoService.SingleSign(R.data(entity));
-			}else {
+			} else {
 				r = contractFormInfoService.SingleSignE(R.data(entity));
 			}
 			if (r.getCode() != HttpStatus.OK.value()) {
+				entity.setContractStatus(CHANGE_REVIEW_STATUS);
+				contractFormInfoService.updateById(entity);
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
 			r.getData().setCreateTime(new Date());
 			contractFormInfoService.updateById(r.getData());
 		}
-		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
+		assert r != null;
+		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(entity), r.getMsg());
 	}
 
 
@@ -330,7 +333,7 @@ public class ContractFormInfoController extends BladeController {
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		log.info("独立起草新增开始:{}", JsonUtil.toJson(contractFormInfo));
-		R<ContractFormInfoEntity> r;
+		R<ContractFormInfoEntity> r = null;
 		contractFormInfo.setContractSoure("10");
 		ContractFormInfoEntity entity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, entity);
@@ -398,21 +401,23 @@ public class ContractFormInfoController extends BladeController {
 		log.info("独立起草新增-处理电子签章和oa流程：{}", entity.getContractStatus());
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm()) ){
+			if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm())) {
 				r = contractFormInfoService.SingleSign(R.data(entity));
-			}else {
+			} else {
 				r = contractFormInfoService.SingleSignE(R.data(entity));
 			}
 			log.info("独立起草新增-处理电子签章和oa流程结果:{}", JsonUtil.toJson(r));
 			if (r.getCode() != HttpStatus.OK.value()) {
 				entity.setContractStatus(CHANGE_REVIEW_STATUS);
+				contractFormInfoService.updateById(entity);
 				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
 				return r;
 			}
 			r.getData().setCreateTime(new Date());
 			contractFormInfoService.updateById(r.getData());
 		}
-		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
+		assert r != null;
+		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(entity), r.getMsg());
 	}
 
 

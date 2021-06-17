@@ -6,14 +6,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractSealUsingInfoEntity;
 import org.springblade.contract.service.IContractFormInfoService;
 import org.springblade.contract.service.IContractSealUsingInfoService;
-import org.springblade.contract.vo.ContractBorrowApplicationResponseVO;
 import org.springblade.contract.vo.ContractSealUsingInfoRequestVO;
 import org.springblade.contract.vo.ContractSealUsingInfoResponseVO;
-import org.springblade.contract.wrapper.ContractBorrowApplicationWrapper;
 import org.springblade.contract.wrapper.ContractSealUsingInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.log.exception.ServiceException;
@@ -23,7 +20,6 @@ import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
-import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.user.cache.UserCache;
@@ -45,8 +41,8 @@ import java.util.Date;
 @Api(value = "用印名称", tags = "用印名称")
 public class ContractSealUsingInfoController extends BladeController {
 
-	private IContractSealUsingInfoService contractSealUsingInfoService;
-	private IContractFormInfoService contractFormInfoService;
+	private final IContractSealUsingInfoService contractSealUsingInfoService;
+	private final IContractFormInfoService contractFormInfoService;
 	private static final String CONTRACT_SEAL_INFO_SAVE_STATUS="45";
 	private static final String CONTRACT_SEAL_INFO_SUBMIT_STATUS="50";
 
@@ -82,8 +78,7 @@ public class ContractSealUsingInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractSealUsingInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:add')")
 	public R save(@Valid @RequestBody ContractSealUsingInfoResponseVO contractSealUsingInfo) {
-		String contractStatus=CONTRACT_SEAL_INFO_SAVE_STATUS;
-		contractFormInfoService.updateExportStatus(contractStatus,contractSealUsingInfo.getRefContractId());
+		contractFormInfoService.updateExportStatus(CONTRACT_SEAL_INFO_SAVE_STATUS,contractSealUsingInfo.getRefContractId());
 		return R.status(contractSealUsingInfoService.save(ContractSealUsingInfoWrapper.build().PVEntity(contractSealUsingInfo)));
 	}
 
@@ -95,8 +90,7 @@ public class ContractSealUsingInfoController extends BladeController {
 	@ApiOperation(value = "新增", notes = "传入contractSealUsingInfo")
 	@PreAuth("hasPermission('signInfo:sealInfo:submit')")
 	public R submit(@Valid @RequestBody ContractSealUsingInfoResponseVO contractSealUsingInfo) {
-		String contractStatus=CONTRACT_SEAL_INFO_SUBMIT_STATUS;
-		contractFormInfoService.updateExportStatus(contractStatus,contractSealUsingInfo.getRefContractId());
+		contractFormInfoService.updateExportStatus(CONTRACT_SEAL_INFO_SUBMIT_STATUS,contractSealUsingInfo.getRefContractId());
 		return R.status(contractSealUsingInfoService.save(ContractSealUsingInfoWrapper.build().PVEntity(contractSealUsingInfo)));
 	}
 	/**
@@ -110,8 +104,7 @@ public class ContractSealUsingInfoController extends BladeController {
 		if (Func.isEmpty(contractSealUsingInfo.getId())){
 			throw new ServiceException("id不能为空");
 		}
-		String contractStatus=CONTRACT_SEAL_INFO_SUBMIT_STATUS;
-		contractFormInfoService.updateExportStatus(contractStatus,contractSealUsingInfo.getRefContractId());
+		contractFormInfoService.updateExportStatus(CONTRACT_SEAL_INFO_SUBMIT_STATUS,contractSealUsingInfo.getRefContractId());
 		return R.status(contractSealUsingInfoService.updateById(ContractSealUsingInfoWrapper.build().PVEntity(contractSealUsingInfo)));
 	}
 

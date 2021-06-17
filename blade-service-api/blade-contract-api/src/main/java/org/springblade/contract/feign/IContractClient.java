@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,6 +39,7 @@ public interface IContractClient {
 	String CONTRACT_SAVE = API_PREFIX + "/contractSave";
 	String TEMPLATE_GET_ID = API_PREFIX + "/template_getId";
 	String UTILS_FILE=API_PREFIX +"/utils_file";
+	String NOT_ARCHIVE_SAVE=API_PREFIX+"/not_archive_save";
 
 	/**
 	 * 保存相对方
@@ -103,5 +105,16 @@ public interface IContractClient {
 	 */
 	@GetMapping(TEMPLATE_GET_ID)
 	R<ContractTemplateEntity> getByTemplateId(@RequestParam("id") Long id);
+	/**
+	 * epk通过后返回给合同平台未归档信息
+	 * @author jitwxs
+	 * @date 2021/6/16 11:20
+	 * @param id 合同id
+	 * @param estimateArchiveDate 计划归档时间
+	 * @param notArchiveReason  未归档原因
+	 * @return org.springblade.core.tool.api.R
+	 */
+	@GetMapping(NOT_ARCHIVE_SAVE)
+	R saverArchiveNot(@RequestParam("id") Long id, @RequestParam("estimateArchiveDate") Date estimateArchiveDate, @RequestParam("notArchiveReason") String notArchiveReason);
 
 }

@@ -4,9 +4,10 @@ package org.springblade.system.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.lettuce.core.dynamic.annotation.Param;
-import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.system.entity.DataSealAuthorityEntity;
 import org.springblade.system.vo.DataSealAuthorityRequestVO;
+
+import java.util.List;
 
 /**
  * DataSealAuthority Mapper 接口
@@ -18,6 +19,7 @@ public interface DataSealAuthorityMapper extends BaseMapper<DataSealAuthorityEnt
 
 	/**
 	 * 分页查询
+	 *
 	 * @param page
 	 * @param dataSealAuthority
 	 * @return
@@ -25,12 +27,18 @@ public interface DataSealAuthorityMapper extends BaseMapper<DataSealAuthorityEnt
 	IPage<DataSealAuthorityEntity> pageList(IPage<DataSealAuthorityEntity> page, DataSealAuthorityRequestVO dataSealAuthority);
 
 	/**
-	 *
 	 * @param userId
-	 *  @param roleId
+	 * @param roleId
 	 * @return
 	 */
 	DataSealAuthorityEntity selectByUserIds(@Param("user_id") String userId,
 											@Param("role_id") String roleId);
+
+	/**
+	 * @return java.util.List<org.springblade.system.entity.DataSealAuthorityEntity>
+	 * @author jitwxs
+	 * @date 2021/6/7 22:02
+	 */
+	List<DataSealAuthorityEntity> selectAdminInfo();
 
 }

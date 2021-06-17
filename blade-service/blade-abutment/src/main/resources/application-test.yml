@@ -13,16 +13,20 @@ api:
     docInfoUrl: https://oatest-interface.pec.com.cn/common/pursuant/docs
     #相对方资料接口
     counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
+    #统一集团签章子公司接口
+    signatureUnitUrl: https://oatest-interface.pec.com.cn/common/group/subsidiary
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
     username: dev_c_p
     password: oa0/YNY374PKB53+IUmjiw==
   ekp:
     tokenUrl: https://oatest-interface.pec.com.cn/restful/ekp/getToken
     ekpUrl: https://oatest-interface.pec.com.cn/restful/ekp/genhrbill
+    agencyUrl: https://oatest-interface.pec.com.cn/common/notify/todo
     account: iHR
     password: oaekp
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
     appTemplateId: 179c63d15205aa3926282a5461f9def3
+    systemName: c_p_notify
     ftlPath: /ftl/
   organization:
     wsdl: https://oatest.pec.com.cn/sys/webservice/organizationWebService?wsdl
@@ -49,7 +53,7 @@ api:
   contract:
     notSign:
       status: 30
-      firstWarning: "合同送申流程结束，请及时加盖公章并将双方盖章后的合同原件寄于合同管理师处習档:[昆山市玉山镇青阳南路301号051257706726陆璐]"
-      secondWarning: ",已超期15天末进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:[昆山市玉山镇青阳南路301号051257706726陆璐];超45天未归档预警将同步抄送于其部主管"
-      thirdWarning: ",已超期45天未进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:[昆山市玉山镇青阳南路301号051257706726陆路];若持续未归档将以联络单形式追踪并申请提报列入绩效扣分项"
-      estimateWarning: "已超期计划归档日期，请及时将双方盖章后的合同原件寄于合同管理师处留档:[昆山市玉山镇青阳南路301号051257706726陆路];"
+      firstWarning: "合同送申流程结束，请及时加盖公章并将双方盖章后的合同原件寄于合同管理师处習档:"
+      secondWarning: ",已超期15天末进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
+      thirdWarning: ",已超期45天未进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
+      estimateWarning: "已超期计划归档日期，请及时将双方盖章后的合同原件寄于合同管理师处留档:"

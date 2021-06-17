@@ -39,6 +39,7 @@ public interface IAbutmentClient {
 	String EKP_NODE_FORM_POST = API_PREFIX + EKP + "/nodeFormPost";
 	String EKP_SIG_FORM_POST=API_PREFIX+EKP+"pushNotSig";
 	String DOC_QUERY_INFO = API_PREFIX + DOC + "/queryInfo";
+	String SIGNATURE_QUERY_INFO=API_PREFIX +"/signatureQueryInfo";
 	String E_SEAL_UPLOAD_FILE = API_PREFIX + E_SEAL + "/uploadFiles";
 	String E_SEAL_SINGLE_SIGN = API_PREFIX + E_SEAL + "/singleSign";
 	String E_SEAL_SINGLE_SIGN_POST= API_PREFIX + E_SEAL + "/singleSignPost";
@@ -107,6 +108,13 @@ public interface IAbutmentClient {
 	 */
 	@GetMapping(DOC_QUERY_INFO)
 	R<List<DocVo>> queryDocInfo(DocEntity entity);
+	/**
+	 * 获取统一集团签章子公司信息
+	 * @param entity
+	 * @return
+	 */
+	@GetMapping(SIGNATURE_QUERY_INFO)
+	R<AsDictVo> querySigatureInfo(AsDict entity);
 
 	/**
 	 * 上传合同

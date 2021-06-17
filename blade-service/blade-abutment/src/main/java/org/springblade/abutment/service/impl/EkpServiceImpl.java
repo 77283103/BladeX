@@ -16,6 +16,7 @@ import org.springblade.abutment.entity.PushEkpEntity;
 import org.springblade.abutment.service.IEkpService;
 import org.springblade.abutment.vo.EkpVo;
 import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,8 @@ public class EkpServiceImpl implements IEkpService {
 	private String tokenUrl;
 	@Value("${api.ekp.ekpUrl}")
 	private String ekpUrl;
+	@Value("${api.ekp.agencyUrl}")
+	private String agencyUrl;
 	@Value("${api.ekp.account}")
 	private String account;
 	@Value("${api.ekp.password}")
@@ -70,9 +73,9 @@ public class EkpServiceImpl implements IEkpService {
 			response = httpClient.execute(httpPost);
 			// 从响应模型中获取响应实体
 			HttpEntity responseEntity = response.getEntity();
-			log.info("响应状态为:"+response.getStatusLine());
+			log.info("响应状态为:" + response.getStatusLine());
 			if (responseEntity != null) {
-				log.info("响应内容长度为:{}",responseEntity.getContentLength());
+				log.info("响应内容长度为:{}", responseEntity.getContentLength());
 				json = EntityUtils.toString(responseEntity);
 				tokenJson = JSONUtil.parseObj(json);
 			}
@@ -95,10 +98,11 @@ public class EkpServiceImpl implements IEkpService {
 		log.info("result:" + JSONUtil.toJsonStr(tokenJson));
 		return tokenJson.getBool("success") ? tokenJson.getStr("tokenInfo") : null;
 	}
+
 	@Override
 	public EkpVo pushData(PushEkpEntity entity) {
 		String paramStr = JSONUtil.toJsonStr(entity);
-		log.info("推送的EKP数据:"+JsonUtil.toJson(paramStr));
+		log.info("推送的EKP数据:" + JsonUtil.toJson(paramStr));
 		JSONObject docInfoJson = null;
 		// 获得Http客户端(可以理解为:你得先有一个浏览器;注意:实际上HttpClient与浏览器是不一样的)
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -109,25 +113,25 @@ public class EkpServiceImpl implements IEkpService {
 		// 创建Post请求
 		HttpPost httpPost = new HttpPost(this.ekpUrl);
 		httpPost.setEntity(entitys);
-		log.info("推送的EKP数据:"+JsonUtil.toJson(httpPost.getEntity()));
+		log.info("推送的EKP数据:" + JsonUtil.toJson(httpPost.getEntity()));
 		// 设置ContentType(注:如果只是传普通参数的话,ContentType不一定非要用application/json)
 		httpPost.setHeader("Content-Type", "application/json;charset=utf8");
 		// 响应模型
 		CloseableHttpResponse response = null;
 		try {
 			// 由客户端执行(发送)Post请求
-			log.info("开始推送ekp数据:"+JsonUtil.toJson(httpPost));
+			log.info("开始推送ekp数据:" + JsonUtil.toJson(httpPost));
 			response = httpClient.execute(httpPost);
-			log.info("推送ekp数据结果:"+JsonUtil.toJson(response));
+			log.info("推送ekp数据结果:" + JsonUtil.toJson(response));
 			// 从响应模型中获取响应实体
 			HttpEntity responseEntity = response.getEntity();
 			if (null != responseEntity) {
 				json = EntityUtils.toString(responseEntity);
 				docInfoJson = JSONUtil.parseObj(json);
-				if(!docInfoJson.getBool("success")){
-					docInfoJson.set("errMessage"," ");
+				if (!docInfoJson.getBool("success")) {
+					docInfoJson.set("errMessage", " ");
 				}
-				log.info("从响应模型中获取响应实体："+JSONUtil.toJsonStr(docInfoJson));
+				log.info("从响应模型中获取响应实体：" + JSONUtil.toJsonStr(docInfoJson));
 			}
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();
@@ -145,7 +149,57 @@ public class EkpServiceImpl implements IEkpService {
 			}
 		}
 		assert docInfoJson != null;
-		log.info("获取推送EKP的数据返回的JSON数据："+JSONUtil.toJsonStr(docInfoJson));
-		return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo")) : new EkpVo("");
+		log.info("获取推送EKP的数据返回的JSON数据：" + JSONUtil.toJsonStr(docInfoJson));
+		if (Func.isNull(docInfoJson.getStr("ekp_number"))) {
+			return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo")) : new EkpVo("");
+		} else {
+			return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo"), docInfoJson.getOrDefault("ekp_number","").toString()) : new EkpVo("");
+		}
+	}
+
+	@Override
+	public EkpVo pushAgency(PushEkpEntity entity) throws Exception {
+		String paramStr = JSONUtil.toJsonStr(entity);
+		log.info("推送的EKP数据:" + JsonUtil.toJson(paramStr));
+		JSONObject docInfoJson = null;
+		// 获得Http客户端(可以理解为:你得先有一个浏览器;注意:实际上HttpClient与浏览器是不一样的)
+		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+		String json = "";
+		// 字符数据最好encoding以下;这样一来，某些特殊字符才能传过去(如:某人的名字就是“&”,不encoding的话,传不过去)
+		StringEntity entitys = new StringEntity(paramStr, "UTF-8");
+		// 创建Post请求
+		HttpPost httpPost = new HttpPost(this.agencyUrl);
+		httpPost.setEntity(entitys);
+		// 设置ContentType(注:如果只是传普通参数的话,ContentType不一定非要用application/json)
+		httpPost.setHeader("Content-Type", "application/json;charset=utf8");
+		// 响应模型
+		CloseableHttpResponse response = null;
+		try {
+			// 由客户端执行(发送)Post请求
+			response = httpClient.execute(httpPost);
+			// 从响应模型中获取响应实体
+			HttpEntity responseEntity = response.getEntity();
+			if (null != responseEntity) {
+				json = EntityUtils.toString(responseEntity);
+				docInfoJson = JSONUtil.parseObj(json);
+			}
+			log.info("EKP推送代办成功："+ JSONUtil.toJsonStr(docInfoJson));
+		} catch (ParseException | IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				// 释放资源
+				if (httpClient != null) {
+					httpClient.close();
+				}
+				if (response != null) {
+					response.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		assert docInfoJson != null;
+		return "0".equals(docInfoJson.getStr("code")) ? new EkpVo(docInfoJson.getStr("notifyId")) : new EkpVo("");
 	}
 }

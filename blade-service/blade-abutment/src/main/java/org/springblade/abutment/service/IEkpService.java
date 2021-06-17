@@ -23,4 +23,10 @@ public interface IEkpService {
      * @return
      */
 	EkpVo pushData(PushEkpEntity entity) throws Exception;
+
+	/**
+	 * 推送代办
+	 * @return
+	 */
+	EkpVo pushAgency(PushEkpEntity entity) throws Exception;
 }

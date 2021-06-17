@@ -1,5 +1,6 @@
 package org.springblade.abutment.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 public class FormValuesEntity implements Serializable {
 	@ApiModelProperty(value = "签章关键字")
-	private String fd_keyword;
+	private JSONObject fd_keyword;
 	@ApiModelProperty(value = "是否多页合同")
 	private String fd_multipage;
 	@ApiModelProperty(value = "合同方对应关系")
@@ -113,4 +114,24 @@ public class FormValuesEntity implements Serializable {
 	private String fd_contract_numb;
 	@ApiModelProperty(value = "单据内容(已归档节点):合同附件扫面件")
 	private String fd_archive_file;
+	@ApiModelProperty(value = "单据内容：合同借阅实体")
+	private BorrowAc borrow_ac;
+	@ApiModelProperty(value = "(合同借阅实体):资料类型")
+	private String fd_type;
+	@ApiModelProperty(value = "(合同借阅实体):借阅周期起始时间")
+	private String fd_begin;
+	@ApiModelProperty(value = "(合同借阅实体):借阅周期结束时间")
+	private String fd_end;
+	@ApiModelProperty(value = "(合同借阅实体):申请编号")
+	private String applicationId;
+	@ApiModelProperty(value = "(合同借阅实体):申请人")
+	private String applicant;
+	@ApiModelProperty(value = "(合同借阅实体):申请部门")
+	private String appDepartment;
+	@ApiModelProperty(value = "(合同借阅实体):借阅方式")
+	private String fd_method;
+	@ApiModelProperty(value = "(合同借阅实体):资料名称")
+	private String fd_name;
+	@ApiModelProperty(value = "(合同借阅实体):事由说明")
+	private String fd_reason;
 }

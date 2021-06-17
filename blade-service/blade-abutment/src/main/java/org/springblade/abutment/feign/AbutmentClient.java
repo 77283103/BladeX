@@ -4,16 +4,12 @@ import cn.hutool.core.util.StrUtil;
 import com.alibaba.fastjson.JSONObject;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
-import org.csource.fastdfs.StorageClient;
-import org.csource.fastdfs.StorageServer;
-import org.csource.fastdfs.TrackerClient;
-import org.csource.fastdfs.TrackerServer;
+import org.csource.fastdfs.*;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.*;
 import org.springblade.abutment.vo.*;
@@ -65,6 +61,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@Autowired
 	private IDocService docService;
 	@Autowired
+	private IAsService iAsService;
+	@Autowired
 	private IESealService eSealService;
 	@Autowired
 	private IDictBizClient bizClient;
@@ -84,6 +82,8 @@ public class AbutmentClient implements IAbutmentClient {
 	private String fdTemplateId;
 	@Value("${api.ekp.appTemplateId}")
 	private String appTemplateId;
+	@Value("${api.ekp.systemName}")
+	private String systemName;
 	@Value("${api.eSeal.downloadUrl}")
 	private String downloadUrl;
 	@Value("${api.ekp.ftlPath}")
@@ -214,18 +214,20 @@ public class AbutmentClient implements IAbutmentClient {
 			//文档主题
 			pushEkpEntity.setDocSubject("借阅申请：--" + entity.getDataName());
 			//文档主要内容
-			BorrowAc ac = new BorrowAc();
+			FormValuesEntity formValuesEntity=new FormValuesEntity();
 			//事由说明
-			ac.setFd_reason(entity.getExplanation());
+			formValuesEntity.setFd_reason(entity.getExplanation());
 			//资料类型
-			ac.setFd_type(entity.getDataType());
+			formValuesEntity.setFd_type(entity.getDataType());
 			//借阅方式
-			ac.setFd_method(entity.getBorrowMode());
+			formValuesEntity.setFd_method(entity.getBorrowMode());
 			//借阅周期起始时间
-			ac.setFd_begin(sdf.format(entity.getBorrowCycleStart()));
+			formValuesEntity.setFd_begin(sdf.format(entity.getBorrowCycleStart()));
 			//借阅周期截至时间
-			ac.setFd_end(sdf.format(entity.getBorrowCycleEnd()));
-			pushEkpEntity.setBorrowAc(ac);
+			formValuesEntity.setFd_end(sdf.format(entity.getBorrowCycleEnd()));
+			//资料名称
+			formValuesEntity.setFd_name(entity.getDataName());
+			pushEkpEntity.setFormValues(formValuesEntity);
 			//获取token
 			pushEkpEntity.setToken(ekpService.getToken());
 			log.info("获取ekp的token：" + pushEkpEntity.getToken());
@@ -577,6 +579,14 @@ public class AbutmentClient implements IAbutmentClient {
 							TrackerServer trackerServer = null;
 							try {
 								trackerServer = trackerClient.getConnection();
+								if (Func.isNull(trackerServer)){
+									log.info("FDS服务器链接地址："+ ClientGlobal.CONF_KEY_TRACKER_SERVER);
+									rEkpVo.setCode(404);
+									rEkpVo.setMsg("Connection timed out: connect FSD文件服务器连接失败，请联系管理员处理！");
+									rEkpVo.setSuccess(false);
+									rEkpVo.setData(null);
+									return R.fail(rEkpVo.getMsg());
+								}
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -615,6 +625,13 @@ public class AbutmentClient implements IAbutmentClient {
 							listAttachment.add(attachment);
 						}
 						pushEkpEntity.setFd_attachment(listAttachment);
+						if (Func.isEmpty(pushEkpEntity.getFd_attachment())){
+							rEkpVo.setCode(3);
+							rEkpVo.setMsg("依据附件上传失败，请检查FDS文件服务器配置是否正常");
+							rEkpVo.setSuccess(false);
+							rEkpVo.setData(null);
+							return rEkpVo;
+						}
 					}
 					pushEkpEntity.setToken(ekpService.getToken());
 					log.info("获取ekp的token：" + pushEkpEntity.getToken());
@@ -1201,7 +1218,6 @@ public class AbutmentClient implements IAbutmentClient {
 			formInfoEntities.forEach(l -> {
 				int day = differentDaysByMillisecond(l.getCreateTime(), new Date());
 				mapVo.put("day", String.valueOf(day));
-
 				mapVo.put("contractName", l.getContractName() + "---（归档预警：请及时归档）");
 			});
 			log.info("需要推送的符合条件的数据：" + JsonUtil.toJson(formInfoEntities));
@@ -1215,36 +1231,32 @@ public class AbutmentClient implements IAbutmentClient {
 		formInfoEntities.forEach(f -> {
 			EkpVo ekp = null;
 			try {
-				//docCreator 人员编号
+				//docCreator 待办接收人员工编号
 				DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 				docCreatorEntity.setEmplno(f.getPersonCodeContract());
 				pushEkpEntity.setDocCreator(docCreatorEntity);
-				//fdTemplateId 表单模版ID
-				pushEkpEntity.setFdTemplateId(this.fdTemplateId);
+				//系统类型，请传递固定字符串c_p_notify
+				pushEkpEntity.setSystemName(this.systemName);
 				//docSubject 合同主旨
+				//notifyType：待办类型：1待办，2待阅；如第一和第二预警传2(待阅)，第三次传1(待办)；只接收这两种参数
 				if ("0".equals(f.getFilePerson())){
 					pushEkpEntity.setDocSubject("《"+f.getContractName()+"》合同，合同编号为"+f.getContractNumber()+this.firstWarning);
+					pushEkpEntity.setNotifyType("2");
 				}else if ("15".equals(f.getFilePerson())){
 					pushEkpEntity.setDocSubject("《"+f.getContractName()+"》合同，合同编号为"+f.getContractNumber()+this.secondWarning);
+					pushEkpEntity.setNotifyType("2");
 				}else if ("45".equals(f.getFilePerson())){
 					pushEkpEntity.setDocSubject("对《"+f.getContractName()+"》合同，合同编号为"+f.getContractNumber()+this.thirdWarning);
+					pushEkpEntity.setNotifyType("1");
 				}else {
 					pushEkpEntity.setDocSubject("《"+f.getContractName()+"》"+this.estimateWarning);
+					pushEkpEntity.setNotifyType("1");
 				}
-				//formValues 主要内容
-				FormValuesEntity formValuesEntity = new FormValuesEntity();
-				formValuesEntity.setFd_contract_id(f.getId().toString());
-				//合同主旨
-				formValuesEntity.setFd_main(f.getContractName());
 				//合同编号
-				formValuesEntity.setFd_contract_numb(f.getContractNumber());
-				//合同起草类型
-				formValuesEntity.setFd_contract_id(f.getContractSoure());
-				//推送的合同信息
-				pushEkpEntity.setFormValues(formValuesEntity);
+				pushEkpEntity.setContractNo(f.getId().toString());
 				//推送数据
-				ekp = ekpService.pushData(pushEkpEntity);
-				if (Func.isNotEmpty(ekp.getDoc_info())) {
+				ekp = ekpService.pushAgency(pushEkpEntity);
+				if (Func.isNotEmpty(ekp.getNotifyId())) {
 					ekpVo.add(ekp);
 				}
 				TimeUnit.SECONDS.sleep(1);
@@ -1264,8 +1276,7 @@ public class AbutmentClient implements IAbutmentClient {
 	 * @return
 	 */
 	public int differentDaysByMillisecond(Date date1, Date date2) {
-		int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
-		return days;
+		return (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
 	}
 
 	/**
@@ -1275,8 +1286,7 @@ public class AbutmentClient implements IAbutmentClient {
 	 */
 	private static String getDf() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-		String date = df.format(new Date());
-		return date;
+		return df.format(new Date());
 	}
 
 	public FormValuesEntity fileText(FormValuesEntity formValuesEntity, ContractFormInfoEntity entity) {
@@ -1312,7 +1322,8 @@ public class AbutmentClient implements IAbutmentClient {
 				for (int i = 0; i < entity.getCounterpart().size(); i++) {
 					s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(), arrays[i] + "方（签章）");
 				}
-				formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
+				//formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
+				formValuesEntity.setFd_keyword(s);
 			} else if ((-1 != ay && -1 != by)) {
 				if ("1".equals(formValuesEntity.getFd_onetoone())) {
 					arrays = new String[]{"乙", "丙", "丁"};
@@ -1324,7 +1335,8 @@ public class AbutmentClient implements IAbutmentClient {
 				for (int i = 0; i < entity.getCounterpart().size(); i++) {
 					s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(), arrays[i] + "方(签章)");
 				}
-				formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
+				//formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
+				formValuesEntity.setFd_keyword(s);
 			}
 			document.close();
 			inputStream.close();
@@ -1395,7 +1407,7 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 						}
 					}
-					formValuesEntity.setFd_keyword(s.toJSONString());
+					formValuesEntity.setFd_keyword(s);
 				} else if ((threeHalf)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
 						s.put("统一集团", "甲方(签章)");
@@ -1414,7 +1426,7 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 						}
 					}
-					formValuesEntity.setFd_keyword(s.toJSONString());
+					formValuesEntity.setFd_keyword(s);
 				}
 			} else {
 				if ((fourFull)) {
@@ -1435,7 +1447,7 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 						}
 					}
-					formValuesEntity.setFd_keyword(s.toJSONString());
+					formValuesEntity.setFd_keyword(s);
 				} else if ((fourHalf)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
 						s.put("统一集团", "甲方(签章)");
@@ -1454,7 +1466,7 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 						}
 					}
-					formValuesEntity.setFd_keyword(s.toJSONString());
+					formValuesEntity.setFd_keyword(s);
 				}
 			}
 			document.close();
@@ -1513,6 +1525,22 @@ public class AbutmentClient implements IAbutmentClient {
 			log.error(e.getMessage());
 		}
 		return R.data(docVo);
+	}
+
+	@Override
+	@GetMapping(SIGNATURE_QUERY_INFO)
+	public R<AsDictVo> querySigatureInfo(AsDict entity) {
+		AsDictVo sigVo = null;
+		try {
+			String token = iAsService.getToken();
+			if (StrUtil.isNotEmpty(token)) {
+				sigVo = iAsService.getDocInfo(token).getData();
+
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return R.data(200,sigVo,"数据获取成功");
 	}
 
 	@Override

@@ -1,5 +1,6 @@
 package org.springblade.abutment.service.impl;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.SecureUtil;
 import cn.hutool.http.webservice.SoapClient;
@@ -77,6 +78,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
             fieldsList.add(this.getFieldMap("orgType"));
             fieldsList.add(this.getFieldMap("parentid"));
             fieldsList.add(this.getFieldMap("alterTime"));
+			fieldsList.add(this.getFieldMap("ins_date"));
 			fieldsList.add(this.getFieldMap("factno"));
 			fieldsList.add(this.getFieldMap("factname"));
 			fieldsList.add(this.getFieldMap("deptno"));
@@ -118,8 +120,11 @@ public class OrganizationServiceImpl implements IOrganizationService {
             whereList.add(this.getWhereMap("parentid", entity.getParentid()));
         }
         if(StrUtil.isNotEmpty(entity.getAlterTime())) {
-            whereList.add(this.getWhereMap("alterTime", entity.getAlterTime()));
+            whereList.add(this.getWhereMap("alterTime >", entity.getAlterTime()));
         }
+		if(StrUtil.isNotEmpty(entity.getIns_date())) {
+			whereList.add(this.getWhereMap("ins_date", entity.getIns_date()));
+		}
         paramMap.put("where",whereList);
         //使用SoapUI解析WSDL地址，找到WebService方法和参数。
 		//新建客户端
@@ -158,9 +163,12 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	@Override
 	@Transactional(rollbackFor = Exception.class)
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTime(new Date());
+		calendar.add(Calendar.DAY_OF_MONTH, -1);
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		OrganizationEntity entity = new OrganizationEntity();
-//		entity.setAlterTime(format.format(new Date()));
+		entity.setAlterTime(format.format(calendar.getTime()));
 		entity.setIsAvailable("1");
 		List<OrganizationVo> organizationList = null;
 		//保存组织机构
@@ -219,6 +227,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		for (OrganizationVo organizationVo : organizationList) {
 			Dept dept = new Dept();
 			dept.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 1 : 0);
+			dept.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
 			dept.setDeptName(organizationVo.getName());
 			dept.setPinyinName(organizationVo.getNamePinyin());
 			dept.setDeptNm(organizationVo.getDeptnm());
@@ -266,7 +275,10 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		List<Post> list = new ArrayList<>();
 		for (OrganizationVo organizationVo : organizationList) {
 			Post post = new Post();
+			post.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
 			post.setIsDeleted(0);
+			post.setStatus(1);
+			post.setAssociationId(organizationVo.getId());
 			post.setPostName(organizationVo.getName());
 			/*根据Lunid查询岗位的ID*/
 			R<Long> postIdByAssociationId = sysClient.getPostIdByAssociationId(organizationVo.getId());
@@ -292,8 +304,9 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		for (OrganizationVo organizationVo : organizationList) {
 			User user = new User();
 			UserDepartEntity userDepart = new UserDepartEntity();
-			user.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 0 : 1);
+			user.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 2 : 1);
 			user.setIsDeleted(0);
+			user.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
 			user.setPassword(SecureUtil.md5("123456"));
 			user.setCode(organizationVo.getEmplno());
 			user.setAccount(organizationVo.getLoginName());

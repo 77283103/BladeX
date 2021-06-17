@@ -9,6 +9,7 @@ import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.TemplateEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -59,6 +60,11 @@ public class IContractFallback implements IContractClient {
 	@Override
 	public R<ContractTemplateEntity> getByTemplateId(Long id) {
 		return R.fail("更新模板json信息失败！");
+	}
+
+	@Override
+	public R saverArchiveNot(Long id, Date estimateArchiveDate, String notArchiveReason) {
+		return R.fail("数据修改失败！");
 	}
 
 }

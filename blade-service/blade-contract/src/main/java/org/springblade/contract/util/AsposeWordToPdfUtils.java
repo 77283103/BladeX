@@ -23,7 +23,6 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springblade.core.tool.utils.Func;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
@@ -317,6 +316,8 @@ public class AsposeWordToPdfUtils {
 	public static void addWaterMark(String srcFile, String destFile, String text) throws Exception {
 		// 待加水印的文件
 		PdfReader reader = new PdfReader(srcFile);
+		//解决文件加密的问题  （报错 PdfReader not opened with owner password）
+		PdfReader.unethicalreading = true;
 		// 加完水印的文件
 		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(destFile));
 		PdfContentByte content;

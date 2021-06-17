@@ -28,7 +28,7 @@ public class IAbutmentFallback implements IAbutmentClient {
 
 	@Override
 	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
-		return R.fail("请求超时，获取数据失败");
+		return R.fail("推送接口请求超时，请联系管理员处理！(Connection timed out: connect FSD文件服务器连接失败，请联系管理员处理!)");
 	}
 
 	@Override
@@ -49,6 +49,11 @@ public class IAbutmentFallback implements IAbutmentClient {
 	@Override
 	public R<List<DocVo>> queryDocInfo(DocEntity entity) {
 		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R<AsDictVo> querySigatureInfo(AsDict entity) {
+		return R.data(404,null,"接口未连接成功");
 	}
 
 	@Override
@@ -96,7 +101,7 @@ public class IAbutmentFallback implements IAbutmentClient {
 
 	@Override
 	public R<EkpVo> pushData(PushEkpEntity entity) throws Exception {
-		return R.fail("获取数据失败");
+		return R.fail("暂无承载数据");
 	}
 
 	@Override

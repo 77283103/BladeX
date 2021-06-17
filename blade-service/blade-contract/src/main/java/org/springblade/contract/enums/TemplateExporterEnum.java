@@ -35,6 +35,7 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.util.ConversionNuToCh;
 import org.springblade.contract.util.DataFormatUtils;
 import org.springblade.contract.util.MoneyToChiness;
 import org.springblade.contract.vo.*;
@@ -65,61 +66,24 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("sclPartya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("sclPartyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("date", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
-			//签订地点
-			dataModel.put("sclSite", j.get("sclSite"));
-			//仓储地点：
-			dataModel.put("sclStorage", j.get("sclStorage"));
-			//仓储面积
-			dataModel.put("sclStorageee", j.get("sclStorageee"));
-			//仓库要求：其他条件
-			dataModel.put("sclConditionsa", j.get("sclConditionsa"));
-			//仓储作业要求-1
-			dataModel.put("sclNumber", j.get("sclNumber"));
-			//仓储作业要求-5
-			dataModel.put("sclServices", j.get("sclServices"));
-			//产品收货标准-5
-			dataModel.put("sclFood", j.get("sclFood"));
-			dataModel.put("sclDrinks", j.get("sclDrinks"));
-			dataModel.put("sclDairy", j.get("sclDairy"));
-			dataModel.put("sclWater", j.get("sclWater"));
-			// 车辆要求： -4
-			dataModel.put("sclRequirementsp", j.get("sclRequirementsp"));
-			//、运力要求：-1
-			dataModel.put("sclRange", j.get("sclRange"));
-			// 出货作业：-1
-			dataModel.put("sclAreae", j.get("sclAreae"));
-			// 出货作业：-2
-			dataModel.put("sclRequirementse", j.get("sclRequirementse"));
-			dataModel.put("sclContractd", j.get("sclContractd"));
-			dataModel.put("sclSecond", j.get("sclSecond"));
-			dataModel.put("sclBreach", j.get("sclBreach"));
-			// 出货作业：-5
-			dataModel.put("sclProvide", j.get("sclProvide"));
-			dataModel.put("sclHours", j.get("sclHours"));
 			dataModel.put("sclMorning", DataFormatUtils.systemTimeFormatH(j.get("sclMorning").toString()));
 			dataModel.put("sclAfternoon", DataFormatUtils.systemTimeFormatH(j.get("sclAfternoon").toString()));
-			dataModel.put("sclAdvance", j.get("sclAdvance"));
-			dataModel.put("sclSeason", j.get("sclSeason"));
-			// 退货作业-1
-			dataModel.put("sclReturn", j.get("sclReturn"));
 			//票据签收及货款回收要求-1
 			dataModel.put("sclRequesta", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("sclRequesta"))));
-			dataModel.put("sclItems", j.get("sclItems"));
-			//票据签收及货款回收要求-2
-			dataModel.put("sclDate", j.get("sclDate"));
-			//票据签收及货款回收要求-36
-			dataModel.put("sclDate1", j.get("sclDate1"));
-			dataModel.put("sclDate2", j.get("sclDate2"));
-			//信息反馈及报表要求-1
-			dataModel.put("sclRequirementsf", j.get("sclRequirementsf"));
-			dataModel.put("sclTransfer", j.get("sclTransfer"));
-			//信息反馈及报表要求-3
-			dataModel.put("sclOfs", j.get("sclOfs"));
-			//信息反馈及报表要求-4
-			dataModel.put("sclRequirementsss", j.get("sclRequirementsss"));
 			//物流服务项目及费用计算标准（未税价）：
 			if ("1".equals(j.get("traffic"))) {
 				dataModel.put("traffic", "☑");
@@ -134,65 +98,13 @@ public enum TemplateExporterEnum {
 				dataModel.put("area", "☐");
 				dataModel.put("sclAread", "_");
 			}
-			//、行销品仓储费用：
-			dataModel.put("sclWarehouse", j.get("sclWarehouse"));
-			//配送费计算方式：
-			dataModel.put("sclGoods", j.get("sclGoods"));
-			//服务范围、物流服务项目及费用的计算标准：
-			dataModel.put("day", j.get("day"));
-			dataModel.put("day1", j.get("day1"));
-			dataModel.put("day2", j.get("day2"));
-			dataModel.put("day3", j.get("day3"));
-			dataModel.put("day4", j.get("day4"));
 			//、保证金条款
-			dataModel.put("sclYuan", j.get("sclYuan"));
 			dataModel.put("sclWhole", MoneyToChiness.tenThousand(j.get("sclYuan").toString()));
-			dataModel.put("sclLead", j.get("sclLead"));
-			//违约责任-1
-			dataModel.put("sclRequirementsd", j.get("sclRequirementsd"));
-			//违约责任-3
-			dataModel.put("sclContract", j.get("sclContract"));
-			dataModel.put("day5", j.get("day5"));
-			//违约责任-5
-			dataModel.put("sclNumber1", j.get("sclNumber1"));
-			//违约责任-7
-			dataModel.put("sclMultiple", j.get("sclMultiple"));
-			dataModel.put("sclRequirementsa", j.get("sclRequirementsa"));
-			//违约责任-8
-			dataModel.put("sclContaining", j.get("sclContaining"));
-			//违约责任-9
-			dataModel.put("sclNinth", j.get("sclNinth"));
+
 			//合同变更、解除和终止条款约定-1
 			dataModel.put("startTimes", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
 			dataModel.put("endTimes", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
-			//特别约定事项-2
-			dataModel.put("sclCost", j.get("sclCost"));
-			dataModel.put("day7", j.get("day7"));
-			dataModel.put("sclConditions", j.get("sclConditions"));
-			//特别约定事项-3
-			dataModel.put("sclDate3", j.get("sclDate3"));
-			//特别约定事项-4
-			dataModel.put("day6", j.get("day6"));
 			//（以下无正文）
-			dataModel.put("address", j.get("address"));
-			dataModel.put("addressb", j.get("addressb"));
-			dataModel.put("telephone", j.get("telephone"));
-			dataModel.put("telephoneb", j.get("telephoneb"));
-			dataModel.put("fax", j.get("fax"));
-			dataModel.put("faxb", j.get("faxb"));
-			dataModel.put("accountNumber", j.get("accountNumber"));
-			dataModel.put("accountNumberb", j.get("accountNumberb"));
-			dataModel.put("deposit", j.get("deposit"));
-			dataModel.put("depositb", j.get("depositb"));
-			//附件4-<乙方授权委托书1>
-			dataModel.put("client", j.get("client"));
-			dataModel.put("client1", j.get("client1"));
-			dataModel.put("number", j.get("number"));
-			dataModel.put("client2", j.get("client2"));
-			dataModel.put("number1", j.get("number1"));
-			dataModel.put("client3", j.get("client3"));
-			dataModel.put("number2", j.get("number2"));
-			dataModel.put("mail", j.get("mail"));
 			//委托事项：（请在以下方框内打勾）
 			dataModel.put("shippingSummons", j.get("shippingSummons").toString().contains("1") ? "☑" : "☐");
 			dataModel.put("dispatching", j.get("shippingSummons").toString().contains("2") ? "☑" : "☐");
@@ -232,20 +144,10 @@ public enum TemplateExporterEnum {
 //            }
 			dataModel.put("date3", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date3"))));
 			dataModel.put("date4", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date4"))));
-			////附件4-<乙方授权委托书2>
-			dataModel.put("client4", j.get("client4"));
-			dataModel.put("client5", j.get("client5"));
-			dataModel.put("number3", j.get("number3"));
-			dataModel.put("phone", j.get("phone"));
-			dataModel.put("mail1", j.get("mail1"));
-			dataModel.put("postalAddress", j.get("postalAddress"));
-			//厂商承诺书-此致 -》使用为特别约定
-			dataModel.put("company", j.get("company"));
 			//拼接附件
 			dataModel.put("annex", j.get("annex"));
 			//《出货传票》及《出货传票交接清单》样式
 			dataModel.put("image", j.get("image"));
-
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -256,21 +158,31 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("employer", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("contractor", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("employersAddress", j.get("employersAddress"));
-			dataModel.put("addressContractor", j.get("addressContractor"));
-			dataModel.put("operationA", j.get("operationA"));
 			//承包期限
 			dataModel.put("contractPeriodA", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
 			dataModel.put("contractPeriodB", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
 			dataModel.put("compensationMuch", j.get("compensationMuch"));
-			dataModel.put("damages", j.get("damages"));
-			dataModel.put("accidentInsurance", j.get("accidentInsurance"));
-			dataModel.put("contactPersonb", j.get("contactPersonb"));
-			dataModel.put("contactInformation", j.get("contactInformation"));
-			dataModel.put("otherStandards", j.get("otherStandards"));
-			dataModel.put("thisAgreement", j.get("thisAgreement"));
+			if (Func.isNotEmpty(j.get("compensationMuch")) && Func.isNotEmpty(j.get("damages")) ) {
+				if (Integer.parseInt(j.get("compensationMuch").toString()) > Integer.parseInt(j.get("damages").toString())) {
+					dataModel.put("damages", j.get("compensationMuch"));
+				} else {
+					dataModel.put("damages", j.get("damages"));
+				}
+			}
+			dataModel.put("exceedterm", j.get("fewDays"));
 			//履约保证金相关
 			if (contractFormInfoEntity.getContractBond().size() <= 0) {
 				dataModel.put("performance", "");
@@ -292,22 +204,6 @@ public enum TemplateExporterEnum {
 				dataModel.put("performance", valuesD);
 				dataModel.put("performanceA", MoneyToChiness.tenThousand(valuesD.toString()));
 			}
-			dataModel.put("fewDays", j.get("fewDays"));
-			dataModel.put("exceedterm", j.get("fewDays"));
-			dataModel.put("vatinvoice", j.get("vatinvoice"));
-			dataModel.put("deliveredMonth", j.get("deliveredMonth"));
-			dataModel.put("receivesInvoice", j.get("receivesInvoice"));
-			dataModel.put("contractOperation", j.get("contractOperation"));
-			dataModel.put("accountName", j.get("accountName"));
-			dataModel.put("accountNumber", j.get("accountNumber"));
-			dataModel.put("bankDeposit", j.get("bankDeposit"));
-			dataModel.put("terminationMoney", j.get("terminationMoney"));
-			dataModel.put("compensation", j.get("compensation"));
-			dataModel.put("liquidatedDamages", j.get("liquidatedDamages"));
-			dataModel.put("liquidatedDamagesa", j.get("liquidatedDamagesa"));
-			dataModel.put("otherAgreements", j.get("otherAgreements"));
-			dataModel.put("agentA", j.get("agentA"));
-			dataModel.put("agentB", j.get("agentB"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -372,17 +268,23 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("ywlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("ywlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("ywlLocation", j.get("ywlLocation"));
-			dataModel.put("ywlSuspensionStart", j.get("ywlSuspensionStart"));
-			dataModel.put("ywlSuspensionEnd", j.get("ywlSuspensionEnd"));
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			dataModel.put("ywlAgreementPeriodStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("ywlAgreementPeriodEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
-			dataModel.put("ywlProductionCosts", j.get("ywlProductionCosts"));
 			dataModel.put("ywlAmountOf", MoneyToChiness.moneyToChinese(j.get("ywlProductionCosts").toString()));
-			dataModel.put("ywlOtherConventions", j.get("ywlOtherConventions"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -412,9 +314,9 @@ public enum TemplateExporterEnum {
 				}
 				if (ContractFormInfoTemplateContract.CONTRACT_MTADAPTATIONCONTRACT2.equals(templateField.getRelationCode())) {
 					MtlAdaptationContract2 = JSON.parseArray(templateField.getTableData(), MtlAdaptationContract2ResponseVO.class);
-					if ("未".equals(j.get("mtlHaveHasNot"))){
+					if ("未".equals(j.get("mtlHaveHasNot"))) {
 						MtlAdaptationContract2.clear();
-						MtlAdaptationContract2ResponseVO mtlAdaptationContract2=new MtlAdaptationContract2ResponseVO();
+						MtlAdaptationContract2ResponseVO mtlAdaptationContract2 = new MtlAdaptationContract2ResponseVO();
 						mtlAdaptationContract2.setIntellectualProperty("//");
 						mtlAdaptationContract2.setSample("//");
 						mtlAdaptationContract2.setUseArea("//");
@@ -436,28 +338,25 @@ public enum TemplateExporterEnum {
 				.bind("MtlAdaptationContract1", policy).bind("MtlAdaptationContract2", policy).build();
 			dataModel.put("MtlAdaptationContract1", MtlAdaptationContract1);
 			dataModel.put("MtlAdaptationContract2", MtlAdaptationContract2);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			//主表
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("mtlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("mtlPatyAEmail", j.get("mtlPatyAEmail"));
-			dataModel.put("mtlContactEmail", j.get("mtlContactEmail"));
-			dataModel.put("mtlPatyBEmail", j.get("mtlPatyBEmail"));
-			dataModel.put("mtlPatyBHome", j.get("mtlPatyBHome"));
-			dataModel.put("mtlAdaptationIssues", j.get("mtlAdaptationIssues"));
-			dataModel.put("mtlNameOfAdvertising", j.get("mtlNameOfAdvertising"));
-			dataModel.put("mtlBasedOnTheContent", j.get("mtlBasedOnTheContent"));
 			dataModel.put("mtlProductionStartTime", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
 			dataModel.put("mtlProductionCompletionTime", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
-			dataModel.put("mtlHaveHasNot", j.get("mtlHaveHasNot"));
 			dataModel.put("mtlUnpaidTaxRmb", Func.isNull(contractFormInfoEntity.getContractAmount()) ? "" : contractFormInfoEntity.getContractAmount());
 			dataModel.put("mtlRate", Func.isNull(contractFormInfoEntity.getContactTaxRate()) ? "" : contractFormInfoEntity.getContactTaxRate());
 			dataModel.put("mtlTaxAmountIsRmb", Func.isNull(contractFormInfoEntity.getContractTaxAmount()) ? "" : contractFormInfoEntity.getContractTaxAmount());
-			dataModel.put("mtlCompanyName", j.get("mtlCompanyName"));
-			dataModel.put("mtlWhereItIs", j.get("mtlWhereItIs"));
-			dataModel.put("mtlAccount", j.get("mtlAccount"));
-			dataModel.put("yearA", j.get("yearA"));
-			dataModel.put("yearB", j.get("yearB"));
-			dataModel.put("yearC", j.get("yearC"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -540,7 +439,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("sclContractor", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("sclStartTime", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("sclCompletionTime", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
-			dataModel.put("annex",j.get("annex"));
+			dataModel.put("annex", j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -573,6 +472,14 @@ public enum TemplateExporterEnum {
 				//音频制作合同 关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLAUDIOPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
 					MtlAudioProductionContract2 = JSON.parseArray(templateField.getTableData(), MtlAudioProductionContract2ResponseVO.class);
+					if ("未".equals(j.get("mtlHaveHasNot"))) {
+						MtlAudioProductionContract2.clear();
+						MtlAudioProductionContract2ResponseVO mtlAdaptationContract2 = new MtlAudioProductionContract2ResponseVO();
+						mtlAdaptationContract2.setIntellectualProperty("//");
+						mtlAdaptationContract2.setUseArea("//");
+						mtlAdaptationContract2.setServiceLife("//");
+						MtlAudioProductionContract2.add(mtlAdaptationContract2);
+					}
 //                    for (int i = 0; i < mtlAudioProductionContract2List.size(); i++) {
 //                        JSONObject mtlAudioProductionContract2 = JSON.parseObject(JSON.toJSONString(mtlAudioProductionContract2List.get(i), filter, SerializerFeature.WriteMapNullValue, SerializerFeature.WriteNullStringAsEmpty));
 //                        Map<String, Object> map = new HashMap();
@@ -592,14 +499,17 @@ public enum TemplateExporterEnum {
 			MtlAudioProductionContractEntity mtlAudioProductionContract = JSONObject.toJavaObject(j, MtlAudioProductionContractEntity.class);
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("mtlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("mtlPatyAEmail", j.get("mtlPatyAEmail"));
-			dataModel.put("mtlContactEmail", j.get("mtlContactEmail"));
-			dataModel.put("mtlPatyBEmail", j.get("mtlPatyBEmail"));
-			dataModel.put("mtlPatyBHome", j.get("mtlPatyBHome"));
-			dataModel.put("mtlAdaptationIssues", j.get("mtlAdaptationIssues"));
-			dataModel.put("mtlNameOfTheAudio", j.get("mtlNameOfTheAudio"));
-			dataModel.put("mtlAudioContent", j.get("mtlAudioContent"));
-			dataModel.put("mtlHaveHasNot", j.get("mtlHaveHasNot"));
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("mtlProductionStartTime", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
 			dataModel.put("mtlProductionCompletionTime", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
 			//2.乙方制作的作品被甲方全部确认后，应同时提交以下内容（勾选）：
@@ -617,17 +527,20 @@ public enum TemplateExporterEnum {
 				mtlTerm.append("(4)");
 			}
 			dataModel.put("mtlSubmitContent", mtlTerm.toString());
-			dataModel.put("mtlDesignatedPerson", j.get("mtlDesignatedPerson"));
 			dataModel.put("mtlUnpaidTaxRmb", Func.isNull(contractFormInfoEntity.getContractAmount()) ? "" : contractFormInfoEntity.getContractAmount());
 			dataModel.put("mtlRate", Func.isNull(contractFormInfoEntity.getContactTaxRate()) ? "" : contractFormInfoEntity.getContactTaxRate());
 			dataModel.put("mtlTaxAmountIsRmb", Func.isNull(contractFormInfoEntity.getContractTaxAmount()) ? "" : contractFormInfoEntity.getContractTaxAmount());
-			dataModel.put("mtlCompanyName", j.get("mtlCompanyName"));
-			dataModel.put("mtlWhereItIs", j.get("mtlWhereItIs"));
-			dataModel.put("mtlAccount", j.get("mtlAccount"));
-			dataModel.put("mtlMusicUse", j.get("mtlMusicUse"));
-			dataModel.put("mtlLiquidatedDamages2", j.get("mtlLiquidatedDamages2"));
-			dataModel.put("mtlSingerUse", j.get("mtlSingerUse"));
-			dataModel.put("mtlDubbingUse", j.get("mtlDubbingUse"));
+			if ("1".equals(j.getOrDefault("mtlTerm", ""))) {
+				dataModel.put("mtlInvoiceDays1", j.get("mtlInvoiceDays1"));
+				dataModel.put("mtlInvoiceDays2", " /");
+				dataModel.put("mtlCapitalizationRmb2", " /");
+				dataModel.put("mtlCapitalizationRmbSy2", " /");
+			} else {
+				dataModel.put("mtlInvoiceDays1", " /");
+				dataModel.put("mtlInvoiceDays2", j.get("mtlInvoiceDays2"));
+				dataModel.put("mtlCapitalizationRmb2", j.get("mtlCapitalizationRmb2"));
+				dataModel.put("mtlCapitalizationRmbSy2", j.get("mtlCapitalizationRmbSy2"));
+			}
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -667,19 +580,23 @@ public enum TemplateExporterEnum {
 			dataModel.put("MtlEditedTheContract1", MtlEditedTheContract1);
 			//主表
 			MtlEditedTheContractEntity mtlEditedTheContract = JSONObject.toJavaObject(j, MtlEditedTheContractEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("mtlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("mtlPatyAEmail", j.get("mtlPatyAEmail"));
-			dataModel.put("mtlContactEmail", j.get("mtlContactEmail"));
-			dataModel.put("mtlPatyBEmail", j.get("mtlPatyBEmail"));
-			dataModel.put("mtlPatyBHome", j.get("mtlPatyBHome"));
 			dataModel.put("mtlUnpaidTaxRmb", Func.isNull(contractFormInfoEntity.getContractAmount()) ? "" : contractFormInfoEntity.getContractAmount());
 			dataModel.put("mtlRate", Func.isNull(contractFormInfoEntity.getContactTaxRate()) ? "" : contractFormInfoEntity.getContactTaxRate());
 			dataModel.put("mtlTaxAmountIsRmb", Func.isNull(contractFormInfoEntity.getContractTaxAmount()) ? "" : contractFormInfoEntity.getContractTaxAmount());
-			dataModel.put("mtlCompanyName", j.get("mtlCompanyName"));
-			dataModel.put("mtlWhereItIs", j.get("mtlWhereItIs"));
-			dataModel.put("mtlAccount", j.get("mtlAccount"));
-			dataModel.put("period",Func.isNull(contractFormInfoEntity.getDays()) ? "" : contractFormInfoEntity.getDays());
+			dataModel.put("period", Func.isNull(contractFormInfoEntity.getDays()) ? "" : contractFormInfoEntity.getDays());
 			model.put("dataModel", setFile(filepaths, dataModel));
 			model.put("config", config);
 			return model;
@@ -702,6 +619,15 @@ public enum TemplateExporterEnum {
 				//视频制作合同 关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_MTLVIDEOPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
 					MtlVideoProductionContract2 = JSON.parseArray(templateField.getTableData(), MtlVideoProductionContract2ResponseVO.class);
+					if ("未".equals(j.get("mtlHaveHasNot"))) {
+						MtlVideoProductionContract2.clear();
+						MtlVideoProductionContract2ResponseVO mtlAdaptationContract2 = new MtlVideoProductionContract2ResponseVO();
+						mtlAdaptationContract2.setIntellectualProperty("//");
+						mtlAdaptationContract2.setSample("//");
+						mtlAdaptationContract2.setUseArea("//");
+						mtlAdaptationContract2.setServiceLife("//");
+						MtlVideoProductionContract2.add(mtlAdaptationContract2);
+					}
 				}
 			}
 			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
@@ -711,16 +637,19 @@ public enum TemplateExporterEnum {
 			dataModel.put("MtlVideoProductionContract2", MtlVideoProductionContract2);
 			//主表
 			MtlVideoProductionContractEntity mtlVideoProductionContract = JSONObject.toJavaObject(j, MtlVideoProductionContractEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("mtlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("mtlPatyAEmail", j.get("mtlPatyAEmail"));
-			dataModel.put("mtlContactEmail", j.get("mtlContactEmail"));
-			dataModel.put("mtlPatyBEmail", j.get("mtlPatyBEmail"));
-			dataModel.put("mtlPatyBHome", j.get("mtlPatyBHome"));
-			dataModel.put("mtlAdaptationIssues", j.get("mtlAdaptationIssues"));
-			dataModel.put("mtlNameOfTheVideo", j.get("mtlNameOfTheVideo"));
-			dataModel.put("mtlVideoContent", j.get("mtlVideoContent"));
-			dataModel.put("mtlHaveHasNot", j.get("mtlHaveHasNot"));
 			dataModel.put("mtlProductionStartTime", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
 			dataModel.put("mtlProductionCompletionTime", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
 			//2.乙方制作的作品被甲方全部确认后，应同时提交以下内容（勾选）：
@@ -738,16 +667,20 @@ public enum TemplateExporterEnum {
 				mtlTerm.append("(4)");
 			}
 			dataModel.put("mtlSubmitContent", mtlTerm.toString());
-			dataModel.put("mtlAcceptance", j.get("mtlAcceptance"));
 			dataModel.put("mtlUnpaidTaxRmb", Func.isNull(contractFormInfoEntity.getContractAmount()) ? "" : contractFormInfoEntity.getContractAmount());
 			dataModel.put("mtlRate", Func.isNull(contractFormInfoEntity.getContactTaxRate()) ? "" : contractFormInfoEntity.getContactTaxRate());
 			dataModel.put("mtlTaxAmountIsRmb", Func.isNull(contractFormInfoEntity.getContractTaxAmount()) ? "" : contractFormInfoEntity.getContractTaxAmount());
-			dataModel.put("mtlCompanyName", j.get("mtlCompanyName"));
-			dataModel.put("mtlWhereItIs", j.get("mtlWhereItIs"));
-			dataModel.put("mtlAccount", j.get("mtlAccount"));
-			dataModel.put("mtlPortraitRights", j.get("mtlPortraitRights"));
-			dataModel.put("mtlLiquidatedDamages2", j.get("mtlLiquidatedDamages2"));
-			dataModel.put("mtlDubbingUse", j.get("mtlDubbingUse"));
+			if ("1".equals(j.getOrDefault("mtlPaymentMethod", ""))) {
+				dataModel.put("mtlInvoiceDays1", j.get("mtlInvoiceDays1"));
+				dataModel.put("mtlInvoiceDays2", " /");
+				dataModel.put("mtlCapitalizationRmb2", " /");
+				dataModel.put("mtlCapitalizationRmbSy2", " /");
+			} else {
+				dataModel.put("mtlInvoiceDays1", " /");
+				dataModel.put("mtlInvoiceDays2", j.get("mtlInvoiceDays2"));
+				dataModel.put("mtlCapitalizationRmb2", j.get("mtlCapitalizationRmb2"));
+				dataModel.put("mtlCapitalizationRmbSy2", j.get("mtlCapitalizationRmbSy2"));
+			}
 			model.put("dataModel", setFile(filepaths, dataModel));
 			model.put("config", config);
 			return model;
@@ -814,16 +747,19 @@ public enum TemplateExporterEnum {
 			dataModel.put("MtlShootingAndProductionContract3", MtlShootingAndProductionContract3);
 			//主表
 			MtlShootingAndProductionContractEntity mtlShootingAndProductionContract = JSONObject.toJavaObject(j, MtlShootingAndProductionContractEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("mtlPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("mtlPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("mtlPatyAEmail", j.get("mtlPatyAEmail"));
-			dataModel.put("mtlContactEmail", j.get("mtlContactEmail"));
-			dataModel.put("mtlPatyBEmail", j.get("mtlPatyBEmail"));
-			dataModel.put("mtlPatyBHome", j.get("mtlPatyBHome"));
-			dataModel.put("mtlAdaptationIssues", j.get("mtlAdaptationIssues"));
-			dataModel.put("mtlNameOfAdvertising", j.get("mtlNameOfAdvertising"));
-			dataModel.put("mtlContentsOfAdvertisements", j.get("mtlContentsOfAdvertisements"));
-			dataModel.put("mtlHaveHasNot", j.get("mtlHaveHasNot"));
 			dataModel.put("mtlProductionStartTime", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
 			dataModel.put("mtlProductionCompletionTime", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
 			//2.乙方制作的作品被甲方全部确认后，应同时提交以下内容（勾选）：
@@ -841,18 +777,10 @@ public enum TemplateExporterEnum {
 				mtlTerm.append("(4)");
 			}
 			dataModel.put("mtlSubmitCheck", mtlTerm.toString());
-			dataModel.put("mtlAcceptance", j.get("mtlAcceptance"));
 			dataModel.put("mtlUnpaidTaxRmb", Func.isNull(contractFormInfoEntity.getContractAmount()) ? "" : contractFormInfoEntity.getContractAmount());
 			dataModel.put("mtlRate", Func.isNull(contractFormInfoEntity.getContactTaxRate()) ? "" : contractFormInfoEntity.getContactTaxRate());
 			dataModel.put("mtlTaxAmountIsRmb", Func.isNull(contractFormInfoEntity.getContractTaxAmount()) ? "" : contractFormInfoEntity.getContractTaxAmount());
-			dataModel.put("mtlCompanyName", j.get("mtlCompanyName"));
-			dataModel.put("mtlWhereItIs", j.get("mtlWhereItIs"));
-			dataModel.put("mtlAccount", j.get("mtlAccount"));
-			dataModel.put("mtlDubbingUse", j.get("mtlDubbingUse"));
-			dataModel.put("mtlMusicUse", j.get("mtlMusicUse"));
-			dataModel.put("mtlSingerUse", j.get("mtlSingerUse"));
 			dataModel.put("dateSigning", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("dateSigning"))));
-			dataModel.put("jobContent", j.get("jobContent"));
 			dataModel.put("contractNo", Func.isNull(contractFormInfoEntity.getContractNumber()) ? "" : contractFormInfoEntity.getContractNumber());
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
@@ -865,22 +793,25 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("cglPartya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("cglPartyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("cglActivity", j.get("cglActivity"));
-			dataModel.put("cglArea", j.get("cglArea"));
-			dataModel.put("activityName", j.get("activityName"));
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			dataModel.put("cglByTime", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("cglAsTime", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
-			dataModel.put("scheduling", j.get("scheduling"));//附件2
-			dataModel.put("cglPrice", j.get("cglPrice"));//附件3
-			dataModel.put("planningScheme", j.get("planningScheme"));//附件1
 			dataModel.put("cglTotal", contractFormInfoEntity.getContractAmount());
 			dataModel.put("capitalization", MoneyToChiness.moneyToChinese(Func.isNull(contractFormInfoEntity.getContractTaxAmount()) ? "" : contractFormInfoEntity.getContractTaxAmount().toString()));
-			dataModel.put("events", j.get("events"));
-			dataModel.put("cglPayment", j.get("cglPayment"));
-			if (j.get("cglPayment").toString().contains("2.1分期付款")) {
+			if (j.get("cglPayment").toString().contains("2.1")) {
 				dataModel.put("days", j.get("days"));
 				dataModel.put("amount", j.get("amount"));
 				dataModel.put("element", j.get("element"));
@@ -889,7 +820,7 @@ public enum TemplateExporterEnum {
 				dataModel.put("cglLumpSum", j.get("cglLumpSum"));
 				dataModel.put("cglCapitalize", MoneyToChiness.moneyToChinese(j.get("cglLumpSum").toString()));
 				dataModel.put("other", "——");
-			} else if (j.get("cglPayment").toString().contains("2.2其他方式")) {
+			} else if (j.get("cglPayment").toString().contains("2.2")) {
 				dataModel.put("days", "——");
 				dataModel.put("amount", "——");
 				dataModel.put("element", "——");
@@ -908,17 +839,8 @@ public enum TemplateExporterEnum {
 				dataModel.put("cglCapitalize", "__");
 				dataModel.put("other", "__");
 			}
-			dataModel.put("cglBank", j.get("cglBank"));
-			dataModel.put("cglAccountName", j.get("cglAccountName"));
-			dataModel.put("cglAccount", j.get("cglAccount"));
 			dataModel.put("cglInvoice", Func.isNull(contractFormInfoEntity.getContactTaxRate()) ? "" : contractFormInfoEntity.getContactTaxRate());
-			dataModel.put("days1", j.get("days1"));
-			dataModel.put("days2", j.get("days2"));
-			dataModel.put("breachContract", j.get("breachContract"));
-			dataModel.put("one", j.get("planningScheme"));
-			dataModel.put("two", j.get("scheduling"));
-			dataModel.put("three", j.get("cglPrice"));
-			dataModel.put("four", j.get("cglInspectionStandard"));
+			dataModel.put("annex", j.getOrDefault("annex", ""));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -930,140 +852,35 @@ public enum TemplateExporterEnum {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
 			SclLogisticsServiceEntity sclLogisticsService = JSONObject.toJavaObject(j, SclLogisticsServiceEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("partya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("partyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("date", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
-			//签订地点
-			dataModel.put("site", j.get("site"));
-			//甲方依据《中华人民共和国招标投标法》对
-			dataModel.put("storage", j.get("storage"));
-			//中标的物流线路为：
-			dataModel.put("area", j.get("area"));
-			//正常单
 			dataModel.put("no", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("no"))));
-			//加单
 			dataModel.put("storageee", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("storageee"))));
-			//加急单
 			dataModel.put("conditionsa", DataFormatUtils.systemTimeFormatH(String.valueOf(j.get("conditionsa"))));
-			//3、 货物的配送-7
-			dataModel.put("day", j.get("day"));
-			//3、 货物的配送-8
-			dataModel.put("day1", j.get("day1"));
-			//乙方人员配备及车辆配置要求-2
-			dataModel.put("services", j.get("services"));
-			//乙方人员配备及车辆配置要求-4
-			dataModel.put("drinks", j.get("drinks"));
-			//1、甲方的权利和义务-4
-			dataModel.put("dairy", j.get("dairy"));
-			//1、甲方的权利和义务-7
-			dataModel.put("dairy1", j.get("dairy1"));
-			dataModel.put("requirementsp", j.get("requirementsp"));
-			//1、甲方的权利和义务-8
-			dataModel.put("range", j.get("range"));
-			//1、甲方的权利和义务-9
-			dataModel.put("areae", j.get("areae"));
-			dataModel.put("requirementse", j.get("requirementse"));
-			//1、甲方的权利和义务-17
 			dataModel.put("contractd", DataFormatUtils.systemTimeFormatH(j.get("contractd").toString()));
-			//七、担保条款
-			dataModel.put("second", j.get("second"));
 			dataModel.put("breach", MoneyToChiness.tenThousand(j.get("second").toString()));
-			dataModel.put("provide", j.get("provide"));
-			//八、物流费用计算标准（未税价）及付款时间：1-1
-			dataModel.put("hours", j.get("hours"));
-			dataModel.put("morning", j.get("morning"));
-			dataModel.put("manifest", j.get("manifest"));
-			dataModel.put("afternoon", j.get("afternoon"));
-			//九、违约责任-1-1
-			dataModel.put("advancess", j.get("advancess"));
-			//九、违约责任-1-2
-			dataModel.put("season", j.get("season"));
-			//九、违约责任-2-4
-			dataModel.put("times", j.get("times"));
-			//九、违约责任-2-5
-			dataModel.put("items", j.get("items"));
-			//九、违约责任-2-9
-			dataModel.put("date1", j.get("date1"));
-			dataModel.put("requirementsddd", j.get("requirementsddd"));
-			//九、违约责任-2-12
-			dataModel.put("requirementsf", j.get("requirementsf"));
-			dataModel.put("transfer", j.get("transfer"));
-			//十二、合同的有效期限
 			dataModel.put("date2", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getStartingTime().toString()));
 			dataModel.put("requirementsss", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(contractFormInfoEntity.getEndTime().toString()));
-			dataModel.put("standard", j.get("standard"));
-			//十五、特别约定
-			dataModel.put("aread", j.get("aread"));
-			//（以下无正文）
-			dataModel.put("address", j.get("address"));
-			dataModel.put("addressb", j.get("addressb"));
-			dataModel.put("telephone", j.get("telephone"));
-			dataModel.put("telephoneb", j.get("telephoneb"));
-			dataModel.put("contacts", j.get("contacts"));
-			dataModel.put("contactsb", j.get("contactsb"));
-			dataModel.put("representative", j.get("representative"));
-			dataModel.put("representativeb", j.get("representativeb"));
-			dataModel.put("agent", j.get("agent"));
-			dataModel.put("agentb", j.get("agentb"));
-			//附件2 乙方授权委托书-1
-			dataModel.put("client", j.get("client"));
-			dataModel.put("client1", j.get("client1"));
-			dataModel.put("client2", j.get("client2"));
-			dataModel.put("client3", j.get("client3"));
-			dataModel.put("number2", j.get("number2"));
-			dataModel.put("number1", j.get("number1"));
-			dataModel.put("number", j.get("number"));
-			dataModel.put("mail", j.get("mail"));
-			//委托事项：（请在以下方框内打勾）
 			dataModel.put("choice", j.get("choice").toString().contains("1") ? "☑" : "☐");
 			dataModel.put("choice1", j.get("choice").toString().contains("2") ? "☑" : "☐");
 			dataModel.put("choice2", j.get("choice").toString().contains("3") ? "☑" : "☐");
 			dataModel.put("other", j.get("choice").toString().contains("4") ? "☑" : "☐");
 			dataModel.put("otherContent", j.get("choice").toString().contains("4") ? j.get("otherContent") : "");
-			//委托事项：（请在以下方框内打勾）
-//            if ("1".equals(j.get("choice"))) {
-//                dataModel.put("choice", "☑");
-//                dataModel.put("choice1", "☐");
-//                dataModel.put("choice2", "☐");
-//                dataModel.put("other", "☐");
-//                dataModel.put("otherContent", "");
-//            } else if ("2".equals(j.get("choice"))) {
-//                dataModel.put("choice", "☐");
-//                dataModel.put("choice1", "☑");
-//                dataModel.put("choice2", "☐");
-//                dataModel.put("other", "☐");
-//                dataModel.put("otherContent", "");
-//            } else if ("3".equals(j.get("choice"))) {
-//                dataModel.put("choice", "☐");
-//                dataModel.put("choice1", "☐");
-//                dataModel.put("choice2", "☑");
-//                dataModel.put("other", "☐");
-//                dataModel.put("otherContent", "");
-//            } else if ("4".equals(j.get("choice"))) {
-//                dataModel.put("choice", "☐");
-//                dataModel.put("choice1", "☐");
-//                dataModel.put("choice2", "☐");
-//                dataModel.put("other", "☑");
-//                dataModel.put("otherContent", j.get("otherContent"));
-//            } else {
-//                dataModel.put("choice", "☐");
-//                dataModel.put("choice1", "☐");
-//                dataModel.put("choice2", "☐");
-//                dataModel.put("other", "☐");
-//                dataModel.put("otherContent", "");
-//            }
 			//委托期间：
 			dataModel.put("date5", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date5"))));
 			dataModel.put("date6", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date6"))));
-			// 乙方（签章）
-			dataModel.put("signature", "🥇");
-			//乙方授权委托书-2
-			dataModel.put("client4", j.get("client4"));
-			dataModel.put("client5", j.get("client5"));
-			dataModel.put("number3", j.get("number3"));
-			dataModel.put("phone", j.get("phone"));
-			dataModel.put("mail1", j.get("mail1"));
-			dataModel.put("postal", j.get("postal"));
 			dataModel.put("date7", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date7"))));
 			dataModel.put("date8", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date8"))));
 			//附件:8：厂商承诺书
@@ -1100,10 +917,9 @@ public enum TemplateExporterEnum {
 				//平面广告拍摄制作合同 关联表2
 				if (ContractFormInfoTemplateContract.CONTRACT_MTBPRODUCTIONCONTRACT2.equals(templateField.getRelationCode())) {
 					MtbProductionContract2 = JSON.parseArray(templateField.getTableData(), MtbProductionContract2ResponseVO.class);
-					MtbProductionContract2.clear();
-					if ("未".equals(j.get("mtbHaveHasNot"))){
+					if ("未".equals(j.get("mtbHaveHasNot"))) {
 						MtbProductionContract2.clear();
-						MtbProductionContract2ResponseVO mtlAdaptationContract2=new MtbProductionContract2ResponseVO();
+						MtbProductionContract2ResponseVO mtlAdaptationContract2 = new MtbProductionContract2ResponseVO();
 						mtlAdaptationContract2.setIntellectualProperty("//");
 						mtlAdaptationContract2.setSmallKind("//");
 						mtlAdaptationContract2.setUseArea("//");
@@ -1145,14 +961,17 @@ public enum TemplateExporterEnum {
 			MtbProductionContractEntity mtbProductionContract = JSONObject.toJavaObject(j, MtbProductionContractEntity.class);
 			dataModel.put("mtbPatyA", contractFormInfoEntity.getSealName());
 			dataModel.put("mtbPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("mtbContactEmail", j.get("mtbContactEmail"));
-			dataModel.put("mtbAddress", j.get("mtbAddress"));
-			dataModel.put("mtbPatyBEmail", j.get("mtbPatyBEmail"));
-			dataModel.put("mtbPatyBAddress", j.get("mtbPatyBAddress"));
-			dataModel.put("mtbMakeMatters", j.get("mtbMakeMatters"));
-			dataModel.put("mtbNameOfAdvertising", j.get("mtbNameOfAdvertising"));
-			dataModel.put("mtbContentsOfAdvertisements", j.get("mtbContentsOfAdvertisements"));
-			dataModel.put("mtbHaveHasNot", j.get("mtbHaveHasNot"));
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("mtbShootingStartTime", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("mtbShootingCompletionTime", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
 			//2.乙方制作的作品被甲方全部确认后，应同时提交以下内容（勾选）：
@@ -1168,16 +987,11 @@ public enum TemplateExporterEnum {
 				}
 			}
 			dataModel.put("mtbSubmitContent", mtlTerm.toString());
-			dataModel.put("mtbAcceptancePersonnel", j.get("mtbAcceptancePersonnel"));
 			dataModel.put("mtbUnpaidTaxRmb", Func.isNull(contractFormInfoEntity.getContractAmount()) ? "" : contractFormInfoEntity.getContractAmount());
 			dataModel.put("mtbRate", Func.isNull(contractFormInfoEntity.getContactTaxRate()) ? "" : contractFormInfoEntity.getContactTaxRate());
 			dataModel.put("mtbTaxInclusiveInRmb", Func.isNull(contractFormInfoEntity.getContractTaxAmount()) ? "" : contractFormInfoEntity.getContractTaxAmount());
 			dataModel.put("mtbTaxInclusiveInRmbD", MoneyToChiness.moneyToChinese(contractFormInfoEntity.getContractTaxAmount().toString()));
-			dataModel.put("mtbCompanyName", j.get("mtbCompanyName"));
-			dataModel.put("mtbBankOfPartyB", j.get("mtbBankOfPartyB"));
-			dataModel.put("mtbPartyAccount", j.get("mtbPartyAccount"));
-			dataModel.put("mtbPortrait", j.get("mtbPortrait"));
-			dataModel.put("qiandingTime", j.getOrDefault("qiandingTime", ""));
+			dataModel.put("qiandingTime", DataFormatUtils.GLNZTimeFormat(String.valueOf(j.getOrDefault("qiandingTime", ""))));
 			dataModel.put("weituo", j.getOrDefault("weituo", ""));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
@@ -1218,20 +1032,25 @@ public enum TemplateExporterEnum {
 			dataModel.put("SclEquipmentMaintenance1", SclEquipmentMaintenance1);
 			//主表
 			SclEquipmentMaintenanceEntity sclEquipmentMaintenance = JSONObject.toJavaObject(j, SclEquipmentMaintenanceEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("sclPatyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("sclPatyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("sclPatyBs", j.get("sclPatyBs"));
-			dataModel.put("sclAddress", j.get("sclAddress"));
-			dataModel.put("sclProjectName", j.get("sclProjectName"));
-			dataModel.put("sclHome", j.get("sclHome"));
 			AtomicReference<Double> valuesD = new AtomicReference<>(0D);
 			SclEquipmentMaintenance1.forEach(element -> {
 				valuesD.updateAndGet(v -> v + BigDecimal.valueOf(Double.parseDouble(element.getSclPrice().toString())).multiply(BigDecimal.valueOf(Double.parseDouble(element.getSclNumbers().toString()))).doubleValue());
 			});
 			dataModel.put("sclTotalRmb", valuesD);
 			dataModel.put("sclCapitalRmb", MoneyToChiness.moneyToChinese(String.valueOf(valuesD)));
-			dataModel.put("sclNote", j.get("sclNote"));
-			dataModel.put("sclEquipment", j.get("sclEquipment"));
 			//1、累计运行时间维修保养
 			if (j.get("sclEquipment").toString().contains("1")) {
 				dataModel.put("sclMaintenancessss", j.get("sclMaintenancessss"));
@@ -1270,40 +1089,14 @@ public enum TemplateExporterEnum {
 				dataModel.put("sclMaintenances", "＿");
 				dataModel.put("sclRoutine", "＿");
 			}
-			dataModel.put("sclCumulative", j.get("sclCumulative"));
-			dataModel.put("sclSpecificallyAgreed", j.get("sclSpecificallyAgreed"));
-			dataModel.put("sclContract", j.get("sclContract"));
-			dataModel.put("sclPartyAs", j.get("sclPartyAs"));
-			dataModel.put("sclServiceTelephone", j.get("sclServiceTelephone"));
-			dataModel.put("sclShouldBeIn", j.get("sclShouldBeIn"));
-			dataModel.put("sclMaintenanceq", j.get("sclMaintenanceq"));
-			dataModel.put("sclSides", j.get("sclSides"));
-			dataModel.put("sclPayment", j.get("sclPayment"));
 			if (j.get("sclSides").toString().contains("(3)")) {
 				dataModel.put("sclOtherWay", j.get("sclOtherWay"));
 			} else {
 				dataModel.put("sclOtherWay", "＿");
 			}
-			dataModel.put("sclBank", j.get("sclBank"));
-			dataModel.put("sclName", j.get("sclName"));
-			dataModel.put("sclAccount", j.get("sclAccount"));
-			dataModel.put("sclContracts", j.get("sclContracts"));
-			dataModel.put("sclLimit", j.get("sclLimit"));
-			dataModel.put("sclGold", j.get("sclGold"));
-			dataModel.put("sclThan", j.get("sclThan"));
-			dataModel.put("sclBou", j.get("sclBou"));
 			dataModel.put("sclStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("sclLaste", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
-			dataModel.put("sclCompany", j.get("sclCompany"));
-			dataModel.put("sclAgreed", j.get("sclAgreed"));
-			dataModel.put("sclFujian", j.get("sclFujian"));
-			dataModel.put("sclFujian2", j.get("sclFujian2"));
-			dataModel.put("sclFujian3", j.get("sclFujian3"));
-			dataModel.put("sclLianxirenjia", j.get("sclLianxirenjia"));
-			dataModel.put("sclLianxirenyi", j.get("sclLianxirenyi"));
-			dataModel.put("sclLianxielejia", j.get("sclLianxielejia"));
-			dataModel.put("sclLianxieleyi", j.get("sclLianxieleyi"));
-			dataModel.put("annex",j.get("annex"));
+			dataModel.put("annex", j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -1316,17 +1109,23 @@ public enum TemplateExporterEnum {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
 			SclProductionCategoryEntity sclProductionCategory = JSONObject.toJavaObject(j, SclProductionCategoryEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("sclPartyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("sclPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			//签订时间
 			dataModel.put("sclDateOfSigning", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("sclDateOfSigning"))));
 			//签订地点
 			dataModel.put("sclSite", new TextRenderData((String) j.get("sclSite"), Style.builder().buildBold().build()));
-			dataModel.put("sclTimes", j.get("sclTimes"));
-			//食品
-			dataModel.put("sclStorage", j.get("sclStorage"));
-			//乳饮
-			dataModel.put("sclArea", j.get("sclArea"));
 			//保证金履行方式一
 			switch (j.get("bondChooseOne").toString()) {
 				case "1":
@@ -1383,11 +1182,6 @@ public enum TemplateExporterEnum {
 					dataModel.put("sclStorageee2", "/");
 					break;
 			}
-			//运费结算相关
-			dataModel.put("sclConditionsa", j.get("sclConditionsa"));
-			dataModel.put("sclNumber", j.get("sclNumber"));
-			dataModel.put("sclServices", j.get("sclServices"));
-			dataModel.put("sclFood", j.get("sclFood"));
 			//这里是处理下拉选的字段的
 			if ("1".equals(j.get("sclDrinks"))) {
 				dataModel.put("sclDrinks", "☑中石化☐中石油");
@@ -1399,18 +1193,7 @@ public enum TemplateExporterEnum {
 			//本合同期限为
 			dataModel.put("sclDateOfs", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("sclRequirementsss", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
-			//特别约定（本条约定与其他条款约定不一致或者冲突的，以本条约定为准）
-			dataModel.put("sclConvention", j.get("sclConvention"));
-			dataModel.put("sclJfAddress", j.get("sclJfAddress"));
-			dataModel.put("sclYfAddress", j.get("sclYfAddress"));
-			dataModel.put("sclJfPhone", j.get("sclJfPhone"));
-			dataModel.put("sclYfPhone", j.get("sclYfPhone"));
-			dataModel.put("sclJfContact", j.get("sclJfContact"));
-			dataModel.put("sclYfContact", j.get("sclYfContact"));
-			dataModel.put("sclJfEntrusted", j.get("sclJfEntrusted"));
-			dataModel.put("sclYfEntrusted", j.get("sclYfEntrusted"));
 			dataModel.put("sclCompany", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
-
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -1422,6 +1205,7 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 			List<CglProofingContract1ResponseVO> CglProofingContract1 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
@@ -1446,6 +1230,17 @@ public enum TemplateExporterEnum {
 			dataModel.put("CglProofingContract1", CglProofingContract1);
 			//主表
 			CglProofingContractEntity cglProofingContract = JSONObject.toJavaObject(j, CglProofingContractEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("partyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("partyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			AtomicReference<Double> valuesD = new AtomicReference<>(0D);
@@ -1453,13 +1248,10 @@ public enum TemplateExporterEnum {
 				valuesD.updateAndGet(v -> v + Double.parseDouble(element.getTotalAmount().toString()));
 			});
 			dataModel.put("element", valuesD);
-			dataModel.put("date", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("date"))));
+			dataModel.put("date", DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("element1", Func.isNull(contractFormInfoEntity.getContractAmount()) ? 0 : contractFormInfoEntity.getContractAmount());
 			dataModel.put("taxRate", Func.isNull(contractFormInfoEntity.getContactTaxRate()) ? 0 : contractFormInfoEntity.getContactTaxRate());
 			dataModel.put("element2", Func.isNull(contractFormInfoEntity.getContractTaxAmount()) ? 0 : contractFormInfoEntity.getContractTaxAmount());
-			dataModel.put("accountName", j.get("accountName"));
-			dataModel.put("accountNumber", j.get("accountNumber"));
-			dataModel.put("bankDeposit", j.get("bankDeposit"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -1472,14 +1264,19 @@ public enum TemplateExporterEnum {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list = new ArrayList();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("contactPartyA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("contactPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("productNameA", j.get("productNameA"));
-			dataModel.put("productContentA", j.get("productContentA"));
-			dataModel.put("productNameB", j.get("productNameB"));
-			dataModel.put("productContentB", j.get("productContentB"));
-			dataModel.put("otherEnterprises", j.get("otherEnterprises"));
-			dataModel.put("otherAgreements", j.get("otherAgreements"));
 			dataModel.put("specificDate", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate"))));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
@@ -1492,20 +1289,18 @@ public enum TemplateExporterEnum {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
 			List<Map<String, Object>> list = new ArrayList();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("jiaFang", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
-			dataModel.put("tradeSide", j.get("tradeSide"));
-			dataModel.put("manufacturer", j.get("manufacturer"));
-			dataModel.put("productInvolved", j.get("productInvolved"));
-			dataModel.put("contentsInformation", j.get("contentsInformation"));
-			dataModel.put("productInvolvedA", j.get("productInvolvedA"));
-			dataModel.put("contentsInformationA", j.get("contentsInformationA"));
-			dataModel.put("ownershipSubject", j.get("ownershipSubject"));
-			dataModel.put("blankField", j.get("blankField"));
-			dataModel.put("otherAgreements", j.get("otherAgreements"));
-			dataModel.put("fcUsingRange", j.get("fcUsingRange"));
-			dataModel.put("fbUsingRange", j.get("fbUsingRange"));
-			dataModel.put("scUsingRange", j.get("scUsingRange"));
-			dataModel.put("sbUsingRange", j.get("sbUsingRange"));
 			dataModel.put("specificDate", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDate"))));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
@@ -1518,28 +1313,22 @@ public enum TemplateExporterEnum {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
 			YwbBusinessContractTemplateEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, YwbBusinessContractTemplateEntity.class);
-			dataModel.put("ywbTenantry", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
-			dataModel.put("ywbLessors", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("ywbCertificate", j.get("ywbCertificate"));
-			dataModel.put("ywbAddress", j.get("ywbAddress"));
-			dataModel.put("ywbCertificateB", j.get("ywbCertificateB"));
-			dataModel.put("ywbResidence", j.get("ywbResidence"));
-			dataModel.put("ywbAgrees", j.get("ywbAgrees"));
-			dataModel.put("ywbBuiltupArea", j.get("ywbBuiltupArea"));
-			dataModel.put("ywbRooms", j.get("ywbRooms"));
-			dataModel.put("ywbPartyRoom", j.get("ywbPartyRoom"));
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			dataModel.put("ywbLessors", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+			dataModel.put("ywbTenantry", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("ywbTermStart", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("ywbTermEnd", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
-			dataModel.put("ywbShall", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
-			//移交房门钥匙及{ywbJiaofu}后视为交付完成。
-			dataModel.put("ywbJiaofu", j.get("ywbJiaofu"));
-			//合同期满后，乙方继续承租的，应提前{ywbRequirement}日向甲方提出续租要求,
-			dataModel.put("ywbRequirement", j.get("ywbRequirement"));
-			//第三条、租金及相关费用支付
-			//租金金额
-			dataModel.put("ywbStandard", j.get("ywbStandard"));
-			//租金总计（含${ywbShuilv}%税）：
-			dataModel.put("ywbShuilv", j.get("ywbShuilv"));
+			dataModel.put("ywbShall", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())));
 			if (j.get("ywbPayment").toString().contains("1")) {
 				BigDecimal sum = BigDecimal.valueOf(Double.parseDouble(String.valueOf(j.get("ywbStandard"))))
 					.multiply(BigDecimal.valueOf(Double.parseDouble(j.get("ywbShuilv").toString()) / 100 + 1))
@@ -1605,13 +1394,7 @@ public enum TemplateExporterEnum {
 			if (j.get("ywbBankRemittance").equals("")) {
 				dataModel.put("ywbBankRemittance", "☐月/☐季/☐半年/☐年");
 			}
-			//3、租金支付时间：
-			dataModel.put("ywbMdmbsContract", j.get("ywbMdmbsContract"));
-			dataModel.put("ywbHmdbfPrevious", j.get("ywbHmdbfPrevious"));
-			//4、押金：
-			dataModel.put("ywbShallRmba", j.get("ywbShallRmba"));
 			dataModel.put("ywbShallCapitali", MoneyToChiness.moneyToChinese(j.get("ywbShallRmba").toString()));
-			dataModel.put("ywbProportion", j.get("ywbProportion"));
 			//5、租赁期内的因使用租赁物而产生的下列费用中 甲方承担：
 			StringBuilder putEquipment = new StringBuilder();
 			if (j.get("ywbTerminclude").toString().contains("1")) {
@@ -1660,48 +1443,36 @@ public enum TemplateExporterEnum {
 				ywbPeriod.append("————");
 			}
 			dataModel.put("ywbPeriod", ywbPeriod.toString());
-			dataModel.put("ywbRequirementaes", j.get("ywbRequirementaes"));
-			dataModel.put("ywbCompensationaes", j.get("ywbCompensationaes"));
-			dataModel.put("ywbTimeRequirement", j.get("ywbTimeRequirement"));
-			dataModel.put("ywbAgreements", j.get("ywbAgreements"));
-			dataModel.put("ywbHmcopies", j.get("ywbHmcopies"));
-			dataModel.put("ywbHmcopiesaes", j.get("ywbHmcopiesaes"));
-			dataModel.put("ywbHmcopiesbes", j.get("ywbHmcopiesbes"));
-			dataModel.put("ywbQianmingjia", j.get("ywbQianmingjia"));
-			dataModel.put("ywbQianmingyi", j.get("ywbQianmingyi"));
-			dataModel.put("ywbQianmingdai", j.get("ywbQianmingdai"));
-			dataModel.put("ywbQianmingdaia", j.get("ywbQianmingdaia"));
-			dataModel.put("ywbKaihuhangjia", j.get("ywbKaihuhangjia"));
-			dataModel.put("ywbKaihuhangjiaa", j.get("ywbKaihuhangjiaa"));
-			dataModel.put("ywbZhanghaojia", j.get("ywbZhanghaojia"));
-			dataModel.put("ywbZhanghaoyi", j.get("ywbZhanghaoyi"));
-			dataModel.put("ywbDianhuajia", j.get("ywbDianhuajia"));
-			dataModel.put("ywbDianhuayi", j.get("ywbDianhuayi"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
 	},
+
+
+
+
 	//下脚品买卖合同模版
 	MMHT_26("MMHT_26") {
 		@Override
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("infSaler", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("infBuyer", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("infSalerAddr", j.get("infSalerAddr"));
-			dataModel.put("infBuyerAddr", j.get("infBuyerAddr"));
-			dataModel.put("infTypeFir", j.get("infTypeFir"));
-			//周选择
-			dataModel.put("infWeekStart", j.get("infWeekStart"));
-			dataModel.put("infWeekEnd", j.get("infWeekEnd"));
 			//时间选择
 			dataModel.put("infTimeStart", DataFormatUtils.systemTimeFormatH(j.get("infTimeStart").toString()));
 			dataModel.put("infTimeEnd", DataFormatUtils.systemTimeFormatH(j.get("infTimeEnd").toString()));
-			dataModel.put("infSortAddr", j.get("infSortAddr"));
-			dataModel.put("infLeastAmount", j.get("infLeastAmount"));
-			dataModel.put("infTimeAmount", j.get("infTimeAmount"));
-			dataModel.put("infLoadAddr", j.get("infLoadAddr"));
 			//履约保证金相关
 			if (contractFormInfoEntity.getContractBond().size() <= 0) {
 				dataModel.put("infAppointAmount", "");
@@ -1731,33 +1502,9 @@ public enum TemplateExporterEnum {
 				dataModel.put("infBreachAmountFir", valuesD);
 				dataModel.put("infBreachAmountSec", valuesD);
 			}
-			dataModel.put("infTimeLeastFir", j.get("infTimeLeastFir"));
-			dataModel.put("infTimeLeastSec", j.get("infTimeLeastSec"));
-			dataModel.put("infSalerAccoutName", j.get("infSalerAccoutName"));
-			dataModel.put("infBuyerAccoutName", j.get("infBuyerAccoutName"));
-			dataModel.put("infSalerAccoutId", j.get("infSalerAccoutId"));
-			dataModel.put("infBuyerAccoutId", j.get("infBuyerAccoutId"));
-			dataModel.put("infSalerAccoutBank", j.get("infSalerAccoutBank"));
-			dataModel.put("infBuyerAccoutBank", j.get("infBuyerAccoutBank"));
-			dataModel.put("infTimeLeastThi", j.get("infTimeLeastThi"));
-			dataModel.put("infSalerMail", j.get("infSalerMail"));
-			dataModel.put("infBuyerMail", j.get("infBuyerMail"));
-			dataModel.put("infBreachAmountThi", j.get("infBreachAmountThi"));
-			dataModel.put("infBreachAmountFou", j.get("infBreachAmountFou"));
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			dataModel.put("infContractStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("infContractEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
-			dataModel.put("infContractNum", j.get("infContractNum"));
-			dataModel.put("infContractSum", j.get("infContractSum"));
-			dataModel.put("infSalerPhone", j.get("infSalerPhone"));
-			dataModel.put("infBuyerPhone", j.get("infBuyerPhone"));
-			dataModel.put("infSalerPerson", j.get("infSalerPerson"));
-			dataModel.put("infBuyerPerson", j.get("infBuyerPerson"));
-			//承诺书（废面、废油、废茶渣项目需填写此项，一般下脚品填写“无”即可）
-			dataModel.put("infSurf", j.get("infSurf"));
-			dataModel.put("infOil", j.get("infOil"));
-			dataModel.put("infTeaSurf", j.get("infTeaSurf"));
-			dataModel.put("infYbl", j.get("infYbl"));
 			dataModel.put("sigDate", DataFormatUtils.systemTimeFormat(j.get("sigDate").toString()));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
@@ -1770,19 +1517,21 @@ public enum TemplateExporterEnum {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
 			DistServiceContractEntity sclLogisticsService = JSONObject.toJavaObject(j, DistServiceContractEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("clientA", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("trusteeB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("clientAddress", j.get("clientAddress"));
-			dataModel.put("trusteeAddress", j.get("trusteeAddress"));
-			dataModel.put("designatedAddress", j.get("designatedAddress"));
-			dataModel.put("several", j.get("several"));
-			dataModel.put("inWay", j.get("inWay"));
 			dataModel.put("validityContractA", Func.isNull(contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("validityContractB", Func.isNull(contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.GLNZTimeFormat(String.valueOf(contractFormInfoEntity.getEndTime())));
-			dataModel.put("clientTelephone", j.get("clientTelephone"));
-			dataModel.put("trusteeTelephone", j.get("trusteeTelephone"));
-			dataModel.put("clientFax", j.get("clientFax"));
-			dataModel.put("trusteeFax", j.get("trusteeFax"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -1793,7 +1542,7 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 			List<ProductOutServiceContract1ResponseVO> ProductOutServiceContract1 = new ArrayList();
 			List<ProductOutServiceContract2ResponseVO> ProductOutServiceContract2 = new ArrayList();
 			List<ProductOutServiceContract3ResponseVO> ProductOutServiceContract3 = new ArrayList();
@@ -1873,27 +1622,23 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
 			DeviceLaunchUseContractEntity ywbBusinessContractTemplateEntity = JSONObject.toJavaObject(j, DeviceLaunchUseContractEntity.class);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				log.info("==key" + entry.getKey().toString());
+				log.info("==value" + entry.getKey().toString());
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
 			dataModel.put("devSaler", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("devBuyer", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
-			dataModel.put("devSalerAddr", j.get("devSalerAddr"));
-			dataModel.put("devBuyerAddr", j.get("devBuyerAddr"));
 			dataModel.put("devBuyerNum", getCounterpart(contractFormInfoEntity).get("legalRepresentative").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("legalRepresentative").get(0));
-			dataModel.put("devNumber", j.get("devNumber"));
-			dataModel.put("devNumberInWord", MoneyToChiness.moneyToChinese(String.valueOf(j.get("devNumber"))));
-			if ("新投放本次有收押".equals(j.get("newRelease").toString())) {
-				dataModel.put("newRelease", "☑");
-				dataModel.put("agreementRenewal", "☐");
-			} else {
-				dataModel.put("newRelease", "☐");
-				dataModel.put("agreementRenewal", "☑");
-			}
-			dataModel.put("devBrand", j.get("devBrand"));
-			dataModel.put("devModel", j.get("devModel"));
-			dataModel.put("devValue", j.get("devValue"));
-			dataModel.put("devBorroStart", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroStart"))));
-			dataModel.put("devBorroEnd", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBorroEnd"))));
-			dataModel.put("devCode", j.get("devCode"));
+			dataModel.put("devNumberInWord", ConversionNuToCh.cvt(Integer.parseInt(j.get("devNumber").toString()),true));
 			//设备投放勾选
 			StringBuilder putEquipment = new StringBuilder();
 			if (j.get("putEquipment").toString().contains("1")) {
@@ -1968,15 +1713,17 @@ public enum TemplateExporterEnum {
 				}
 			}
 			dataModel.put("devPlaceValue", Func.isBlank(devPlaceValue.toString()) ? "" : devPlaceValue.toString().substring(0, devPlaceValue.length() - 1));
-			dataModel.put("devLeastDate", j.get("devLeastDate"));
-			dataModel.put("devDeposit", j.get("devDeposit"));
+			dataModel.put("devBorroStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("devBorroEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
 			dataModel.put("devDepositInWord", MoneyToChiness.moneyToChinese(j.get("devDeposit").toString()));
-// 签约人    dataModel.put("devSalerPerson",j.get("devSalerPerson"));
-// 签订时间  dataModel.put("devSalerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devSalerTime"))));
-// 负责人    dataModel.put("devBuyerPerson",j.get("devBuyerPerson"));
-// 签订时间  dataModel.put("devBuyerTime",DataFormatUtils.systemTimeFormat(String.valueOf(j.get("devBuyerTime"))));
-			dataModel.put("otherAgreements", j.get("otherAgreements"));
-
+			//押金收取状况勾选
+			if ("新投放本次有收押".equals(j.get("newRelease").toString())) {
+				dataModel.put("newRelease", "☑");
+				dataModel.put("agreementRenewal", "☐");
+			} else {
+				dataModel.put("newRelease", "☐");
+				dataModel.put("agreementRenewal", "☑");
+			}
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -1987,7 +1734,7 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			SimpleDateFormat simpleDateFormat=new SimpleDateFormat("YYYY-MM-dd");
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 			//主表
 			BusServiceContractEntity productOutServiceContractEntity = JSONObject.toJavaObject(j, BusServiceContractEntity.class);
 			dataModel.put("busSaler", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -2038,8 +1785,6 @@ public enum TemplateExporterEnum {
 			dataModel.put("IMtbMarketResearchContract1", IMtbMarketResearchContract1);
 			//主表
 			MtbMarketResearchContractEntity mtbMarketResearchContractEntity = JSONObject.toJavaObject(j, MtbMarketResearchContractEntity.class);
-			dataModel.put("patya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
-			dataModel.put("patyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			//迭代器遍历json对象
 			Iterator iter = j.entrySet().iterator();
 			while (iter.hasNext()) {
@@ -2051,6 +1796,8 @@ public enum TemplateExporterEnum {
 				log.info("==value" + entry.getKey().toString());
 				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
 			}
+			dataModel.put("patya", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+			dataModel.put("patyb", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			//研究方法：单选
 			if ("定性研究".equals(j.get("research").toString())) {
 				dataModel.put("research", "☑");
@@ -2059,7 +1806,7 @@ public enum TemplateExporterEnum {
 				dataModel.put("element1", j.get("element1"));
 				dataModel.put("element2", j.get("element2"));
 				dataModel.put("element3", j.get("element3"));
-				dataModel.put("element4", j.get("element4"));
+				dataModel.put("element4", j.get("element6"));
 				dataModel.put("element5", BigDecimal.valueOf(
 					Double.parseDouble("".equals(j.get("element").toString()) ? "0.0" : j.get("element").toString())
 						+ Double.parseDouble("".equals(j.get("element1").toString()) ? "0.0" : j.get("element1").toString())
@@ -2078,12 +1825,12 @@ public enum TemplateExporterEnum {
 			} else {
 				dataModel.put("research", "☐");
 				dataModel.put("methods", "☑");
-				dataModel.put("element6", j.get("element6"));
-				dataModel.put("element7", j.get("element7"));
-				dataModel.put("element8", j.get("element8"));
-				dataModel.put("element9", j.get("element9"));
-				dataModel.put("element10", j.get("element10"));
-				dataModel.put("element11", j.get("element11"));
+				dataModel.put("element6", j.get("element"));
+				dataModel.put("element7", j.get("element1"));
+				dataModel.put("element8", j.get("element2"));
+				dataModel.put("element9", j.get("element3"));
+				dataModel.put("element10", j.get("element4"));
+				dataModel.put("element11", j.get("element6"));
 				dataModel.put("element12", BigDecimal.valueOf(
 					Double.parseDouble("".equals(j.get("element6").toString()) ? "0.0" : j.get("element6").toString())
 						+ Double.parseDouble("".equals(j.get("element7").toString()) ? "0.0" : j.get("element7").toString())
@@ -2129,11 +1876,9 @@ public enum TemplateExporterEnum {
 			if (StringUtils.join(j.get("results"), "-").contains("其他")) {
 				dataModel.put("other", "☑");
 				dataModel.put("other1", j.get("other1"));
-				dataModel.put("other2", "——");
 			} else {
 				dataModel.put("other", "☐");
 				dataModel.put("other1", "——");
-				dataModel.put("other2", "——");
 			}
 			dataModel.put("totalCost", null == contractFormInfoEntity.getContractAmount() ? 0 : contractFormInfoEntity.getContractAmount());
 			dataModel.put("rate", null == contractFormInfoEntity.getContactTaxRate() ? 0 : contractFormInfoEntity.getContactTaxRate());
@@ -2146,7 +1891,6 @@ public enum TemplateExporterEnum {
 				dataModel.put("undertakesb", "☐");
 				dataModel.put("undertakesa", "☑");
 			}
-			dataModel.put("annex", j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -2158,6 +1902,7 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 			LaborDispatchEntity laborDispatchEntity = JSONObject.toJavaObject(j, LaborDispatchEntity.class);
 			//甲方（用工单位）
 			dataModel.put("ywbFirstParty", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
@@ -2174,8 +1919,8 @@ public enum TemplateExporterEnum {
 				log.info("==value" + entry.getKey().toString());
 				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
 			}
-			dataModel.put("specificDateStart", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDateStart"))));
-			dataModel.put("specificDateEnd", DataFormatUtils.systemTimeFormat(String.valueOf(j.get("specificDateEnd"))));
+			dataModel.put("specificDateStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
+			dataModel.put("specificDateEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
 			//拼接附件
 			dataModel.put("annex", j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
@@ -2441,6 +2186,15 @@ public enum TemplateExporterEnum {
 			dataModel.put("mtlPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("mtlStartDate", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("mtlDateClosed", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
+			if ("1".equals(j.getOrDefault("mtlClearingFrom", ""))) {
+				dataModel.put("mtlReceiveInvoice", j.getOrDefault("mtlReceiveInvoice", ""));
+				dataModel.put("mtlReceiveDay", j.getOrDefault("mtlReceiveDay", ""));
+				dataModel.put("mtlOtherMethods", " ");
+			} else {
+				dataModel.put("mtlReceiveInvoice", "  ");
+				dataModel.put("mtlReceiveDay", "  ");
+				dataModel.put("mtlOtherMethods", j.getOrDefault("mtlOtherMethods", ""));
+			}
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			return modle;
 		}
@@ -2494,7 +2248,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("contactPartyB", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("contactTimeStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));
 			dataModel.put("contactTimeEnd", null == (contractFormInfoEntity.getEndTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getEndTime())));
-			dataModel.put("annex",j.get("annex"));
+			dataModel.put("annex", j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
 			return modle;
@@ -2601,6 +2355,4 @@ public enum TemplateExporterEnum {
 			return o1;
 		}
 	};
-
-
 }

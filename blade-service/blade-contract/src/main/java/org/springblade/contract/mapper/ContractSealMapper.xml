@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractSealMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractSealResultMap" type="org.springblade.contract.entity.ContractSealEntity">
+        <result column="id" property="id"/>
+        <result column="fd_seq" property="fdSeq"/>
+        <result column="fd_factNo" property="fdFactno"/>
+        <result column="fd_factName" property="fdFactname"/>
+        <result column="fd_taxNo" property="fdTaxno"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        fd_seq,
+        fd_factNo,
+        fd_factName,
+        fd_taxNo,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractSealResultMap">
+        SELECT
+            <include refid="baseColumnList"/>
+        FROM contract_seal
+        WHERE is_deleted = 0
+        <if test="contractSeal.fdFactno != null and contractSeal.fdFactno != ''">
+            AND fd_factNo like concat('%',#{contractSeal.fdFactno},'%')
+        </if>
+        <if test="contractSeal.fdFactname != null and contractSeal.fdFactname != ''">
+            AND fd_factName like concat('%',#{contractSeal.fdFactname},'%')
+        </if>
+        <if test="contractSeal.fdTaxno != null and contractSeal.fdTaxno != ''">
+            AND fd_taxNo like concat('%',#{contractSeal.fdTaxno},'%')
+        </if>
+    </select>
+</mapper>
