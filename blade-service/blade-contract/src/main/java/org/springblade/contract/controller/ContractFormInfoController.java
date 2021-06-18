@@ -318,8 +318,7 @@ public class ContractFormInfoController extends BladeController {
 			r.getData().setCreateTime(new Date());
 			contractFormInfoService.updateById(r.getData());
 		}
-		assert r != null;
-		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(entity), r.getMsg());
+		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
 
 
@@ -416,8 +415,7 @@ public class ContractFormInfoController extends BladeController {
 			r.getData().setCreateTime(new Date());
 			contractFormInfoService.updateById(r.getData());
 		}
-		assert r != null;
-		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(entity), r.getMsg());
+		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
 
 
