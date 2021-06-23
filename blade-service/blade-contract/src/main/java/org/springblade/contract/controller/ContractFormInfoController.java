@@ -117,7 +117,7 @@ public class ContractFormInfoController extends BladeController {
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
 	private static final String CONTRACT_REVIEW_STATUS = "20";
-	private static final String FILE_EXPORT_CATEGORY = "1";
+	private static final Integer FILE_EXPORT_CATEGORY = 1;
 	private static final String CONTRACT_AUDIT_QUALITY = "30";
 	private static final String CONTRACT_EXPORT_STATUS = "40";
 	private static final String CONTRACT_SEAL_USING_INFO_STATUS = "50";
@@ -320,8 +320,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
-
-
 	/**
 	 * 独立起草新增
 	 */
@@ -742,19 +740,13 @@ public class ContractFormInfoController extends BladeController {
 		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		infoEntity.setContractStatus(CONTRACT_EXPORT_STATUS);
+		//附加条件解决BUG
+		if (CONTRACT_AUDIT_QUALITY.equals(infoEntity.getContractStatus())) {
+			infoEntity.setContractStatus(CONTRACT_EXPORT_STATUS);
+		}
+		infoEntity.setFileExportCount(fileExportCount);
+		infoEntity.setFileExportCategory(FILE_EXPORT_CATEGORY);
 		return R.status(contractFormInfoService.updateById(infoEntity));
-		/*ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(infoEntity);
-		//合同文本导出打印推送EKP代办
-		R<EkpVo> ekpVo = abutmentClient.nodeEkpFormPost(formInfoResponseVO);
-		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
-		if (ekpVo.getCode() == HttpStatus.OK.value()) {
-			contractFormInfoService.updateById(infoEntity);
-			log.info("ekp返回值code"+ekpVo.getCode());
-			return R.data(200,ekpVo,"EKP推送数据成功");
-		} else {
-			return R.data(401, null, "EKP推送数据超时，操作失败");
-		}*/
 	}
 
 	/**

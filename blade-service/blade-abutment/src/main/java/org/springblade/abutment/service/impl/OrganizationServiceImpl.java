@@ -8,10 +8,10 @@ import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import cn.hutool.json.XML;
 import com.alibaba.fastjson.JSON;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
+import org.springblade.abutment.vo.OrgParme;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -162,19 +162,25 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	 */
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
+	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
+		log.info("查看查询时间的参数："+JSONUtil.toJsonStr(param));
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
 		calendar.add(Calendar.DAY_OF_MONTH, -1);
 		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		OrganizationEntity entity = new OrganizationEntity();
-		entity.setAlterTime(format.format(calendar.getTime()));
+		if (Func.isNotEmpty(param.getParme()) && Func.isNotEmpty(param.getParme())){
+			entity.setAlterTime(param.getParme());
+		}else {
+			entity.setAlterTime(format.format(calendar.getTime()));
+		}
 		entity.setIsAvailable("1");
 		List<OrganizationVo> organizationList = null;
 		//保存组织机构
 		try {
 			entity.setOrgType("2");
 			organizationList = getOrganizationInfo(entity);
+			log.info("组织机构信息："+JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)){
 				return R.data(404,null,"TAG2:getOrganizationInfo()链接获取信息的方法异常，请检查");
 			}
@@ -184,12 +190,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		assert organizationList != null;
 		log.info("上面处理了NULL的判断，所以走到这里说明接口没问题："+JSONUtil.toJsonStr(organizationList));
 		if (Func.isNotEmpty(organizationList)) {
-			sysClient.saveOrUpdateBatchDept(getOrgListUpdate(organizationList));
+			getOrgListUpdate(organizationList);
 		}
 		//保存岗位
 		try {
 			entity.setOrgType("4");
 			organizationList = getOrganizationInfo(entity);
+			log.info("岗位信息："+JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)){
 				return R.data(404,null,"TAG4:getOrganizationInfo()链接获取信息的方法异常，请检查");
 			}
@@ -197,12 +204,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			e.printStackTrace();
 		}
 		if (Func.isNotEmpty(organizationList)){
-			sysClient.saveOrUpdateBatchPost(getPostListUpdate(organizationList));
+			getPostListUpdate(organizationList);
 		}
 		//保存个人
 		try {
 			entity.setOrgType("8");
 			organizationList = getOrganizationInfo(entity);
+			log.info("个人信息："+JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)){
 				return R.data(404,null,"TAG8:getOrganizationInfo()链接获取信息的方法异常，请检查");
 			}
@@ -220,10 +228,9 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	 * 增量处理org或dept机构数据
 	 *
 	 * @param organizationList
-	 * @return
 	 */
-	private List<Dept> getOrgListUpdate(List<OrganizationVo> organizationList) {
-		List<Dept> list = new ArrayList<>();
+	private void getOrgListUpdate(List<OrganizationVo> organizationList) {
+		List<Dept> in = new ArrayList<>();
 		for (OrganizationVo organizationVo : organizationList) {
 			Dept dept = new Dept();
 			dept.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 1 : 0);
@@ -237,74 +244,94 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			dept.setIsDeleted(0);
 			dept.setStatus(1);
 			dept.setAssociationId(organizationVo.getId());
-			//*上级部门*//*
+			dept.setCreateUser(1374895070913761282L);
+			dept.setUpdateUser(1374895070913761282L);
+			dept.setCreateDept(1367272379264299021L);
+			//*上级部门ID getId()  查询来的是部上级部门的id*//*
 			R<Long> deptIdByAssociationId= sysClient.getDeptIdByAssociationId(organizationVo.getParentid());
 			if (deptIdByAssociationId.isSuccess() && Func.isNotEmpty(deptIdByAssociationId.getData())) {
 				dept.setParentId(deptIdByAssociationId.getData());
 			} else {
 				dept.setParentId(0L);
 			}
-			//*祖籍列表*//*
+			//*祖籍列表  根据ParenId while循环查询相关的父级id  存入Ancestors  祖籍列表字段*//*
 			if (Func.isNotEmpty(dept.getParentId())) {
 				R<String> hierarchy = sysClient.getAncestors(dept.getParentId());
-				if (hierarchy.isSuccess()) {
+				if (hierarchy.isSuccess() && Func.isNotEmpty(hierarchy.getData())) {
 					dept.setAncestors(hierarchy.getData());
 				} else {
 					dept.setAncestors(StringPool.EMPTY);
 				}
 			}
-			//*根据唯一id查询机构的ID*//*
+			//*根据唯一id查询机构的ID*   association_id    如果查询存在那就修改   否则保存//*
 			deptIdByAssociationId = sysClient.getDeptIdByAssociationId(organizationVo.getId());
 			if (deptIdByAssociationId.isSuccess() && Func.isNotEmpty(deptIdByAssociationId.getData())) {
 				dept.setId(deptIdByAssociationId.getData());
 			}else{
-				dept.setId(IdWorker.getId(dept));
+				//自动生成ID
+//				dept.setId(IdWorker.getId(dept));
+				dept.setId(null);
 			}
-			list.add(dept);
+			in.add(dept);
 		}
-		return list;
+		if (Func.isNotEmpty(in)){
+			in.forEach(dept -> {
+				sysClient.saveDept(dept);
+			});
+		}
 	}
 
 	/**
 	 * 增量处理岗位数据
 	 *
 	 * @param organizationList
-	 * @return
 	 */
-	private List<Post> getPostListUpdate(List<OrganizationVo> organizationList) {
-		List<Post> list = new ArrayList<>();
+	private void getPostListUpdate(List<OrganizationVo> organizationList) {
+		List<Post> in = new ArrayList<>();
 		for (OrganizationVo organizationVo : organizationList) {
 			Post post = new Post();
 			post.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
 			post.setIsDeleted(0);
 			post.setStatus(1);
 			post.setAssociationId(organizationVo.getId());
+			//岗位ID
+			post.setPostCode(organizationVo.getGradid());
 			post.setPostName(organizationVo.getName());
+			post.setCreateUser(1374895070913761282L);
+			post.setUpdateUser(1374895070913761282L);
+			post.setCreateDept(1367272379264299021L);
 			/*根据Lunid查询岗位的ID*/
 			R<Long> postIdByAssociationId = sysClient.getPostIdByAssociationId(organizationVo.getId());
-			if (postIdByAssociationId.isSuccess() && Func.isNotEmpty(postIdByAssociationId.getData())) {
+			if (postIdByAssociationId.isSuccess() && !Objects.equals(postIdByAssociationId.getData(), 0L)) {
 				post.setId(postIdByAssociationId.getData());
 			}else{
-				post.setId(IdWorker.getId(post));
+//				post.setId(IdWorker.getId(post));
+				post.setId(null);
 			}
-			list.add(post);
+			in.add(post);
 		}
-		return list;
+		if (Func.isNotEmpty(in)){
+			in.forEach(post -> {
+				sysClient.savePost(post);
+			});
+		}
 	}
 
 	/**
 	 * 增量处理人员数据
 	 *
 	 * @param organizationList
-	 * @return
 	 */
-	private List<User> getPersonListUpdate(List<OrganizationVo> organizationList) {
-		List<User> list = new ArrayList<>();
-		List<UserDepartEntity> userDepartList = new ArrayList<>();
+	private void getPersonListUpdate(List<OrganizationVo> organizationList) {
+		List<UserDepartEntity> inud = new ArrayList<>();
 		for (OrganizationVo organizationVo : organizationList) {
+			if (Func.isEmpty(organizationVo.getEmplno()) && Func.isEmpty(organizationVo.getLoginName())){{
+				continue;
+			}}
 			User user = new User();
+			List<User> inu = new ArrayList<>();
 			UserDepartEntity userDepart = new UserDepartEntity();
-			user.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 2 : 1);
+			user.setIsEnable("1".equals(organizationVo.getIsAvailable()) ? 2 : 1);
 			user.setIsDeleted(0);
 			user.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
 			user.setPassword(SecureUtil.md5("123456"));
@@ -317,34 +344,49 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			user.setDeptNo(organizationVo.getDeptno());
 			user.setDeptNm(organizationVo.getDeptnm());
 			user.setLaiYuan(organizationVo.getLaiyuan());
+			user.setAssociationId(organizationVo.getId());
+			user.setCreateUser(1374895070913761282L);
+			user.setUpdateUser(1374895070913761282L);
+			user.setCreateDept(1367272379264299021L);
 			/*根据唯一标识获取用户id，因为此时用户已经同步到库中*/
 			R<Long> userIdResult = userClient.getUserIdByAssociationId(organizationVo.getId());
-			if (userIdResult.isSuccess()) {
+			if (userIdResult.isSuccess()  && !Objects.equals(userIdResult.getData(), 0L)) {
 				user.setId(userIdResult.getData());
 			}else{
-				user.setId(IdWorker.getId(user));
+//				user.setId(IdWorker.getId(user));
+				user.setId(null);
 			}
-			list.add(user);
-				/*R<Long> postIdByAssociationId = sysClient.getPostIdByAssociationId(organizationVo.getId());
-				if (postIdByAssociationId.isSuccess()) {
-					userDepart.setPostId(postIdByAssociationId.getData());
-				}*/
+			inu.add(user);
+			userClient.saveBatchUser(inu);
+			/**
+			 * 用户关联部门和岗位和角色表
+			 * @author jitwxs
+			 * @date 2021/6/22 11:45
+			 */
+			//根据唯一ID查询岗位信息  赋值岗位ID
+			R<Long> postIdByAssociationId = sysClient.getPostIdByAssociationId(organizationVo.getGradid());
+			if (postIdByAssociationId.isSuccess() && !Objects.equals(postIdByAssociationId.getData(), 0L)) {
+				userDepart.setPostId(postIdByAssociationId.getData());
+			}
+			//根据父节点ID查询部门信息  赋值部门ID
 			R<Long> deptIdByAssociationId= sysClient.getDeptIdByAssociationId(organizationVo.getParentid());
-			if (deptIdByAssociationId.isSuccess() && Func.isNotEmpty(deptIdByAssociationId.getData())) {
+			if (deptIdByAssociationId.isSuccess() && !Objects.equals(deptIdByAssociationId.getData(), 0L)) {
 				userDepart.setDeptId(deptIdByAssociationId.getData());
 			}
-			userDepart.setRoleId(1270659143136452610L);
+			//根据用户ID查询用户--关联部门和岗位和角色表信息   保存或修改
 			R<Long> userDepartIdByAssociationId= sysClient.getUserDepartByAssociationId(user.getId());
-			if (userDepartIdByAssociationId.isSuccess()) {
+			if (userDepartIdByAssociationId.isSuccess() && !Objects.equals(userDepartIdByAssociationId.getData(), 0L)){
 				userDepart.setId(userDepartIdByAssociationId.getData());
 			}else{
-				userDepart.setId(IdWorker.getId(userDepart));
+//				userDepart.setId(IdWorker.getId(userDepart));
+				userDepart.setId(null);
 			}
+			inud.add(userDepart);
+			userDepart.setRoleId(1270659143136452610L);
 			userDepart.setUserId(user.getId());
-			userDepartList.add(userDepart);
 		}
-		userClient.saveOrUpdateBatch(list);
-		sysClient.saveOrUpdateBatchUserDepart(userDepartList);
-		return list;
+		if (Func.isNotEmpty(inud)){
+			sysClient.saveOrUpdateBatchUserDepart(inud);
+		}
 	}
 }

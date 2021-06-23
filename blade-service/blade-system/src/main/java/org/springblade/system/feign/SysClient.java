@@ -16,6 +16,7 @@
  */
 package org.springblade.system.feign;
 
+import com.alibaba.fastjson.JSON;
 import lombok.AllArgsConstructor;
 import org.springblade.core.cache.utils.CacheUtil;
 import org.springblade.core.secure.BladeUser;
@@ -236,6 +237,7 @@ public class SysClient implements ISysClient {
 	@Override
 	@GetMapping(GET_USER_DEPART_ID_BY_LUNID)
 	public R<Long> getUserDepartByAssociationId(Long associationId) {
+		associationId= Long.parseLong(JSON.parseObject(String.valueOf(associationId)).get("associationId").toString());
 		return R.data(userDepartService.getUserDepartIdByAssociationId(associationId));
 	}
 

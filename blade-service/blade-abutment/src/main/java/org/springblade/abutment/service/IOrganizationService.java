@@ -1,6 +1,7 @@
 package org.springblade.abutment.service;
 
 import org.springblade.abutment.entity.OrganizationEntity;
+import org.springblade.abutment.vo.OrgParme;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
 
@@ -24,5 +25,5 @@ public interface IOrganizationService {
 	 * 增量更新组织及人员信息数据
 	 * @return
 	 */
-	R<List<OrganizationVo>> getOrganizationInfoIncrement();
+	R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param);
 }

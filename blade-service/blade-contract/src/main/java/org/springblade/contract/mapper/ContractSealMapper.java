@@ -20,5 +20,13 @@ public interface ContractSealMapper extends BaseMapper<ContractSealEntity> {
 	 * @return
 	 */
 	IPage<ContractSealEntity> pageList(IPage<ContractSealEntity> page, ContractSealRequestVO contractSeal);
+	/**
+	 *
+	 * @author jitwxs
+	 * @date 2021/6/18 11:55
+	 * @param fdFactno
+	 * @return org.springblade.contract.entity.ContractSealEntity
+	 */
+	ContractSealEntity selectAllByFdTaxnoAfter(String fdFactno);
 
 }

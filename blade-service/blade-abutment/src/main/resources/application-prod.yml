@@ -12,7 +12,10 @@ api:
     tokenUrl: http://oa.pec.com.cn:9080/query/openapi/getToken
     docInfoUrl: http://oa.pec.com.cn:9080/query/openapi/queryDocInfo
     #相对方资料接口
-    counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
+    Token: http://oa.pec.com.cn:9080/query/openapi/getToken
+    Username: prod_c_p
+    Password: T3TlIq9tP6EU4SV9hQ/ong==
+    counterpartUrl: https://oa-interface.pec.com.cn/common/opposite/data
     #统一集团签章子公司接口
     signatureUnitUrl: https://oatest-interface.pec.com.cn/common/group/subsidiary
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u

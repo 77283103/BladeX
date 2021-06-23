@@ -13,6 +13,7 @@ import org.springblade.abutment.vo.AsDictVo;
 import org.springblade.contract.entity.ContractSealEntity;
 import org.springblade.contract.service.IContractSealService;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.feign.IDictBizClient;
@@ -46,6 +47,8 @@ public class SigatureXxJob {
 	public ReturnT<AsDictVo> submit(String param) throws Exception {
 		List<DictBiz> dictBizVOS = dictService.getList("application_seal").getData();
 		List<AsDict> as = new ArrayList<>();
+		List<AsDict> ds = new ArrayList<>();
+		List<AsDict> is = new ArrayList<>();
 		AsDict asDict = new AsDict();
 		R<AsDictVo> vo = abutmentClient.querySigatureInfo(asDict);
 		if (HttpStatus.OK.value() == vo.getCode() && Func.isNotEmpty(vo.getData())) {
@@ -53,9 +56,14 @@ public class SigatureXxJob {
 				if (Func.isEmpty(dictService.getKey("application_seal", asD.getFd_factName()).getData())) {
 					as.add(asD);
 				}
+				if (Func.isNotEmpty(contractSealService.getByFdNo(asD.getFd_taxNo()))){
+					ds.add(asD);
+				}else {
+					is.add(asD);
+				}
 			});
 			if (Func.isNotEmpty(as)) {
-				for (int i = 0; i <= as.size(); i++) {
+				for (int i = 0; i < as.size(); i++) {
 					DictBiz d = new DictBiz();
 					ContractSealEntity sealEntity=new ContractSealEntity();
 					d.setTenantId("000000");
@@ -77,8 +85,35 @@ public class SigatureXxJob {
 					sealEntity.setFdFactno(as.get(i).getFd_factNo());
 					sealEntity.setFdFactname(as.get(i).getFd_factName());
 					sealEntity.setFdTaxno(as.get(i).getFd_taxNo());
+					sealEntity.setCreateUser(1374895070913761282L);
+					sealEntity.setUpdateUser(1374895070913761282L);
+					sealEntity.setCreateDept(1367272379264299021L);
 					contractSealService.save(sealEntity);
 				}
+			}
+			if (Func.isNotEmpty(is)) {
+				is.forEach(i->{
+					ContractSealEntity sealEntity=new ContractSealEntity();
+					sealEntity.setFdSeq(i.getFd_seq());
+					sealEntity.setFdFactno(i.getFd_factNo());
+					sealEntity.setFdFactname(i.getFd_factName());
+					sealEntity.setFdTaxno(i.getFd_taxNo());
+					sealEntity.setCreateUser(1374895070913761282L);
+					sealEntity.setUpdateUser(1374895070913761282L);
+					sealEntity.setCreateDept(1367272379264299021L);
+					contractSealService.save(sealEntity);
+				});
+			}
+			if (Func.isNotEmpty(ds)) {
+				ds.forEach(d->{
+					ContractSealEntity sealEntity=new ContractSealEntity();
+					BeanUtil.copy(d,sealEntity);
+					sealEntity.setFdSeq(d.getFd_seq());
+					sealEntity.setFdFactno(d.getFd_factNo());
+					sealEntity.setFdFactname(d.getFd_factName());
+					sealEntity.setFdTaxno(d.getFd_taxNo());
+					contractSealService.updateById(sealEntity);
+				});
 			}
 			XxlJobLogger.log(vo.getMsg() + vo.getData());
 			return new ReturnT<>(vo.getData());

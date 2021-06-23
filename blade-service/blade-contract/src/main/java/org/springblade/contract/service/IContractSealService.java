@@ -20,4 +20,12 @@ public interface IContractSealService extends BaseService<ContractSealEntity> {
 	 * @return
 	 */
 	IPage<ContractSealEntity> pageList(IPage<ContractSealEntity> page, ContractSealRequestVO contractSeal);
+	/**
+	 *
+	 * @author jitwxs
+	 * @date 2021/6/18 11:57
+	 * @param fdTaxno
+	 * @return org.springblade.contract.vo.ContractSealRequestVO
+	 */
+	ContractSealEntity getByFdNo(String fdTaxno);
 }

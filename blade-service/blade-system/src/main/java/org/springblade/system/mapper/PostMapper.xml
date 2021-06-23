@@ -72,7 +72,7 @@
         t.*
         from blade_post t
         <if test="associationId != null and associationId != ''">
-            where t.association_id = #{associationId}
+            where t.post_code = #{associationId}
         </if>
     </select>
 

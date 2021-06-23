@@ -11,6 +11,7 @@ import org.csource.fastdfs.TrackerClient;
 import org.springblade.abutment.common.annotation.AutoLog;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
+import org.springblade.abutment.vo.OrgParme;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -153,7 +154,7 @@ public class OrganizationController {
 	@PostMapping("/queryOrganization")
 	@AutoLog
 	@ApiOperation(value = "获取组织及人员信息的接口")
-	public R<List<OrganizationVo>> queryOrganization() {
-		return R.data(organizationService.getOrganizationInfoIncrement().getData());
+	public R<List<OrganizationVo>> queryOrganization(OrgParme param) {
+		return R.data(organizationService.getOrganizationInfoIncrement(param).getData());
 	}
 }

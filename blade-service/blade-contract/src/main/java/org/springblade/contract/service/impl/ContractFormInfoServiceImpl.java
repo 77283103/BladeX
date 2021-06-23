@@ -1207,15 +1207,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	/**
 	 * 统计合同下载次数
-	 *
-	 * @param id                 合同id
+	 *  @param id                 合同id
 	 * @param fileExportCount    下载次数
 	 * @param fileExportCategory
-	 * @return 返回统计状态
 	 */
 	@Override
-	public boolean textExportCount(Long id, Integer fileExportCount, String fileExportCategory) {
-		return contractFormInfoMapper.textExportCount(id, fileExportCount, fileExportCategory);
+	public void textExportCount(Long id, Integer fileExportCount, Integer fileExportCategory) {
+		contractFormInfoMapper.textExportCount(id, fileExportCount, fileExportCategory);
 	}
 
 

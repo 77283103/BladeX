@@ -1,13 +1,8 @@
 package org.springblade.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import lombok.AllArgsConstructor;
-import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.mapper.UserDepartMapper;
 import org.springblade.system.service.IUserDepartService;
@@ -38,7 +33,7 @@ public class UserDepartServiceImpl extends ServiceImpl<UserDepartMapper, UserDep
 		if (Func.isNotEmpty(userDepart)) {
 			return userDepart.getId();
 		}
-		return null;
+		return 0L;
 	}
 
 	@Override

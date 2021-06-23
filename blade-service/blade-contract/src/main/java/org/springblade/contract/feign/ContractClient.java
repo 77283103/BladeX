@@ -83,6 +83,11 @@ public class ContractClient implements IContractClient {
 	}
 
 	@Override
+	public R<Boolean> saveOrUpdate(List<ContractCounterpartEntity> list) {
+		return R.data(counterpartService.saveOrUpdateBatch(list));
+	}
+
+	@Override
 	public R<Boolean> updateById(ContractCounterpartEntity updateCounterpart) {
 		return R.data(counterpartService.saveOrUpdate(updateCounterpart));
 	}
@@ -183,6 +188,8 @@ public class ContractClient implements IContractClient {
 	@GetMapping(CONTRACT_SAVE)
 	public R saveContractFormInfo(Long id, String status) {
 		ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
+		ContractSigningEntity entity = new ContractSigningEntity();
+		ContractSealUsingInfoEntity sealUsingInfoEntity = new ContractSealUsingInfoEntity();
 		if (Func.isEmpty(contractFormInfo)) {
 			return R.fail("合同信息不存在");
 		}
@@ -193,8 +200,6 @@ public class ContractClient implements IContractClient {
 				log.info("合同形式为1表示为电子签章-我司平台，审批通过后直接转到已归档节点（待结案），至此合同形式为：" + contractFormInfo.getContractForm());
 				SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 				String date = df.format(new Date());
-				ContractSigningEntity entity = new ContractSigningEntity();
-				ContractSealUsingInfoEntity sealUsingInfoEntity = new ContractSealUsingInfoEntity();
 				//关联合同ID
 				entity.setContractId(contractFormInfo.getId());
 				sealUsingInfoEntity.setRefContractId(contractFormInfo.getId());
@@ -205,7 +210,7 @@ public class ContractClient implements IContractClient {
 				entity.setContractStartTime(contractFormInfo.getStartingTime());
 				entity.setContractEndTime(contractFormInfo.getEndTime());
 				//用印申请人 部门
-				sealUsingInfoEntity.setSignPerson(contractFormInfo.getCreateUserName());
+				sealUsingInfoEntity.setSignPerson(contractFormInfo.getPersonContract());
 				sealUsingInfoEntity.setManager(contractFormInfo.getCreateUserName());
 				sealUsingInfoEntity.setManageDept(contractFormInfo.getCreateDeptName());
 				sealUsingInfoEntity.setManageUnit(contractFormInfo.getCreateDeptName());
@@ -222,6 +227,15 @@ public class ContractClient implements IContractClient {
 				contractFormInfo.setContractStatus("60");
 			} else if ("3".equals(contractFormInfo.getContractForm())) {
 				log.info("合同形式为3表示为电子合同-对方平台，审批通过后直接转到用印节点（需要手动归档），至此合同形式为：" + contractFormInfo.getContractForm());
+				sealUsingInfoEntity.setRefContractId(contractFormInfo.getId());
+				sealUsingInfoEntity.setSignTime(new Date());
+				//用印申请人 部门
+				sealUsingInfoEntity.setSignPerson(contractFormInfo.getPersonContract());
+				sealUsingInfoEntity.setManager(contractFormInfo.getCreateUserName());
+				sealUsingInfoEntity.setManageDept(contractFormInfo.getCreateDeptName());
+				sealUsingInfoEntity.setManageUnit(contractFormInfo.getCreateDeptName());
+				sealUsingInfoEntity.setSignRemark("电子合同-我司用印");
+				sealUsingInfoService.save(sealUsingInfoEntity);
 				contractFormInfo.setContractStatus("50");
 			} else {
 				log.info("合同形式为2，4表示为实体签章-我司不用电子印/实体签章-我司用电子印，审批通过后转到印节，至此合同形式为：" + contractFormInfo.getContractForm());

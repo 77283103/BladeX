@@ -22,4 +22,6 @@ public class CounterpartEntity implements Serializable {
 	private String custNm;
 	@ApiModelProperty(value = "社会统一信用代码")
 	private String businessId;
+	@ApiModelProperty(value = "时间")
+	private String yyyyMMdd;
 }

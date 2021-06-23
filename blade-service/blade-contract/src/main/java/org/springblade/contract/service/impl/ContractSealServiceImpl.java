@@ -21,4 +21,9 @@ public class ContractSealServiceImpl extends BaseServiceImpl<ContractSealMapper,
 	public IPage<ContractSealEntity> pageList(IPage<ContractSealEntity> page, ContractSealRequestVO contractSeal) {
 		return baseMapper.pageList(page, contractSeal);
 	}
+
+	@Override
+	public ContractSealEntity getByFdNo(String fdTaxno) {
+		return baseMapper.selectAllByFdTaxnoAfter(fdTaxno);
+	}
 }

@@ -19,7 +19,6 @@ import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
-import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
@@ -191,7 +190,6 @@ public class AbutmentClient implements IAbutmentClient {
 
 	/**
 	 * 合同借阅申请
-	 *
 	 * @param entity 合同借阅申请
 	 * @return
 	 */
@@ -1232,9 +1230,7 @@ public class AbutmentClient implements IAbutmentClient {
 			EkpVo ekp = null;
 			try {
 				//docCreator 待办接收人员工编号
-				DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
-				docCreatorEntity.setEmplno(f.getPersonCodeContract());
-				pushEkpEntity.setDocCreator(docCreatorEntity);
+				pushEkpEntity.setEmplno(f.getPersonCodeContract());
 				//系统类型，请传递固定字符串c_p_notify
 				pushEkpEntity.setSystemName(this.systemName);
 				//docSubject 合同主旨
@@ -1666,11 +1662,13 @@ public class AbutmentClient implements IAbutmentClient {
 	 * 增量更新组织及人员信息数据
 	 *
 	 * @return
+	 * @param param
 	 */
 	@Override
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
-	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
-		return iOrganizationService.getOrganizationInfoIncrement();
+	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
+		log.info("查看查询时间的参数："+param);
+		return iOrganizationService.getOrganizationInfoIncrement(param);
 	}
 
 	/**
@@ -1688,7 +1686,9 @@ public class AbutmentClient implements IAbutmentClient {
 		String token = counterpartService.getToken();
 		log.info("获取相对方的token：" + JsonUtil.toJson(token));
 		entity.setToken(token);
-		if (StrUtil.isNotEmpty(entity.getToken())) {
+		if (StrUtil.isEmpty(entity.getToken())) {
+			return R.data(404, null, "获取token失败！");
+		}else {
 			counterpartVo = counterpartService.getInsOrUp(entity).getData();
 			if (Func.isNull(counterpartVo)) {
 				return R.data(500, null, "获取数据失败！");
@@ -1704,41 +1704,52 @@ public class AbutmentClient implements IAbutmentClient {
 				in.setName(i.getCustNm());
 				in.setUnifiedSocialCreditCode(i.getBusinessId());
 				in.setOrganizationCode(i.getBusinessId());
+				in.setElectronicSealSerialId(i.getBusinessId());
+				in.setCreateUser(1374895070913761282L);
+				in.setUpdateUser(1374895070913761282L);
+				in.setCreateDept(1367272379264299021L);
+				//更名每月检视(编号)
+				in.setRenameReview(simpleDateFormat.format(new Date()));
+				//半角名称
+				in.setHalfWidthName(i.getCustNm());
 				List<ContractCounterpartEntity> entityList = contractClient.selectByName(in.getUnifiedSocialCreditCode()).getData();
 				if (Func.isEmpty(entityList)) {
 					listInsert.add(in);
+				} else {
+					listUpdate.add(in);
 				}
 			});
-			if (Func.isNotEmpty(listInsert)) {
-				contractClient.saveBatch(listInsert);
-			}
-			log.info("新增的数据：" + JsonUtil.toJson(listInsert));
 			counterpartVo.getUpdate().forEach(u -> {
 				ContractCounterpartEntity up = new ContractCounterpartEntity();
 				up.setName(u.getCustNm());
 				up.setUnifiedSocialCreditCode(u.getBusinessId());
 				up.setOrganizationCode(u.getBusinessId());
-				listUpdate.add(up);
-			});
-			log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
-			listUpdate.forEach(l -> {
-				List<ContractCounterpartEntity> entityList = contractClient.selectByName(l.getUnifiedSocialCreditCode()).getData();
-				ContractCounterpartEntity ce = new ContractCounterpartEntity();
-				if (Func.isNotEmpty(entityList)) {
-					BeanUtil.copy(entityList.get(0), ce);
-					//相对方名称
-					ce.setName(l.getName());
-					//更名每月检视(编号)
-					ce.setRenameReview(simpleDateFormat.format(new Date()));
-					//半角名称
-					ce.setHalfWidthName(l.getName());
-					contractClient.updateById(ce);
+				up.setElectronicSealSerialId(u.getBusinessId());
+				up.setCreateUser(1374895070913761282L);
+				up.setUpdateUser(1374895070913761282L);
+				up.setCreateDept(1367272379264299021L);
+				//更名每月检视(编号)
+				up.setRenameReview(simpleDateFormat.format(new Date()));
+				//半角名称
+				up.setHalfWidthName(u.getCustNm());
+				List<ContractCounterpartEntity> entityList = contractClient.selectByName(up.getUnifiedSocialCreditCode()).getData();
+				if (Func.isNotEmpty(entityList) && Func.isNotEmpty(entityList.get(0).getId())) {
+					listUpdate.add(up);
+				} else {
+					listInsert.add(up);
 				}
 			});
-		} else {
-			return R.data(404, null, "获取token失败！");
+			if (Func.isNotEmpty(listInsert)) {
+				contractClient.saveBatch(listInsert);
+			}
+			if (Func.isNotEmpty(listUpdate)) {
+				contractClient.saveOrUpdate(listInsert);
+			}
+			log.info("新增的数据：" + JsonUtil.toJson(listInsert));
+			log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
+			log.info("counterpartVo：" + JsonUtil.toJson(counterpartVo));
+			return R.data(200, counterpartVo, "获取数据成功！");
 		}
-		return R.data(200, counterpartVo, "获取数据成功！");
 	}
 
 	@Override

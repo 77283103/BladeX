@@ -16,6 +16,8 @@ public class PushEkpEntity implements Serializable {
     private DocCreatorEntity docCreator;
     private String docSubject;
     private String token;
+    @ApiModelProperty(value = "合同归档需要的该字段")
+	private String emplno;
 	private List<Attachment> fd_attachment;
     private FormValuesEntity formValues;
     private BorrowAc borrowAc;

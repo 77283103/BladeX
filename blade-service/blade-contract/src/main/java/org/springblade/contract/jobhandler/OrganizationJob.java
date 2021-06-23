@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.OrgParme;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
@@ -32,9 +33,12 @@ public class OrganizationJob {
 	 */
 	@SneakyThrows
 	@XxlJob("organizationJob")
-	public ReturnT<List<OrganizationVo>> queryOrganization(String param) {
-		log.info("启动获取组织及人员增量信息任务");
-		R<List<OrganizationVo>> organizationVos=iAbutmentClient.getOrganizationInfoIncrement();
+	public ReturnT<List<OrganizationVo>> queryOrganization(String param){
+		OrgParme orgParme=new OrgParme();
+		log.info("启动获取组织及人员增量信息任务"+param);
+		orgParme.setParme(param);
+		log.info("启动获取组织及人员增量信息任务"+JsonUtil.toJson(orgParme));
+		R<List<OrganizationVo>> organizationVos=iAbutmentClient.getOrganizationInfoIncrement(orgParme);
 		if (HttpStatus.OK.value()==organizationVos.getCode()){
 			log.info("组织机构人员信息:"+ JsonUtil.toJson(organizationVos.getData()));
 		}

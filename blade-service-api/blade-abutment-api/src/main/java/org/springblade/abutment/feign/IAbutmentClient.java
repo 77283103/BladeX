@@ -196,11 +196,10 @@ public interface IAbutmentClient {
 	 * @return
 	 */
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
-	R<List<OrganizationVo>> getOrganizationInfoIncrement();
+	R<List<OrganizationVo>> getOrganizationInfoIncrement(@RequestBody OrgParme param);
 	/**
 	 * 获取相对方信息的数据
 	 * @return
-	 * @param entity
 	 */
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
 	R<CounterpartVo> getCounterpart(CounterpartEntity entity);

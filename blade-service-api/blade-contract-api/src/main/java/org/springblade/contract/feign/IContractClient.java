@@ -30,6 +30,7 @@ public interface IContractClient {
 
 	String API_PREFIX = "/client";
 	String SAVEBATCH=API_PREFIX+"/savebatch";
+	String SAVEORUPDATE=API_PREFIX+"/save_or_update";
 	String UPDATEBYID=API_PREFIX+"/updatebyid";
 	String SELECTBYNAME=API_PREFIX+"/selectbyname";
 	String CONTRACT = API_PREFIX + "/contractFormInfo";
@@ -46,8 +47,15 @@ public interface IContractClient {
 	 * @param listInsert
 	 * @return
 	 */
-	@GetMapping(SAVEBATCH)
+	@PostMapping(SAVEBATCH)
 	R<Boolean> saveBatch(@RequestBody List<ContractCounterpartEntity> listInsert);
+	/**
+	 * 保存或修改相对方
+	 * @param list
+	 * @return
+	 */
+	@PostMapping(SAVEORUPDATE)
+	R<Boolean> saveOrUpdate(@RequestBody List<ContractCounterpartEntity> list);
 	/**
 	 * 修改相对方
 	 * @param updateCounterpart

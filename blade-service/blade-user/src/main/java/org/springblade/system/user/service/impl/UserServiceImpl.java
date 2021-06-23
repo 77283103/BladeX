@@ -32,7 +32,6 @@ import org.springblade.system.cache.SysCache;
 import org.springblade.system.dto.UserDepartDTO;
 import org.springblade.system.entity.Tenant;
 import org.springblade.system.entity.UserDepartEntity;
-import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
@@ -297,7 +296,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		if (Func.isNotEmpty(user)) {
 			return user.getId();
 		}
-		return null;
+		return 0L;
 	}
 
 	@Override

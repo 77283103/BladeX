@@ -48,4 +48,11 @@
             AND fd_taxNo like concat('%',#{contractSeal.fdTaxno},'%')
         </if>
     </select>
+    <select id="selectAllByFdTaxnoAfter" resultMap="contractSealResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM contract_seal
+        WHERE is_deleted = 0
+        AND fd_factNo=#{fdTaxno}
+    </select>
 </mapper>

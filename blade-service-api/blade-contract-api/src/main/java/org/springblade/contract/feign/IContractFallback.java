@@ -23,6 +23,11 @@ public class IContractFallback implements IContractClient {
 	}
 
 	@Override
+	public R<Boolean> saveOrUpdate(List<ContractCounterpartEntity> list) {
+		return  R.fail("保存相对方增量信息失败！");
+	}
+
+	@Override
 	public R<Boolean> updateById(ContractCounterpartEntity updateCounterpart) {
 		return R.fail("保存相对方修改信息失败！");
 	}

@@ -105,7 +105,7 @@ public class IAbutmentFallback implements IAbutmentClient {
 	}
 
 	@Override
-	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
+	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
 		return R.fail("获取数据失败");
 	}
 
