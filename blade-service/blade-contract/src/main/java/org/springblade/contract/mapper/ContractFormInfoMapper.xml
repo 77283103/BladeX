@@ -303,6 +303,13 @@
                 #{seal_name}
             </foreach>
         </if>
+--       用印申请人模糊查询
+        <if test="contractFormInfo.createUserName != null and contractFormInfo.createUserName != ''">
+            <foreach collection="contractFormInfo.realName" item="create_user" open="and create_user in ("
+                     separator="," close=")">
+                #{create_user}
+            </foreach>
+        </if>
 --         合同审批状态
         <if test="contractFormInfo.submitStatus != null and contractFormInfo.submitStatus != ''">
             AND submit_status =#{contractFormInfo.submitStatus}

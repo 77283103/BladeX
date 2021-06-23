@@ -247,6 +247,15 @@
             and u.account = #{userName}
         </if>
     </select>
+    <select id="getByRealName" resultMap="userResultMap">
+        SELECT
+        u.*
+        FROM
+        blade_user u
+        where u.is_deleted = 0
+        and tenant_id=000000
+        and u.real_name like concat('%',#{user.realName},'%')
+    </select>
 
     <select id="getUserIdByAssociationId" resultType="org.springblade.system.user.entity.User">
         SELECT

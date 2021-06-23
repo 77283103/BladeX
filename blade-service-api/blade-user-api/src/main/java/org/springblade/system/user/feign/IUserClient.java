@@ -45,6 +45,7 @@ public interface IUserClient {
 	String USER_INFO = API_PREFIX + "/user-info";
 	String USER_INFO_BY_ID = API_PREFIX + "/user-info-by-id";
 	String USER_INFO_BY_USER_NAME = API_PREFIX + "/user-info-by-userName";
+	String USER_INFO_BY_REAL_NAME =API_PREFIX+"/user_info_by_real_name";
 	String USER_INFO_BY_ACCOUNT = API_PREFIX + "/user-info-by-account";
 	String USER_INFO_BY_COED=API_PREFIX +"/user_info_by_coed";
 	String SAVE_USER = API_PREFIX + "/save-user";
@@ -74,7 +75,13 @@ public interface IUserClient {
 	 */
 	@GetMapping(USER_INFO_BY_USER_NAME)
 	R<User> userInfoByUserName(@RequestParam("userId") String userName);
-
+	/**
+	 * 根据用户名查用户信息
+	 * @param realName
+	 * @return
+	 */
+	@GetMapping(USER_INFO_BY_REAL_NAME)
+	R<List<User>> getByRealName(@RequestParam("realName") String realName);
 
 	/**
 	 * 根据账号获取用户信息

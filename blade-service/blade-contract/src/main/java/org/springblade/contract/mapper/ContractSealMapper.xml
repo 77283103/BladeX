@@ -55,4 +55,13 @@
         WHERE is_deleted = 0
         AND fd_factNo=#{fdTaxno}
     </select>
+    <!--根据合同id查询相对方集合-->
+    <select id="selectByIds" resultMap="contractSealResultMap">
+        SELECT
+        <include refid="baseColumnList"> </include>
+        FROM contract_seal
+        WHERE is_deleted = 0
+        AND
+        id IN (SELECT c.seal_id FROM contract_seal_setting c WHERE c.contract_id = #{id})
+    </select>
 </mapper>

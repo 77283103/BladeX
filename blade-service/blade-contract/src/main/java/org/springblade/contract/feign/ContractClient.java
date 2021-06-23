@@ -78,13 +78,23 @@ public class ContractClient implements IContractClient {
 	private Integer estimate;
 
 	@Override
-	public R<Boolean> saveBatch(List<ContractCounterpartEntity> listInsert) {
-		return R.data(counterpartService.saveBatch(listInsert));
+	public R<List<ContractCounterpartEntity>> saveBatch(List<ContractCounterpartEntity> listInsert) {
+		List<ContractCounterpartEntity> counterpartEntityList=new ArrayList<>();
+		boolean status=counterpartService.saveBatch(listInsert);
+		if (status){
+			counterpartEntityList.addAll(listInsert);
+		}
+		return R.data(counterpartEntityList);
 	}
 
 	@Override
-	public R<Boolean> saveOrUpdate(List<ContractCounterpartEntity> list) {
-		return R.data(counterpartService.saveOrUpdateBatch(list));
+	public R<List<ContractCounterpartEntity>> saveOrUpdate(List<ContractCounterpartEntity> list) {
+		List<ContractCounterpartEntity> counterpartEntityList=new ArrayList<>();
+		boolean status=counterpartService.saveOrUpdateBatch(list);
+		if (status){
+			counterpartEntityList.addAll(list);
+		}
+		return R.data(counterpartEntityList);
 	}
 
 	@Override

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractSealEntity;
 import org.springblade.contract.vo.ContractSealRequestVO;
 
+import java.util.List;
+
 /**
  * 统一子公司（签章申请单位） Mapper 接口
  *
@@ -28,5 +30,10 @@ public interface ContractSealMapper extends BaseMapper<ContractSealEntity> {
 	 * @return org.springblade.contract.entity.ContractSealEntity
 	 */
 	ContractSealEntity selectAllByFdTaxnoAfter(String fdFactno);
-
+	/**
+	 * 根据合同id查询相对方集合
+	 * @param id 合同id
+	 * @return
+	 */
+	List<ContractSealEntity> selectByIds(Long id);
 }

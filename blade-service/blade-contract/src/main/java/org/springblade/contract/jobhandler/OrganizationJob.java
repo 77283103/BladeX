@@ -41,8 +41,9 @@ public class OrganizationJob {
 		R<List<OrganizationVo>> organizationVos=iAbutmentClient.getOrganizationInfoIncrement(orgParme);
 		if (HttpStatus.OK.value()==organizationVos.getCode()){
 			log.info("组织机构人员信息:"+ JsonUtil.toJson(organizationVos.getData()));
+			XxlJobLogger.log(organizationVos.getMsg()+organizationVos.getData());
 		}
-		XxlJobLogger.log(organizationVos.getMsg()+organizationVos.getData());
+		XxlJobLogger.log(organizationVos.getCode()+":"+organizationVos.getMsg());
 		return new ReturnT<>(organizationVos.getCode(),organizationVos.getMsg());
 	}
 }

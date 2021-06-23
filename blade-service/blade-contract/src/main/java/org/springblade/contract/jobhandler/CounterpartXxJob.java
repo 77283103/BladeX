@@ -42,7 +42,7 @@ public class CounterpartXxJob {
 			XxlJobLogger.log("获取相对方更新信息集合结果:"+JsonUtil.toJson(vo.getData().getUpdate()));
 			return new ReturnT<>(vo.getData());
 		}
-		XxlJobLogger.log(vo.getMsg()+vo.getData());
+		XxlJobLogger.log(vo.getCode()+":"+vo.getMsg());
 		return new ReturnT<>(vo.getCode(),vo.getMsg());
 
 	}

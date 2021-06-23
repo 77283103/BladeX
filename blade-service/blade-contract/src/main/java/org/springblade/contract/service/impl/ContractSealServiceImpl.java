@@ -26,4 +26,6 @@ public class ContractSealServiceImpl extends BaseServiceImpl<ContractSealMapper,
 	public ContractSealEntity getByFdNo(String fdTaxno) {
 		return baseMapper.selectAllByFdTaxnoAfter(fdTaxno);
 	}
+
+
 }

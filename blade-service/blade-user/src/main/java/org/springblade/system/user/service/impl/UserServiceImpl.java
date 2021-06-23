@@ -303,4 +303,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	public boolean saveBatchUser(List<User> userList) {
 		return userMapper.saveBatchUser(userList);
 	}
+
+	@Override
+	public List<User> getByRealName(String realName) {
+		return userMapper.getByRealName(realName);
+	}
 }

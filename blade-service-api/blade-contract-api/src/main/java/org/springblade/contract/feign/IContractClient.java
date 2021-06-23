@@ -48,14 +48,14 @@ public interface IContractClient {
 	 * @return
 	 */
 	@PostMapping(SAVEBATCH)
-	R<Boolean> saveBatch(@RequestBody List<ContractCounterpartEntity> listInsert);
+	R< List<ContractCounterpartEntity>> saveBatch(@RequestBody List<ContractCounterpartEntity> listInsert);
 	/**
 	 * 保存或修改相对方
 	 * @param list
 	 * @return
 	 */
 	@PostMapping(SAVEORUPDATE)
-	R<Boolean> saveOrUpdate(@RequestBody List<ContractCounterpartEntity> list);
+	R<List<ContractCounterpartEntity>> saveOrUpdate(@RequestBody List<ContractCounterpartEntity> list);
 	/**
 	 * 修改相对方
 	 * @param updateCounterpart

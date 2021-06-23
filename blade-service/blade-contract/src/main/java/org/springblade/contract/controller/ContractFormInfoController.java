@@ -12,10 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springblade.abutment.feign.IAbutmentClient;
-import org.springblade.contract.entity.ContractAccordingEntity;
-import org.springblade.contract.entity.ContractBondEntity;
-import org.springblade.contract.entity.ContractBondPlanEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractMultPaymenMapper;
@@ -49,6 +46,8 @@ import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
+import org.springblade.system.user.entity.User;
+import org.springblade.system.user.feign.IUserClient;
 import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,11 +108,15 @@ public class ContractFormInfoController extends BladeController {
 	@Autowired
 	private ISysClient roleService;
 	@Autowired
+	private IUserClient userClient;
+	@Autowired
 	private TemplateExportUntil templateExportUntil;
 	@Autowired
 	private IPerServiceContentService perServiceContentService;
 	@Autowired
 	private IPerCollectPayService perCollectPayService;
+	@Autowired
+	private IContractFileDownloadLogService fileDownloadLogService;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
 	private static final String CONTRACT_REVIEW_STATUS = "20";
@@ -746,7 +749,20 @@ public class ContractFormInfoController extends BladeController {
 		}
 		infoEntity.setFileExportCount(fileExportCount);
 		infoEntity.setFileExportCategory(FILE_EXPORT_CATEGORY);
-		return R.status(contractFormInfoService.updateById(infoEntity));
+		boolean status=contractFormInfoService.updateById(infoEntity);
+		if (status){
+			BladeUser user = AuthUtil.getUser();
+			ContractFileDownloadLogEntity fileDownloadLogEntity=new ContractFileDownloadLogEntity();
+			R<User> info=userClient.userInfoById(user.getUserId());
+			if (info.getCode()== HttpStatus.OK.value() ){
+				fileDownloadLogEntity.setCode(info.getData().getCode());
+				fileDownloadLogEntity.setRealName(info.getData().getRealName());
+			}
+			fileDownloadLogEntity.setAccount(user.getAccount());
+			fileDownloadLogEntity.setContractId(String.valueOf(infoEntity.getId()));
+			fileDownloadLogService.save(fileDownloadLogEntity);
+		}
+		return R.status(status);
 	}
 
 	/**
@@ -808,17 +824,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		infoEntity.setContractStatus(CONTRACT_SEAL_USING_INFO_STATUS);
 		return R.status(contractFormInfoService.updateById(infoEntity));
-		/*ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(infoEntity);
-		//合同文本导出打印推送EKP代办
-		R<EkpVo> ekpVo = abutmentClient.nodeEkpFormPost(formInfoResponseVO);
-		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
-		if (ekpVo.getCode() == HttpStatus.OK.value()) {
-			contractFormInfoService.updateById(infoEntity);
-			log.info("ekp返回值code"+ekpVo.getCode());
-			return R.data(200,ekpVo,"EKP推送数据成功");
-		} else {
-			return R.data(401, null, "EKP推送数据超时，操作失败");
-		}*/
 	}
 
 	/**
@@ -836,17 +841,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		infoEntity.setContractStatus(CONTRACT_SIGNING_STATUS);
 		return R.status(contractFormInfoService.updateById(infoEntity));
-		/*ContractFormInfoResponseVO formInfoResponseVO=ContractFormInfoWrapper.build().entityPV(infoEntity);
-		//合同文本导出打印推送EKP代办
-		R<EkpVo> ekpVo = abutmentClient.nodeEkpFormPost(formInfoResponseVO);
-		log.info("ekp调用结果:{}", JsonUtil.toJson(ekpVo));
-		if (ekpVo.getCode() == HttpStatus.OK.value()) {
-			contractFormInfoService.updateById(infoEntity);
-			log.info("ekp返回值code"+ekpVo.getCode());
-			return R.data(200,ekpVo,"EKP推送数据成功");
-		} else {
-			return R.data(401, null, "EKP推送数据超时，操作失败");
-		}*/
 	}
 
 	/**

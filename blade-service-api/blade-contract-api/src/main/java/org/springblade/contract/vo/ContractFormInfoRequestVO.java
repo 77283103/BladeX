@@ -113,4 +113,7 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 
 	@ApiModelProperty(value = "履约信息-收付款")
 	private List<PerCollectPayRequestVO> perCollectPayList;
+
+	@ApiModelProperty(value = "合同申请人")
+	private List<String> realName;
 }

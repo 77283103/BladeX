@@ -189,6 +189,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IPerCollectPayService perCollectPayService;
 	@Autowired
 	private IBusServiceContract1Service busServiceContract1Service;
+	@Autowired
+	private IContractFileDownloadLogService fileDownloadLogService;
+	@Autowired
+	private ContractSealMapper contractSealMapper;
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -204,8 +208,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			contractFormInfo.setCode(Arrays.asList(code));
 		}
 		if (Func.isNotEmpty(contractFormInfo.getCreateUserName())){
-			User user = userClient.userInfoByUserName(contractFormInfo.getCreateUserName()).getData();
-			contractFormInfo.setCreateUser(user.getId());
+			List<User> user = userClient.getByRealName(contractFormInfo.getCreateUserName()).getData();
+			if (Func.isNotEmpty(user)){
+				StringBuilder real=new StringBuilder();
+				user.forEach(u->{
+					real.append(u.getId());
+					real.append(",");
+				});
+				real.substring(0, real.length()-1);
+				String[] reaN = real.toString().split(",");
+				contractFormInfo.setRealName(Arrays.asList(reaN));
+			}
 		}
 		//合同管理员根据长
 		if (Func.isNotEmpty(contractFormInfo.getSealNames())) {
@@ -344,6 +357,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 						v.setSigningAttachedFileVOList(result.getData());
 					}
 				}
+			}
+			//合同文本下载日志
+			List<ContractFileDownloadLogEntity> fileDownloadLogEntity=fileDownloadLogService.getList(v.getId());
+			if (Func.isNotEmpty(fileDownloadLogEntity)){
+				v.setFileDownloadLogEntities(fileDownloadLogEntity);
 			}
 			if ("30".equals(v.getContractSoure())) {
 				List<ContractTemplateEntity> list = new ArrayList<>();
@@ -664,7 +682,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			/*String jsonEx = this.templateDraft(contractFormInfoEntity,json);*/
 			/*ContractFormInfoImporter contractFormInfoImporterEx = new ContractFormInfoImporter();*/
 			this.save(contractFormInfoEntity);
-			if (!"".equals(contractFormInfoEntity.getId()) && contractFormInfoEntity.getId() != null) {
+			if (Func.isNotEmpty(contractFormInfoEntity.getId()) && contractFormInfoEntity.getId() != null) {
 				//在相对方contract_counterpart的表里通过相对方全称查出来对应该相对方id ，相对方id和合同id保存到 contract_counterpart_setting 表中
 				if (!"".equals(contractFormInfoExcel.getCounterpartName())) {
 					List<ContractCounterpartEntity> contractCounterpartEntities = contractCounterpartMapper.selectByName(contractFormInfoExcel.getCounterpartName());
@@ -985,6 +1003,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		if (Func.isNoneBlank(contractFormInfoResponseVO.getSealName())) {
 			String[] sealNameList = contractFormInfoResponseVO.getSealName().split(",");
 			contractFormInfoResponseVO.setSealNameList(sealNameList);
+		}
+		//多方起草关联的签章单位列表
+		if ("20".equals(contractFormInfoResponseVO.getContractSoure())) {
+			List<ContractSealEntity> sealEntity = contractSealMapper.selectByIds(contractFormInfoResponseVO.getId());
+			if (Func.isNotEmpty(sealEntity)) {
+				contractFormInfoResponseVO.setContractSeal(sealEntity);
+			}
 		}
 		//查询依据
 		List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(contractFormInfoResponseVO.getId());
