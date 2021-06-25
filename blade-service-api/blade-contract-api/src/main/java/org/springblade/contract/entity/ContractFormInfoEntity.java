@@ -377,7 +377,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 統計查詢類型(公司)
 	 */
-	@ApiModelProperty(value="統計查詢類型(公司)")
+	@ApiModelProperty(value = "統計查詢類型(公司)")
 	@TableField(exist = false)
 	private String company;
 	/**
@@ -553,4 +553,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "归档人(可用作归档预警时机的区分字段)")
 	private String filePerson;
+	/**
+	 * @author jitwxs
+	 * @date 2021/6/24 11:16
+	 * 多方起草关系类型
+	 */
+	@ApiModelProperty(value = "多方起草关系类型")
+	public String draftType;
 }

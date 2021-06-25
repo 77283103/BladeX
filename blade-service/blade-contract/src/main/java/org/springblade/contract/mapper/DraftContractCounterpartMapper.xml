@@ -9,6 +9,7 @@
         <result column="counterpart_id" property="counterpartId"/>
         <result column="counterpart_identity" property="counterpartIdentity"/>
         <result column="counterpart_person" property="counterpartPerson"/>
+        <result column="subsidiary_person" property="subsidiaryPerson"/>
         <result column="telephone_person" property="telephonePerson"/>
         <result column="address_person" property="addressPerson"/>
         <result column="email_person" property="emailPerson"/>
@@ -26,7 +27,7 @@
         contract_id,
         counterpart_id,
         counterpart_identity,
-        counterpart_person,
+        counterpart_person, subsidiary_person,
         telephone_person,
         address_person,
         email_person,
@@ -63,12 +64,13 @@
     <!--保存关联依据-->
     <insert id="saveDraftCounterpart">
         insert into contract_draft_counterpart
-        <include refid="baseColumnList"></include>
+        <include refid="baseColumnList"/>
         values
         <foreach collection="accordingIds" item="item" index="index" open="" close="" separator=",">
             (#{contract_id},
             #{counterpart_id},
             #{counterpart_identity},
+            #{subsidiary_person},
             #{counterpart_person},
             #{telephone_person},
             #{address_person},

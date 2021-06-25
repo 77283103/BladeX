@@ -49,6 +49,7 @@
         <result column="contract_form" property="contractForm"/>
         <result column="seal_name" property="sealName"/>
         <result column="seal_type" property="sealType"/>
+        <result column="draft_type" property="draftType"/>
         <result column="seal_number" property="sealNumber"/>
         <result column="file_time" property="fileTime"/>
         <result column="json" property="json"/>
@@ -112,6 +113,7 @@
         contract_form,
         seal_name,
         seal_type,
+        draft_type,
         seal_number,
         file_time,
         contract_template_id,
