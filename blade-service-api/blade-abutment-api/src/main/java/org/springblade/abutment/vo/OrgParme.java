@@ -12,4 +12,6 @@ import lombok.Data;
 public class OrgParme {
 	@ApiModelProperty(value = "可选参数时间")
 	private String  parme;
+	@ApiModelProperty(value = "可选参数时间")
+	private String  tag;
 }

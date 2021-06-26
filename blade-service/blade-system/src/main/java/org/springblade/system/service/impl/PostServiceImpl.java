@@ -75,7 +75,7 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
 		if(Func.isNotEmpty(post)){
 			return post.getId();
 		}
-		return 0L;
+		return null;
 	}
 
 	@Override

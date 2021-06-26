@@ -336,6 +336,10 @@
         <if test="contractFormInfo.createUser != null and contractFormInfo.createUser != ''">
             AND create_user like concat('%', #{contractFormInfo.createUser}, '%')
         </if>
+        --         用印申请人
+        <if test="contractFormInfo.ekpNumber != null and contractFormInfo.ekpNumber != ''">
+            AND ekp_number like concat('%', #{contractFormInfo.ekpNumber}, '%')
+        </if>
         --         相对方名称查询
         <if test="contractFormInfo.counterpartName != null and contractFormInfo.counterpartName != ''">
             AND id IN(SELECT contract_id FROM contract_counterpart_setting WHERE counterpart_id IN(SELECT id FROM

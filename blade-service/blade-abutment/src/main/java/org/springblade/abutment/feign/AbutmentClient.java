@@ -16,6 +16,7 @@ import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
@@ -1681,6 +1682,7 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
+	@ApiLog("相对方定时任务触发")
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		CounterpartVo counterpartVo = null;

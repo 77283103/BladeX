@@ -11,11 +11,11 @@ api:
   doc:
     tokenUrl: https://oatest-interface.pec.com.cn/common/pursuant/token
     docInfoUrl: https://oatest-interface.pec.com.cn/common/pursuant/docs
-    #相对方资料接口
-    Token: https://oa.pec.com.cn:9080/query/openapi/getToken
+    #相对方资料接口 https://oatest-interface.pec.com.cn/common/opposite/data
+    Token: https://oa-interface.pec.com.cn/common/pursuant/token
     Username: prod_c_p
     Password: T3TlIq9tP6EU4SV9hQ/ong==
-    counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
+    counterpartUrl: https://oa-interface.pec.com.cn/common/opposite/data
     #统一集团签章子公司接口
     signatureUnitUrl: https://oatest-interface.pec.com.cn/common/group/subsidiary
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
@@ -31,12 +31,13 @@ api:
     appTemplateId: 179c63d15205aa3926282a5461f9def3
     systemName: c_p_notify
     ftlPath: /ftl/
+#    d65937df2000cc755253956bd1403aa5
   organization:
-    wsdl: https://oatest.pec.com.cn/sys/webservice/organizationWebService?wsdl
+    wsdl: https://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
     namespace: https://sys.webservice.client
     method: updateOrganization
-    account: shebake_test
-    password: d65937df2000cc755253956bd1403aa5
+    account: shebake
+    password: 80372a095c16319ce09ef7cc2c871b53
   eSeal:
     tokenUrl: http://sa.pec.com.cn:9080/common/user/access
     tokenSY: http://sa.pec.com.cn:9080/common/file/addWatermark

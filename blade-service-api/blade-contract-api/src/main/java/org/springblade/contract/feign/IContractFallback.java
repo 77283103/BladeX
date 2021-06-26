@@ -58,7 +58,7 @@ public class IContractFallback implements IContractClient {
 	}
 
 	@Override
-	public R saveContractFormInfo(Long id, String status) {
+	public R saveContractFormInfo(Long id, String status,String ekp_number) {
 		return R.fail("更新模板json信息失败！");
 	}
 

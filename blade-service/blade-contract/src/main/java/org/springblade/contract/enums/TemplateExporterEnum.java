@@ -1477,20 +1477,20 @@ public enum TemplateExporterEnum {
 			if (contractFormInfoEntity.getContractBond().size() <= 0) {
 				dataModel.put("infAppointAmount", "");
 				dataModel.put("infCap", "");
-				dataModel.put("infBreachAmountFir", "");
-				dataModel.put("infBreachAmountSec", "");
+//				dataModel.put("infBreachAmountFir", "");
+//				dataModel.put("infBreachAmountSec", "");
 			} else if (contractFormInfoEntity.getContractBond().size() >= 1) {
 				if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("1")) {
 					dataModel.put("infAppointAmount", "_");
 					dataModel.put("infCap", "_");
-					dataModel.put("infBreachAmountFir", "_");
-					dataModel.put("infBreachAmountSec", "_");
+//					dataModel.put("infBreachAmountFir", "_");
+//					dataModel.put("infBreachAmountSec", "_");
 				} else if (contractFormInfoEntity.getContractBond().get(0).getIsNotBond().contains("0")) {
 					String planPayAmount = String.valueOf(contractFormInfoEntity.getContractBond().get(0).getPlanPayAmount().divide(BigDecimal.valueOf(10000)));
 					dataModel.put("infAppointAmount", planPayAmount);
 					dataModel.put("infCap", MoneyToChiness.tenThousand(planPayAmount));
-					dataModel.put("infBreachAmountFir", planPayAmount);
-					dataModel.put("infBreachAmountSec", planPayAmount);
+//					dataModel.put("infBreachAmountFir", planPayAmount);
+//					dataModel.put("infBreachAmountSec", planPayAmount);
 				}
 			} else if (contractFormInfoEntity.getContractBond().size() >= 2) {
 				AtomicReference<Double> valuesD = new AtomicReference<>(0D);
@@ -1499,8 +1499,8 @@ public enum TemplateExporterEnum {
 				});
 				dataModel.put("infAppointAmount", valuesD);
 				dataModel.put("infCap", MoneyToChiness.tenThousand(String.valueOf(valuesD)));
-				dataModel.put("infBreachAmountFir", valuesD);
-				dataModel.put("infBreachAmountSec", valuesD);
+//				dataModel.put("infBreachAmountFir", valuesD);
+//				dataModel.put("infBreachAmountSec", valuesD);
 			}
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			dataModel.put("infContractStart", null == (contractFormInfoEntity.getStartingTime()) ? "" : DataFormatUtils.systemTimeFormat(simpleDateFormat.format(contractFormInfoEntity.getStartingTime())));

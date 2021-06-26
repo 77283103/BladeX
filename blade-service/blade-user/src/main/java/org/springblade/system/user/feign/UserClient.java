@@ -16,7 +16,6 @@
  */
 package org.springblade.system.user.feign;
 
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.core.cache.utils.CacheUtil;
@@ -137,7 +136,6 @@ public class UserClient implements IUserClient {
 	@Override
 	@GetMapping(GET_ID_BY_LUNID)
 	public R<Long> getUserIdByAssociationId(String associationId) {
-		associationId= String.valueOf(JSON.parseObject(associationId).get("associationId").toString());
 		return R.data(service.getUserIdByAssociationId(associationId));
 	}
 }

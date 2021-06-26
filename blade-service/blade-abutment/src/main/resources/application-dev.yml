@@ -12,9 +12,9 @@ api:
     tokenUrl: https://oatest-interface.pec.com.cn/common/pursuant/token
     docInfoUrl: https://oatest-interface.pec.com.cn/common/pursuant/docs
 #    相对方资料接口    https://oa-interface.pec.com.cn/common/opposite/data
-    Token: https://oa.pec.com.cn:9080/query/openapi/getToken
-    Username: prod_c_p
-    Password: T3TlIq9tP6EU4SV9hQ/ong==
+    Token: https://oatest-interface.pec.com.cn/common/pursuant/token
+    Username: dev_c_p
+    Password: oa0/YNY374PKB53+IUmjiw==
     counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
 #    统一集团签章子公司接口
     signatureUnitUrl: https://oatest-interface.pec.com.cn/common/group/subsidiary

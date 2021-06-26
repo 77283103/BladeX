@@ -69,13 +69,22 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         select id,
-        create_user AS createUser,
-        create_time AS createTime,
-        update_user AS updateUser,
-        update_time AS updateTime,
-        status,
-        is_deleted AS isDeleted,
-        account, password, real_name, real_name, email, phone, birthday, sex, role_id, dept_id
+               create_user AS createUser,
+               create_time AS createTime,
+               update_user AS updateUser,
+               update_time AS updateTime,
+               status,
+               is_deleted  AS isDeleted,
+               account,
+               password,
+               real_name,
+               real_name,
+               email,
+               phone,
+               birthday,
+               sex,
+               role_id,
+               dept_id
     </sql>
 
     <select id="userPage" resultMap="userResultMap">
@@ -116,31 +125,27 @@
         ORDER BY id
     </select>
     <select id="selectDepart" resultType="org.springblade.system.dto.UserDepartDTO">
-        SELECT
-            b.id,
-            b.user_id,
-            b.dept_id,
-            b.role_id,
-            b.post_id,
-            r.role_alias,
-            r.role_name,
-            d.dept_name,
-            p.post_name
-        FROM
-            blade_user_depart b
-            LEFT JOIN blade_role r ON b.role_id = r.id
-            LEFT JOIN blade_dept d ON b.dept_id = d.id
-            LEFT JOIN blade_post p ON b.post_id = p.id
-        WHERE
-            b.user_id = #{userID}
+        SELECT b.id,
+               b.user_id,
+               b.dept_id,
+               b.role_id,
+               b.post_id,
+               r.role_alias,
+               r.role_name,
+               d.dept_name,
+               p.post_name
+        FROM blade_user_depart b
+                 LEFT JOIN blade_role r ON b.role_id = r.id
+                 LEFT JOIN blade_dept d ON b.dept_id = d.id
+                 LEFT JOIN blade_post p ON b.post_id = p.id
+        WHERE b.user_id = #{userID}
     </select>
     <select id="getUser" resultMap="userDepartResultMap">
-        SELECT
-            a.*
-        FROM
-            blade_user a
-        WHERE
-            a.tenant_id = #{param1} and a.account = #{param2} and a.is_deleted = 0
+        SELECT a.*
+        FROM blade_user a
+        WHERE a.tenant_id = #{param1}
+          and a.account = #{param2}
+          and a.is_deleted = 0
     </select>
 
     <select id="exportUser" resultType="org.springblade.system.user.excel.UserExcel">
@@ -193,26 +198,24 @@
         GROUP BY a.id
     </select>
     <select id="selectUserDTOById" resultMap="userDepartResultMap">
-        SELECT
-            *
-        FROM
-            blade_user
+        SELECT *
+        FROM blade_user
         WHERE is_deleted = 0
-        AND id = #{id}
+          AND id = #{id}
     </select>
     <select id="findByDeptAndPost" resultType="org.springblade.system.user.entity.User">
         SELECT
-	      u.*
+        u.*
         FROM
         blade_user u
-	    LEFT JOIN blade_user_depart d
-	    ON u.id = d.user_id
+        LEFT JOIN blade_user_depart d
+        ON u.id = d.user_id
         where u.is_deleted = 0
         <if test="deptId!=null and deptId != ''">
-        and d.dept_id = #{deptId}
+            and d.dept_id = #{deptId}
         </if>
         <if test="postId!=null and postId != ''">
-        and d.post_id = #{postId}
+            and d.post_id = #{postId}
         </if>
     </select>
     <!-- 关系定义：查询基准人所在部门的首席执行官（id=1123598817738675201） -->
@@ -248,13 +251,11 @@
         </if>
     </select>
     <select id="getByRealName" resultMap="userResultMap">
-        SELECT
-        u.*
-        FROM
-        blade_user u
+        SELECT u.*
+        FROM blade_user u
         where u.is_deleted = 0
-        and tenant_id=000000
-        and u.real_name like concat('%',#{user.realName},'%')
+          and tenant_id = 000000
+          and u.real_name like concat('%', #{user.realName}, '%')
     </select>
 
     <select id="getUserIdByAssociationId" resultType="org.springblade.system.user.entity.User">
@@ -268,14 +269,23 @@
     </select>
 
     <insert id="saveBatchUser">
-        INSERT INTO blade_user (id, code, account, password, real_name, email, association_id,fact_no,fact_name,dept_no,dept_nm,lai_yuan,update_time , status, is_deleted, is_enable)
+        INSERT INTO blade_user (id, code, account, password, real_name, email,
+        association_id,fact_no,fact_name,dept_no,dept_nm,lai_yuan,create_time,update_time,create_user,create_dept,update_user,status,is_deleted,is_enable)
         VALUES
         <foreach collection="userList" separator="," item="item">
-            (#{item.id}, #{item.code}, #{item.account}, #{item.password}, #{item.realName}, #{item.email}, #{item.associationId},#{item.factNo},#{item.factName},#{item.deptNo},#{item.deptNm},#{item.laiYuan}, #{item.updateTime}, 1, 0, #{item.isEnable} )
+            (#{item.id}, #{item.code}, #{item.account}, #{item.password}, #{item.realName}, #{item.email},
+            #{item.associationId},#{item.factNo},#{item.factName},#{item.deptNo},#{item.deptNm},#{item.laiYuan},
+            #{item.createTime}, #{item.updateTime}, #{item.createUser}, #{item.createDept}, #{item.updateUser}, 1, 0,
+            #{item.isEnable} )
         </foreach>
         ON DUPLICATE KEY UPDATE
-        code = VALUES(code),account = VALUES(account),password = VALUES(password),real_name = VALUES(real_name),email = VALUES(email),
-        fact_no = VALUES(fact_no),fact_name = VALUES(fact_name),dept_no = VALUES(dept_no),dept_nm = VALUES(dept_nm),lai_yuan = VALUES(lai_yuan),
-        update_time = VALUES(update_time),status = VALUES(status),is_deleted = VALUES(is_deleted),is_enable = VALUES(is_enable)
+        code = VALUES(code),account = VALUES(account),password = VALUES(password),real_name = VALUES(real_name),email =
+        VALUES(email),
+        fact_no = VALUES(fact_no),fact_name = VALUES(fact_name),dept_no = VALUES(dept_no),dept_nm =
+        VALUES(dept_nm),lai_yuan = VALUES(lai_yuan),create_time=VALUES(create_time),
+        update_time = VALUES(update_time),create_user = VALUES(create_user),create_dept =
+        VALUES(create_dept),update_user = VALUES(update_user),status = VALUES(status),is_deleted =
+        VALUES(is_deleted),is_enable =
+        VALUES(is_enable)
     </insert>
 </mapper>

@@ -296,7 +296,7 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 		if (Func.isNotEmpty(user)) {
 			return user.getId();
 		}
-		return 0L;
+		return null;
 	}
 
 	@Override

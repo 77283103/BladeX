@@ -137,6 +137,11 @@ public class ContractBondPlanEntity extends BaseEntity {
 	@ApiModelProperty(value = "相对方名称")
 	private String counterpartName;
 	/**
+	 * 子公司名称
+	 */
+	@ApiModelProperty(value = "子公司名称")
+	private String subsidiaryPerson;
+	/**
 	 * 厂别
 	 */
 	@ApiModelProperty(value = "厂别")

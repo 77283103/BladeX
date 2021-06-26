@@ -51,8 +51,9 @@ public class EkpController {
 	public R queryOrganization(@RequestBody ContractSubmit contractSubmit) {
 		String status = contractSubmit.getSubmitStatus();
 		Long id = Long.valueOf(contractSubmit.getContractId());
+		String ekp_number = contractSubmit.getEkp_number();
 		log.info("epk通过后返回给合同平台合同状态接口[返回的合同状态为]" + id + "执行时间为" + new Date());
-		return R.data(contractClient.saveContractFormInfo(id, status));
+		return R.data(contractClient.saveContractFormInfo(id, status,ekp_number));
 	}
 
 	/**

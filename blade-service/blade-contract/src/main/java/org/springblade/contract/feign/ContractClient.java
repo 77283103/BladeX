@@ -12,6 +12,7 @@ import org.springblade.contract.service.*;
 import org.springblade.contract.vo.ContractArchiveNotResponseVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
+import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -78,6 +79,8 @@ public class ContractClient implements IContractClient {
 	private Integer estimate;
 
 	@Override
+	@PostMapping(SAVEBATCH)
+	@ApiLog("相对方定时任务新增的数据")
 	public R<List<ContractCounterpartEntity>> saveBatch(List<ContractCounterpartEntity> listInsert) {
 		List<ContractCounterpartEntity> counterpartEntityList=new ArrayList<>();
 		boolean status=counterpartService.saveBatch(listInsert);
@@ -88,6 +91,8 @@ public class ContractClient implements IContractClient {
 	}
 
 	@Override
+	@PostMapping(SAVEORUPDATE)
+	@ApiLog("相对方定时任务更新的数据")
 	public R<List<ContractCounterpartEntity>> saveOrUpdate(List<ContractCounterpartEntity> list) {
 		List<ContractCounterpartEntity> counterpartEntityList=new ArrayList<>();
 		boolean status=counterpartService.saveOrUpdateBatch(list);
@@ -98,11 +103,13 @@ public class ContractClient implements IContractClient {
 	}
 
 	@Override
+	@PostMapping(UPDATEBYID)
 	public R<Boolean> updateById(ContractCounterpartEntity updateCounterpart) {
 		return R.data(counterpartService.saveOrUpdate(updateCounterpart));
 	}
 
 	@Override
+	@GetMapping(SELECTBYNAME)
 	public R<List<ContractCounterpartEntity>> selectByName(String unifiedSocialCreditCode) {
 		return R.data(counterpartMapper.selectByName(unifiedSocialCreditCode));
 	}
@@ -196,7 +203,7 @@ public class ContractClient implements IContractClient {
 	@SneakyThrows
 	@Override
 	@GetMapping(CONTRACT_SAVE)
-	public R saveContractFormInfo(Long id, String status) {
+	public R saveContractFormInfo(Long id, String status,String ekp_number) {
 		ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
 		ContractSigningEntity entity = new ContractSigningEntity();
 		ContractSealUsingInfoEntity sealUsingInfoEntity = new ContractSealUsingInfoEntity();
@@ -258,7 +265,9 @@ public class ContractClient implements IContractClient {
 				//使用更新后的合同信息的审核时间来计算预警时间和预警内容
 				abutmentClient.pushNotSig(contractFormInfo);
 			}
+			contractFormInfo.setEkpNumber(ekp_number);
 		} else {
+			contractFormInfo.setEkpNumber(ekp_number);
 			contractFormInfo.setContractStatus(status);
 		}
 		formInfoService.saveOrUpdate(contractFormInfo);

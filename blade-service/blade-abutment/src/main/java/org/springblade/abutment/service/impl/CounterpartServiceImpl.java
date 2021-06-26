@@ -30,13 +30,13 @@ import java.util.List;
 public class CounterpartServiceImpl implements ICounterpartService{
 	@Autowired
 	private IContractClient contractClient;
-	@Value("${api.doc.tokenUrl}")
+	@Value("${api.doc.Token}")
 	private String tokenUrl;
 	@Value("${api.doc.counterpartUrl}")
 	private String counterpartUrl;
-	@Value("${api.doc.username}")
+	@Value("${api.doc.Username}")
 	private String userName;
-	@Value("${api.doc.password}")
+	@Value("${api.doc.Password}")
 	private String password;
 
 	/**

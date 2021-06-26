@@ -78,6 +78,8 @@ import java.util.*;
 public class ContractFormInfoController extends BladeController {
 	//EKP推送信息
 	@Autowired
+	private IContractCounterpartService counterpartService;
+	@Autowired
 	private IAbutmentClient abutmentClient;
 	@Autowired
 	private IContractFormInfoService contractFormInfoService;
@@ -1000,6 +1002,67 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
+	 * 导出导出相对方数据excel
+	 * @param response
+	 */
+	@PostMapping("/exportCounterpart")
+	@ApiOperationSupport(order = 7)
+	@ApiOperation(value = "导出相对方数据", notes = "")
+	public void exportCounterpart(HttpServletResponse response) {
+		List<ContractCounterpartEntity> ce=counterpartService.list();
+		if (CollectionUtil.isNotEmpty(ce)) {
+			/* 导出文件名称 */
+			String fileName = "相对方信息导出";
+			WriteSheet sheet1 = new WriteSheet();
+			/* 导出的sheet的名称 */
+			sheet1.setSheetName("相对方信息导出");
+			sheet1.setSheetNo(0);
+			/* 需要存入的数据 */
+			List<List<Object>> data = new ArrayList<>();
+			/* formInfoEntityList 表示要写入的数据 因为是前台显示列表 由前台进行传值，后期可以根据自己的需求进行改变 */
+			for (ContractCounterpartEntity counterpartEntity : ce) {
+				/* 属性 cloumns 表示一行，cloumns包含的数据是一行的数据
+				  要将一行的每个值 作为list的一个属性存进到list里 ，数据要和展示的excel表头一致*/
+				List<Object> cloumns = new ArrayList<Object>();
+				/*相对方名称*/
+				cloumns.add(counterpartEntity.getName());
+				/*统一社会信用代码*/
+				cloumns.add(counterpartEntity.getUnifiedSocialCreditCode());
+				/*创建时间*/
+				cloumns.add(counterpartEntity.getCreateTime());
+				/*更新时间*/
+				cloumns.add(counterpartEntity.getUpdateTime());
+				/*状态*/
+				cloumns.add(1==counterpartEntity.getStatus()?"使用中":"未使用");
+				/*是否删除*/
+				cloumns.add(counterpartEntity.getIsDeleted()==0?"正常":"已删除");
+				data.add(cloumns);
+			}
+			/* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
+			List<List<String>> headList = new ArrayList<List<String>>();
+			/* 此处表头为一行要显示的所有表头，要和数据的顺序对应上  需要转换为list */
+			List<String> head = Arrays.asList("相对方名称", "统一社会信用代码", "创建时间", "更新时间", "状态", "是否删除");
+			/* 为了生成一个独立的list对象，所进行的初始化 */
+			List<String> head2 = null;
+			for (String head1 : head) {
+				head2 = new ArrayList<>();
+				/* 将表头的数据赋值进入list对象 */
+				head2.add(head1);
+				/* 将数据赋值进入最终要输出的表头 */
+				headList.add(head2);
+			}
+			try {
+				response.setContentType("application/vnd.ms-excel");
+				response.setCharacterEncoding(Charsets.UTF_8.name());
+				fileName = URLEncoder.encode(fileName, Charsets.UTF_8.name());
+				response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+				EasyExcel.write(response.getOutputStream()).head(headList).sheet().doWrite(data);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	/**
 	 * 独立起草变更
 	 */
 	@PostMapping("/addChange")
@@ -1357,7 +1420,7 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 	/**
-	 * 下载文件
+	 * 下载文件-实现预览在线预览功能
 	 */
 	@GetMapping("/downloadFiles")
 	@ApiOperationSupport(order = 4)

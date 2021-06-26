@@ -104,7 +104,7 @@ public interface IContractClient {
 	 * @return
 	 */
 	@GetMapping(CONTRACT_SAVE)
-	R saveContractFormInfo(@RequestParam("id") Long id, @RequestParam("status") String status);
+	R saveContractFormInfo(@RequestParam("id") Long id, @RequestParam("status") String status,@RequestParam("ekp_number") String ekp_number);
 
 	/**
 	 * 根据模板查询id

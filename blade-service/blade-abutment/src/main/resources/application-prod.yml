@@ -9,10 +9,10 @@ spring:
     password: ${blade.datasource.prod.password}
 api:
   doc:
-    tokenUrl: http://oa.pec.com.cn:9080/query/openapi/getToken
-    docInfoUrl: http://oa.pec.com.cn:9080/query/openapi/queryDocInfo
+    tokenUrl: https://oa-interface.pec.com.cn/query/openapi/getToken
+    docInfoUrl: https://oa-interface.pec.com.cn/query/openapi/queryDocInfo
     #相对方资料接口
-    Token: http://oa.pec.com.cn:9080/query/openapi/getToken
+    Token: https://oa-interface.pec.com.cn/common/pursuant/token
     Username: prod_c_p
     Password: T3TlIq9tP6EU4SV9hQ/ong==
     counterpartUrl: https://oa-interface.pec.com.cn/common/opposite/data
@@ -34,7 +34,7 @@ api:
     ftlPath: /ftl/
   organization:
     wsdl: https://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
-    namespace: http://sys.webservice.client
+    namespace: https://sys.webservice.client
     method: updateOrganization
     account: shebake
     password: 80372a095c16319ce09ef7cc2c871b53

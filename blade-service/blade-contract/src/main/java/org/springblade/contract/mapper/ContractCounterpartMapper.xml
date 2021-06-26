@@ -155,6 +155,7 @@
         <if test="counterpart.unifiedSocialCreditCode != null and counterpart.unifiedSocialCreditCode != ''">
             AND name like concat('%', #{counterpart.unifiedSocialCreditCode}, '%')
         </if>
+        ORDER BY create_time DESC
     </select>
     <!--根据合同id查询相对方集合-->
     <select id="selectByIds" resultMap="counterpartResultMap">
