@@ -17,8 +17,11 @@ import org.springblade.abutment.vo.EkpVo;
 import org.springblade.abutment.vo.UploadFileVo;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.enums.ContractStatusEnum;
+import org.springblade.contract.enums.ContractTypeEnum;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
+import org.springblade.contract.excel.importbatchdraft.ContractImportBatchDraftExcel;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
 import org.springblade.contract.util.*;
@@ -29,6 +32,7 @@ import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.CollectionUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
@@ -174,12 +178,23 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IDraftContractCounterparService iDraftContractCounterparService;
 	@Autowired
 	private ContractMultPaymenMapper multPaymenMapper;
+
+
+
+	/* 引用service */
+
 	@Autowired
 	private IPerServiceContentService perServiceContentService;
 	@Autowired
 	private IContractAccordingService accordingService;
 	@Autowired
 	private IPerCollectPayService perCollectPayService;
+	@Autowired
+	private IContractBondService contractBondService;
+	@Autowired
+	private IContractCounterpartService contractCounterpartService;
+
+
 
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
@@ -1870,6 +1885,34 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return contractFormInfoMapper.getChooseList();
 	}
 
+	@Override
+	public void batchDraftingImport(MultipartFile file,String json,String contractBigCategory, String contractSmallCategory) {
+		//转换excel文件为合同模板集合
+		List<ContractImportBatchDraftExcel>contractImportBatchDraftExcels = ContractImportBatchDraftUtil.excelToContractExcelList(file);
+		//合同模板集合转合同db实体
+		if(Func.isNotEmpty(contractImportBatchDraftExcels)){
+			List<ContractFormInfoEntity>contractFormInfoEntityList = new ArrayList<>();
+			for(ContractImportBatchDraftExcel contractImportBatchDraftExcel:contractImportBatchDraftExcels){
+				//合同主体信息转bean,保存
+				ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractImportBatchDraftExcel,ContractFormInfoEntity.class);
+				contractFormInfoEntity.setContractBigCategory(contractBigCategory);
+				contractFormInfoEntity.setContractSmallCategory(contractSmallCategory);
+				contractFormInfoEntity.setId(IdGenUtil.generateId().longValue());
+				contractFormInfoEntity.setJson(json);
+				contractFormInfoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+				contractFormInfoEntity.setContractSoure(ContractTypeEnum.BATCH.getKey().toString());
+				contractFormInfoEntityList.add(contractFormInfoEntity);
+				//相对方信息,保存
+				List<ContractCounterpartEntity>counterpartEntityList = contractCounterpartService.saveByBatchDraftExcel(contractImportBatchDraftExcel.getContractCounterpartImportBatchDraftExcels(),contractFormInfoEntity.getId());
+				//保证金信息,保存
+				List<ContractBondEntity>contractBondEntityList = contractBondService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getContractBondImportBatchDraftExcels(),contractFormInfoEntity.getId());
+				//履约-计划收付款,保存
+				List<PerCollectPayEntity>perCollectPayEntityList = perCollectPayService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getPerCollectPayImportBatchDraftExcels(),contractFormInfoEntity.getId());
+			}
+			this.saveBatch(contractFormInfoEntityList);
+		}
+	}
+
 	/**
 	 * 查询有编号的合同
 	 *
@@ -2004,4 +2047,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	public ContractFormInfoEntity selectByChangeId(Long id) {
 		return contractFormInfoMapper.selectByChangeId(id);
 	}
+
+
 }

@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.excel.importbatchdraft.PerCollectPayImportBatchDraftExcel;
 import org.springblade.contract.vo.PerCollectPayListResponseVO;
 import org.springblade.contract.vo.PerCollectPayRequestVO;
 import org.springblade.contract.vo.PerCollectPayResponseVO;
@@ -48,4 +49,14 @@ public interface IPerCollectPayService extends BaseService<PerCollectPayEntity> 
 	 * @return
 	 */
 	List<PerCollectPayResponseVO> findListByContractId(Long contractId);
+
+
+	/**
+	 * 批量保存模板信息
+	 * @param perCollectPayImportBatchDraftExcels
+	 * @param contractId
+	 * @return
+	 */
+	List<PerCollectPayEntity> saveByBatchDraftExcels(List<PerCollectPayImportBatchDraftExcel> perCollectPayImportBatchDraftExcels,Long contractId);
+
 }

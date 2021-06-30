@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.excel.ContractCounterpartExcel;
+import org.springblade.contract.excel.importbatchdraft.ContractCounterpartImportBatchDraftExcel;
 import org.springblade.contract.vo.ContractCounterpartRequestVO;
 import org.springblade.contract.vo.ContractCounterpartResponseVO;
 import org.springblade.core.mp.base.BaseService;
@@ -47,4 +48,25 @@ public interface IContractCounterpartService extends BaseService<ContractCounter
 	 * @param isCovered
 	 */
 	void importCounterpart(List<ContractCounterpartExcel> data, Boolean isCovered);
+
+	/**
+	 * 根据统一社会代码获取集合
+	 * @param codes
+	 * @return
+	 */
+	List<ContractCounterpartEntity> findListByCodes(List<String> codes);
+
+	/**
+	 * 批量新增模板数据
+	 * @param contractCounterpartImportBatchDraftExcels
+	 * @param contractInfoId
+	 */
+	List<ContractCounterpartEntity> saveByBatchDraftExcel(List<ContractCounterpartImportBatchDraftExcel> contractCounterpartImportBatchDraftExcels,Long contractInfoId);
+
+	/**
+	 * 根据合同标识批量新增相对方关系数据
+	 * @param contractInfoId
+	 * @param counterpartEntityList
+	 */
+	void saveSettingListByContractInfoId(Long contractInfoId,List<ContractCounterpartEntity>counterpartEntityList);
 }

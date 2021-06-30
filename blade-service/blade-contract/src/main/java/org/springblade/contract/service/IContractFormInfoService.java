@@ -155,6 +155,11 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return list
 	 */
 	List<ContractFormInfoEntity> getChooseList();
+
+
+	void batchDraftingImport(MultipartFile file,String json,String contractBigCategory, String contractSmallCategory);
+
+
 	/**
 	 * 导入合同数据
 	 * @param data

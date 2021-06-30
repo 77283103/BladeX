@@ -57,4 +57,14 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 	 * @return
 	 */
 	void deleteAccording(@Param("id") Long id);
+
+
+	/**
+	 * 根据code获取集合
+	 * @param codes
+	 * @return
+	 */
+	List<ContractAccordingEntity> findListByCodes(List<String> codes);
+
 }
+

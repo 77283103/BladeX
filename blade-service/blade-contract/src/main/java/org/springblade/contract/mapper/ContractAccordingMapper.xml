@@ -98,4 +98,19 @@
        contract_id=#{id}
     </delete>
 
+    <select id="findListByCodes" resultMap="accordingResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM contract_according
+        where
+        is_deleted = 0
+        and
+        code in
+        <foreach collection="codes" item="code" index="index" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </select>
+
+
+
 </mapper>
