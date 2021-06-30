@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.excel.ContractCounterpartExcel;
+import org.springblade.contract.excel.importbatchdraft.ContractCounterpartImportBatchDraftExcel;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.service.IContractCounterpartService;
 import org.springblade.contract.vo.ContractCounterpartRequestVO;
@@ -70,7 +71,29 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
         return counterpartResponseVO;
     }
 
-    /**
+
+    public List<ContractCounterpartEntity> findListByCodes(List<String> codes){
+    	return baseMapper.findListByCodes(codes);
+	}
+
+	@Override
+	public List<ContractCounterpartEntity> saveByBatchDraftExcel(List<ContractCounterpartImportBatchDraftExcel> contractCounterpartImportBatchDraftExcels, Long contractInfoId) {
+		List<String>counterpartCodes = new ArrayList<>();
+		contractCounterpartImportBatchDraftExcels.forEach(contractCounterpartImportBatchDraftExcel -> {
+			counterpartCodes.add(contractCounterpartImportBatchDraftExcel.getUnifiedSocialCreditCode());
+		});
+		List<ContractCounterpartEntity>counterpartEntityList = baseMapper.findListByCodes(counterpartCodes);
+		this.saveSettingListByContractInfoId(contractInfoId,counterpartEntityList);
+		return counterpartEntityList;
+	}
+
+
+	public void saveSettingListByContractInfoId(Long contractInfoId,List<ContractCounterpartEntity>counterpartEntityList){
+		baseMapper.deleteByContractId(contractInfoId);
+		baseMapper.saveListByContractId(contractInfoId, counterpartEntityList);
+	}
+
+	/**
      * 导入相对方信息
      *
      * @param data

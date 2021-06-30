@@ -181,6 +181,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IDraftContractCounterparService iDraftContractCounterparService;
 	@Autowired
 	private ContractMultPaymenMapper multPaymenMapper;
+
+
+
+	/* 引用service */
+
 	@Autowired
 	private IPerServiceContentService perServiceContentService;
 	@Autowired
@@ -193,6 +198,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IContractFileDownloadLogService fileDownloadLogService;
 	@Autowired
 	private ContractSealMapper contractSealMapper;
+	@Autowired
+	private IContractBondService contractBondService;
+	@Autowired
+	private IContractCounterpartService contractCounterpartService;
 	@Autowired
 	private IContractSealService iContractSealService;
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
@@ -1248,8 +1257,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	/**
 	 * 统计合同下载次数
-	 *
-	 * @param id                 合同id
+	 *  @param id                 合同id
 	 * @param fileExportCount    下载次数
 	 * @param fileExportCategory
 	 */
@@ -1446,30 +1454,30 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		// 入参是个file文件
 		List<File> files = new ArrayList<File>();
 		//处理保存合同编号
-		entity = this.makeContractN(entity);
+		entity=this.makeContractN(entity);
 		//独立起草的pdf处理
 		List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
-		for (FileVO f : fileVO) {
+		for (FileVO f:fileVO) {
 			String newFileDoc = "";
 			String newFilePdf = "";
 			String suffix = "";
 			//doc转为pdf
 			log.info("TAG获取合同文本文件转换成PDF，前端已经处理判空，即断言此处文本获取成功！");
-			newFileDoc = f.getLink();
-			int suffixL = f.getName().length();
-			log.info("合同文本文件名称的长度：" + suffixL);
+			newFileDoc =  f.getLink();
+			int suffixL= f.getName().length();
+			log.info("合同文本文件名称的长度："+suffixL);
 			int index = f.getName().lastIndexOf(".");
-			log.info("合同文本文件名称不带后缀的长度：" + index);
-			suffix = f.getName().substring(suffixL - 3, suffixL);
+			log.info("合同文本文件名称不带后缀的长度："+index);
+			suffix = f.getName().substring(suffixL -3,suffixL);
 			log.info("合同文本文件名称的后三位（判断文件后缀类型" +
-				"）：" + suffix);
+				"）："+suffix);
 			//判断是否为pdf文件，pdf文件不需要转换
 			if (!"pdf".equals(suffix)) {
-				newFilePdf = ftlPath + f.getName().substring(0, index) + date + ".pdf";
+				newFilePdf = ftlPath +  f.getName().substring(0, index) + date + ".pdf";
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 				filePDF = new File(newFilePdf);
 			} else {
-				filePDF = new File(ftlPath + f.getName().substring(0, index) + date + ".pdf");
+				filePDF = new File(ftlPath +  f.getName().substring(0, index) + date + ".pdf");
 				//建立输出字节流
 				FileOutputStream fos = null;
 				try {
@@ -1528,7 +1536,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//上传合同文件 结束
 		//epk流程接口  处理合同文本上传壹钱包的合同文本信息
 		StringBuilder name = new StringBuilder();
-		uploadFileVoList.forEach(up -> {
+		uploadFileVoList.forEach(up->{
 			name.append(up.getId());
 			name.append(",");
 		});
@@ -1565,7 +1573,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	@Override
 	public ContractFormInfoEntity makeContractN(ContractFormInfoEntity entity) {
-		ContractFormInfoEntity formInfoEntity = new ContractFormInfoEntity();
+		ContractFormInfoEntity formInfoEntity=new ContractFormInfoEntity();
 		BeanUtil.copy(entity, formInfoEntity);
 		/*处理编号 开始*/
 		List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);
@@ -2133,6 +2141,34 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Override
 	public List<ContractFormInfoEntity> getChooseList() {
 		return contractFormInfoMapper.getChooseList();
+	}
+
+	@Override
+	public void batchDraftingImport(MultipartFile file,String json,String contractBigCategory, String contractSmallCategory) {
+		//转换excel文件为合同模板集合
+		List<ContractImportBatchDraftExcel>contractImportBatchDraftExcels = ContractImportBatchDraftUtil.excelToContractExcelList(file);
+		//合同模板集合转合同db实体
+		if(Func.isNotEmpty(contractImportBatchDraftExcels)){
+			List<ContractFormInfoEntity>contractFormInfoEntityList = new ArrayList<>();
+			for(ContractImportBatchDraftExcel contractImportBatchDraftExcel:contractImportBatchDraftExcels){
+				//合同主体信息转bean,保存
+				ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractImportBatchDraftExcel,ContractFormInfoEntity.class);
+				contractFormInfoEntity.setContractBigCategory(contractBigCategory);
+				contractFormInfoEntity.setContractSmallCategory(contractSmallCategory);
+				contractFormInfoEntity.setId(IdGenUtil.generateId().longValue());
+				contractFormInfoEntity.setJson(json);
+				contractFormInfoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+				contractFormInfoEntity.setContractSoure(ContractTypeEnum.BATCH.getKey().toString());
+				contractFormInfoEntityList.add(contractFormInfoEntity);
+				//相对方信息,保存
+				List<ContractCounterpartEntity>counterpartEntityList = contractCounterpartService.saveByBatchDraftExcel(contractImportBatchDraftExcel.getContractCounterpartImportBatchDraftExcels(),contractFormInfoEntity.getId());
+				//保证金信息,保存
+				List<ContractBondEntity>contractBondEntityList = contractBondService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getContractBondImportBatchDraftExcels(),contractFormInfoEntity.getId());
+				//履约-计划收付款,保存
+				List<PerCollectPayEntity>perCollectPayEntityList = perCollectPayService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getPerCollectPayImportBatchDraftExcels(),contractFormInfoEntity.getId());
+			}
+			this.saveBatch(contractFormInfoEntityList);
+		}
 	}
 
 	/**

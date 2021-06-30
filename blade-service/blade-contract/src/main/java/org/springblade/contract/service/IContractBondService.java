@@ -1,6 +1,7 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.excel.importbatchdraft.ContractBondImportBatchDraftExcel;
 import org.springblade.contract.vo.ContractBondRequestVO;
 import org.springblade.contract.vo.ContractBondResponseVO;
 import org.springblade.contract.vo.ContractPerformanceResponseVO;
@@ -58,4 +59,12 @@ public interface IContractBondService extends BaseService<ContractBondEntity> {
 	 * @return
 	 */
 	void deleteByContractId(Long id);
+
+
+	/**
+	 * 根据批量模板新增
+	 * @param contractBondImportBatchDraftExcels
+	 */
+	List<ContractBondEntity> saveByBatchDraftExcels(List<ContractBondImportBatchDraftExcel> contractBondImportBatchDraftExcels,Long contractInfoId);
+
 }

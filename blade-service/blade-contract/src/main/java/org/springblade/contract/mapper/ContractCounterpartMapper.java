@@ -67,4 +67,26 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	 */
 	boolean saveBatchPost(@Param("ContractCounterpartList") List<ContractCounterpartEntity> postList);
 
+	/**
+	 * 根据统一社会代码获取集合
+	 * @param codes
+	 * @return
+	 */
+	List<ContractCounterpartEntity> findListByCodes(@Param("codes") List<String> codes);
+
+	/**
+	 * 根据合同标识删除关系数据
+	 * @param contractId
+	 */
+	void deleteByContractId(@Param("contractId") Long contractId);
+
+	/**
+	 * 根据合同标识批量新增关系数据
+	 * @param contractId
+	 * @param counterpartEntityList
+	 */
+	void saveListByContractId(Long contractId,List<ContractCounterpartEntity> counterpartEntityList);
+
+
+
 }

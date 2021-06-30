@@ -2,6 +2,7 @@ package org.springblade.contract.service.impl;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.log4j.Log4j2;
+import org.springblade.contract.excel.importbatchdraft.PerCollectPayImportBatchDraftExcel;
 import org.springblade.contract.vo.PerCollectPayListResponseVO;
 import org.springblade.contract.vo.PerCollectPayRequestVO;
 import org.springblade.contract.vo.PerCollectPayResponseVO;
@@ -11,6 +12,7 @@ import org.springblade.contract.entity.PerCollectPayEntity;
 import org.springblade.contract.mapper.PerCollectPayMapper;
 import org.springblade.contract.service.IPerCollectPayService;
 import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
@@ -61,6 +63,28 @@ public class PerCollectPayServiceImpl extends BaseServiceImpl<PerCollectPayMappe
 		columnMap.put("contract_id",contractId);
 		List<PerCollectPayEntity>perCollectPayEntityList = this.baseMapper.selectByMap(columnMap);
 		return Func.isEmpty(perCollectPayEntityList)?new ArrayList<>():PerCollectPayWrapper.build().entityPVList(perCollectPayEntityList);
+	}
+
+	@Override
+	public List<PerCollectPayEntity> saveByBatchDraftExcels(List<PerCollectPayImportBatchDraftExcel> perCollectPayImportBatchDraftExcels, Long contractId) {
+		List<PerCollectPayEntity> perCollectPayEntityList = new ArrayList<>();
+		if(Func.isNotEmpty(perCollectPayImportBatchDraftExcels)){
+			perCollectPayImportBatchDraftExcels.forEach(perCollectPayImportBatchDraftExcel -> {
+				PerCollectPayEntity perCollectPayEntity = BeanUtil.copy(perCollectPayImportBatchDraftExcel,PerCollectPayEntity.class);
+				perCollectPayEntity.setContractId(contractId);
+				perCollectPayEntityList.add(perCollectPayEntity);
+			});
+		}
+		this.deleteByContractId(contractId);
+		this.saveBatch(perCollectPayEntityList);
+		return perCollectPayEntityList;
+	}
+
+
+	public void deleteByContractId(Long contractId){
+		Map<String, Object> columnMap = new HashMap<>();
+		columnMap.put("contract_id",contractId);
+		baseMapper.deleteByMap(columnMap);
 	}
 
 

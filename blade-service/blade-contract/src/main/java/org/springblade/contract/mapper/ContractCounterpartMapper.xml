@@ -157,6 +157,23 @@
         </if>
         ORDER BY create_time DESC
     </select>
+
+
+    <select id="findListByCodes" resultMap="counterpartResultMap">
+        select
+        <include refid="baseColumnList"> </include>
+        from contract_counterpart
+        WHERE
+        is_deleted = 0
+        and unified_social_credit_code in
+        <foreach collection="codes" item="code" index="index" open="(" close=")" separator=",">
+            #{code}
+        </foreach>
+    </select>
+
+
+
+
     <!--根据合同id查询相对方集合-->
     <select id="selectByIds" resultMap="counterpartResultMap">
         SELECT
@@ -213,4 +230,29 @@
         ON DUPLICATE KEY UPDATE
         post_name = VALUES(post_name),is_deleted = VALUES(is_deleted),update_time = VALUES(update_time),status = VALUES(status)
     </insert>
+
+    <!--删除关联相对方-->
+    <delete id="deleteByContractId" parameterType="java.lang.Long">
+        DELETE
+        FROM contract_counterpart_setting
+        WHERE contract_id = #{contractId}
+    </delete>
+
+
+    <insert id="saveListByContractId">
+        insert into contract_counterpart_setting
+        (
+        contract_id,
+        counterpart_id
+        )
+        values
+        <foreach collection="counterpartEntityList" item="item" index="index" open="" close="" separator=",">
+        (
+        #{contractId},
+        #{item.id}
+        )
+        </foreach>
+    </insert>
+
+
 </mapper>

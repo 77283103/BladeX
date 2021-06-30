@@ -4,9 +4,11 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.excel.importbatchdraft.ContractBondImportBatchDraftExcel;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractFormInfoService;
+import org.springblade.contract.util.IdGenUtil;
 import org.springblade.contract.vo.ContractBondRequestVO;
 import org.springblade.contract.vo.ContractBondResponseVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -18,6 +20,7 @@ import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.mapper.ContractBondMapper;
 import org.springblade.contract.service.IContractBondService;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
@@ -89,5 +92,35 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 			contractBondMapper.deleteById(bond.getId());
 		});
 		contractBondMapper.deleteBond(id);
+	}
+
+	@Override
+	public List<ContractBondEntity> saveByBatchDraftExcels(List<ContractBondImportBatchDraftExcel> contractBondImportBatchDraftExcels,Long contractInfoId) {
+		List<ContractBondEntity> contractBondEntityList = new ArrayList<>();
+		if(Func.isNotEmpty(contractBondImportBatchDraftExcels)){
+			List<String> codes = new ArrayList<>();
+			contractBondImportBatchDraftExcels.forEach(contractBondImportBatchDraftExcel -> {
+				codes.add(contractBondImportBatchDraftExcel.getUnifiedSocialCreditCode());
+			});
+
+			List<Long> ids = new ArrayList<>();
+			List<ContractCounterpartEntity> counterpartEntityList = counterpartMapper.findListByCodes(codes);
+			contractBondImportBatchDraftExcels.forEach(contractBondImportBatchDraftExcel -> {
+				ContractBondEntity contractBondEntity = BeanUtil.copy(contractBondImportBatchDraftExcel,ContractBondEntity.class);
+				contractBondEntity.setId(IdGenUtil.generateId().longValue());
+				ids.add(contractBondEntity.getId());
+				counterpartEntityList.forEach(contractCounterpartEntity -> {
+					if(contractCounterpartEntity.getUnifiedSocialCreditCode().equals(contractBondImportBatchDraftExcel.getUnifiedSocialCreditCode())){
+						contractBondEntity.setCounterpartId(contractCounterpartEntity.getId());
+						contractBondEntity.setCounterpartName(contractCounterpartEntity.getName());
+					}
+				});
+				contractBondEntityList.add(contractBondEntity);
+			});
+			this.saveBatch(contractBondEntityList);
+			baseMapper.deleteBond(contractInfoId);
+			this.saveBond(ids,contractInfoId);
+		}
+		return contractBondEntityList;
 	}
 }
