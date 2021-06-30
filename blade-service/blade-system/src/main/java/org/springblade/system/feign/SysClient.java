@@ -18,6 +18,7 @@ package org.springblade.system.feign;
 
 import lombok.AllArgsConstructor;
 import org.springblade.core.cache.utils.CacheUtil;
+import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
@@ -28,6 +29,7 @@ import org.springblade.system.vo.DeptVO;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -198,6 +200,7 @@ public class SysClient implements ISysClient {
 
 	@Override
 	@PostMapping(SAVE_POST_API)
+	@ApiLog("更新的岗位信息SAVE_POST_API")
 	public R<Boolean> saveOrUpdateBatchPost(List<Post> post) {
 		CacheUtil.clear(SYS_CACHE);
 		return R.data(postService.saveBatchPost(post));
@@ -211,12 +214,14 @@ public class SysClient implements ISysClient {
 
 	@Override
 	@PostMapping(SUBMIT_DEPT_API)
-	public R<Boolean> saveDept(Dept dept) {
+	@ApiLog("新增或更新的部门数据")
+	public R<Boolean> saveDept(@RequestBody Dept dept) {
 		return R.data(deptService.saveOrUpdate(dept));
 	}
 
 	@Override
 	@PostMapping(SUBMIT_POST_API)
+	@ApiLog("新增或更新的岗位信息")
 	public R<Boolean> savePost(Post post) {
 		return R.data(postService.saveOrUpdate(post));
 	}

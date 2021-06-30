@@ -216,5 +216,5 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * @param null
 	 * @return null
 	 */
-	private List<ContractSealEntity> ContractSeal;
+	private List<ContractSealEntity> contractSeal;
 }

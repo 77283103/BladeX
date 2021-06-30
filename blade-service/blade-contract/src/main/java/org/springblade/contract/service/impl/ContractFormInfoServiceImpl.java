@@ -193,6 +193,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IContractFileDownloadLogService fileDownloadLogService;
 	@Autowired
 	private ContractSealMapper contractSealMapper;
+	@Autowired
+	private IContractSealService iContractSealService;
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -207,15 +209,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			String[] code = contractFormInfo.getContractStatus().split(",");
 			contractFormInfo.setCode(Arrays.asList(code));
 		}
-		if (Func.isNotEmpty(contractFormInfo.getCreateUserName())){
+		if (Func.isNotEmpty(contractFormInfo.getCreateUserName())) {
 			List<User> user = userClient.getByRealName(contractFormInfo.getCreateUserName()).getData();
-			if (Func.isNotEmpty(user)){
-				StringBuilder real=new StringBuilder();
-				user.forEach(u->{
+			if (Func.isNotEmpty(user)) {
+				StringBuilder real = new StringBuilder();
+				user.forEach(u -> {
 					real.append(u.getId());
 					real.append(",");
 				});
-				real.substring(0, real.length()-1);
+				real.substring(0, real.length() - 1);
 				String[] reaN = real.toString().split(",");
 				contractFormInfo.setRealName(Arrays.asList(reaN));
 			}
@@ -359,8 +361,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 			//合同文本下载日志
-			List<ContractFileDownloadLogEntity> fileDownloadLogEntity=fileDownloadLogService.getList(v.getId());
-			if (Func.isNotEmpty(fileDownloadLogEntity)){
+			List<ContractFileDownloadLogEntity> fileDownloadLogEntity = fileDownloadLogService.getList(v.getId());
+			if (Func.isNotEmpty(fileDownloadLogEntity)) {
 				v.setFileDownloadLogEntities(fileDownloadLogEntity);
 			}
 			if ("30".equals(v.getContractSoure())) {
@@ -899,6 +901,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
+	 * 保存子公司信息
+	 *
+	 * @param vo 提取合同id和相对方id
+	 */
+	@Override
+	public void saveContractSeal(ContractFormInfoRequestVO vo) {
+		contractFormInfoMapper.deleteContractSeal(vo.getId());
+		contractFormInfoMapper.saveContractSeal(vo.getId(), vo.getContractSeal());
+	}
+
+	/**
 	 * 处理依据保存信息
 	 *
 	 * @param vo 合同信
@@ -1004,13 +1017,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			String[] sealNameList = contractFormInfoResponseVO.getSealName().split(",");
 			contractFormInfoResponseVO.setSealNameList(sealNameList);
 		}
-		//多方起草关联的签章单位列表
-		if ("20".equals(contractFormInfoResponseVO.getContractSoure())) {
-			List<ContractSealEntity> sealEntity = contractSealMapper.selectByIds(contractFormInfoResponseVO.getId());
-			if (Func.isNotEmpty(sealEntity)) {
-				contractFormInfoResponseVO.setContractSeal(sealEntity);
-			}
-		}
 		//查询依据
 		List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(contractFormInfoResponseVO.getId());
 		contractFormInfoResponseVO.setAccording(contractAccordingList);
@@ -1031,6 +1037,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		if (Func.isNotEmpty(dcc)) {
 			contractFormInfoResponseVO.setDraftContractCounterpartList(dcc);
 		}
+		//多方起草关联的签章单位列表
+		if ("20".equals(contractFormInfoResponseVO.getContractSoure())) {
+			List<ContractSealEntity> sealEntity = contractSealMapper.selectByIds(contractFormInfoResponseVO.getId());
+			if (Func.isNotEmpty(sealEntity)) {
+				contractFormInfoResponseVO.setContractSeal(sealEntity);
+			}
+		}
+		//多方起草查询履约保证金集合
+		List<ContractBondPlanEntity> contractBondPlanList = contractBondPlanMapper.selectByIds(contractFormInfoResponseVO.getId());
+		contractFormInfoResponseVO.setBondPlanEntityList(contractBondPlanList);
 		//查询保证金
 		List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(contractFormInfoResponseVO.getId());
 		contractFormInfoResponseVO.setContractBond(contractBondList);
@@ -1232,7 +1248,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	/**
 	 * 统计合同下载次数
-	 *  @param id                 合同id
+	 *
+	 * @param id                 合同id
 	 * @param fileExportCount    下载次数
 	 * @param fileExportCategory
 	 */
@@ -1429,30 +1446,30 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		// 入参是个file文件
 		List<File> files = new ArrayList<File>();
 		//处理保存合同编号
-		entity=this.makeContractN(entity);
+		entity = this.makeContractN(entity);
 		//独立起草的pdf处理
 		List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
-		for (FileVO f:fileVO) {
+		for (FileVO f : fileVO) {
 			String newFileDoc = "";
 			String newFilePdf = "";
 			String suffix = "";
 			//doc转为pdf
 			log.info("TAG获取合同文本文件转换成PDF，前端已经处理判空，即断言此处文本获取成功！");
-			newFileDoc =  f.getLink();
-			int suffixL= f.getName().length();
-			log.info("合同文本文件名称的长度："+suffixL);
+			newFileDoc = f.getLink();
+			int suffixL = f.getName().length();
+			log.info("合同文本文件名称的长度：" + suffixL);
 			int index = f.getName().lastIndexOf(".");
-			log.info("合同文本文件名称不带后缀的长度："+index);
-			suffix = f.getName().substring(suffixL -3,suffixL);
+			log.info("合同文本文件名称不带后缀的长度：" + index);
+			suffix = f.getName().substring(suffixL - 3, suffixL);
 			log.info("合同文本文件名称的后三位（判断文件后缀类型" +
-				"）："+suffix);
+				"）：" + suffix);
 			//判断是否为pdf文件，pdf文件不需要转换
 			if (!"pdf".equals(suffix)) {
-				newFilePdf = ftlPath +  f.getName().substring(0, index) + date + ".pdf";
+				newFilePdf = ftlPath + f.getName().substring(0, index) + date + ".pdf";
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 				filePDF = new File(newFilePdf);
 			} else {
-				filePDF = new File(ftlPath +  f.getName().substring(0, index) + date + ".pdf");
+				filePDF = new File(ftlPath + f.getName().substring(0, index) + date + ".pdf");
 				//建立输出字节流
 				FileOutputStream fos = null;
 				try {
@@ -1511,7 +1528,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//上传合同文件 结束
 		//epk流程接口  处理合同文本上传壹钱包的合同文本信息
 		StringBuilder name = new StringBuilder();
-		uploadFileVoList.forEach(up->{
+		uploadFileVoList.forEach(up -> {
 			name.append(up.getId());
 			name.append(",");
 		});
@@ -1548,7 +1565,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	@Override
 	public ContractFormInfoEntity makeContractN(ContractFormInfoEntity entity) {
-		ContractFormInfoEntity formInfoEntity=new ContractFormInfoEntity();
+		ContractFormInfoEntity formInfoEntity = new ContractFormInfoEntity();
 		BeanUtil.copy(entity, formInfoEntity);
 		/*处理编号 开始*/
 		List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);

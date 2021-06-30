@@ -17,6 +17,7 @@ import org.springblade.contract.entity.*;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.log.annotation.ApiLog;
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -56,6 +58,8 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class AbutmentClient implements IAbutmentClient {
 
+	@Autowired
+	private BladeLogger logger;
 	@Autowired
 	private IEkpService ekpService;
 	@Autowired
@@ -108,7 +112,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(TEMPLATE_APP)
-	public R<EkpVo> temEkpFormPost(ContractTemplateEntity entity) {
+	@ApiLog("模板审批")
+	public R<EkpVo> temEkpFormPost(@RequestBody ContractTemplateEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
@@ -181,6 +186,7 @@ public class AbutmentClient implements IAbutmentClient {
 				rEkpVo.setData(null);
 				return rEkpVo;
 			}
+			logger.info("temEkpFormPost-return",JsonUtil.toJson(rEkpVo));
 		}
 		rEkpVo.setData(ekpVo);
 		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
@@ -198,7 +204,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@PostMapping(CONTRACT_BORROWING)
 	@Override
-	public R<EkpVo> borEkpFormPost(ContractBorrowApplicationEntity entity) {
+	@ApiLog("合同借阅申请")
+	public R<EkpVo> borEkpFormPost(@RequestBody ContractBorrowApplicationEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
@@ -247,6 +254,7 @@ public class AbutmentClient implements IAbutmentClient {
 				rEkpVo.setData(null);
 				return rEkpVo;
 			}
+			logger.info("borEkpFormPost-return",JsonUtil.toJson(rEkpVo));
 		}
 		rEkpVo.setData(ekpVo);
 		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
@@ -256,15 +264,15 @@ public class AbutmentClient implements IAbutmentClient {
 	}
 
 	/**
-	 * 合同起草
+	 * 独立起草/多方起草-合同起草
 	 *
 	 * @param entity
 	 * @return
 	 */
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
-	//推送代办
-	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
+	@ApiLog("独立起草/多方起草-合同起草")
+	public R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
@@ -653,6 +661,7 @@ public class AbutmentClient implements IAbutmentClient {
 						rEkpVo.setData(null);
 						return rEkpVo;
 					}
+					logger.info("sendEkpFormPost-return",JsonUtil.toJson(rEkpVo));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -674,7 +683,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_SEND_MULTI_POST)
-	public R<EkpVo> sendEkpMultiPost(ContractFormInfoEntity entity) {
+	@ApiLog("合同起草-多方 推送EKP信息")
+	public R<EkpVo> sendEkpMultiPost(@RequestBody ContractFormInfoEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
@@ -712,7 +722,7 @@ public class AbutmentClient implements IAbutmentClient {
 				if (fileText.size() > 0) {
 					formValuesEntity.setFd_contract_name(fileText.get(0).getName());
 				}
-				//合同起草类型  可能设计变更暂时做判断
+				//合同起草类型  可能涉及变更暂时做判断
 				if ("20".equals(entity.getContractSoure())) {
 					formValuesEntity.setFd_contract_type("40");
 				}
@@ -1051,6 +1061,7 @@ public class AbutmentClient implements IAbutmentClient {
 						rEkpVo.setData(null);
 						return rEkpVo;
 					}
+					logger.info("sendEkpMultiPost-return",JsonUtil.toJson(rEkpVo));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1072,7 +1083,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_NODE_FORM_POST)
-	public R<EkpVo> nodeEkpFormPost(ContractFormInfoResponseVO entity) {
+	@ApiLog("推送EKP节点信息")
+	public R<EkpVo> nodeEkpFormPost(@RequestBody ContractFormInfoResponseVO entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		//KEP接口传输的入参
@@ -1201,6 +1213,7 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_SIG_FORM_POST)
+	@ApiLog("需要推送预警的数据")
 	public R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity) {
 		List<EkpVo> ekpVo = new ArrayList<>();
 		HashMap<String, String> mapVo = new HashMap<>();
@@ -1262,6 +1275,8 @@ public class AbutmentClient implements IAbutmentClient {
 				e.printStackTrace();
 			}
 		});
+		logger.info("contractFormList",JsonUtil.toJson(formInfoEntities));
+		logger.info("pushEkpContractFormList",JsonUtil.toJson(ekpVo));
 		log.info("推送完成返回的依据信息：" + JsonUtil.toJson(ekpVo));
 		return R.data(200, ekpVo, "数据推送成功");
 	}
@@ -1527,13 +1542,14 @@ public class AbutmentClient implements IAbutmentClient {
 
 	@Override
 	@GetMapping(SIGNATURE_QUERY_INFO)
+	@ApiLog("签章单位接口更新或来的源数据")
 	public R<AsDictVo> querySigatureInfo(AsDict entity) {
 		AsDictVo sigVo = null;
 		try {
 			String token = iAsService.getToken();
 			if (StrUtil.isNotEmpty(token)) {
 				sigVo = iAsService.getDocInfo(token).getData();
-
+				logger.info("as_dict", JsonUtil.toJson(sigVo));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -1668,6 +1684,7 @@ public class AbutmentClient implements IAbutmentClient {
 	 */
 	@Override
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
+	@ApiLog("组织机构任务更新时间")
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
 		log.info("查看查询时间的参数：" + param);
 		return iOrganizationService.getOrganizationInfoIncrement(param);
@@ -1682,7 +1699,7 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
-	@ApiLog("相对方定时任务触发")
+	@ApiLog("相对方定时任务触发-获取数据")
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		CounterpartVo counterpartVo = null;
@@ -1699,6 +1716,8 @@ public class AbutmentClient implements IAbutmentClient {
 		if (Func.isEmpty(counterpartVo.getInsert()) & Func.isEmpty(counterpartVo.getUpdate())) {
 			return R.data(200, counterpartVo, "获取数据成功,暂时没有需要更新的数据！");
 		}
+		//保存获取到的数据的日志
+		logger.info("counterpartVo", JsonUtil.toJson(counterpartVo));
 		log.info("更新到的向对方数据：" + JsonUtil.toJson(counterpartVo));
 		List<ContractCounterpartEntity> listInsert = new ArrayList<>();
 		List<ContractCounterpartEntity> listUpdate = new ArrayList<>();
@@ -1719,10 +1738,12 @@ public class AbutmentClient implements IAbutmentClient {
 			if (Func.isEmpty(entityList)) {
 				listInsert.add(in);
 			} else {
+				in.setId(entityList.get(0).getId());
 				listUpdate.add(in);
 			}
 		});
 		counterpartVo.getUpdate().forEach(u -> {
+			List<ContractCounterpartEntity> entityList = contractClient.selectByName(u.getBusinessId()).getData();
 			ContractCounterpartEntity up = new ContractCounterpartEntity();
 			up.setName(u.getCustNm());
 			up.setUnifiedSocialCreditCode(u.getBusinessId());
@@ -1735,8 +1756,8 @@ public class AbutmentClient implements IAbutmentClient {
 			up.setRenameReview(simpleDateFormat.format(new Date()));
 			//半角名称
 			up.setHalfWidthName(u.getCustNm());
-			List<ContractCounterpartEntity> entityList = contractClient.selectByName(up.getUnifiedSocialCreditCode()).getData();
 			if (Func.isNotEmpty(entityList) && Func.isNotEmpty(entityList.get(0).getId())) {
+				up.setId(entityList.get(0).getId());
 				listUpdate.add(up);
 			} else {
 				listInsert.add(up);

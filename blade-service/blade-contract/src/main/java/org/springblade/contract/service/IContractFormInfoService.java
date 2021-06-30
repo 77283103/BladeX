@@ -72,6 +72,13 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	void saveCounterpart(ContractFormInfoRequestVO vo);
+	/**
+	 * 子公司保存方法
+	 *
+	 * @param vo 合同信息
+	 * @return
+	 */
+	void saveContractSeal(ContractFormInfoRequestVO vo);
 
 	/**
 	 * 依据保存方法

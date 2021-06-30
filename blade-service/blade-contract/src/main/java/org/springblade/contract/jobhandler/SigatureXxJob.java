@@ -12,7 +12,10 @@ import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.abutment.vo.AsDictVo;
 import org.springblade.contract.entity.ContractSealEntity;
 import org.springblade.contract.service.IContractSealService;
+import org.springblade.core.log.annotation.ApiLog;
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.DictBiz;
@@ -34,7 +37,7 @@ public class SigatureXxJob {
 	private final IDictBizClient dictService;
 	private final IAbutmentClient abutmentClient;
 	private final IContractSealService contractSealService;
-
+	private BladeLogger bladeLogger;
 	/**
 	 * 更新添加申请用印单位的单位数据
 	 *
@@ -44,6 +47,7 @@ public class SigatureXxJob {
 	 * @date 2021/6/5 23:10
 	 */
 	@XxlJob("SigatureXxJob")
+	@ApiLog("签章单位数据合同平台处理的数据")
 	public ReturnT<AsDictVo> submit(String param) throws Exception {
 		List<DictBiz> dictBizVOS = dictService.getList("application_seal").getData();
 		List<AsDict> as = new ArrayList<>();
@@ -103,6 +107,7 @@ public class SigatureXxJob {
 					sealEntity.setCreateDept(1367272379264299021L);
 					contractSealService.save(sealEntity);
 				});
+				bladeLogger.info("insert", JsonUtil.toJson(is));
 			}
 			if (Func.isNotEmpty(ds)) {
 				ds.forEach(d->{
@@ -114,6 +119,7 @@ public class SigatureXxJob {
 					sealEntity.setFdTaxno(d.getFd_taxNo());
 					contractSealService.updateById(sealEntity);
 				});
+				bladeLogger.info("update", JsonUtil.toJson(ds));
 			}
 			XxlJobLogger.log(vo.getMsg() + vo.getData());
 			return new ReturnT<>(vo.getData());

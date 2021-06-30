@@ -10,6 +10,7 @@ import org.springblade.abutment.service.ICounterpartService;
 import org.springblade.abutment.vo.CounterpartVo;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.feign.IContractClient;
+import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
@@ -80,6 +81,7 @@ public class CounterpartServiceImpl implements ICounterpartService{
 	}
 
 	@Override
+	@ApiLog("相对方-获取到的数据")
 	public R<CounterpartVo> getInsOrUp(CounterpartEntity entity) throws Exception {
 		log.info("查看token是否传进来："+JSONUtil.toJsonStr(entity));
 		CounterpartVo vo=new CounterpartVo();

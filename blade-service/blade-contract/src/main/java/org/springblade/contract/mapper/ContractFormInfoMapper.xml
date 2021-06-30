@@ -459,12 +459,28 @@
             #{item.id})
         </foreach>
     </insert>
-
+    <!--保存关联子公司-->
+    <insert id="saveContractSeal">
+        insert into contract_seal_setting
+        (contract_id,
+        seal_id)
+        values
+        <foreach collection="contractSeal" item="item" index="index" open="" close="" separator=",">
+            (#{id},
+            #{item.id})
+        </foreach>
+    </insert>
 
     <!--删除关联相对方-->
     <delete id="deleteCounterpart" parameterType="java.lang.Long">
         DELETE
         FROM contract_counterpart_setting
+        WHERE contract_id = #{id}
+    </delete>
+    <!--删除关联子公司-->
+    <delete id="deleteContractSeal" parameterType="java.lang.Long">
+        DELETE
+        FROM contract_seal_setting
         WHERE contract_id = #{id}
     </delete>
 

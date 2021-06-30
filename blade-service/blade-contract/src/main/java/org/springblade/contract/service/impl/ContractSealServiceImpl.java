@@ -5,8 +5,12 @@ import org.springblade.contract.entity.ContractSealEntity;
 import org.springblade.contract.mapper.ContractSealMapper;
 import org.springblade.contract.service.IContractSealService;
 import org.springblade.contract.vo.ContractSealRequestVO;
+import org.springblade.contract.vo.ContractSealResponseVO;
+import org.springblade.contract.wrapper.ContractSealWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 /**
  * 统一子公司（签章申请单位） 服务实现类
@@ -25,6 +29,11 @@ public class ContractSealServiceImpl extends BaseServiceImpl<ContractSealMapper,
 	@Override
 	public ContractSealEntity getByFdNo(String fdTaxno) {
 		return baseMapper.selectAllByFdTaxnoAfter(fdTaxno);
+	}
+
+	@Override
+	public List<ContractSealResponseVO> findBySealContractId(Long contractId) {
+		return ContractSealWrapper.build().entityPVList(baseMapper.selectByIds(contractId));
 	}
 
 

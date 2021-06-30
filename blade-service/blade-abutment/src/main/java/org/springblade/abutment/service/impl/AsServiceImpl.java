@@ -7,6 +7,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springblade.abutment.entity.AsDict;
 import org.springblade.abutment.service.IAsService;
 import org.springblade.abutment.vo.AsDictVo;
+import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.tool.api.R;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -44,6 +45,7 @@ public class AsServiceImpl implements IAsService {
 	}
 
 	@Override
+	@ApiLog("签章单位任务接口的token")
 	public R<AsDictVo> getDocInfo(String token) throws Exception {
 		JSONObject param = new JSONObject();
 		param.set("token", token);

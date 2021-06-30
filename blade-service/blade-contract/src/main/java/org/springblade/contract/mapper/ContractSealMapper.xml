@@ -55,7 +55,7 @@
         WHERE is_deleted = 0
         AND fd_factNo=#{fdTaxno}
     </select>
-    <!--根据合同id查询相对方集合-->
+    <!--根据合同id查询子公司集合-->
     <select id="selectByIds" resultMap="contractSealResultMap">
         SELECT
         <include refid="baseColumnList"> </include>

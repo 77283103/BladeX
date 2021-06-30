@@ -3,7 +3,10 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.contract.entity.ContractSealEntity;
 import org.springblade.contract.vo.ContractSealRequestVO;
+import org.springblade.contract.vo.ContractSealResponseVO;
 import org.springblade.core.mp.base.BaseService;
+
+import java.util.List;
 
 /**
  * 统一子公司（签章申请单位） 服务类
@@ -28,4 +31,14 @@ public interface IContractSealService extends BaseService<ContractSealEntity> {
 	 * @return org.springblade.contract.vo.ContractSealRequestVO
 	 */
 	ContractSealEntity getByFdNo(String fdTaxno);
+
+	/**
+	 * 根据合同ID查询子公司集合
+	 * @author jitwxs
+	 * @date 2021/6/29 22:19
+	 * @param contractId
+	 * @return java.util.List<org.springblade.contract.vo.ContractSealResponseVO>
+	 */
+
+	List<ContractSealResponseVO> findBySealContractId(Long contractId);
 }

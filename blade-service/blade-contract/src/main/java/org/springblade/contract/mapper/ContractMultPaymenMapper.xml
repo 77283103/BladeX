@@ -16,6 +16,7 @@
         <result column="days" property="days"/>
         <result column="counterpart_id" property="counterpartId"/>
         <result column="counterpart_name" property="counterpartName"/>
+        <result column="subsidiary_person" property="subsidiaryPerson"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -37,7 +38,7 @@
         col_pay_term,
         days,
         counterpart_id,
-        counterpart_name,
+        counterpart_name,subsidiary_person,
         status,
         is_deleted,
         create_user,

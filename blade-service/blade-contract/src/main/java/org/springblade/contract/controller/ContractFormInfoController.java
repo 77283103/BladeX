@@ -255,6 +255,16 @@ public class ContractFormInfoController extends BladeController {
 				contractMultPaymenService.save(mult);
 			});
 		}
+		/*保存子公司信息*/
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractSeal())) {
+			contractFormInfoService.saveContractSeal(contractFormInfo);
+			contractFormInfo.getDraftContractCounterpartList().forEach(dcc->{
+				if ("甲".equals(dcc.getCounterpartIdentity())){
+					entity.setSealName(dcc.getSubsidiaryPerson());
+					entity.setContractRoles(dcc.getCounterpartIdentity());
+				}
+			});
+		}
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
 			contractFormInfoService.saveCounterpart(contractFormInfo);
@@ -309,7 +319,7 @@ public class ContractFormInfoController extends BladeController {
 		//开始接口处理
 		if ("20".equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
-			if ("1".equals(entity.getContractForm())) {
+			if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm())) {
 				r = contractFormInfoService.SingleSign(R.data(entity));
 			} else {
 				r = contractFormInfoService.SingleSignE(R.data(entity));

@@ -3,10 +3,7 @@ package org.springblade.contract.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
-import org.springblade.contract.entity.ContractAccordingEntity;
-import org.springblade.contract.entity.ContractCounterpartEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.MonthTypeSelect;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 
 import java.math.BigDecimal;
@@ -117,6 +114,12 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @param id 合同id
 	 */
 	void saveCounterpart(Long  id, List<ContractCounterpartEntity> counterpart);
+	/**
+	 * 保存合同子公司关联表
+	 * @param contractSeal 子公司
+	 * @param id 合同id
+	 */
+	void saveContractSeal(Long  id, List<ContractSealEntity> contractSeal);
 
 
 	/**
@@ -124,6 +127,11 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 * @param id 合同id
 	 */
 	void deleteCounterpart(Long  id);
+	/**
+	 * 删除合同子公司关联表
+	 * @param id 合同id
+	 */
+	void deleteContractSeal(Long  id);
 
 
 	/**

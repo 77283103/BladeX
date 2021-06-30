@@ -15,7 +15,10 @@ import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
 import org.springblade.abutment.vo.OrgParme;
 import org.springblade.abutment.vo.OrganizationVo;
+import org.springblade.core.log.annotation.ApiLog;
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
 import org.springblade.system.entity.Dept;
@@ -50,6 +53,8 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	ISysClient sysClient;
 	@Autowired
 	IUserClient userClient;
+	@Autowired
+	private BladeLogger logger;
 
 	@Value("${api.organization.account}")
 	private String account;
@@ -166,6 +171,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	@SneakyThrows
 	@Override
 	@Transactional(rollbackFor = Exception.class)
+	@ApiLog("组织机构接口获取到的数据-【1】")
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
 		log.info("查看查询时间的参数：" + JSONUtil.toJsonStr(param));
 		Calendar calendar = Calendar.getInstance();
@@ -179,12 +185,12 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		} else if (Func.isNotEmpty(param.getParme()) && "1".equals(param.getTag())) {
 			entity.setAlterTime(format.format(calendar.getTime()));
 		}
-		entity.setIsAvailable("1");
 		List<OrganizationVo> organizationList = null;
 		//保存组织机构
 		try {
 			entity.setOrgType("2");
 			organizationList = getOrganizationInfo(entity);
+			logger.info("dept", JsonUtil.toJson(organizationList));
 			log.info("组织机构信息：" + JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)) {
 				return R.data(404, null, "TAG2:getOrganizationInfo()链接获取信息的方法异常，请检查");
@@ -201,6 +207,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		try {
 			entity.setOrgType("4");
 			organizationList = getOrganizationInfo(entity);
+			logger.info("post", JsonUtil.toJson(organizationList));
 			log.info("岗位信息：" + JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)) {
 				return R.data(404, null, "TAG4:getOrganizationInfo()链接获取信息的方法异常，请检查");
@@ -215,6 +222,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		try {
 			entity.setOrgType("8");
 			organizationList = getOrganizationInfo(entity);
+			logger.info("user", JsonUtil.toJson(organizationList));
 			log.info("个人信息：" + JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)) {
 				return R.data(404, null, "TAG8:getOrganizationInfo()链接获取信息的方法异常，请检查");
@@ -225,6 +233,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		if (Func.isNotEmpty(organizationList)) {
 			getPersonListUpdate(organizationList, param);
 		}
+
 		return R.data(200, organizationList, "数据更新成功");
 	}
 
@@ -302,6 +311,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			//岗位ID
 			post.setPostCode(organizationVo.getGradid());
 			post.setPostName(organizationVo.getName());
+			post.setCreateTime(new Date());
 			post.setCreateUser(1374895070913761282L);
 			post.setUpdateUser(1374895070913761282L);
 			post.setCreateDept(1367272379264299021L);
@@ -310,15 +320,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			if (postIdByAssociationId.isSuccess()) {
 				post.setId(postIdByAssociationId.getData());
 			} else {
-//				post.setId(IdWorker.getId(post));
-				post.setId(null);
+				post.setId(IdWorker.getId(post));
+//				post.setId(null);
 			}
 			in.add(post);
 		}
 		if (Func.isNotEmpty(in)) {
-			in.forEach(post -> {
-				sysClient.savePost(post);
-			});
+			sysClient.saveOrUpdateBatchPost(in);
 		}
 	}
 
