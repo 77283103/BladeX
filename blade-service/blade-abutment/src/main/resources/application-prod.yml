@@ -9,27 +9,39 @@ spring:
     password: ${blade.datasource.prod.password}
 api:
   doc:
-    tokenUrl: http://oa.pec.com.cn:9080/query/openapi/getToken
-    docInfoUrl: http://oa.pec.com.cn:9080/query/openapi/queryDocInfo
+    tokenUrl: https://oa-interface.pec.com.cn/query/openapi/getToken
+    docInfoUrl: https://oa-interface.pec.com.cn/query/openapi/queryDocInfo
     #相对方资料接口
-    counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
+    Token: https://oa-interface.pec.com.cn/common/pursuant/token
+    Username: prod_c_p
+    Password: T3TlIq9tP6EU4SV9hQ/ong==
+    counterpartUrl: https://oa-interface.pec.com.cn/common/opposite/data
+    #统一集团签章子公司接口
+    signatureUnitUrl: https://oatest-interface.pec.com.cn/common/group/subsidiary
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
+    username: prod_c_p
+    password: T3TlIq9tP6EU4SV9hQ/ong==
   ekp:
     tokenUrl: https://oa-interface.pec.com.cn/restful/ekp/getToken
     #ekpUrl: https://oa-interface.pec.com.cn/restful/ekp/genhrbill
     ekpUrl: https://oa-interface.pec.com.cn/restful/ekp/genhrbillouts
+    agencyUrl: https://oatest-interface.pec.com.cn/common/notify/todo
     account: GenFlowNm
     password: o!a@e@k#p
     fdTemplateId: 1780054e40b82ff3f5f9e0c4bcfa9eac
+    appTemplateId: 179c63d15205aa3926282a5461f9def3
+    systemName: c_p_notify
     ftlPath: /ftl/
   organization:
     wsdl: https://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
-    namespace: http://sys.webservice.client
+    namespace: https://sys.webservice.client
     method: updateOrganization
     account: shebake
     password: 80372a095c16319ce09ef7cc2c871b53
   eSeal:
     tokenUrl: https://unici.pec.com.cn/common/user/access
+    tokenSY: http://unici.pec.com.cn/common/file/addWatermark
+    tokenXZ: http://unici.pec.com.cn/common/file/downloadWaterMarkDoc/
     orgInfoByCodeUrl: https://unici.pec.com.cn/common/apply/company/getByOrganCode
     orgInfoBySysUidUrl: https://unici.pec.com.cn/common/apply/company/getBySysUid
     uploadFileDivideUrl: https://unici.pec.com.cn/common/file/upload/divide
@@ -41,5 +53,12 @@ api:
     multiSignUrl: https://unici.pec.com.cn/common/run/esign/multiSign
     username: admin_cont
     password: 148a0bed39597ef88f3f8b53134993a5
-
+  #    未归档合同节点状态 以及不同预警级别的预警内容
+  contract:
+    notSign:
+      status: 30
+      firstWarning: "合同送申流程结束，请及时加盖公章并将双方盖章后的合同原件寄于合同管理师处習档:"
+      secondWarning: ",已超期15天末进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
+      thirdWarning: ",已超期45天未进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
+      estimateWarning: "已超期计划归档日期，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
 

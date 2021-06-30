@@ -23,6 +23,7 @@
         <result column="counterpart_id" property="counterpartId"/>
         <result column="counterpart_identity" property="counterpartIdentity"/>
         <result column="counterpart_name" property="counterpartName"/>
+        <result column="subsidiary_person" property="subsidiaryPerson"/>
         <result column="factories" property="factories"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
@@ -52,7 +53,7 @@
         return_condition,
         counterpart_id,
         counterpart_identity,
-        counterpart_name,
+        counterpart_name,subsidiary_person,
         factories,
         create_user,
         create_dept,

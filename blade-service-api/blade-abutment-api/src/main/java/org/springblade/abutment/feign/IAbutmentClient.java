@@ -2,7 +2,9 @@ package org.springblade.abutment.feign;
 
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
+import org.springblade.contract.entity.ContractBorrowApplicationEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.tool.api.R;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -32,10 +34,12 @@ public interface IAbutmentClient {
 	String ORGANIZATION_INFO_INCREMENT=API_PREFIX +ORG+"/getOrganization";
 	String EKP_SEND_FORM = API_PREFIX + EKP + "/sendForm";
 	String EKP_SEND_FORM_POST = API_PREFIX + EKP + "/sendFormPost";
+	String EKP_SEND_MULTI_POST =API_PREFIX +EKP+"/sendMultiPost";
 	String E_EKP_TOKEN =API_PREFIX +EKP +"/token";
 	String EKP_NODE_FORM_POST = API_PREFIX + EKP + "/nodeFormPost";
 	String EKP_SIG_FORM_POST=API_PREFIX+EKP+"pushNotSig";
 	String DOC_QUERY_INFO = API_PREFIX + DOC + "/queryInfo";
+	String SIGNATURE_QUERY_INFO=API_PREFIX +"/signatureQueryInfo";
 	String E_SEAL_UPLOAD_FILE = API_PREFIX + E_SEAL + "/uploadFiles";
 	String E_SEAL_SINGLE_SIGN = API_PREFIX + E_SEAL + "/singleSign";
 	String E_SEAL_SINGLE_SIGN_POST= API_PREFIX + E_SEAL + "/singleSignPost";
@@ -44,10 +48,29 @@ public interface IAbutmentClient {
 	String E_SEAL_READ_SIGNED = API_PREFIX + E_SEAL + "/readSigned";
 	String E_SEAL_COMPANY_INFO = API_PREFIX + E_SEAL + "/queryCompanyInfo";
 	String E_SEAL_TOKEN = API_PREFIX + E_SEAL + "/token";
+	String CONTRACT_BORROWING=API_PREFIX+"/appContract";
+	String TEMPLATE_APP=API_PREFIX+"/templateApp";
 
 
 
 	/**
+	 * 模板审批
+	 * 推送EKP信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(TEMPLATE_APP)
+	R<EkpVo> temEkpFormPost(@RequestBody ContractTemplateEntity entity);
+	/**
+	 * 合同借阅
+	 * 推送EKP信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(CONTRACT_BORROWING)
+	R<EkpVo> borEkpFormPost(@RequestBody ContractBorrowApplicationEntity entity);
+	/**
+	 * 合同起草-(独立、范本）
 	 * 推送EKP信息
 	 * @param entity
 	 * @return
@@ -55,6 +78,15 @@ public interface IAbutmentClient {
 	@PostMapping(EKP_SEND_FORM_POST)
 	R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity);
 	/**
+	 * 合同起草-多方
+	 * 推送EKP信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(EKP_SEND_MULTI_POST)
+	R<EkpVo> sendEkpMultiPost(@RequestBody ContractFormInfoEntity entity);
+	/**
+	 * 合同节点
 	 * 推送EKP节点信息
 	 * @param entity
 	 * @return
@@ -63,11 +95,12 @@ public interface IAbutmentClient {
 	R<EkpVo> nodeEkpFormPost(@RequestBody ContractFormInfoResponseVO entity);
 
 	/**
+	 * 归档预警
 	 * 推送EKP节点信息
 	 * @return
 	 */
 	@PostMapping(EKP_SIG_FORM_POST)
-	R<List<EkpVo>> pushNotSig();
+	R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity);
 	/**
 	 * 获取依据信息
 	 * @param entity
@@ -75,6 +108,13 @@ public interface IAbutmentClient {
 	 */
 	@GetMapping(DOC_QUERY_INFO)
 	R<List<DocVo>> queryDocInfo(DocEntity entity);
+	/**
+	 * 获取统一集团签章子公司信息
+	 * @param entity
+	 * @return
+	 */
+	@GetMapping(SIGNATURE_QUERY_INFO)
+	R<AsDictVo> querySigatureInfo(AsDict entity);
 
 	/**
 	 * 上传合同
@@ -156,11 +196,10 @@ public interface IAbutmentClient {
 	 * @return
 	 */
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
-	R<List<OrganizationVo>> getOrganizationInfoIncrement();
+	R<List<OrganizationVo>> getOrganizationInfoIncrement(@RequestBody OrgParme param);
 	/**
 	 * 获取相对方信息的数据
 	 * @return
-	 * @param entity
 	 */
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
 	R<CounterpartVo> getCounterpart(CounterpartEntity entity);

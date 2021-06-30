@@ -1,19 +1,11 @@
 package org.springblade.system.entity;
-import org.springframework.format.annotation.DateTimeFormat;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Date;
+import org.springblade.core.mp.base.BaseEntity;
 
 
 /**
@@ -66,5 +58,10 @@ public class DataSealAuthorityEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "管理签章申请单位集合")
 	private String seal;
+	/**
+	 * 管理相收件相关地址信息
+	 */
+	@ApiModelProperty(value = "管理相收件相关地址信息")
+	private String adminInfo;
 
 }

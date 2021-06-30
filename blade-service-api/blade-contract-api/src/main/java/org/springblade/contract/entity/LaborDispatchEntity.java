@@ -256,5 +256,10 @@ public class LaborDispatchEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "附件五")
 	private String file5;
+	/**
+	 * 拼接附件
+	 */
+	@ApiModelProperty(value = "拼接附件")
+	private String annex;
 
 }

@@ -59,9 +59,9 @@ import java.util.*;
 @Api(value = "合同归档", tags = "合同归档")
 public class ContractArchiveController extends BladeController {
 
-	private final IDictBizClient dictBizClient;
-	private final IContractArchiveService contractArchiveService;
-	private final IContractFormInfoService contractFormInfoService;
+	private IDictBizClient dictBizClient;
+	private IContractArchiveService contractArchiveService;
+	private IContractFormInfoService contractFormInfoService;
 	private static final String CONTRACT_ARCHIVE_SAVE_STATUS="110";
 
 	/**

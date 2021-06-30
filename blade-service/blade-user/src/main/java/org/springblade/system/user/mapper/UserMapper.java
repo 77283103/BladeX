@@ -16,15 +16,12 @@
  */
 package org.springblade.system.user.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.ibatis.annotations.Param;
-import org.springblade.system.entity.Dept;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.excel.UserExcel;
-import org.springblade.system.user.vo.UserVO;
 
 import java.util.List;
 
@@ -93,6 +90,12 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @return
 	 */
 	User getByUserName(String userName);
+	/**
+	 * 根据用户名查用户信息
+	 * @param realName
+	 * @return
+	 */
+	List<User> getByRealName(String realName);
 
 	/**
 	 * 根据lunid获取userid

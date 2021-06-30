@@ -11,41 +11,53 @@ api:
   doc:
     tokenUrl: https://oatest-interface.pec.com.cn/common/pursuant/token
     docInfoUrl: https://oatest-interface.pec.com.cn/common/pursuant/docs
-    #相对方资料接口
-    counterpartUrl: https://oatest-interface.pec.com.cn/common/opposite/data
+    #相对方资料接口 https://oatest-interface.pec.com.cn/common/opposite/data
+    Token: https://oa-interface.pec.com.cn/common/pursuant/token
+    Username: prod_c_p
+    Password: T3TlIq9tP6EU4SV9hQ/ong==
+    counterpartUrl: https://oa-interface.pec.com.cn/common/opposite/data
+    #统一集团签章子公司接口
+    signatureUnitUrl: https://oatest-interface.pec.com.cn/common/group/subsidiary
     SecurityKey: zwtwyx3f1kj5x3nlcnjzpy2u
     username: dev_c_p
     password: oa0/YNY374PKB53+IUmjiw==
   ekp:
     tokenUrl: https://oatest-interface.pec.com.cn/restful/ekp/getToken
-    ekpUrl: https://oatest-interface.pec.com.cn/restful/ekp/genhrbillouts
+    ekpUrl: https://oatest-interface.pec.com.cn/restful/ekp/genhrbill
+    agencyUrl: https://oatest-interface.pec.com.cn/common/notify/todo
     account: iHR
     password: oaekp
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
+    appTemplateId: 179c63d15205aa3926282a5461f9def3
+    systemName: c_p_notify
     ftlPath: /ftl/
-  organization_cs:
-    wsdl: http://oatest.pec.com.cn:8080/sys/webservice/organizationWebService?wsdl
-    namespace: http://sys.webservice.client
-    method: updateOrganization
-    account: shebake_test
-    password: d65937df2000cc755253956bd1403aa5
+#    d65937df2000cc755253956bd1403aa5
   organization:
-    wsdl: http://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
-    namespace: http://sys.webservice.client
+    wsdl: https://oa.pec.com.cn/sys/webservice/organizationWebService?wsdl
+    namespace: https://sys.webservice.client
     method: updateOrganization
     account: shebake
     password: 80372a095c16319ce09ef7cc2c871b53
   eSeal:
     tokenUrl: http://sa.pec.com.cn:9080/common/user/access
+    tokenSY: http://sa.pec.com.cn:9080/common/file/addWatermark
+    tokenXZ: http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/
     orgInfoByCodeUrl: http://sa.pec.com.cn:9080/common/apply/company/getByOrganCode
     orgInfoBySysUidUrl: http://sa.pec.com.cn:9080/common/apply/company/getBySysUid
     uploadFileDivideUrl: http://sa.pec.com.cn:9080/common/file/upload/divide
     uploadFileMergeUrl: http://sa.pec.com.cn:9080/common/file/upload/merge
     viewUrl: http://sa.pec.com.cn:9080/common/file/contract/view
-    downloadUrl: http://sa.pec.com.cn:9080/common/file/downloadSinged
-    singleSignUrl: http://sa.pec.com.cn:9080/common/run/esign/singleSign
-    sendSmsUrl: http://sa.pec.com.cn:9080/common/run/esign/sendSms
-    multiSignUrl: http://sa.pec.com.cn:9080/common/run/esign/multiSign
+    downloadUrl: https://sa.pec.com.cn:9080/common/file/downloadSinged
+    singleSignUrl: https://sa.pec.com.cn:9080/common/run/esign/singleSign
+    sendSmsUrl: https://sa.pec.com.cn:9080/common/run/esign/sendSms
+    multiSignUrl: https://sa.pec.com.cn:9080/common/run/esign/multiSign
     username: 1111
     password: 1111
-
+  #    未归档合同节点状态 以及不同预警级别的预警内容
+  contract:
+    notSign:
+      status: 30
+      firstWarning: "合同送申流程结束，请及时加盖公章并将双方盖章后的合同原件寄于合同管理师处習档:"
+      secondWarning: ",已超期15天末进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
+      thirdWarning: ",已超期45天未进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
+      estimateWarning: "已超期计划归档日期，请及时将双方盖章后的合同原件寄于合同管理师处留档:"

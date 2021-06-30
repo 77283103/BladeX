@@ -6,6 +6,9 @@ import lombok.Setter;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
+import java.util.List;
+
+import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.core.tool.utils.DateUtil;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -32,7 +35,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ToString
 @ApiModel(description = "保证金请求对象")
-public class ContractBondRequestVO extends BaseEntity{
+public class ContractBondRequestVO extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -53,6 +56,10 @@ public class ContractBondRequestVO extends BaseEntity{
 	private Date actualPayTime;
 	@ApiModelProperty(value = "保证金履约金额缴纳期限")
 	private String  contractBond;
+	@ApiModelProperty(value = "相对方id")
+	private List<String> counterpart;
+	@ApiModelProperty(value = "合同类型")
+	private String  contractSoure;
 
 
 }

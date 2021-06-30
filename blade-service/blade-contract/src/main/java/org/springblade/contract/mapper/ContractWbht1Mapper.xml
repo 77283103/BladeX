@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractWbht1Mapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractWbht1ResultMap" type="org.springblade.contract.entity.ContractWbht1Entity">
+        <result column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contract_num" property="contractNum"/>
+        <result column="contract_name" property="contractName"/>
+        <result column="contract_number" property="contractNumber"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="contract_bus" property="contractBus"/>
+        <result column="contract_bus_num" property="contractBusNum"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contract_num,
+        contract_name,
+        contract_number,
+        contract_id,
+        contract_bus,
+        contract_bus_num
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractWbht1ResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_wbht1
+        WHERE is_deleted = 0
+    </select>
+</mapper>

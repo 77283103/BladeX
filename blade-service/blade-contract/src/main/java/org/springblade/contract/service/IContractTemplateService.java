@@ -1,11 +1,12 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
+import org.springblade.abutment.vo.EkpVo;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.mp.base.BaseService;
+import org.springblade.core.tool.api.R;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @param templateStatus,ids
 	 * @return
 	 */
-	boolean updateTemplateStatus(String templateStatus,Long id);
+	boolean updateTemplateStatus(String templateStatus,Long id,String enabled);
 
 	/**
 	 * 范本是否启用
@@ -61,7 +62,12 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 */
 	boolean save(ContractTemplateEntity templateEntity,String type);
 
-
+	/**
+	 * 米板新增宋声
+	 * @param entity
+	 * @return
+	 */
+    R<EkpVo> appTemplate(ContractTemplateEntity entity);
 	/**
 	 *根据范本名称合同范本模板编号筛选是否存在新增重复范本
 	 * @param templateName

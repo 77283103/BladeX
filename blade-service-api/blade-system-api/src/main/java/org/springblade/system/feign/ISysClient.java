@@ -64,16 +64,18 @@ public interface ISysClient {
 	String TENANT_ID = API_PREFIX + "/tenant-id";
 	String PARAM = API_PREFIX + "/param";
 	String PARAM_VALUE = API_PREFIX + "/param-value";
-	String SAVE_DEPT_API=API_PREFIX +"/save-dept-api";
-	String SAVE_POST_API=API_PREFIX +"/save-post-api";
-	String SAVE_USER_DEPART_API=API_PREFIX +"/save-user-depart-api";
-	String SUBMIT_DEPT_API=API_PREFIX +"/submit-dept-api";
-	String SUBMIT_POST_API=API_PREFIX +"/submit-post-api";
+	String SAVE_DEPT_API = API_PREFIX + "/save-dept-api";
+	String SAVE_POST_API = API_PREFIX + "/save-post-api";
+	String SAVE_USER_DEPART_API = API_PREFIX + "/save-user-depart-api";
+	String SUBMIT_DEPT_API = API_PREFIX + "/submit-dept-api";
+	String SUBMIT_POST_API = API_PREFIX + "/submit-post-api";
 	String GET_DEPT_ID_BY_LUNID = API_PREFIX + "/get-dept-id-by-lunid";
-	String GET_USER_DEPART_ID_BY_LUNID= API_PREFIX + "/get-user-depart-id-by-lunid";
+	String GET_USER_DEPART_ID_BY_LUNID = API_PREFIX + "/get-user-depart-id-by-lunid";
 	String GET_ANCESTOR_IDS = API_PREFIX + "/get-ancestor-ids";
 	String GET_POST_ID_BY_LUNID = API_PREFIX + "/get-post-id-by-lunid";
-	String GET_DATA_SEAL_AUTHORITY = API_PREFIX + "/get_data_seal_authority";
+	String GET_DATA_SEAL_AUTHORITY = API_PREFIX + "/get-data-seal-authority";
+	String GET_DATA_SEAL_ADMIN_INFO =API_PREFIX +"/get-data-seal-admin-info";
+
 	/**
 	 * 获取菜单
 	 *
@@ -275,7 +277,6 @@ public interface ISysClient {
 	R<String> getParamValue(@RequestParam("paramKey") String paramKey);
 
 	/**
-	 *
 	 * @param dept
 	 * @return
 	 */
@@ -283,7 +284,6 @@ public interface ISysClient {
 	R<Boolean> saveOrUpdateBatchDept(@RequestBody List<Dept> dept);
 
 	/**
-	 *
 	 * @param post
 	 * @return
 	 */
@@ -291,7 +291,6 @@ public interface ISysClient {
 	R<Boolean> saveOrUpdateBatchPost(@RequestBody List<Post> post);
 
 	/**
-	 *
 	 * @param userDepart
 	 * @return
 	 */
@@ -299,7 +298,6 @@ public interface ISysClient {
 	R<Boolean> saveOrUpdateBatchUserDepart(@RequestBody List<UserDepartEntity> userDepart);
 
 	/**
-	 *
 	 * @param dept
 	 * @return
 	 */
@@ -308,7 +306,6 @@ public interface ISysClient {
 
 
 	/**
-	 *
 	 * @param post
 	 * @return
 	 */
@@ -333,8 +330,10 @@ public interface ISysClient {
 	 */
 	@GetMapping(GET_USER_DEPART_ID_BY_LUNID)
 	R<Long> getUserDepartByAssociationId(@RequestParam("associationId") Long associationId);
+
 	/**
 	 * 将lunid祖籍列表转为blade祖籍列表
+	 *
 	 * @param ancestorIds
 	 * @return
 	 */
@@ -352,10 +351,20 @@ public interface ISysClient {
 
 	/**
 	 * 根据角色ID查询用户数据权限数据
+	 *
 	 * @param userId
 	 * @return
 	 */
 	@GetMapping(GET_DATA_SEAL_AUTHORITY)
 	R<DataSealAuthorityResponseVO> getByIdData(@RequestParam("userId") String userId,
-											   @RequestParam("roleId") String roleId );
+											   @RequestParam("roleId") String roleId);
+
+	/**
+	 * @param sealVale 根据签章申请单位名称查询该合同对应管理员的收件地址
+	 * @return java.lang.String
+	 * @author jitwxs
+	 * @date 2021/6/7 22:15
+	 */
+	@GetMapping(GET_DATA_SEAL_ADMIN_INFO)
+	R<String> adminInfo(String sealVale);
 }

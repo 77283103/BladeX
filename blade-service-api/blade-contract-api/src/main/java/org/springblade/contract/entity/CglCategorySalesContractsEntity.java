@@ -1,24 +1,16 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Date;
+import org.springblade.core.mp.base.BaseEntity;
+
 import java.util.List;
 
 
@@ -65,10 +57,8 @@ public class CglCategorySalesContractsEntity extends BaseEntity {
 	/**
 	 * 交货时间
 	 */
-    @DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
-    @JsonFormat(pattern = DateUtil.PATTERN_DATE)
     @ApiModelProperty(value="交货时间")
-	private Date cglOfDelivery;
+	private String cglOfDelivery;
 	/**
 	 * 甲方指定邮箱
 	 */
@@ -84,19 +74,19 @@ public class CglCategorySalesContractsEntity extends BaseEntity {
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="甲方传真号码")
-	private Integer cglPFaxNumber;
+	private String cglPFaxNumber;
 	/**
 	 * 乙方传真号码
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="乙方传真号码")
-	private Integer cglBFaxNumber;
+	private String cglBFaxNumber;
 	/**
 	 * 双方约定采用第【？】种账期付款
 	 */
     @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="双方约定采用第【？】种账期付款")
-	private Integer cglPaymentDays;
+	private String cglPaymentDays;
 	/**
 	 * 特殊付款
 	 */
@@ -122,6 +112,26 @@ public class CglCategorySalesContractsEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="其他约定")
 	private String cglOtherConventions;
+	/**
+	 * 甲方联系地址
+	 */
+	@ApiModelProperty(value = "甲方联系地址")
+	private String contactPartyAPlace;
+	/**
+	 * 乙方联系地址
+	 */
+	@ApiModelProperty(value = "乙方联系地址")
+	private String contactPartyBPlace;
+	/**
+	 * 甲方联系方式
+	 */
+	@ApiModelProperty(value = "甲方联系方式")
+	private String contactPartyAPhone;
+	/**
+	 * 乙方联系方式
+	 */
+	@ApiModelProperty(value = "乙方联系方式")
+	private String contactPartyBPhone;
 
 	@ApiModelProperty(value = "新陈列协议书集合")
 	@TableField(exist = false)

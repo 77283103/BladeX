@@ -55,12 +55,12 @@ public class BusServiceContractEntity extends BaseEntity {
 	 * A线发车时间
 	 */
 	@ApiModelProperty(value = "A线发车时间")
-	private Date busTimeA;
+	private String  busTimeA;
 	/**
 	 * B线发车时间
 	 */
 	@ApiModelProperty(value = "B线发车时间")
-	private Date busTimeB;
+	private String busTimeB;
 	/**
 	 * 服务期限始
 	 */
@@ -106,4 +106,9 @@ public class BusServiceContractEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "附件1：报价单")
 	private String infAnnexFir;
+	/**
+	 * 拼接附件
+	 */
+	@ApiModelProperty(value = "拼接附件")
+	private String annex;
 }

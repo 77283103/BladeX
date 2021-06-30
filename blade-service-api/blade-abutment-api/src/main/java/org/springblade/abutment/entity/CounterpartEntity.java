@@ -13,10 +13,15 @@ import java.io.Serializable;
 @Data
 @ApiModel(value = "相对方增量数据更新")
 public class CounterpartEntity implements Serializable {
+	/**token自动获取*/
+	@ApiModelProperty(hidden = true)
+	private String token;
 	@ApiModelProperty(value = "相对方数据编号")
 	private String custNo;
 	@ApiModelProperty(value = "相对方名称")
 	private String custNm;
 	@ApiModelProperty(value = "社会统一信用代码")
 	private String businessId;
+	@ApiModelProperty(value = "时间")
+	private String yyyyMMdd;
 }

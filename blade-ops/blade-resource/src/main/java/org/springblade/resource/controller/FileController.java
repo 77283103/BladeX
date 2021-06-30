@@ -30,7 +30,7 @@ import java.net.URLEncoder;
 @RequestMapping("/file")
 @Api(value = "文件管理", tags = "文件管理")
 public class FileController extends BladeController {
-	private IFileService fileService;
+	private final IFileService fileService;
 
 	/**
 	 * 新增
@@ -44,7 +44,8 @@ public class FileController extends BladeController {
 
 	/**
 	 * 更新文件
-	 * @param url 文件地址
+	 *
+	 * @param url  文件地址
 	 * @param file 文件
 	 * @return R
 	 */
@@ -52,7 +53,7 @@ public class FileController extends BladeController {
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "更新文件", notes = "传入文件和文件地址")
 	public R<String> updateFile(String url, MultipartFile file) {
-		fileService.updateFile(url,file);
+		fileService.updateFile(url, file);
 		return R.success("保存成功");
 	}
 
@@ -76,7 +77,7 @@ public class FileController extends BladeController {
 		try {
 			FileEntity fileEntity = fileService.getById(Long.valueOf(id));
 			String fileName = fileEntity.getGenerateName();
-			InputStream object = fileService.getObject(fileName,fileEntity.getDomain());
+			InputStream	object = fileService.getObject(fileName, fileEntity.getDomain());
 			byte buf[] = new byte[1024];
 			int length = 0;
 			response.reset();

@@ -37,6 +37,7 @@
         <result column="other_agreements" property="otherAgreements"/>
         <result column="agent_a" property="agentA"/>
         <result column="agent_b" property="agentB"/>
+        <result column="annex" property="annex"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -80,6 +81,7 @@
         other_agreements,
         agent_a,
         agent_b,
+        annex,
         status,
         is_deleted,
         create_user,

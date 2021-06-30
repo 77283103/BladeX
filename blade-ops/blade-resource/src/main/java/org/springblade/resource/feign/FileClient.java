@@ -2,6 +2,7 @@ package org.springblade.resource.feign;
 
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
+import org.springblade.resource.entity.FileEntity;
 import org.springblade.resource.service.IFileService;
 import org.springblade.resource.vo.FileVO;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +42,13 @@ public class FileClient implements IFileClient{
 	@GetMapping(FILES_INFO)
 	public R<List<FileVO>> getByIds(String ids) {
 		List<FileVO> fileVOList = fileService.getByIds(ids);
+		return R.data(fileVOList);
+	}
+
+	@Override
+	@GetMapping(FILE_INFO)
+	public R<FileEntity> getById(Long id) {
+		FileEntity fileVOList = fileService.getById(id);
 		return R.data(fileVOList);
 	}
 }

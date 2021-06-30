@@ -25,6 +25,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,12 +37,16 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper, ContractBondEntity> implements IContractBondService {
-	private ContractFormInfoMapper formInfoMapper;
-	private ContractCounterpartMapper counterpartMapper;
-	private ContractBondMapper contractBondMapper;
+	private final ContractFormInfoMapper formInfoMapper;
+	private final ContractCounterpartMapper counterpartMapper;
+	private final ContractBondMapper contractBondMapper;
 
 	@Override
 	public IPage<ContractBondResponseVO> pageList(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
+		if (Func.isNull(contractBond.getCounterpart())){
+			List<String> stringList = new ArrayList<>();
+			contractBond.setCounterpart(stringList);
+		}
 		page = baseMapper.pageList(page, contractBond);
 		IPage<ContractBondResponseVO> pages = ContractBondWrapper.build().entityPVPage(page);
 		List<ContractBondResponseVO> records = pages.getRecords();

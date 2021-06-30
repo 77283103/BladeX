@@ -1,31 +1,23 @@
 package org.springblade.abutment.controller;
 
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.util.IdUtil;
 import cn.hutool.crypto.SecureUtil;
-import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.csource.common.MyException;
-import org.csource.common.NameValuePair;
-import org.csource.fastdfs.StorageClient;
-import org.csource.fastdfs.StorageServer;
 import org.csource.fastdfs.TrackerClient;
-import org.csource.fastdfs.TrackerServer;
 import org.springblade.abutment.common.annotation.AutoLog;
 import org.springblade.abutment.entity.OrganizationEntity;
 import org.springblade.abutment.service.IOrganizationService;
+import org.springblade.abutment.vo.OrgParme;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.core.tool.utils.StringPool;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.Post;
-import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
@@ -34,9 +26,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.*;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,7 +87,7 @@ public class OrganizationController {
 						}else{
 							dept.setId(IdWorker.getId(dept));
 						}
-						dept.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 0 : 1);
+						dept.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 1 : 0);
 						dept.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
 						//dept.setParentId(Long.parseLong(organizationVo.getId()));
 						dept.setDeptName(organizationVo.getName());
@@ -137,7 +126,7 @@ public class OrganizationController {
 						}else{
 							user.setId(IdWorker.getId(user));
 						}
-						user.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 0 : 1);
+						user.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 2 : 1);
 						user.setIsDeleted(0);
 						user.setPassword(SecureUtil.md5("111111"));
 						user.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
@@ -165,7 +154,7 @@ public class OrganizationController {
 	@PostMapping("/queryOrganization")
 	@AutoLog
 	@ApiOperation(value = "获取组织及人员信息的接口")
-	public R<List<OrganizationVo>> queryOrganization() {
-		return R.data(organizationService.getOrganizationInfoIncrement());
+	public R<List<OrganizationVo>> queryOrganization(OrgParme param) {
+		return R.data(organizationService.getOrganizationInfoIncrement(param).getData());
 	}
 }

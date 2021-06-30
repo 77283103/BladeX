@@ -11,6 +11,7 @@
         <result column="code" property="code"/>
         <result column="auth_field" property="authField"/>
         <result column="seal" property="seal"/>
+        <result column="admin_info" property="adminInfo"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -29,6 +30,7 @@
         code,
         auth_field,
         seal,
+        admin_info,
         status,
         is_deleted,
         create_user,
@@ -59,5 +61,15 @@
         user_id =#{userId}
         AND
         role_id =#{roleId}
+    </select>
+    <!--  查询合同管理员信息  -->
+    <select id="selectAdminInfo" resultMap="dataSealAuthorityResultMap">
+        SELECT
+        <include refid="baseColumnList">
+        </include>
+        FROM data_seal_authority
+        WHERE is_deleted = 0
+        AND code is not null
+        AND admin_info is not null
     </select>
 </mapper>

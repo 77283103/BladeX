@@ -8,8 +8,13 @@ import lombok.AllArgsConstructor;
 
 import javax.validation.Valid;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.EkpVo;
+import org.springblade.contract.entity.ContractBorrowApplicationEntity;
 import org.springblade.contract.service.IContractBorrowApplicationService;
 import org.springblade.core.log.exception.ServiceException;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.boot.ctrl.BladeController;
 
@@ -18,6 +23,8 @@ import org.springblade.core.mp.support.Query;
 import org.springblade.core.secure.annotation.PreAuth;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.Func;
+import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 
@@ -27,6 +34,8 @@ import org.springblade.contract.service.IContractBorrowHandleService;
 import org.springblade.contract.vo.ContractBorrowHandleRequestVO;
 import org.springblade.contract.vo.ContractBorrowHandleResponseVO;
 
+import java.beans.Transient;
+
 
 /**
  * 借阅处理 控制器
@@ -34,16 +43,17 @@ import org.springblade.contract.vo.ContractBorrowHandleResponseVO;
  * @author : xhb
  * @date : 2020-10-30 09:28:16
  */
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/contractBorrowHandle")
 @Api(value = "借阅处理", tags = "借阅处理")
 public class ContractBorrowHandleController extends BladeController {
 
-    private IContractBorrowHandleService contractBorrowHandleService;
-    private IContractBorrowApplicationService contractBorrowApplicationService;
+    private final IContractBorrowHandleService contractBorrowHandleService;
+    private final IContractBorrowApplicationService contractBorrowApplicationService;
     private static final String BORROW_HANDLE_STATUS = "20";
-
+	private final IAbutmentClient abutmentClient;
     /**
      * 详情
      */
@@ -75,10 +85,25 @@ public class ContractBorrowHandleController extends BladeController {
     @ApiOperationSupport(order = 4)
     @ApiOperation(value = "新增", notes = "传入contractBorrowHandle")
     @PreAuth("hasPermission('handling:contractBorrowHandle:add')")
+	@Transactional(rollbackFor = Exception.class)
     public R save(@Valid @RequestBody ContractBorrowHandleResponseVO contractBorrowHandle) {
-        String borrowStatus = BORROW_HANDLE_STATUS;
-        contractBorrowApplicationService.updateBorrowStatusById(Long.valueOf(contractBorrowHandle.getHandleId()), borrowStatus);
-        return R.status(contractBorrowHandleService.save(ContractBorrowHandleWrapper.build().PVEntity(contractBorrowHandle)));
+    	ContractBorrowApplicationEntity applicationEntity= contractBorrowApplicationService.getById(contractBorrowHandle.getHandleId());
+		ContractBorrowHandleEntity entity = new ContractBorrowHandleEntity();
+		BeanUtil.copy(contractBorrowHandle, entity);
+		contractBorrowApplicationService.updateBorrowStatusById(Long.valueOf(contractBorrowHandle.getHandleId()), BORROW_HANDLE_STATUS);
+		log.info("借阅申请处理信息：" + entity);
+		applicationEntity.setHandleEntity(entity);
+		R<EkpVo> ekpVo = abutmentClient.borEkpFormPost(applicationEntity);
+		log.info("ekp调用结果:" + JsonUtil.toJson(ekpVo));
+		if (ekpVo.getCode() == HttpStatus.OK.value()) {
+			log.info("ekp返回值code" + ekpVo.getData().getDoc_info());
+			return R.status(contractBorrowHandleService.save(entity));
+		} else if (ekpVo.getCode() == 2) {
+			return R.data(ekpVo.getCode(), null, "当前员工编号在系统中不存在，请换一个试试");
+		} else {
+			return R.data(ekpVo.getCode(), null, "token获取失败，连接超时");
+		}
+
     }
 
     /**

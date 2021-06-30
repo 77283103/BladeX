@@ -11,6 +11,6 @@ public class ContractSubmit {
 	private String contractId;
 	@ApiModelProperty(value = "审批状态")
 	private String submitStatus;
-	/*@ApiModelProperty(value = "签章位置信息,除骑缝签章外必填")
-	private String EKPId;*/
+	@ApiModelProperty(value = "ekp单号")
+	private String ekp_number;
 }

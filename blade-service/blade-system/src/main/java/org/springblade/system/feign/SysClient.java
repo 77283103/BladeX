@@ -31,7 +31,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.springblade.core.cache.constant.CacheConstant.SYS_CACHE;
 
@@ -60,6 +62,8 @@ public class SysClient implements ISysClient {
 	private IParamService paramService;
 
 	private IDataSealAuthorityService dataSealAuthorityService;
+
+	private IDictBizClient iDictBizClient;
 
 	@Override
 	@GetMapping(MENU)
@@ -242,17 +246,33 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
+	@GetMapping(GET_POST_ID_BY_LUNID)
 	public R<Long> getPostIdByAssociationId(String associationId) {
 		return R.data(postService.getPostIdByAssociationId(associationId));
 	}
 
 	@Override
+	@GetMapping(GET_DATA_SEAL_AUTHORITY)
 	public R<DataSealAuthorityResponseVO> getByIdData(String userId,String roleId) {
 		if (dataSealAuthorityService.getUserId(userId,roleId).getCode()== HttpStatus.OK.value()){
 			return R.data(HttpStatus.OK.value(), dataSealAuthorityService.getUserId(userId,roleId).getData(),"OK");
 		}else {
 			return R.data(HttpStatus.NO_CONTENT.value(), null,"NO_CONTENT");
 		}
+	}
+
+	@Override
+	@GetMapping(GET_DATA_SEAL_ADMIN_INFO)
+	public R<String> adminInfo(String sealVale) {
+		List<String> adIf=new ArrayList<>();
+		String sealV=iDictBizClient.getKey("application_seal",sealVale).getData();
+		List<Map<String, String>> lmp=dataSealAuthorityService.sealMap();
+		lmp.forEach(lm->{
+			if (lm.getOrDefault("seal", "").contains(sealV)) {
+				adIf.add(lm.getOrDefault("admin_info", ""));
+			}
+		});
+		return R.data(adIf.get(0));
 	}
 
 }

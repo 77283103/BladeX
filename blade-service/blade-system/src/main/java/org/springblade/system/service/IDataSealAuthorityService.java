@@ -8,6 +8,9 @@ import org.springblade.system.entity.DataSealAuthorityEntity;
 import org.springblade.system.vo.DataSealAuthorityRequestVO;
 import org.springblade.system.vo.DataSealAuthorityResponseVO;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * DataSealAuthority 服务类
  *
@@ -38,4 +41,12 @@ public interface IDataSealAuthorityService extends BaseService<DataSealAuthority
 	 * @return
 	 */
 	R<DataSealAuthorityResponseVO> getUserId(String id, String roleId);
+
+	/**
+	 * 查询所有管理员相关权限数据
+	 * @author jitwxs
+	 * @date 2021/6/7 21:54
+	 * @return java.util.Map<java.lang.String,java.lang.String>
+	 */
+	List<Map<String, String>> sealMap();
 }

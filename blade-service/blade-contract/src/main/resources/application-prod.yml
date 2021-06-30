@@ -11,18 +11,31 @@ spring:
 api:
   file:
     ftlPath: /ftl/
-
-
+  eSeal:
+    tokenUrl: https://unici.pec.com.cn/common/user/access
+    tokenSY: https://unici.pec.com.cn/common/file/addWatermark
+    tokenXZ: https://unici.pec.com.cn/common/file/downloadWaterMarkDoc/
+  #    合同未归档预警时机时间
+  #    fifteen   表示超期十五天二次预警
+  #    fortyfive 表示超期四十五天三次预警
+  #    zero      表示审批通过一次预警
+  #    estimate  表示超期预计归档时期预警
+  signing:
+    day:
+      fifteen: 15
+      fortyfive: 45
+      zero: 0
+      estimate: 1
 logging:
   config: classpath:logback.xml
 xxl:
   job:
     accessToken: ''
     admin:
-      addresses: http://cms.pec.com.cn:7019/xxl-job-admin
+      addresses: http://localhost:7019/xxl-job-admin
     executor:
       appname: blade-contract
-      ip: 110.96.115.181,10.96.115.182
+      ip: 127.0.0.1
       logpath: ../data/applogs/xxl-job/jobhandler
       logretentiondays: -1
       port: 7018

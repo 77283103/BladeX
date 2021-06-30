@@ -1,5 +1,6 @@
 package org.springblade.contract.feign;
 
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -7,8 +8,8 @@ import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.tool.api.R;
 import org.springblade.system.entity.TemplateEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestBody;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,6 +17,26 @@ import java.util.List;
  */
 @Component
 public class IContractFallback implements IContractClient {
+	@Override
+	public R< List<ContractCounterpartEntity>> saveBatch(List<ContractCounterpartEntity> listInsert) {
+		return R.fail("保存相对方增量信息失败！");
+	}
+
+	@Override
+	public R<List<ContractCounterpartEntity>> saveOrUpdate(List<ContractCounterpartEntity> list) {
+		return  R.fail("保存相对方增量信息失败！");
+	}
+
+	@Override
+	public R<Boolean> updateById(ContractCounterpartEntity updateCounterpart) {
+		return R.fail("保存相对方修改信息失败！");
+	}
+
+	@Override
+	public R<List<ContractCounterpartEntity>> selectByName(String unifiedSocialCreditCode) {
+		return R.fail("获取合同信息失败！");
+	}
+
 	@Override
 	public R<ContractFormInfoResponseVO> getById(Long id) {
 		return R.fail("获取合同信息失败！");
@@ -37,7 +58,7 @@ public class IContractFallback implements IContractClient {
 	}
 
 	@Override
-	public R saveContractFormInfo(Long id, String status) {
+	public R saveContractFormInfo(Long id, String status,String ekp_number) {
 		return R.fail("更新模板json信息失败！");
 	}
 
@@ -47,7 +68,8 @@ public class IContractFallback implements IContractClient {
 	}
 
 	@Override
-	public R<String> inOrUp(Object obj) {
-		return  R.fail("获取数据失败！");
+	public R saverArchiveNot(Long id, Date estimateArchiveDate, String notArchiveReason) {
+		return R.fail("数据修改失败！");
 	}
+
 }

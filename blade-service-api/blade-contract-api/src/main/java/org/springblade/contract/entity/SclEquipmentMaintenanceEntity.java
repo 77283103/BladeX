@@ -289,6 +289,11 @@ public class SclEquipmentMaintenanceEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "附件三名称")
 	private String sclLianxieleyi;
+	/**
+	 * 拼接附件
+	 */
+	@ApiModelProperty(value = "拼接附件")
+	private String annex;
 
 	@ApiModelProperty(value = "设备维修保养合同(关联表）")
 	@TableField(exist = false)

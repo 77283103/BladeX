@@ -60,6 +60,7 @@
         <result column="scl_lianxirenyi" property="sclLianxirenyi"/>
         <result column="scl_lianxielejia" property="sclLianxielejia"/>
         <result column="scl_lianxieleyi" property="sclLianxieleyi"/>
+        <result column="annex" property="annex"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -104,6 +105,7 @@
         scl_start,
         scl_laste,
         status,
+        annex,
         is_deleted,
         create_user,
         create_time,

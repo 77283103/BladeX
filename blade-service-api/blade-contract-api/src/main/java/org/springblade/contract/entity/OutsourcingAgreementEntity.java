@@ -188,4 +188,10 @@ public class OutsourcingAgreementEntity extends BaseEntity {
 	@ApiModelProperty(value = "委托代理人（乙方）")
 	private String agentB;
 
+	/**
+	 * 拼接附件
+	 */
+	@ApiModelProperty(value = "拼接附件")
+	private String annex;
+
 }

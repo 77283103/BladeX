@@ -21,6 +21,10 @@
         <result column="cgl_account_name" property="cglAccountName"/>
         <result column="cgl_party_b_account" property="cglPartyBAccount"/>
         <result column="cgl_other_conventions" property="cglOtherConventions"/>
+        <result column="contact_party_a_place" property="contactPartyAPlace"/>
+        <result column="contact_party_b_place" property="contactPartyBPlace"/>
+        <result column="contact_party_a_phone" property="contactPartyAPhone"/>
+        <result column="contact_party_b_phone" property="contactPartyBPhone"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -48,6 +52,10 @@
         cgl_account_name,
         cgl_party_b_account,
         cgl_other_conventions,
+        contact_party_a_place,
+        contact_party_b_place,
+        contact_party_a_phone,
+        contact_party_b_phone,
         status,
         is_deleted,
         create_user,

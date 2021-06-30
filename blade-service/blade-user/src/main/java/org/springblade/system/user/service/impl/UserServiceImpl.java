@@ -32,7 +32,6 @@ import org.springblade.system.cache.SysCache;
 import org.springblade.system.dto.UserDepartDTO;
 import org.springblade.system.entity.Tenant;
 import org.springblade.system.entity.UserDepartEntity;
-import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
@@ -303,5 +302,10 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	@Override
 	public boolean saveBatchUser(List<User> userList) {
 		return userMapper.saveBatchUser(userList);
+	}
+
+	@Override
+	public List<User> getByRealName(String realName) {
+		return userMapper.getByRealName(realName);
 	}
 }

@@ -246,6 +246,18 @@ public class InferiorProductContractEntity extends BaseEntity {
 	@ApiModelProperty(value = "废茶渣流向承诺")
 	private String infTeaSurf;
 	/**
+	 * 一般类流向承诺
+	 */
+	@ApiModelProperty(value = "一般类流向承诺")
+	private String infYbl;
+	/**
+	 * 承诺书签署日期
+	 */
+	@DateTimeFormat(pattern = DateUtil.PATTERN_TIME)
+	@JsonFormat(pattern = DateUtil.PATTERN_TIME)
+	@ApiModelProperty(value = "承诺书签署日期")
+	private Date sigDate;
+	/**
 	 * 附件拼接
 	 */
 	@ApiModelProperty(value="附件拼接")

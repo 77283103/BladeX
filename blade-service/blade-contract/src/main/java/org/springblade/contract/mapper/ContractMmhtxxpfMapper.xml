@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractMmhtxxpfMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractMmhtxxpfResultMap" type="org.springblade.contract.entity.ContractMmhtxxpfEntity">
+        <result column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contact_party_a" property="contactPartyA"/>
+        <result column="contact_party_b" property="contactPartyB"/>
+        <result column="contact_party_a_addr" property="contactPartyAAddr"/>
+        <result column="contact_party_b_addr" property="contactPartyBAddr"/>
+        <result column="contact_thing" property="contactThing"/>
+        <result column="contact_day" property="contactDay"/>
+        <result column="contact_party_a_email" property="contactPartyAEmail"/>
+        <result column="contact_party_b_email" property="contactPartyBEmail"/>
+        <result column="contact_party_a_fax" property="contactPartyAFax"/>
+        <result column="contact_party_b_fax" property="contactPartyBFax"/>
+        <result column="contact_type" property="contactType"/>
+        <result column="contact_specilpay" property="contactSpecilpay"/>
+        <result column="contact_bank" property="contactBank"/>
+        <result column="contact_bankname" property="contactBankname"/>
+        <result column="contact_banknum" property="contactBanknum"/>
+        <result column="contact_other" property="contactOther"/>
+        <result column="contact_party_a_place" property="contactPartyAPlace"/>
+        <result column="contact_party_b_place" property="contactPartyBPlace"/>
+        <result column="contact_party_a_phone" property="contactPartyAPhone"/>
+        <result column="contact_party_b_phone" property="contactPartyBPhone"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contact_party_a,
+        contact_party_b,
+        contact_party_a_addr,
+        contact_party_b_addr,
+        contact_thing,
+        contact_day,
+        contact_party_a_email,
+        contact_party_b_email,
+        contact_party_a_fax,
+        contact_party_b_fax,
+        contact_type,
+        contact_specilpay,
+        contact_bank,
+        contact_bankname,
+        contact_banknum,
+        contact_other,
+        contact_party_a_place,
+        contact_party_b_place,
+        contact_party_a_phone,
+        contact_party_b_phone
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractMmhtxxpfResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_mmhtxxpf
+        WHERE is_deleted = 0
+    </select>
+</mapper>

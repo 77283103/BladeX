@@ -18,7 +18,6 @@ package org.springblade.system.user.service;
 
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.user.dto.UserDTO;
 import org.springblade.system.user.entity.User;
@@ -225,4 +224,11 @@ public interface IUserService extends BaseService<User> {
 	 * @return
 	 */
 	boolean saveBatchUser( List<User> userList);
+
+	/**
+	 * 根据用户名查用户信息
+	 * @param realName
+	 * @return
+	 */
+	List<User> getByRealName(String realName);
 }

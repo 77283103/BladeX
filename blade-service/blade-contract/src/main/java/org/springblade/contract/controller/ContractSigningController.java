@@ -9,10 +9,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
-import org.springblade.contract.entity.ContractCounterpartEntity;
-import org.springblade.contract.entity.ContractSealUsingInfoEntity;
-import org.springblade.contract.entity.ContractSigningArchiveEntity;
-import org.springblade.contract.entity.ContractSigningEntity;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.service.*;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -79,7 +76,11 @@ public class ContractSigningController extends BladeController {
     @ApiOperation(value = "详情", notes = "传入contractSigning")
     @PreAuth("hasPermission('contract:signing:detail')")
     public R<ContractSigningResponseVO> detail(@RequestParam Long id) {
-        ContractSigningEntity detail = contractSigningService.getById(id);
+        ContractSigningEntity detail = contractSigningService.selectSigningById(id);
+		List<ContractSigningArchiveEntity> archiveEntities=signingArchiveService.getByContractId(id);
+		if (Func.isNotEmpty(archiveEntities)){
+			detail.setSigningArchiveEntityList(archiveEntities);
+		}
         return R.data(ContractSigningWrapper.build().entityPV(detail));
     }
 
@@ -106,6 +107,7 @@ public class ContractSigningController extends BladeController {
     public R<ContractSigningEntity> save(@Valid @RequestBody ContractSigningRequestVO contractSigning) {
         ContractSigningEntity entity = new ContractSigningEntity();
         BeanUtil.copy(contractSigning,entity);
+        entity.setSignDate(new Date());
         contractSigningService.save(entity);
         //String contractForm = contractFormInfoService.getById(contractSigning.getContractId()).getContractForm();
         //判断合同类型是否为电子合同，是则签订完即可自动归档
@@ -116,8 +118,7 @@ public class ContractSigningController extends BladeController {
             String contractStatus = CONTRACT_SIGNING_SAVE_STATUS;
             contractFormInfoService.updateExportStatus(contractStatus, contractSigning.getContractId());
         }*/
-		String contractStatus = CONTRACT_SIGNING_SAVE_STATUS;
-		contractFormInfoService.updateExportStatus(contractStatus, contractSigning.getContractId());
+		contractFormInfoService.updateExportStatus(CONTRACT_SIGNING_SAVE_STATUS, contractSigning.getContractId());
         List<ContractSigningArchiveEntity> signingArchiveList= JSONObject.parseArray(contractSigning.getSigningArchiveJson(),ContractSigningArchiveEntity.class);
         signingArchiveList.forEach(signingArchive -> {
             if (Func.isNotEmpty(signingArchive.getId())){
@@ -126,6 +127,8 @@ public class ContractSigningController extends BladeController {
             signingArchive.setSigningId(contractSigning.getContractId());
             signingArchiveService.save(signingArchive);
         });
+		ContractFormInfoEntity formInfoEntity=contractFormInfoService.getById(contractSigning.getContractId());
+		contractFormInfoService.updateById(formInfoEntity);
         return R.data(entity);
     }
 
@@ -150,6 +153,15 @@ public class ContractSigningController extends BladeController {
         if (Func.isEmpty(contractSigning.getId())) {
             throw new ServiceException("id不能为空");
         }
+		List<ContractSigningArchiveEntity> signingArchiveList= JSONObject.parseArray(contractSigning.getSigningArchiveJson(),ContractSigningArchiveEntity.class);
+		signingArchiveList.forEach(signingArchive -> {
+			if (Func.isNotEmpty(signingArchive.getSigningId())){
+				signingArchiveService.updateById(signingArchive);
+			}else {
+				signingArchive.setSigningId(contractSigning.getContractId());
+				signingArchiveService.save(signingArchive);
+			}
+		});
         return R.status(contractSigningService.updateById(ContractSigningWrapper.build().QVEntity(contractSigning)));
     }
 

@@ -5,41 +5,47 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="cglAdvertisementProductionResultMap" type="org.springblade.contract.entity.CglAdvertisementProductionEntity">
         <result column="id" property="id"/>
-        <result column="cgl_party_a" property="cglPartyA"/>
-        <result column="cgl_address_a" property="cglAddressA"/>
-        <result column="cgl_contact" property="cglContact"/>
-        <result column="cgl_party_b" property="cglPartyB"/>
-        <result column="cgl_address" property="cglAddress"/>
-        <result column="cgl_area" property="cglArea"/>
-        <result column="individual" property="individual"/>
-        <result column="day" property="day"/>
-        <result column="day_a" property="dayA"/>
-        <result column="day_b" property="dayB"/>
-        <result column="day_c" property="dayC"/>
-        <result column="day_d" property="dayD"/>
-        <result column="day_e" property="dayE"/>
-        <result column="day_f" property="dayF"/>
-        <result column="payment_method" property="paymentMethod"/>
-        <result column="type" property="type"/>
-        <result column="day_g" property="dayG"/>
-        <result column="other_ways" property="otherWays"/>
-        <result column="corporate_name" property="corporateName"/>
-        <result column="bank_deposit" property="bankDeposit"/>
-        <result column="account" property="account"/>
-        <result column="day_h" property="dayH"/>
-        <result column="money" property="money"/>
-        <result column="day_i" property="dayI"/>
-        <result column="special_agreement" property="specialAgreement"/>
-        <result column="date" property="date"/>
-        <result column="date_a" property="dateA"/>
-        <result column="number" property="number"/>
-        <result column="number_a" property="numberA"/>
-        <result column="number_b" property="numberB"/>
-        <result column="cgl_attachment" property="cglAttachment"/>
-        <result column="cgl_attachment_a" property="cglAttachmentA"/>
-        <result column="quotation_sheet" property="quotationSheet"/>
-        <result column="cgl_email" property="cglEmail"/>
-        <result column="year" property="year"/>
+        <result column="mtl_party_a" property="mtlPartyA"/>
+        <result column="mtl_party_a_site" property="mtlPartyASite"/>
+        <result column="mtl_party_b" property="mtlPartyB"/>
+        <result column="mtl_party_b_site" property="mtlPartyBSite"/>
+        <result column="mtl_area_make" property="mtlAreaMake"/>
+        <result column="mtl_attachment_quotation" property="mtlAttachmentQuotation"/>
+        <result column="mtl_pary_a_email" property="mtlParyAEmail"/>
+        <result column="mtl_infrom" property="mtlInfrom"/>
+        <result column="mtl_receive_infrom" property="mtlReceiveInfrom"/>
+        <result column="mtl_infrom_check" property="mtlInfromCheck"/>
+        <result column="mtl_free_repaira" property="mtlFreeRepaira"/>
+        <result column="mtl_free_repairb" property="mtlFreeRepairb"/>
+        <result column="mtl_free_repairc" property="mtlFreeRepairc"/>
+        <result column="mtl_free_repaird" property="mtlFreeRepaird"/>
+        <result column="mtl_free_warrantyday" property="mtlFreeWarrantyday"/>
+        <result column="mtl_free_repair" property="mtlFreeRepair"/>
+        <result column="mtl_clearing_from" property="mtlClearingFrom"/>
+        <result column="mtl_receive_invoice" property="mtlReceiveInvoice"/>
+        <result column="mtl_receive_day" property="mtlReceiveDay"/>
+        <result column="mtl_other_methods" property="mtlOtherMethods"/>
+        <result column="mtl_opening_bankb" property="mtlOpeningBankb"/>
+        <result column="mtl_account_number" property="mtlAccountNumber"/>
+        <result column="mtl_quality_inform" property="mtlQualityInform"/>
+        <result column="mtl_liquidated_damages" property="mtlLiquidatedDamages"/>
+        <result column="mtl_install_day" property="mtlInstallDay"/>
+        <result column="mtl_special_agreement" property="mtlSpecialAgreement"/>
+        <result column="mtl_start_date" property="mtlStartDate"/>
+        <result column="mtl_date_closed" property="mtlDateClosed"/>
+        <result column="mtl_contract_number" property="mtlContractNumber"/>
+        <result column="mtl_contract_numbera" property="mtlContractNumbera"/>
+        <result column="mtl_contract_numberb" property="mtlContractNumberb"/>
+        <result column="mtl_accessory_quotation" property="mtlAccessoryQuotation"/>
+        <result column="mtl_accessory_three" property="mtlAccessoryThree"/>
+        <result column="contact_party_a_place" property="contactPartyAPlace"/>
+        <result column="contact_party_b_place" property="contactPartyBPlace"/>
+        <result column="contact_party_a_person" property="contactPartyAPerson"/>
+        <result column="contact_party_b_person" property="contactPartyBPerson"/>
+        <result column="contact_party_a_phone" property="contactPartyAPhone"/>
+        <result column="contact_party_b_phone" property="contactPartyBPhone"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="annex" property="annex"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -51,41 +57,47 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
-        cgl_party_a,
-        cgl_address_a,
-        cgl_contact,
-        cgl_party_b,
-        cgl_address,
-        cgl_area,
-        individual,
-        day,
-        day_a,
-        day_b,
-        day_c,
-        day_d,
-        day_e,
-        day_f,
-        payment_method,
-        type,
-        day_g,
-        other_ways,
-        corporate_name,
-        bank_deposit,
-        account,
-        day_h,
-        money,
-        day_i,
-        special_agreement,
-        date,
-        date_a,
-        number,
-        number_a,
-        number_b,
-        cgl_attachment,
-        cgl_attachment_a,
-        quotation_sheet,
-        cgl_email,
-        year,
+        mtl_party_a,
+        mtl_party_a_site,
+        mtl_party_b,
+        mtl_party_b_site,
+        mtl_area_make,
+        mtl_attachment_quotation,
+        mtl_pary_a_email,
+        mtl_infrom,
+        mtl_receive_infrom,
+        mtl_infrom_check,
+        mtl_free_repaira,
+        mtl_free_repairb,
+        mtl_free_repairc,
+        mtl_free_repaird,
+        mtl_free_warrantyday,
+        mtl_free_repair,
+        mtl_clearing_from,
+        mtl_receive_invoice,
+        mtl_receive_day,
+        mtl_other_methods,
+        mtl_opening_bankb,
+        mtl_account_number,
+        mtl_quality_inform,
+        mtl_liquidated_damages,
+        mtl_install_day,
+        mtl_special_agreement,
+        mtl_start_date,
+        mtl_date_closed,
+        mtl_contract_number,
+        mtl_contract_numbera,
+        mtl_contract_numberb,
+        mtl_accessory_quotation,
+        mtl_accessory_three,
+        contact_party_a_place,
+        contact_party_b_place,
+        contact_party_a_person,
+        contact_party_b_person,
+        contact_party_a_phone,
+        contact_party_b_phone,
+        contract_id，
+        annex,
         status,
         is_deleted,
         create_user,

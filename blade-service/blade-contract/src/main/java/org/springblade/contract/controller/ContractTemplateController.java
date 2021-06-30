@@ -8,6 +8,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.AllArgsConstructor;
+import org.springblade.abutment.vo.EkpVo;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.service.IContractTemplateService;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
@@ -26,6 +27,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.feign.IUserClient;
+import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,11 +55,11 @@ public class ContractTemplateController extends BladeController {
 	private ISysClient sysClient;
 	private IDictBizClient dictBizClient;
 	private IContractTemplateService templateService;
-	private static final String TEMPLATE_STATUS="45";
-	private static final String APPROVAL_STATUS="50";
-	private static final String TEMPLATE_SCRAP_STATUS="30";
-	private static final String TEMPLATE_REVISION_STATUS="20";
-	private static final String TEMPLATE_REVISION_STATUS_OLD="40";
+	private static final String TEMPLATE_STATUS = "45";
+	private static final String APPROVAL_STATUS = "50";
+	private static final String TEMPLATE_SCRAP_STATUS = "30";
+	private static final String TEMPLATE_REVISION_STATUS = "20";
+	private static final String TEMPLATE_REVISION_STATUS_OLD = "40";
 
 	/**
 	 * 详情
@@ -97,6 +99,7 @@ public class ContractTemplateController extends BladeController {
 
 	/**
 	 * 新增
+	 * //状态45表示新增   50表示送审
 	 */
 	@PostMapping("/add")
 	@ApiOperationSupport(order = 4)
@@ -104,16 +107,26 @@ public class ContractTemplateController extends BladeController {
 	@PreAuth("hasPermission('contract:template:add')")
 	@Transactional(rollbackFor = Exception.class)
 	public R save(@Valid @RequestBody ContractTemplateRequestVO template) {
-        ContractTemplateEntity entity = new ContractTemplateEntity();
-        BeanUtil.copy(template,entity);
-        if (Func.isEmpty(entity.getId())){
-        	if (APPROVAL_STATUS.equals(entity.getTemplateStatus())){
-				entity.setTemplateStatus(APPROVAL_STATUS);
-			}else {
+		ContractTemplateEntity entity = new ContractTemplateEntity();
+		BeanUtil.copy(template, entity);
+		entity.setEnabled("0");
+		if (Func.isEmpty(entity.getId())) {
+			if (TEMPLATE_STATUS.equals(entity.getTemplateStatus())) {
 				entity.setTemplateStatus(TEMPLATE_STATUS);
+			} else {
+				R<EkpVo> ekpVoR = templateService.appTemplate(entity);
+				if (ekpVoR.getCode() != HttpStatus.OK.value()) {
+					entity.setTemplateStatus(TEMPLATE_STATUS);
+				}
 			}
-			templateService.save(entity,"SAVE");
-		}else {
+			templateService.save(entity, "SAVE");
+		} else {
+			if (APPROVAL_STATUS.equals(entity.getTemplateStatus())) {
+				R<EkpVo> ekpVoR = templateService.appTemplate(entity);
+				if (ekpVoR.getCode() != HttpStatus.OK.value()) {
+					entity.setTemplateStatus(TEMPLATE_STATUS);
+				}
+			}
 			templateService.updateById(entity);
 		}
 		return R.status(true);
@@ -127,11 +140,11 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperation(value = "修改", notes = "传入template")
 	@PreAuth("hasPermission('contract:template:update')")
 	public R update(@Valid @RequestBody ContractTemplateRequestVO template) {
-	    if (Func.isEmpty(template.getId())){
-            throw new ServiceException("id不能为空");
-        }
-	    ContractTemplateEntity entity = new ContractTemplateEntity();
-        BeanUtil.copy(template,entity);
+		if (Func.isEmpty(template.getId())) {
+			throw new ServiceException("id不能为空");
+		}
+		ContractTemplateEntity entity = new ContractTemplateEntity();
+		BeanUtil.copy(template, entity);
 		return R.status(templateService.updateById(entity));
 	}
 
@@ -142,7 +155,7 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "根据范本名称合同范本模板编号筛选是否存在新增重复范本", notes = "传入相关参数")
 	public R<List<ContractTemplateEntity>> FilterDuplicates(@Valid @RequestBody ContractTemplateRequestVO template) {
-		List<ContractTemplateEntity> filterDuplicates=templateService.FilterDuplicates(template.getName(),template.getTemplateCode());
+		List<ContractTemplateEntity> filterDuplicates = templateService.FilterDuplicates(template.getName(), template.getTemplateCode());
 		return R.data(filterDuplicates);
 	}
 
@@ -156,6 +169,7 @@ public class ContractTemplateController extends BladeController {
 	public R remove(@ApiParam(value = "主键集合", required = true) @RequestParam String ids) {
 		return R.status(templateService.deleteLogic(Func.toLongList(ids)));
 	}
+
 	/**
 	 * 启用
 	 */
@@ -164,13 +178,14 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperation(value = "启用", notes = "传入template")
 	@PreAuth("hasPermission('contract:template:enabled')")
 	public R enabled(@Valid @RequestBody ContractTemplateRequestVO template) {
-		if ("1".equals(template.getEnabled())){
+		if ("1".equals(template.getEnabled())) {
 			template.setEnabled("0");
-		}else{
+		} else {
 			template.setEnabled("1");
 		}
-		return R.status(templateService.updateTemplateEnabled(template.getEnabled(),template.getId()));
+		return R.status(templateService.updateTemplateEnabled(template.getEnabled(), template.getId()));
 	}
+
 	/**
 	 * 废弃
 	 */
@@ -179,11 +194,11 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperation(value = "修改状态", notes = "传入id")
 	@PreAuth("hasPermission('contract:template:scrap')")
 	public R scrap(@RequestParam Long id) {
-		String  templateStatus = TEMPLATE_SCRAP_STATUS;
-		if (Func.isEmpty(id)){
+		String templateStatus = TEMPLATE_SCRAP_STATUS;
+		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		return R.status(templateService.updateTemplateStatus(templateStatus,id));
+		return R.status(templateService.updateTemplateStatus(templateStatus, id,"0"));
 	}
 
 	/**
@@ -196,13 +211,13 @@ public class ContractTemplateController extends BladeController {
 	@ApiOperation(value = "修改状态", notes = "传入id")
 	@PreAuth("hasPermission('contract:template:restore')")
 	public R restore(@RequestParam Long id) {
-		if (Func.isEmpty(id)){
+		if (Func.isEmpty(id)) {
 			throw new ServiceException("id不能为空");
 		}
-		if(Func.isNotEmpty(templateService.getById(id).getOriginalTemplateId())){
-			templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS,id);
-		}else{
-			templateService.updateTemplateStatus( TEMPLATE_STATUS,id);
+		if (Func.isNotEmpty(templateService.getById(id).getOriginalTemplateId())) {
+			templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS, id,"0");
+		} else {
+			templateService.updateTemplateStatus(TEMPLATE_STATUS, id,"0");
 		}
 		return R.data(true);
 	}
@@ -220,31 +235,32 @@ public class ContractTemplateController extends BladeController {
 			template.setId(null);
 		}
 		ContractTemplateEntity entity = new ContractTemplateEntity();
-		BeanUtil.copy(template,entity);
+		BeanUtil.copy(template, entity);
 		entity.setTemplateCode(template.getTemplateCode());
 		entity.setEnabled("0");
 		entity.setOriginalTemplateId(template.getId());
 		entity.setTemplateStatus(TEMPLATE_REVISION_STATUS);
-		templateService.save(entity,"REVISION");
-		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD,entity.getOriginalTemplateId());
+		templateService.save(entity, "REVISION");
+		templateService.updateTemplateStatus(TEMPLATE_REVISION_STATUS_OLD, entity.getOriginalTemplateId(),"0");
 		return R.data(entity);
 	}
 
 
 	/**
-	 /**
+	 * /**
 	 * 导出excel
-	 * @param templateEntityList
-	 * @param response
+	 *
+	 * @param templateEntityList list
+	 * @param response  请求
 	 */
 	@PostMapping("/exportTargetDataResult")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "导出", notes = "")
 	public void exportTargetDataResult(@RequestBody List<ContractTemplateEntity> templateEntityList, HttpServletResponse response) {
 
-		if(CollectionUtil.isNotEmpty(templateEntityList)){
+		if (CollectionUtil.isNotEmpty(templateEntityList)) {
 			/* 导出文件名称 */
-			String  fileName = "合同范本使用分析信息导出";
+			String fileName = "合同范本使用分析信息导出";
 			WriteSheet sheet1 = new WriteSheet();
 			/* 导出的sheet的名称 */
 			sheet1.setSheetName("合同范本使用分析信息导出");
@@ -252,16 +268,16 @@ public class ContractTemplateController extends BladeController {
 			/* 需要存入的数据 */
 			List<List<Object>> data = new ArrayList<>();
 			/* formInfoEntityList 表示要写入的数据 因为是前台显示列表 由前台进行传值，后期可以根据自己的需求进行改变 */
-			for(ContractTemplateEntity templateEntity:templateEntityList){
+			for (ContractTemplateEntity templateEntity : templateEntityList) {
 				/* 属性 cloumns 表示一行，cloumns包含的数据是一行的数据
 				  要将一行的每个值 作为list的一个属性存进到list里 ，数据要和展示的excel表头一致*/
 				List<Object> cloumns = new ArrayList<Object>();
 				/*范本名称*/
 				cloumns.add(templateEntity.getName());
 				/*使用范围*/
-				cloumns.add(dictBizClient.getValue("use_range",templateEntity.getUseRange()).getData());
+				cloumns.add(dictBizClient.getValue("use_range", templateEntity.getUseRange()).getData());
 				/*所属合同一级分类*/
-				cloumns.add(dictBizClient.getValues("HTDL",Long.valueOf(templateEntity.getContractBigCategory())).getData());
+				cloumns.add(dictBizClient.getValues("HTDL", Long.valueOf(templateEntity.getContractBigCategory())).getData());
 				/*承办单位*/
 				cloumns.add(sysClient.getDept(templateEntity.getCreateDept()).getData().getDeptName());
 				/*使用记录*/
@@ -277,11 +293,11 @@ public class ContractTemplateController extends BladeController {
 			/* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
 			List<List<String>> headList = new ArrayList<List<String>>();
 			/* 此处表头为一行要显示的所有表头，要和数据的顺序对应上  需要转换为list */
-			List<String> head = Arrays.asList("范本名称","所属合同一级分类","使用范围","承办单位","使用记录",
-					"使用率","版本","创建时间");
+			List<String> head = Arrays.asList("范本名称", "所属合同一级分类", "使用范围", "承办单位", "使用记录",
+				"使用率", "版本", "创建时间");
 			/* 为了生成一个独立的list对象，所进行的初始化 */
-			List<String>  head2 =null;
-			for( String head1:head){
+			List<String> head2 = null;
+			for (String head1 : head) {
 				head2 = new ArrayList<>();
 				/* 将表头的数据赋值进入list对象 */
 				head2.add(head1);
@@ -295,7 +311,7 @@ public class ContractTemplateController extends BladeController {
 				fileName = URLEncoder.encode(fileName, Charsets.UTF_8.name());
 				response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
 				EasyExcel.write(response.getOutputStream()).head(headList).sheet().doWrite(data);
-			}catch (IOException e) {
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}

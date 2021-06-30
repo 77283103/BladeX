@@ -1,5 +1,6 @@
 package org.springblade.abutment.entity;
 
+import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -12,7 +13,7 @@ import java.util.List;
 @Data
 public class FormValuesEntity implements Serializable {
 	@ApiModelProperty(value = "签章关键字")
-	private String fd_keyword;
+	private JSONObject fd_keyword;
 	@ApiModelProperty(value = "是否多页合同")
 	private String fd_multipage;
 	@ApiModelProperty(value = "合同方对应关系")
@@ -31,7 +32,7 @@ public class FormValuesEntity implements Serializable {
 	private String fd_attachment_id;
 	@ApiModelProperty(value = "单据内容:合同查看链接")
 	private String fd_contract_url;
-	@ApiModelProperty(value = "单据内容:合同起草类型(独立起草|10 范本起草|20 范本起草-有其他约定|30)")
+	@ApiModelProperty(value = "单据内容:合同起草类型(独立起草|10 范本起草|20 范本起草-有其他约定|30) 多方起草|40")
 	private String fd_contract_type;
 	@ApiModelProperty(value = "单据内容:合同主旨(必填)")
 	private String fd_main;
@@ -95,12 +96,42 @@ public class FormValuesEntity implements Serializable {
 	private String fd_email;
 	@ApiModelProperty(value = "单据内容:相对方联系地址（）")
 	private String fd_address;
+	@ApiModelProperty(value = "相对方企业信息（关联表）")
+	private List<MultiCo> fd_multico;
+	@ApiModelProperty(value = "相对方角色信息列表（关联表）")
+	private List<MultiRo> fd_multiro;
+	@ApiModelProperty(value = "多方收付款信息（关联表）")
+	private List<MultiPay> fd_multipay;
+	@ApiModelProperty(value = "多方保证金信息（关联表）")
+	private List<MultiBon> fd_multibon;
 	@ApiModelProperty(value = "单据内容:履约清单")
 	private List<KeepList> fd_keep_list;
 	@ApiModelProperty(value = "单据内容:收付款清单")
 	private List<PayList> fd_pay_list;
 	@ApiModelProperty(value = "单据内容:合同状态")
 	private String fd_contract_status;
+	@ApiModelProperty(value = "单据内容:合同编号")
+	private String fd_contract_numb;
 	@ApiModelProperty(value = "单据内容(已归档节点):合同附件扫面件")
 	private String fd_archive_file;
+	@ApiModelProperty(value = "单据内容：合同借阅实体")
+	private BorrowAc borrow_ac;
+	@ApiModelProperty(value = "(合同借阅实体):资料类型")
+	private String fd_type;
+	@ApiModelProperty(value = "(合同借阅实体):借阅周期起始时间")
+	private String fd_begin;
+	@ApiModelProperty(value = "(合同借阅实体):借阅周期结束时间")
+	private String fd_end;
+	@ApiModelProperty(value = "(合同借阅实体):申请编号")
+	private String applicationId;
+	@ApiModelProperty(value = "(合同借阅实体):申请人")
+	private String applicant;
+	@ApiModelProperty(value = "(合同借阅实体):申请部门")
+	private String appDepartment;
+	@ApiModelProperty(value = "(合同借阅实体):借阅方式")
+	private String fd_method;
+	@ApiModelProperty(value = "(合同借阅实体):资料名称")
+	private String fd_name;
+	@ApiModelProperty(value = "(合同借阅实体):事由说明")
+	private String fd_reason;
 }

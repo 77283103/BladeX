@@ -48,6 +48,7 @@
         <result column="two" property="two"/>
         <result column="three" property="three"/>
         <result column="four" property="four"/>
+        <result column="annex" property="annex"/>
     </resultMap>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
@@ -94,7 +95,8 @@
         one,
         two,
         three,
-        four
+        four,
+        annex
     </sql>
     <!-- 分页 -->
     <select id="pageList" resultMap="cglActivityExecutionContractResultMap">

@@ -1,12 +1,17 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 
@@ -20,187 +25,229 @@ import java.util.Date;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("cgl_advertisement_production")
+@TableName("mtl_advertising")
 @EqualsAndHashCode(callSuper = true)
 @ApiModel(value = "CglAdvertisementProduction对象", description = "采购类：广告制作安装合同模板")
 public class CglAdvertisementProductionEntity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
-
 	/**
 	 * 甲方
 	 */
 	@ApiModelProperty(value = "甲方")
-	private String cglPartyA;
+	private String mtlPartyA;
 	/**
 	 * 甲方地址
 	 */
 	@ApiModelProperty(value = "甲方地址")
-	private String cglAddressA;
-	/**
-	 * 甲方联系方式
-	 */
-	@ApiModelProperty(value = "甲方联系方式")
-	private Integer cglContact;
+	private String mtlPartyASite;
 	/**
 	 * 乙方
 	 */
 	@ApiModelProperty(value = "乙方")
-	private String cglPartyB;
+	private String mtlPartyB;
 	/**
 	 * 乙方地址
 	 */
 	@ApiModelProperty(value = "乙方地址")
-	private String cglAddress;
+	private String mtlPartyBSite;
 	/**
-	 * 区域
+	 * 就甲方委托乙方在?区域制作
 	 */
-	@ApiModelProperty(value = "区域")
-	private String cglArea;
+	@ApiModelProperty(value = "就甲方委托乙方在?区域制作")
+	private String mtlAreaMake;
 	/**
-	 * 个
+	 * 1、制作物项目名称、规格、单价详见附件一《?报价表》
 	 */
-	@ApiModelProperty(value = "个")
-	private Long individual;
+	@ApiModelProperty(value = "1、制作物项目名称、规格、单价详见附件一《?报价表》")
+	private String mtlAttachmentQuotation;
 	/**
-	 * 日
+	 * 甲方以书面或乙方指定电子邮箱（电子邮箱:?）
 	 */
-	@ApiModelProperty(value = "日")
-	private Long day;
+	@ApiModelProperty(value = "甲方以书面或乙方指定电子邮箱（电子邮箱:?）")
+	private String mtlParyAEmail;
 	/**
-	 * 日
+	 * 乙方收到通知?个工作日内给出尺寸
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayA;
+	@ApiModelProperty(value = "乙方收到通知?个工作日内给出尺寸")
+	private String mtlInfrom;
 	/**
-	 * 日
+	 * 若同一批数量太多，乙方应收到通知 ?日前向甲方说明情况
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayB;
+	@ApiModelProperty(value = "若同一批数量太多，乙方应收到通知 ?日前向甲方说明情况")
+	private String mtlReceiveInfrom;
 	/**
-	 * 日
+	 * 自同一批的制作物全部安装完毕后 ，乙方应通知甲方于?日内进行验收
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayC;
+	@ApiModelProperty(value = "自同一批的制作物全部安装完毕后 ，乙方应通知甲方于?日内进行验收")
+	private String mtlInfromCheck;
 	/**
-	 * 日
+	 * 每批制作物验收不合格率在10%以下，乙方除有义务在 ?日内免费修复或重新制作外
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayD;
+	@JsonSerialize(nullsUsing = NullSerializer.class)
+	@ApiModelProperty(value = "每批制作物验收不合格率在10%以下，乙方除有义务在 ?日内免费修复或重新制作外")
+	private Integer mtlFreeRepaira;
 	/**
-	 * 日
+	 * 每批制作物验收不合格率在10%-20%之间，乙方除有义务在?日内免费修复或重新制作外
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayE;
+	@JsonSerialize(nullsUsing = NullSerializer.class)
+	@ApiModelProperty(value = "每批制作物验收不合格率在10%-20%之间，乙方除有义务在?日内免费修复或重新制作外")
+	private Integer mtlFreeRepairb;
 	/**
-	 * 日
+	 * 每批制作物验收不合格率在20%-25%之间，乙方除有义务在 ?日内免费修复或重新制作外
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayF;
+	@JsonSerialize(nullsUsing = NullSerializer.class)
+	@ApiModelProperty(value = "每批制作物验收不合格率在20%-25%之间，乙方除有义务在 ?日内免费修复或重新制作外")
+	private Integer mtlFreeRepairc;
 	/**
-	 * 支付方式
+	 * 每批制作物验收不合格率达到25%以上时，乙方除有义务在?日内免费重新制作外
 	 */
-	@ApiModelProperty(value = "支付方式")
-	private String paymentMethod;
+	@JsonSerialize(nullsUsing = NullSerializer.class)
+	@ApiModelProperty(value = "每批制作物验收不合格率达到25%以上时，乙方除有义务在?日内免费重新制作外")
+	private Integer mtlFreeRepaird;
 	/**
-	 * 类型
+	 * 乙方承诺对其制作安装的广告制作物自验收合格之日起免费保修?年
 	 */
-	@ApiModelProperty(value = "类型")
-	private String type;
+	@JsonSerialize(nullsUsing = NullSerializer.class)
+	@ApiModelProperty(value = "乙方承诺对其制作安装的广告制作物自验收合格之日起免费保修?年")
+	private Integer mtlFreeWarrantyday;
 	/**
-	 * 日
+	 * 乙方制作安装原因导致制作物无法正常使用时，乙方保证在?日内及时免费修复完毕
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayG;
+	@JsonSerialize(nullsUsing = NullSerializer.class)
+	@ApiModelProperty(value = "乙方制作安装原因导致制作物无法正常使用时，乙方保证在?日内及时免费修复完毕")
+	private Integer mtlFreeRepair;
 	/**
-	 * 其他类型
+	 * 价格结算方式：双方同意甲方按以下第? 方式支付合同款项
 	 */
-	@ApiModelProperty(value = "其他类型")
-	private String otherWays;
+	@ApiModelProperty(value = "价格结算方式：双方同意甲方按以下第? 方式支付合同款项")
+	private String mtlClearingFrom;
 	/**
-	 * 公司名称
+	 * 核算无误且甲方收到  增值税 ?发票,天后支付该批次制作物全款
 	 */
-	@ApiModelProperty(value = "公司名称")
-	private String corporateName;
+	@ApiModelProperty(value = "核算无误且甲方收到  增值税 ?发票,天后支付该批次制作物全款")
+	private String mtlReceiveInvoice;
 	/**
-	 * 开户行
+	 * 核算无误且甲方收到增值税发票?天 后支付该批次制作物全款
 	 */
-	@ApiModelProperty(value = "开户行")
-	private String bankDeposit;
+	@JsonSerialize(nullsUsing = NullSerializer.class)
+	@ApiModelProperty(value = "核算无误且甲方收到增值税发票?天 后支付该批次制作物全款")
+	private Integer mtlReceiveDay;
 	/**
-	 * 账户
+	 * (2)其他方式:?
 	 */
-	@ApiModelProperty(value = "账户")
-	private String account;
+	@ApiModelProperty(value = "(2)其他方式:?")
+	private String mtlOtherMethods;
 	/**
-	 * 日
+	 * 开户行: ?
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayH;
+	@ApiModelProperty(value = "开户行: ?                         ")
+	private String mtlOpeningBankb;
 	/**
-	 * 金额
+	 * 帐号:?
 	 */
-	@ApiModelProperty(value = "金额")
-	private BigDecimal money;
+	@ApiModelProperty(value = "帐号:?                         ")
+	private String mtlAccountNumber;
 	/**
-	 * 日
+	 * 甲方在使用过程中发现质量问题，乙方应该在接到甲方通知后?个工作日内负责调换或维修
 	 */
-	@ApiModelProperty(value = "日")
-	private Long dayI;
+	@ApiModelProperty(value = "甲方在使用过程中发现质量问题，乙方应该在接到甲方通知后?个工作日内负责调换或维修")
+	private String mtlQualityInform;
 	/**
-	 * 特别约定
+	 * 由此给甲方造成的一切经济损失和责任，概由乙方负责，乙方并向甲方另外支付违约金人民币?万元整
 	 */
-	@ApiModelProperty(value = "特别约定")
-	private String specialAgreement;
+	@ApiModelProperty(value = "由此给甲方造成的一切经济损失和责任，概由乙方负责，乙方并向甲方另外支付违约金人民币?万元整")
+	private String mtlLiquidatedDamages;
 	/**
-	 * 起始日期
+	 * （1）迟延制作或安装达?天的.
 	 */
-	@ApiModelProperty(value = "起始日期")
-	private Date date;
+	@ApiModelProperty(value = "（1）迟延制作或安装达?天的.")
+	private String mtlInstallDay;
 	/**
-	 * 结束日期
+	 * 十四、特别约定?
 	 */
-	@ApiModelProperty(value = "结束日期")
-	private Date dateA;
+	@ApiModelProperty(value = "十四、特别约定?")
+	private String mtlSpecialAgreement;
 	/**
-	 * 数量
+	 * 本合同有效期自 ? 始
 	 */
-	@ApiModelProperty(value = "数量")
-	private Integer number;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value = "本合同有效期自 ? 始")
+	private Date mtlStartDate;
 	/**
-	 * 数量甲方
+	 * 至?日止
 	 */
-	@ApiModelProperty(value = "数量甲方")
-	private Integer numberA;
+	@DateTimeFormat(pattern = DateUtil.PATTERN_DATE)
+	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
+	@ApiModelProperty(value = "至?日止")
+	private Date mtlDateClosed;
 	/**
-	 * 数量乙方
+	 * 十八、本合同一式 ? 份
 	 */
-	@ApiModelProperty(value = "数量乙方")
-	private Integer numberB;
+	@ApiModelProperty(value = "十八、本合同一式 ? 份")
+	private String mtlContractNumber;
 	/**
-	 * 附件一
+	 * 甲方执 ?份
 	 */
-	@ApiModelProperty(value = "附件一")
-	private String cglAttachment;
+	@ApiModelProperty(value = "甲方执 ?份")
+	private String mtlContractNumbera;
 	/**
-	 * 附件三
+	 * 乙方执 ?份
 	 */
-	@ApiModelProperty(value = "附件三")
-	private String cglAttachmentA;
+	@ApiModelProperty(value = "乙方执 ?份")
+	private String mtlContractNumberb;
 	/**
-	 * 报价表
+	 * 附件一 ? 报价表
 	 */
-	@ApiModelProperty(value = "报价表")
-	private String quotationSheet;
+	@ApiModelProperty(value = "附件一 ? 报价表")
+	private String mtlAccessoryQuotation;
 	/**
-	 * 电子邮箱
+	 * 附件三?
 	 */
-	@ApiModelProperty(value = "电子邮箱")
-	private String cglEmail;
+	@ApiModelProperty(value = "附件三? ")
+	private String mtlAccessoryThree;
+	/**
+	 * 甲方联系地址
+	 */
+	@ApiModelProperty(value = "甲方联系地址")
+	private String contactPartyAPlace;
+	/**
+	 * 乙方联系地址
+	 */
+	@ApiModelProperty(value = "乙方联系地址")
+	private String contactPartyBPlace;
+	/**
+	 * 甲方联系人
+	 */
+	@ApiModelProperty(value = "甲方联系人")
+	private String contactPartyAPerson;
+	/**
+	 * 乙方联系人
+	 */
+	@ApiModelProperty(value = "乙方联系人")
+	private String contactPartyBPerson;
+	/**
+	 * 甲方联系电话
+	 */
+	@ApiModelProperty(value = "甲方联系电话")
+	private String contactPartyAPhone;
+	/**
+	 * 乙方联系电话
+	 */
+	@ApiModelProperty(value = "乙方联系电话")
+	private String contactPartyBPhone;
+	/**
+	 * 合同ID
+	 */
+	@JsonSerialize(using = ToStringSerializer.class)
+	@ApiModelProperty(value = "合同ID")
+	private Long contractId;
+
 	/**
 	 * 年
 	 */
-	@ApiModelProperty(value = "年")
-	private String year;
+	@ApiModelProperty(value = "附件公共字段")
+	private String annex;
 
 }

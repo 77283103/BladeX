@@ -48,6 +48,11 @@ public class ContractBorrowApplicationEntity extends BaseEntity {
 	@ApiModelProperty(value = "申请人")
 	private String applicant;
 	/**
+	 * 申请人编号
+	 */
+	@ApiModelProperty(value = "申请人编号")
+	private String applicantCode;
+	/**
 	 * 申请部门
 	 */
 	@ApiModelProperty(value = "申请部门")

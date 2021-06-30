@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractFileDownloadLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractFileDownloadLogResultMap" type="org.springblade.contract.entity.ContractFileDownloadLogEntity">
+        <result column="id" property="id"/>
+        <result column="code" property="code"/>
+        <result column="account" property="account"/>
+        <result column="real_name" property="realName"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="status" property="status"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        code,
+        account,
+        real_name,
+        contract_id,
+        is_deleted,
+        create_user,
+        create_dept,
+        create_time,
+        update_user,
+        update_time,
+        status
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractFileDownloadLogResultMap">
+        SELECT
+            <include refid="baseColumnList"/>
+        FROM contract_file_download_log
+        WHERE is_deleted = 0
+        --         合同负责人
+        <if test="contractFileDownloadLog.code != null and contractFileDownloadLog.code != ''">
+            AND code like concat('%', #{contractFileDownloadLog.code}, '%')
+        </if>
+        --         用印申请人
+        <if test="contractFileDownloadLog.account != null and contractFileDownloadLog.account != ''">
+            AND account like concat('%', #{contractFileDownloadLog.account}, '%')
+        </if>
+        --         用印申请人
+        <if test="contractFileDownloadLog.realName != null and contractFileDownloadLog.realName != ''">
+            AND real_name like concat('%', #{contractFileDownloadLog.realName}, '%')
+        </if>
+        --         用印申请人
+        <if test="contractFileDownloadLog.contractId != null and contractFileDownloadLog.contractId != ''">
+            AND contract_id like concat('%', #{contractFileDownloadLog.contractId}, '%')
+        </if>
+    </select>
+    <select id="selectList" resultMap="contractFileDownloadLogResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM contract_file_download_log
+        WHERE is_deleted = 0
+        AND contract_id =#{contractId}
+    </select>
+</mapper>

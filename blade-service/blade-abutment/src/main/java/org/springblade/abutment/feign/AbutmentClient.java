@@ -1,32 +1,26 @@
 package org.springblade.abutment.feign;
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSONObject;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.log4j.Log4j2;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
-import org.csource.fastdfs.StorageClient;
-import org.csource.fastdfs.StorageServer;
-import org.csource.fastdfs.TrackerClient;
-import org.csource.fastdfs.TrackerServer;
-import org.json.simple.JSONObject;
+import org.csource.fastdfs.*;
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.*;
 import org.springblade.abutment.vo.*;
-import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractPerformanceColPayEntity;
-import org.springblade.contract.entity.ContractPerformanceEntity;
-import org.springblade.contract.entity.ContractTemplateEntity;
+import org.springblade.contract.entity.*;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.core.log.annotation.ApiLog;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.core.tool.utils.StringUtil;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.entity.DictBiz;
@@ -58,7 +52,7 @@ import java.util.concurrent.TimeUnit;
  * @author cc
  */
 @ApiIgnore
-@Slf4j
+@Log4j2
 @RestController
 public class AbutmentClient implements IAbutmentClient {
 
@@ -66,6 +60,8 @@ public class AbutmentClient implements IAbutmentClient {
 	private IEkpService ekpService;
 	@Autowired
 	private IDocService docService;
+	@Autowired
+	private IAsService iAsService;
 	@Autowired
 	private IESealService eSealService;
 	@Autowired
@@ -82,16 +78,189 @@ public class AbutmentClient implements IAbutmentClient {
 	private IOrganizationService iOrganizationService;
 	@Autowired
 	private ICounterpartService counterpartService;
-
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
-
+	@Value("${api.ekp.appTemplateId}")
+	private String appTemplateId;
+	@Value("${api.ekp.systemName}")
+	private String systemName;
 	@Value("${api.eSeal.downloadUrl}")
 	private String downloadUrl;
-
 	@Value("${api.ekp.ftlPath}")
 	private String ftlPath;
+	@Value("${api.contract.notSign.status}")
+	private String status;
+	@Value("${api.contract.notSign.firstWarning}")
+	private String firstWarning;
+	@Value("${api.contract.notSign.secondWarning}")
+	private String secondWarning;
+	@Value("${api.contract.notSign.thirdWarning}")
+	private String thirdWarning;
+	@Value("${api.contract.notSign.estimateWarning}")
+	private String estimateWarning;
 
+	/**
+	 * 模板审批
+	 *
+	 * @param entity
+	 * @return
+	 */
+	@SneakyThrows
+	@Override
+	@PostMapping(TEMPLATE_APP)
+	public R<EkpVo> temEkpFormPost(ContractTemplateEntity entity) {
+		R<EkpVo> rEkpVo = new R<>();
+		EkpVo ekpVo = null;
+		PushEkpEntity pushEkpEntity = new PushEkpEntity();
+		if (Func.isNotEmpty(entity)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			//表单模版ID
+			pushEkpEntity.setFdTemplateId(fdTemplateId);
+			DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
+			//人员编号
+			R<User> user = userClient.userInfoById(AuthUtil.getUserId());
+			docCreatorEntity.setEmplno(user.getData().getCode());
+			pushEkpEntity.setDocCreator(docCreatorEntity);
+			//文档主题
+			pushEkpEntity.setDocSubject("模板建档申请" + entity.getName());
+			//文档主要内容
+			TemplateAc ac = new TemplateAc();
+			//范本名称
+			ac.setName(entity.getName());
+			//所属合同大类
+			R<List<DictBiz>> contract_HTDL = bizClient.getList("HTDL");
+			List<DictBiz> dataBiz = contract_HTDL.getData();
+			for (DictBiz dictBiz : dataBiz) {
+				if ((dictBiz.getId().toString()).equals(entity.getContractBigCategory())) {
+					ac.setContract_big_category(dictBiz.getDictKey());
+				}
+			}
+			//所属合同小类
+			R<List<DictBiz>> contract_HTXL = bizClient.getList("HTXL");
+			List<DictBiz> dataHTXLBiz = contract_HTXL.getData();
+			for (DictBiz dictBiz : dataHTXLBiz) {
+				if ((dictBiz.getId().toString()).equals(entity.getContractSmallCategory())) {
+					ac.setContract_small_category(dictBiz.getDictKey());
+				}
+			}
+			//范本附件url
+			if (Func.isNotEmpty(entity.getAttachedFiles())) {
+				List<FileVO> att = fileClient.getByIds(entity.getAttachedFiles()).getData();
+				ac.setAttached_files(att.get(0).getLink());
+			} else {
+				ac.setAttached_files(" ");
+			}
+			//范本附件ID
+			ac.setAttached_files_id(entity.getAttachedFiles());
+			//模板文件url
+			List<FileVO> tem = fileClient.getByIds(entity.getTemplateFileId()).getData();
+			ac.setTemplate_file(tem.size() > 0 ? tem.get(0).getLink() : "");
+			//模板文件ID
+			ac.setTemplate_file_id(entity.getTemplateFileId());
+			//范本状态
+			ac.setTemplate_status(entity.getTemplateStatus());
+			//申请人员编号
+			ac.setApp_number(entity.getAppNumber());
+			pushEkpEntity.setTemplateAc(ac);
+			//获取token
+			pushEkpEntity.setToken(ekpService.getToken());
+			log.info("获取ekp的token：" + pushEkpEntity.getToken());
+			if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
+				rEkpVo.setCode(1);
+				rEkpVo.setMsg("token获取失败，连接超时");
+				rEkpVo.setSuccess(false);
+				rEkpVo.setData(null);
+				return rEkpVo;
+			}
+			ekpVo = ekpService.pushData(pushEkpEntity);
+			log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
+			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
+				rEkpVo.setCode(2);
+				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+				rEkpVo.setSuccess(false);
+				rEkpVo.setData(null);
+				return rEkpVo;
+			}
+		}
+		rEkpVo.setData(ekpVo);
+		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setCode(HttpStatus.OK.value());
+		rEkpVo.setSuccess(true);
+		return rEkpVo;
+	}
+
+	/**
+	 * 合同借阅申请
+	 *
+	 * @param entity 合同借阅申请
+	 * @return
+	 */
+	@SneakyThrows
+	@PostMapping(CONTRACT_BORROWING)
+	@Override
+	public R<EkpVo> borEkpFormPost(ContractBorrowApplicationEntity entity) {
+		R<EkpVo> rEkpVo = new R<>();
+		EkpVo ekpVo = null;
+		PushEkpEntity pushEkpEntity = new PushEkpEntity();
+		if (Func.isNotEmpty(entity)) {
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+			//表单模版ID
+			pushEkpEntity.setFdTemplateId(appTemplateId);
+			DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
+			//人员编号
+			R<User> user = userClient.userInfoById(AuthUtil.getUserId());
+			docCreatorEntity.setEmplno(user.getData().getCode());
+			pushEkpEntity.setDocCreator(docCreatorEntity);
+			//文档主题
+			pushEkpEntity.setDocSubject("借阅申请：--" + entity.getDataName());
+			//文档主要内容
+			FormValuesEntity formValuesEntity = new FormValuesEntity();
+			//事由说明
+			formValuesEntity.setFd_reason(entity.getExplanation());
+			//资料类型
+			formValuesEntity.setFd_type(entity.getDataType());
+			//借阅方式
+			formValuesEntity.setFd_method(entity.getBorrowMode());
+			//借阅周期起始时间
+			formValuesEntity.setFd_begin(sdf.format(entity.getBorrowCycleStart()));
+			//借阅周期截至时间
+			formValuesEntity.setFd_end(sdf.format(entity.getBorrowCycleEnd()));
+			//资料名称
+			formValuesEntity.setFd_name(entity.getDataName());
+			pushEkpEntity.setFormValues(formValuesEntity);
+			//获取token
+			pushEkpEntity.setToken(ekpService.getToken());
+			log.info("获取ekp的token：" + pushEkpEntity.getToken());
+			if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
+				rEkpVo.setCode(1);
+				rEkpVo.setMsg("token获取失败，连接超时");
+				rEkpVo.setSuccess(false);
+				rEkpVo.setData(null);
+				return rEkpVo;
+			}
+			ekpVo = ekpService.pushData(pushEkpEntity);
+			log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
+			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
+				rEkpVo.setCode(2);
+				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+				rEkpVo.setSuccess(false);
+				rEkpVo.setData(null);
+				return rEkpVo;
+			}
+		}
+		rEkpVo.setData(ekpVo);
+		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setCode(HttpStatus.OK.value());
+		rEkpVo.setSuccess(true);
+		return rEkpVo;
+	}
+
+	/**
+	 * 合同起草
+	 *
+	 * @param entity
+	 * @return
+	 */
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
 	//推送代办
@@ -126,10 +295,22 @@ public class AbutmentClient implements IAbutmentClient {
 				formValuesEntity.setFd_contract_url("");
 				//合同起草流程类型
 				if ("10".equals(entity.getContractSoure()) || "20".equals(entity.getContractSoure())) {
-					//合同附件名称
+					//合同形式
+					formValuesEntity.setFd_contract_no(entity.getContractForm());
+					//合同附件名称   合同附件：电子合同 附件只上传一份需要盖章的合同文本     实体合同需要上传多份合同文本
 					List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
 					if (fileVO.size() > 0) {
-						formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
+						if ("2".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
+							StringBuilder name = new StringBuilder();
+							fileVO.forEach(f -> {
+								name.append(f.getName());
+								name.append(",");
+							});
+							name.substring(0, name.length());
+							formValuesEntity.setFd_contract_name(name.toString());
+						} else {
+							formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
+						}
 					}
 					if ("10".equals(entity.getContractSoure())) {
 						formValuesEntity.setFd_contract_type("10");
@@ -368,8 +549,6 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_back_time(sdf.format(entity.getContractBond().get(0).getPlanReturnTime()));
 					}
 				}
-				//合同形式
-				formValuesEntity.setFd_contract_no(entity.getContractForm());
 				//相对方联系人
 				formValuesEntity.setFd_linkman(entity.getCounterpartPerson());
 				//相对方联系电话
@@ -396,6 +575,419 @@ public class AbutmentClient implements IAbutmentClient {
 							nvp[2] = new NameValuePair("fdKey", "");//文件key？？
 							nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());//文件大小
 							nvp[4] = new NameValuePair("fileType", "");//文件类型
+							//3.创建trackerServer
+							TrackerServer trackerServer = null;
+							try {
+								trackerServer = trackerClient.getConnection();
+								if (Func.isNull(trackerServer)) {
+									log.info("FDS服务器链接地址：" + ClientGlobal.CONF_KEY_TRACKER_SERVER);
+									rEkpVo.setCode(404);
+									rEkpVo.setMsg("Connection timed out: connect FSD文件服务器连接失败，请联系管理员处理！");
+									rEkpVo.setSuccess(false);
+									rEkpVo.setData(null);
+									return R.fail(rEkpVo.getMsg());
+								}
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+							// 4、创建一个 StorageServer 的引用，值为 null
+							StorageServer storageServer = null;
+							// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+							StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+							InputStream in = null;
+							BufferedInputStream bin = null;
+							ByteArrayOutputStream baos = null;
+							BufferedOutputStream bout = null;
+							byte[] bytes = null;
+							try {
+								URL url = new URL(fileVO.getLink());
+								URLConnection conn = url.openConnection();
+								in = conn.getInputStream();
+								bin = new BufferedInputStream(in);
+								baos = new ByteArrayOutputStream();
+								bout = new BufferedOutputStream(baos);
+								byte[] buffer = new byte[1024];
+								int len = bin.read(buffer);
+								while (len != -1) {
+									bout.write(buffer, 0, len);
+									len = bin.read(buffer);
+								}
+								//刷新此输出流并强制写出所有缓冲的输出字节
+								bout.flush();
+								bytes = baos.toByteArray();
+								// 上传
+								fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+							} catch (IOException | MyException e) {
+								e.printStackTrace();
+							}
+							attachment.setFilename(fileVO.getName());
+							attachment.setFilePath(fileIds[0] + '/' + fileIds[1]);
+							listAttachment.add(attachment);
+						}
+						pushEkpEntity.setFd_attachment(listAttachment);
+						if (Func.isEmpty(pushEkpEntity.getFd_attachment())) {
+							rEkpVo.setCode(3);
+							rEkpVo.setMsg("依据附件上传失败，请检查FDS文件服务器配置是否正常");
+							rEkpVo.setSuccess(false);
+							rEkpVo.setData(null);
+							return rEkpVo;
+						}
+					}
+					pushEkpEntity.setToken(ekpService.getToken());
+					log.info("获取ekp的token：" + pushEkpEntity.getToken());
+					if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
+						rEkpVo.setCode(1);
+						rEkpVo.setMsg("token获取失败，连接超时");
+						rEkpVo.setSuccess(false);
+						rEkpVo.setData(null);
+						return rEkpVo;
+					}
+					pushEkpEntity.setDocSubject(entity.getContractName());
+					pushEkpEntity.setFdTemplateId(fdTemplateId);
+					ekpVo = ekpService.pushData(pushEkpEntity);
+					log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
+					if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
+						rEkpVo.setCode(2);
+						rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+						rEkpVo.setSuccess(false);
+						rEkpVo.setData(null);
+						return rEkpVo;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		rEkpVo.setData(ekpVo);
+		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setCode(HttpStatus.OK.value());
+		rEkpVo.setSuccess(true);
+		return rEkpVo;
+	}
+
+	/**
+	 * 合同起草-多方 推送EKP信息
+	 *
+	 * @param entity
+	 * @return
+	 */
+	@SneakyThrows
+	@Override
+	@PostMapping(EKP_SEND_MULTI_POST)
+	public R<EkpVo> sendEkpMultiPost(ContractFormInfoEntity entity) {
+		R<EkpVo> rEkpVo = new R<>();
+		EkpVo ekpVo = null;
+		PushEkpEntity pushEkpEntity = new PushEkpEntity();
+		pushEkpEntity.setFdTemplateId(fdTemplateId);
+		if (null != entity) {
+			if (StrUtil.isNotEmpty(entity.getPersonCodeContract()) && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
+				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+				DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
+				//人员编号
+				docCreatorEntity.setEmplno(entity.getPersonCodeContract());
+				pushEkpEntity.setDocCreator(docCreatorEntity);
+				FormValuesEntity formValuesEntity = new FormValuesEntity();
+				//合同方对应关系
+				if ("甲".equals(entity.getContractRoles())) {
+					formValuesEntity.setFd_onetoone("1");
+				} else if ("乙".equals(entity.getContractRoles())) {
+					formValuesEntity.setFd_onetoone("2");
+				} else if ("丙".equals(entity.getContractRoles())) {
+					formValuesEntity.setFd_onetoone("3");
+				} else if ("丁".equals(entity.getContractRoles())) {
+					formValuesEntity.setFd_onetoone("4");
+				} else {
+					formValuesEntity.setFd_onetoone("5");
+				}
+				//依据文档id
+				formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
+				//合同id
+				formValuesEntity.setFd_contract_id(entity.getId().toString());
+				//pdf的id
+				formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
+				//合同查看链接
+				formValuesEntity.setFd_contract_url("");
+				//合同文件名称
+				List<FileVO> fileText = fileClient.getByIds(entity.getTextFile()).getData();
+				if (fileText.size() > 0) {
+					formValuesEntity.setFd_contract_name(fileText.get(0).getName());
+				}
+				//合同起草类型  可能设计变更暂时做判断
+				if ("20".equals(entity.getContractSoure())) {
+					formValuesEntity.setFd_contract_type("40");
+				}
+				//合同主旨
+				formValuesEntity.setFd_main(entity.getContractName());
+				//合同大类
+				R<List<DictBiz>> contract_HTDL = bizClient.getList("HTDL");
+				List<DictBiz> dataBiz = contract_HTDL.getData();
+				for (DictBiz dictBiz : dataBiz) {
+					if ((dictBiz.getId().toString()).equals(entity.getContractBigCategory())) {
+						formValuesEntity.setFd_broad(dictBiz.getDictKey());
+					}
+				}
+				//合同中类
+				formValuesEntity.setFd_secondary(entity.getContractListName());
+				//合同小类
+				R<List<DictBiz>> contract_HTXL = bizClient.getList("HTXL");
+				List<DictBiz> dataHTXLBiz = contract_HTXL.getData();
+				for (DictBiz dictBiz : dataHTXLBiz) {
+					if ((dictBiz.getId().toString()).equals(entity.getContractSmallCategory())) {
+						formValuesEntity.setFd_small(dictBiz.getDictKey());
+					}
+				}
+				//申请用公章全称
+				R<List<DictBiz>> application_seal = bizClient.getList("application_seal");
+				List<DictBiz> dataSeal = application_seal.getData();
+				for (DictBiz dictBiz : dataSeal) {
+					if ((dictBiz.getDictValue()).equals(entity.getSealName())) {
+						formValuesEntity.setFd_offical_seal(dictBiz.getDictKey());
+					}
+				}
+				//合同负责人
+				formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
+				//合同份数
+				formValuesEntity.setFd_copies(entity.getShare());
+				//合同期限
+				switch (entity.getContractPeriod()) {
+					case "1095":
+						formValuesEntity.setFd_contract_period("1");
+						break;
+					case "1460":
+						formValuesEntity.setFd_contract_period("2");
+						break;
+					case "365000":
+						formValuesEntity.setFd_contract_period("3");
+						break;
+					default:
+				}
+				//合同时间起
+				formValuesEntity.setFd_start_time(sdf.format(entity.getStartingTime()));
+				//合同时间止
+				formValuesEntity.setFd_lasttime(sdf.format(entity.getEndTime()));
+				//币种
+				R<List<DictBiz>> contract_bz = bizClient.getList("bz");
+				List<DictBiz> databz = contract_bz.getData();
+				for (DictBiz dictBiz : databz) {
+					if ((dictBiz.getDictKey()).equals(entity.getCurrencyCategory())) {
+						formValuesEntity.setFd_currency(dictBiz.getDictValue());
+					}
+				}
+				//是否延期条款
+				if ("0".equals(entity.getExtension())) {
+					formValuesEntity.setFd_automatic("1");
+				} else {
+					formValuesEntity.setFd_automatic("2");
+				}
+				//合同形式
+				formValuesEntity.setFd_contract_no(entity.getContractForm());
+				//相对方企业信息（关联表）
+				List<MultiCo> cos = new ArrayList<>();
+				entity.getCounterpart().forEach(c -> {
+					MultiCo co = new MultiCo();
+					//相对方名称
+					co.setFd_opposite_name(c.getName());
+					//乙方税籍编号(必填)
+					co.setFd_opposite_taxno(c.getUnifiedSocialCreditCode());
+					cos.add(co);
+				});
+				formValuesEntity.setFd_multico(cos);
+				//多方相对方身份信息列表
+				List<MultiRo> ros = new ArrayList<>();
+				entity.getDraftContractCounterpartList().forEach(r -> {
+					MultiRo ro = new MultiRo();
+					//相对方身份
+					ro.setFd_role_identity(r.getCounterpartIdentity());
+					//相对方联系人
+					ro.setFd_role_name(r.getCounterpartPerson());
+					//相对方联系电话
+					ro.setFd_role_number(entity.getTelephonePerson());
+					//相对方邮箱
+					ro.setFd_role_email(r.getEmailPerson());
+					//相对方联系地址
+					ro.setFd_role_email(r.getAddressPerson());
+					ros.add(ro);
+				});
+				formValuesEntity.setFd_multiro(ros);
+				//多方收付款信息
+				List<MultiPay> pays = new ArrayList<>();
+				entity.getMultPaymenEntityList().forEach(p -> {
+					MultiPay pay = new MultiPay();
+					//相对方名称
+					pay.setFd_pay_name(p.getCounterpartName());
+					//收付款
+					switch (p.getColPayType()) {
+						case "1323239541401841666":
+							pay.setFd_pay_type("1");
+							break;
+						case "1323239469884764161":
+							pay.setFd_pay_type("2");
+							break;
+						case "1323239716493062146":
+							pay.setFd_pay_type("3");
+							break;
+						default:
+					}
+					//收付款条件
+					switch (entity.getColPayTerm()) {
+						case "1323242418597916674":
+							pay.setFd_receive_condition("1");
+							break;
+						case "1323243129146568706":
+							pay.setFd_receive_condition("2");
+							break;
+						case "1323243216736219137":
+							pay.setFd_receive_condition("3");
+							break;
+						case "1323243330431217665":
+							pay.setFd_receive_condition("4");
+							break;
+						case "1323243409321881601":
+							pay.setFd_receive_condition("5");
+							break;
+						case "1323242740267479042":
+							pay.setFd_receive_condition("6");
+							break;
+						case "1323242875978379265":
+							pay.setFd_receive_condition("7");
+							break;
+						case "1323240326596521986":
+							pay.setFd_pay_condition("1");
+							break;
+						case "1323240755069841410":
+							pay.setFd_pay_condition("2");
+							break;
+						case "1323241507062411265":
+							pay.setFd_pay_condition("3");
+							break;
+						default:
+					}
+					if (Func.isNotEmpty(p.getDays())) {
+						//收付款天数
+						pay.setFd_pay_days(p.getDays().toString());
+					}
+					if (Func.isNotEmpty(p.getContractAmount())) {
+						//合同未税金额
+						pay.setFd_pay_untaxed(p.getContractAmount().toString());
+					}
+					if (Func.isNotEmpty(p.getContractTaxRate())) {
+						//税率
+						pay.setFd_pay_rate(p.getContractTaxRate().toString());
+					}
+					if (Func.isNotEmpty(p.getContractTaxAmount())) {
+						//含税金额
+						pay.setFd_pay_include(p.getContractTaxAmount().toString());
+					}
+					pays.add(pay);
+				});
+				formValuesEntity.setFd_multipay(pays);
+				//多方保证金信息
+				List<MultiBon> bons = new ArrayList<>();
+				entity.getContractBond().forEach(b -> {
+					MultiBon bon = new MultiBon();
+					//相对方名称
+					bon.setFd_bon_name(b.getCounterpartName());
+					//计划缴纳金额
+					if (Func.isNotEmpty(b.getPlanPayAmount())) {
+						bon.setFd_bon_cash(b.getPlanPayAmount().toString());
+					}
+					//保证金类别
+					bon.setFd_bon_type(b.getType());
+					//保证金编号
+					bon.setFd_bon_id(b.getId().toString());
+					//有无押金
+					if ("0".equals(b.getIsNotBond())) {
+						bon.setFd_bon_pledge("1");
+					} else if ("1".equals(b.getIsNotBond())) {
+						bon.setFd_bon_pledge("2");
+						//押金
+						bon.setFd_bon_cash("");
+					} else {
+						bon.setFd_bon_pledge("3");
+					}
+					if (Func.isNotEmpty(b.getPlanPayTime())) {
+						//缴交时间
+						bon.setFd_bon_paytime(sdf.format(b.getPlanPayTime()));
+					}
+					if (Func.isNotEmpty(b.getPlanReturnTime())) {
+						//退回时间
+						bon.setFd_bon_backtime(sdf.format(b.getPlanReturnTime()));
+					}
+					bons.add(bon);
+				});
+				formValuesEntity.setFd_multibon(bons);
+				//履约信息
+				List<KeepList> keepList = new ArrayList<KeepList>();
+				List<PayList> payList = new ArrayList<PayList>();
+				for (ContractPerformanceEntity performance : entity.getPerformanceList()) {
+					KeepList keep = new KeepList();
+					//交易类型
+					switch (performance.getType()) {
+						case "1":
+							keep.setFd_trade_type("有效期交易");
+							break;
+						case "2":
+							keep.setFd_trade_type("按合同量交易");
+							break;
+						case "3":
+							keep.setFd_trade_type("单次交易");
+							break;
+						case "4":
+							keep.setFd_trade_type("按周期交易");
+							break;
+						default:
+					}
+					keep.setFd_receipt(performance.getAcceptanceConditions());
+					keep.setFd_plan_time(sdf.format(performance.getPlanPayTime()));
+					keep.setFd_plan_content(performance.getName());
+					keepList.add(keep);
+				}
+				for (ContractPerformanceColPayEntity performanceColPay : entity.getPerformanceColPayList()) {
+					PayList pay = new PayList();
+					//交易类型
+					switch (performanceColPay.getType()) {
+						case "1":
+							pay.setFd_trade_kind("有效期交易");
+							break;
+						case "2":
+							pay.setFd_trade_kind("按合同量交易");
+							break;
+						case "3":
+							pay.setFd_trade_kind("单次交易");
+							break;
+						case "4":
+							pay.setFd_trade_kind("按周期交易");
+							break;
+						default:
+					}
+					pay.setFd_p_receipt(performanceColPay.getAcceptanceConditions());
+					pay.setFd_plan_ptime(sdf.format(performanceColPay.getPlanPayTime()));
+					pay.setFd_plan_psum(performanceColPay.getPlanPayAmount().toString());
+					payList.add(pay);
+				}
+				//处理签章关键字 和多页合同
+				formValuesEntity.setFd_keep_list(keepList);
+				formValuesEntity.setFd_pay_list(payList);
+				//处理签章关键字 和多页合同
+				formValuesEntity = fileTextMulti(formValuesEntity, entity);
+				pushEkpEntity.setFormValues(formValuesEntity);
+				try {
+					//处理合同补充依据
+					if (!Func.isEmpty(entity.getAttachedFiles())) {
+						List<FileVO> fileVOs = fileClient.getByIds(entity.getAttachedFiles()).getData();
+						String[] fileIds = new String[0];
+						List<Attachment> listAttachment = new ArrayList<>();
+						for (FileVO fileVO : fileVOs) {
+							// 开始上传fastDFS服务器
+							Attachment attachment = new Attachment();
+							NameValuePair[] nvp = new NameValuePair[5];
+							int index = fileVO.getName().lastIndexOf(".");
+							String fileSuffix = fileVO.getName().substring(index + 1);
+							nvp[0] = new NameValuePair("fdFileName", fileVO.getName());
+							nvp[1] = new NameValuePair("fileSuffix", fileSuffix);
+							nvp[2] = new NameValuePair("fdKey", "");
+							nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());
+							nvp[4] = new NameValuePair("fileType", "");
 							//3.创建trackerServer
 							TrackerServer trackerServer = null;
 							try {
@@ -504,7 +1096,7 @@ public class AbutmentClient implements IAbutmentClient {
 				//3.表单模版ID
 				pushEkpEntity.setFdTemplateId(fdTemplateId);
 				//4.不同条件参数(归档所需的附件--上传到哪需要对接)
-				if (entity.getContractStatus().equals("60")) {
+				if ("60".equals(entity.getContractStatus())) {
 					//4-1.合同归档的合同文本扫面件附件ID
 					formValuesEntity.setFd_archive_file(entity.getSigningEntity().getAttachedFiles());
 					//已归档处理合同文本扫面件
@@ -601,136 +1193,102 @@ public class AbutmentClient implements IAbutmentClient {
 		return rEkpVo;
 	}
 
+	/**
+	 * 未归档预警
+	 *
+	 * @return
+	 */
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_SIG_FORM_POST)
-	public R<List<EkpVo>> pushNotSig() {
-		R<List<EkpVo>> ekpVo = new R<>();
+	public R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity) {
+		List<EkpVo> ekpVo = new ArrayList<>();
 		HashMap<String, String> mapVo = new HashMap<>();
 		//KEP接口传输的入参
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
-		List<ContractFormInfoEntity> formInfoEntities = contractClient.getByStatus("50").getData();
-		log.info("需要推送的符合条件的数据：{}" + JsonUtil.toJson(formInfoEntities));
-		if (Func.isEmpty(formInfoEntities)){
-			return R.data(200, null,"没有需要推送的数据：");
+		List<ContractFormInfoEntity> formInfoEntities = new ArrayList<>();
+		if ("0".equals(entity.getFilePerson())) {
+			//第一次预警时机：合同用印审批流通过后即发出代办于申请人系统
+			formInfoEntities.add(entity);
+		} else {
+			formInfoEntities = contractClient.getByStatus(this.status).getData();
+			if (Func.isNull(formInfoEntities) || Func.isEmpty(formInfoEntities)) {
+				return R.data(200, ekpVo, "暂无数据推送");
+			}
+			formInfoEntities.forEach(l -> {
+				int day = differentDaysByMillisecond(l.getCreateTime(), new Date());
+				mapVo.put("day", String.valueOf(day));
+				mapVo.put("contractName", l.getContractName() + "---（归档预警：请及时归档）");
+			});
+			log.info("需要推送的符合条件的数据：" + JsonUtil.toJson(formInfoEntities));
 		}
 		//获取TOKEN
 		pushEkpEntity.setToken(ekpService.getToken());
-		if (StrUtil.isEmpty(pushEkpEntity.getToken())){
-			return R.data(404, null,"获取token失败");
+		if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
+			return R.data(404, null, "获取token失败");
 		}
 		log.info("获取一次token信息：" + JsonUtil.toJson(pushEkpEntity.getToken()));
 		formInfoEntities.forEach(f -> {
-			//此处判断创建时间为送审时间
-			int day = differentDaysByMillisecond(f.getCreateTime(), new Date());
-			mapVo.put("day", String.valueOf(day));
-			mapVo.put("contractName", f.getContractName());
-			if (day >= 60) {
-				EkpVo ekp = null;
-				try {
-					//docCreator 人员编号
-					DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
-					docCreatorEntity.setEmplno(f.getPersonCodeContract());
-					pushEkpEntity.setDocCreator(docCreatorEntity);
-					//fdTemplateId 表单模版ID
-					pushEkpEntity.setFdTemplateId(this.fdTemplateId);
-					//formValues 主要内容
-					FormValuesEntity formValuesEntity = new FormValuesEntity();
-					formValuesEntity.setFd_contract_id(f.getId().toString());
-					// docSubject 合同主旨
-					pushEkpEntity.setDocSubject(f.getContractName());
-					//推送数据
-					ekp = ekpService.pushData(pushEkpEntity);
-					if (Func.isNotEmpty(ekp)) {
-						ekpVo.getData().add(ekp);
-					}
-					TimeUnit.SECONDS.sleep(8);
-				} catch (Exception e) {
-					e.printStackTrace();
+			EkpVo ekp = null;
+			try {
+				//docCreator 待办接收人员工编号
+				pushEkpEntity.setEmplno(f.getPersonCodeContract());
+				//系统类型，请传递固定字符串c_p_notify
+				pushEkpEntity.setSystemName(this.systemName);
+				//docSubject 合同主旨
+				//notifyType：待办类型：1待办，2待阅；如第一和第二预警传2(待阅)，第三次传1(待办)；只接收这两种参数
+				if ("0".equals(f.getFilePerson())) {
+					pushEkpEntity.setDocSubject("《" + f.getContractName() + "》合同，合同编号为" + f.getContractNumber() + this.firstWarning);
+					pushEkpEntity.setNotifyType("2");
+				} else if ("15".equals(f.getFilePerson())) {
+					pushEkpEntity.setDocSubject("《" + f.getContractName() + "》合同，合同编号为" + f.getContractNumber() + this.secondWarning);
+					pushEkpEntity.setNotifyType("2");
+				} else if ("45".equals(f.getFilePerson())) {
+					pushEkpEntity.setDocSubject("对《" + f.getContractName() + "》合同，合同编号为" + f.getContractNumber() + this.thirdWarning);
+					pushEkpEntity.setNotifyType("1");
+				} else {
+					pushEkpEntity.setDocSubject("《" + f.getContractName() + "》" + this.estimateWarning);
+					pushEkpEntity.setNotifyType("1");
 				}
+				//合同编号
+				pushEkpEntity.setContractNo(f.getId().toString());
+				//推送数据
+				ekp = ekpService.pushAgency(pushEkpEntity);
+				if (Func.isNotEmpty(ekp.getNotifyId())) {
+					ekpVo.add(ekp);
+				}
+				TimeUnit.SECONDS.sleep(1);
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		});
-		log.info("推送完成返回的依据信息：{}" + JsonUtil.toJson(ekpVo));
-		return R.data(200, ekpVo.getData(),"数据推送成功");
+		log.info("推送完成返回的依据信息：" + JsonUtil.toJson(ekpVo));
+		return R.data(200, ekpVo, "数据推送成功");
 	}
 
 	/**
 	 * 通过时间秒毫秒数判断两个时间的间隔
+	 *
 	 * @param date1
 	 * @param date2
 	 * @return
 	 */
-	public static int differentDaysByMillisecond(Date date1, Date date2) {
-		int days = (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
-		return days;
+	public int differentDaysByMillisecond(Date date1, Date date2) {
+		return (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
 	}
-	/*public FormValuesEntity fileText(FormValuesEntity formValuesEntity,ContractFormInfoEntity entity) {
-		StringBuilder downLoadUrl = new StringBuilder();
-		downLoadUrl.append(downloadUrl).append(entity.getTextFilePdf()).append("&token=").append(token().getData());
-		URL url = null;
-		int HttpResult;
-		URLConnection urlconn = null;
-		try {
-			url = new URL(downLoadUrl.toString());
-			urlconn = url.openConnection();
-			urlconn.setConnectTimeout(5 * 1000);
-			urlconn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-			urlconn.connect();
-			HttpURLConnection httpconn = (HttpURLConnection) urlconn;
-			HttpResult = httpconn.getResponseCode();
-			if (HttpResult == HttpURLConnection.HTTP_OK) {
-				InputStream inputStream = urlconn.getInputStream();
-				PDFParser parser = new PDFParser(inputStream);
-				parser.parse();
-				PDDocument document = parser.getPDDocument();
-				int pageCount = document.getNumberOfPages();
-				PDFTextStripper stripper = new PDFTextStripper();
-				String text = stripper.getText(document);
-				formValuesEntity.setFd_multipage(pageCount > 1 ? "y" : "n");
-				int az = text.indexOf("甲方（签章）");
-				int bz = text.indexOf("乙方（签章）");
-				int ay = text.indexOf("甲方(签章)");
-				int by = text.indexOf("乙方(签章)");
-				JSONObject s=new JSONObject();
-				String[] arrays;
-				if((-1!=az&&-1!=bz)){
-					if("1".equals(formValuesEntity.getFd_onetoone())){
-						arrays = new String[]{"乙", "丙", "丁"};
-						s.put("统一集团","甲方（签章）");
-					}else{
-						arrays = new String[]{"甲", "丙", "丁"};
-						s.put("统一集团","乙方（签章）");
-					}
-					for (int i=0;i<entity.getInsert().size();i++) {
-						s.put(entity.getInsert().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方（签章）");
-					}
-					formValuesEntity.setFd_keyword(s.toJSONString());
-				}else if((-1!=ay&&-1!=by)){
-					if("1".equals(formValuesEntity.getFd_onetoone())){
-						arrays = new String[]{"乙", "丙", "丁"};
-						s.put("统一集团","甲方(签章)");
-					}else{
-						arrays = new String[]{"甲", "丙", "丁"};
-						s.put("统一集团","乙方(签章)");
-					}
-					for (int i=0;i<entity.getInsert().size();i++) {
-						s.put(entity.getInsert().get(i).getUnifiedSocialCreditCode(),arrays[i]+"方(签章)");
-					}
-					formValuesEntity.setFd_keyword(s.toJSONString());
-				}
-				document.close();
-				inputStream.close();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return formValuesEntity;
-	}*/
+
+	/**
+	 * 时间格式转换方法
+	 *
+	 * @return
+	 */
+	private static String getDf() {
+		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
+		return df.format(new Date());
+	}
 
 	public FormValuesEntity fileText(FormValuesEntity formValuesEntity, ContractFormInfoEntity entity) {
-		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
-		String date = df.format(new Date());
-		File filePDF = new File(ftlPath + entity.getContractName() + date + ".pdf");
+		File filePDF = new File(ftlPath + entity.getContractName() + getDf() + ".pdf");
 		//建立输出字节流
 		FileOutputStream fos = null;
 		try {
@@ -762,7 +1320,8 @@ public class AbutmentClient implements IAbutmentClient {
 				for (int i = 0; i < entity.getCounterpart().size(); i++) {
 					s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(), arrays[i] + "方（签章）");
 				}
-				formValuesEntity.setFd_keyword(s.toJSONString());
+				//formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
+				formValuesEntity.setFd_keyword(s);
 			} else if ((-1 != ay && -1 != by)) {
 				if ("1".equals(formValuesEntity.getFd_onetoone())) {
 					arrays = new String[]{"乙", "丙", "丁"};
@@ -774,15 +1333,156 @@ public class AbutmentClient implements IAbutmentClient {
 				for (int i = 0; i < entity.getCounterpart().size(); i++) {
 					s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(), arrays[i] + "方(签章)");
 				}
-				formValuesEntity.setFd_keyword(s.toJSONString());
+				//formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
+				formValuesEntity.setFd_keyword(s);
 			}
-			document.close();
 			document.close();
 			inputStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return formValuesEntity;
+	}
+
+	/**
+	 * 多方签章关键字处理
+	 *
+	 * @param formValuesEntity formValuesEntity
+	 * @param entity           entity
+	 * @return FormMultiEntity
+	 */
+	public FormValuesEntity fileTextMulti(FormValuesEntity formValuesEntity, ContractFormInfoEntity entity) {
+		File filePDF = new File(ftlPath + entity.getContractName() + getDf() + ".pdf");
+		//建立输出字节流
+		FileOutputStream fos = null;
+		try {
+			fos = new FileOutputStream(filePDF);
+			fos.write(getUrlFileData(entity.getOtherInformation()));
+			fos.close();
+			InputStream inputStream = new FileInputStream(filePDF);
+			PDFParser parser = new PDFParser(inputStream);
+			parser.parse();
+			PDDocument document = parser.getPDDocument();
+			int pageCount = document.getNumberOfPages();
+			PDFTextStripper stripper = new PDFTextStripper();
+			String text = stripper.getText(document);
+			formValuesEntity.setFd_multipage(pageCount > 1 ? "y" : "n");
+			int az = text.indexOf("甲方（签章）");
+			int bz = text.indexOf("乙方（签章）");
+			int cz = text.indexOf("丙方（签章）");
+			int dz = text.indexOf("丁方（签章）");
+			int ay = text.indexOf("甲方(签章)");
+			int by = text.indexOf("乙方(签章)");
+			int cy = text.indexOf("丙方(签章)");
+			int dy = text.indexOf("丁方(签章)");
+			JSONObject s = new JSONObject();
+			String[] arrays;
+			//（全角） 半角判断--三方
+			boolean threeFull = (-1 != az) && (-1 != bz) && (-1 != cz);
+			//全角 （半角）判断---三方
+			boolean threeHalf = (-1 != ay) && (-1 != by) && (-1 != cy);
+			//（全角） 半角判断--四方
+			boolean fourFull = (-1 != az) && (-1 != bz) && (-1 != cz) && (-1 != dz);
+			//全角 （半角）判断--四方
+			boolean fourHalf = (-1 != ay) && (-1 != by) && (-1 != cy) && (-1 != dy);
+			//给统一集团设置-角色
+			if (formValuesEntity.getFd_multico().size() <= 3) {
+				if ((threeFull)) {
+					if ("1".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "甲方（签章）");
+					} else if ("2".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "乙方（签章）");
+					} else if ("3".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "丙方（签章）");
+					} else {
+						s.put("统一集团", "丁方（签章）");
+					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractCounterpartEntity ce : entity.getCounterpart()) {
+							if (dr.getCounterpartId().equals(String.valueOf(ce.getId()))) {
+								s.put(ce.getUnifiedSocialCreditCode(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
+					formValuesEntity.setFd_keyword(s);
+				} else if ((threeHalf)) {
+					if ("1".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "甲方(签章)");
+					} else if ("2".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "乙方(签章)");
+					} else if ("3".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "丙方(签章)");
+					} else {
+						s.put("统一集团", "丁方(签章)");
+					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractCounterpartEntity ce : entity.getCounterpart()) {
+							if (dr.getCounterpartId().equals(String.valueOf(ce.getId()))) {
+								s.put(ce.getUnifiedSocialCreditCode(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
+					formValuesEntity.setFd_keyword(s);
+				}
+			} else {
+				if ((fourFull)) {
+					if ("1".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "甲方（签章）");
+					} else if ("2".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "乙方（签章）");
+					} else if ("3".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "丙方（签章）");
+					} else {
+						s.put("统一集团", "丁方（签章）");
+					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractCounterpartEntity ce : entity.getCounterpart()) {
+							if (dr.getCounterpartId().equals(String.valueOf(ce.getId()))) {
+								s.put(ce.getUnifiedSocialCreditCode(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
+					formValuesEntity.setFd_keyword(s);
+				} else if ((fourHalf)) {
+					if ("1".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "甲方(签章)");
+					} else if ("2".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "乙方(签章)");
+					} else if ("3".equals(formValuesEntity.getFd_onetoone())) {
+						s.put("统一集团", "丙方(签章)");
+					} else {
+						s.put("统一集团", "丁方(签章)");
+					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractCounterpartEntity ce : entity.getCounterpart()) {
+							if (dr.getCounterpartId().equals(String.valueOf(ce.getId()))) {
+								s.put(ce.getUnifiedSocialCreditCode(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
+					formValuesEntity.setFd_keyword(s);
+				}
+			}
+			document.close();
+			inputStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return formValuesEntity;
+	}
+
+	public static String deleteCharString0(String sourceString, char chElemData, char chElemDate1, char chElemDate2) {
+		StringBuilder deleteString = new StringBuilder();
+		for (int i = 0; i < sourceString.length(); i++) {
+			if (sourceString.charAt(i) != chElemData && sourceString.charAt(i) != chElemDate1 && sourceString.charAt(i) != chElemDate2) {
+				deleteString.append(sourceString.charAt(i));
+			}
+		}
+		return deleteString.toString();
 	}
 
 	public byte[] getUrlFileData(String fileUrl) {
@@ -823,6 +1523,22 @@ public class AbutmentClient implements IAbutmentClient {
 			log.error(e.getMessage());
 		}
 		return R.data(docVo);
+	}
+
+	@Override
+	@GetMapping(SIGNATURE_QUERY_INFO)
+	public R<AsDictVo> querySigatureInfo(AsDict entity) {
+		AsDictVo sigVo = null;
+		try {
+			String token = iAsService.getToken();
+			if (StrUtil.isNotEmpty(token)) {
+				sigVo = iAsService.getDocInfo(token).getData();
+
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return R.data(200, sigVo, "数据获取成功");
 	}
 
 	@Override
@@ -947,12 +1663,14 @@ public class AbutmentClient implements IAbutmentClient {
 	/**
 	 * 增量更新组织及人员信息数据
 	 *
+	 * @param param
 	 * @return
 	 */
 	@Override
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
-	public R<List<OrganizationVo>> getOrganizationInfoIncrement() {
-		return R.data(iOrganizationService.getOrganizationInfoIncrement());
+	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
+		log.info("查看查询时间的参数：" + param);
+		return iOrganizationService.getOrganizationInfoIncrement(param);
 	}
 
 	/**
@@ -964,20 +1682,78 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
+	@ApiLog("相对方定时任务触发")
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		CounterpartVo counterpartVo = null;
 		String token = counterpartService.getToken();
-		if (StrUtil.isNotEmpty(token)) {
-			counterpartVo=counterpartService.getInsOrUp(entity).getData();
-		}else {
-			return R.data(404,null,"获取token失败！");
+		log.info("获取相对方的token：" + JsonUtil.toJson(token));
+		entity.setToken(token);
+		if (StrUtil.isEmpty(entity.getToken())) {
+			return R.data(404, null, "获取token失败！");
 		}
-		String counterpart = contractClient.inOrUp(counterpartVo).getData();
-		if ("success".equals(counterpart)) {
-			return R.data(200,counterpartVo,"获取数据成功！");
-		} else {
-			return R.data(HttpStatus.INTERNAL_SERVER_ERROR.value(), null, "存储失败！");
+		counterpartVo = counterpartService.getInsOrUp(entity).getData();
+		if (Func.isNull(counterpartVo)) {
+			return R.data(500, null, "获取数据失败！");
 		}
+		if (Func.isEmpty(counterpartVo.getInsert()) & Func.isEmpty(counterpartVo.getUpdate())) {
+			return R.data(200, counterpartVo, "获取数据成功,暂时没有需要更新的数据！");
+		}
+		log.info("更新到的向对方数据：" + JsonUtil.toJson(counterpartVo));
+		List<ContractCounterpartEntity> listInsert = new ArrayList<>();
+		List<ContractCounterpartEntity> listUpdate = new ArrayList<>();
+		counterpartVo.getInsert().forEach(i -> {
+			ContractCounterpartEntity in = new ContractCounterpartEntity();
+			in.setName(i.getCustNm());
+			in.setUnifiedSocialCreditCode(i.getBusinessId());
+			in.setOrganizationCode(i.getBusinessId());
+			in.setElectronicSealSerialId(i.getBusinessId());
+			in.setCreateUser(1374895070913761282L);
+			in.setUpdateUser(1374895070913761282L);
+			in.setCreateDept(1367272379264299021L);
+			//更名每月检视(编号)
+			in.setRenameReview(simpleDateFormat.format(new Date()));
+			//半角名称
+			in.setHalfWidthName(i.getCustNm());
+			List<ContractCounterpartEntity> entityList = contractClient.selectByName(in.getUnifiedSocialCreditCode()).getData();
+			if (Func.isEmpty(entityList)) {
+				listInsert.add(in);
+			} else {
+				listUpdate.add(in);
+			}
+		});
+		counterpartVo.getUpdate().forEach(u -> {
+			ContractCounterpartEntity up = new ContractCounterpartEntity();
+			up.setName(u.getCustNm());
+			up.setUnifiedSocialCreditCode(u.getBusinessId());
+			up.setOrganizationCode(u.getBusinessId());
+			up.setElectronicSealSerialId(u.getBusinessId());
+			up.setCreateUser(1374895070913761282L);
+			up.setUpdateUser(1374895070913761282L);
+			up.setCreateDept(1367272379264299021L);
+			//更名每月检视(编号)
+			up.setRenameReview(simpleDateFormat.format(new Date()));
+			//半角名称
+			up.setHalfWidthName(u.getCustNm());
+			List<ContractCounterpartEntity> entityList = contractClient.selectByName(up.getUnifiedSocialCreditCode()).getData();
+			if (Func.isNotEmpty(entityList) && Func.isNotEmpty(entityList.get(0).getId())) {
+				listUpdate.add(up);
+			} else {
+				listInsert.add(up);
+			}
+		});
+		if (Func.isNotEmpty(listInsert)) {
+			R<List<ContractCounterpartEntity>> listIn = contractClient.saveBatch(listInsert);
+			log.info("新增的数据：" + JsonUtil.toJson(listIn));
+		}
+		if (Func.isNotEmpty(listUpdate)) {
+			R<List<ContractCounterpartEntity>> listUp = contractClient.saveOrUpdate(listUpdate);
+			log.info("更新的数据：" + JsonUtil.toJson(listUp));
+		}
+		log.info("新增的数据：" + JsonUtil.toJson(listInsert));
+		log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
+		log.info("counterpartVo：" + JsonUtil.toJson(counterpartVo));
+		return R.data(200, counterpartVo, "获取数据成功！");
 	}
 
 	@Override

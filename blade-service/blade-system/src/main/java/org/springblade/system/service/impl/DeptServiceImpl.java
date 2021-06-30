@@ -28,7 +28,6 @@ import org.springblade.core.tool.node.ForestNodeMerger;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.core.tool.utils.StringPool;
 import org.springblade.system.entity.Dept;
-import org.springblade.system.entity.Post;
 import org.springblade.system.mapper.DeptMapper;
 import org.springblade.system.service.IDeptService;
 import org.springblade.system.vo.DeptVO;
@@ -202,7 +201,7 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 		if (Func.isNotEmpty(dept)) {
 			return dept.getId();
 		}
-		return null;
+		return 0L;
 	}
 
 	@Override

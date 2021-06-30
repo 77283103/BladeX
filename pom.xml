@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!--suppress ALL -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -16,9 +17,9 @@
         <maven.plugin.version>3.8.1</maven.plugin.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
+        <project.org.projectlombok>1.18.10</project.org.projectlombok>
         <flowable.version>6.4.2</flowable.version>
-
+        <project.cn.hutool>5.6.5</project.cn.hutool>
         <spring.boot.version>2.1.13.RELEASE</spring.boot.version>
         <spring.cloud.version>Greenwich.SR5</spring.cloud.version>
         <spring.platform.version>Cairo-SR8</spring.platform.version>
@@ -90,10 +91,15 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>${project.org.projectlombok}</version>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${project.cn.hutool}</version>
+        </dependency>
     </dependencies>
-
     <build>
         <finalName>${project.name}</finalName>
         <resources>
@@ -164,7 +170,7 @@
                                     <!--suppress UnresolvedMavenProperty -->
                                     <copy overwrite="true"
                                           tofile="${session.executionRootDirectory}/target/${project.artifactId}.jar"
-                                          file="${project.build.directory}/${project.artifactId}.jar" />
+                                          file="${project.build.directory}/${project.artifactId}.jar"/>
                                 </tasks>
                             </configuration>
                         </execution>
@@ -195,6 +201,24 @@
             </plugin>
         </plugins>
     </build>
+    <developers>
+        <developer>
+            <id>xhb</id>
+            <name>xuhongbin</name>
+            <email>outlookme@163.com</email>
+        </developer>
+    </developers>
+    <!-- 发布项目到 Nexus -->
+    <distributionManagement>
+        <repository>
+            <id>nexus-releases</id>
+            <url>http://nexus.funtl.com/repository/maven-releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>nexus-snapshots</id>
+            <url>http://nexus.funtl.com/repository/maven-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
     <repositories>
         <repository>
             <id>aliyun-repos</id>

@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class CounterpartController {
 	private final ICounterpartService counterpartService;
-	private final IContractClient contractClient;
 
 	@SneakyThrows
 	@PostMapping("/inOrUp")
@@ -38,9 +37,9 @@ public class CounterpartController {
 			counterpartVo.setInsert(counterpartService.getInsert(entity));
 			counterpartVo.setUpdate(counterpartService.getUpdate(entity));
 		}
-		String counterpart = contractClient.inOrUp(counterpartVo).getData();
-		if ("success".equals(counterpart)) {
-			return R.data(200,counterpart,"储存成功！");
+		boolean counterpart = counterpartService.insOrUp(counterpartVo);
+		if (counterpart){
+			return R.data(200,"success","储存成功！");
 		} else {
 			return R.data(404, null, "存储失败！");
 		}

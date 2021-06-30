@@ -99,7 +99,7 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 */
 	ContractFormInfoEntity selectById(Long id);
 	/**
-	 * 合同详情
+	 * 查询实体合同合同对应状态的信息
 	 * @param status
 	 * @return
 	 */
@@ -176,9 +176,8 @@ public interface ContractFormInfoMapper extends BaseMapper<ContractFormInfoEntit
 	 *统计合同导出次数 修改下载状态
 	 * @param id 合同id
 	 * @param fileExportCount 下载次数
-	 * @param fileExportCategory 下载状态
 	 */
-	boolean textExportCount(Long id,Integer fileExportCount,String  fileExportCategory);
+	boolean textExportCount(Long id,Integer fileExportCount,@Param("fileExportCategory") Integer fileExportCategory);
 
 	/**
 	 * 合同大类金额

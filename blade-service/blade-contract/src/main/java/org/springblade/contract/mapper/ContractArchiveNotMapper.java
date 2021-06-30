@@ -29,4 +29,10 @@ public interface ContractArchiveNotMapper extends BaseMapper<ContractArchiveNotE
 	 * @return
 	 */
 	List<ContractArchiveNotEntity> selectArchiveNotById(Long id);
+	/**
+	 *根据合同id查询未归档最新一条信息
+	 * @param id
+	 * @return
+	 */
+	ContractArchiveNotEntity selectArchiveNotLastById(Long id);
 }

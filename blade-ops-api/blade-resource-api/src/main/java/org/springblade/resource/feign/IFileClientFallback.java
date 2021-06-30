@@ -1,12 +1,11 @@
 package org.springblade.resource.feign;
 
 import org.springblade.core.tool.api.R;
-import org.springblade.resource.vo.FileVO;
+import org.springblade.resource.entity.FileEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -29,6 +28,11 @@ public class IFileClientFallback implements IFileClient {
 
 	@Override
 	public R getByIds(String ids) {
+		return R.fail("远程调用失败");
+	}
+
+	@Override
+	public R<FileEntity> getById(Long id) {
 		return R.fail("远程调用失败");
 	}
 }

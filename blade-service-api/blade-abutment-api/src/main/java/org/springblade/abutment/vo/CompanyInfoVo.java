@@ -4,6 +4,11 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Comparator;
+
+/**
+ * @author xhbbo
+ */
 @Data
 @ApiModel(value = "查询企业信息返回数据")
 public class CompanyInfoVo {
@@ -13,4 +18,6 @@ public class CompanyInfoVo {
 	private String name;
 	@ApiModelProperty(value = "申请电子印章是否成功（1：成功，0：失败）")
 	private String available;
+	@ApiModelProperty(value = "返回参数")
+	private Company company;
 }

@@ -55,8 +55,15 @@ public class UserClient implements IUserClient {
 	}
 
 	@Override
+	@GetMapping(USER_INFO_BY_USER_NAME)
 	public R<User> userInfoByUserName(String userName) {
 		return R.data(service.getByUserName(userName));
+	}
+
+	@Override
+	@GetMapping(USER_INFO_BY_REAL_NAME)
+	public R<List<User>> getByRealName(String realName) {
+		return R.data(service.getByRealName(realName));
 	}
 
 	@Override
@@ -81,6 +88,12 @@ public class UserClient implements IUserClient {
 	@PostMapping(SAVE_USER)
 	public R<Boolean> saveUser(@RequestBody UserDTO user) {
 		return R.data(service.submit(user));
+	}
+
+	@Override
+	@PostMapping(SAVE_BACH_USER)
+	public R<Boolean> saveBatchUser(List<User> user) {
+		return R.data(service.saveOrUpdateBatch(user));
 	}
 
 	@Override

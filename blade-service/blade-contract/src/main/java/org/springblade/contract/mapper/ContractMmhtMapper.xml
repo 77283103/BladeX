@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractMmhtMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractMmhtResultMap" type="org.springblade.contract.entity.ContractMmhtEntity">
+        <result column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contact_party_a_a" property="contactPartyAA"/>
+        <result column="contact_party_a_b" property="contactPartyAB"/>
+        <result column="contact_party_a_addr" property="contactPartyAAddr"/>
+        <result column="contact_party_b_addr" property="contactPartyBAddr"/>
+        <result column="contact_yuan_sma" property="contactYuanSma"/>
+        <result column="contact_yuan_big" property="contactYuanBig"/>
+        <result column="contact_bzbz" property="contactBzbz"/>
+        <result column="contact_jhss" property="contactJhss"/>
+        <result column="contact_jhdz" property="contactJhdz"/>
+        <result column="contact_ysff" property="contactYsff"/>
+        <result column="contact_cdf" property="contactCdf"/>
+        <result column="contact_bcdf" property="contactBcdf"/>
+        <result column="contact_fycdf" property="contactFycdf"/>
+        <result column="contact_tbyd" property="contactTbyd"/>
+        <result column="contact_file" property="contactFile"/>
+        <result column="contact_specil" property="contactSpecil"/>
+        <result column="contact_when" property="contactWhen"/>
+        <result column="contact_day" property="contactDay"/>
+        <result column="contact_next" property="contactNext"/>
+        <result column="contact_dayt" property="contactDayt"/>
+        <result column="contact_hour" property="contactHour"/>
+        <result column="contact_hourt" property="contactHourt"/>
+        <result column="contact_specilf" property="contactSpecilf"/>
+        <result column="contact_dayf" property="contactDayf"/>
+        <result column="contact_days" property="contactDays"/>
+        <result column="contact_dayx" property="contactDayx"/>
+        <result column="contact_percent" property="contactPercent"/>
+        <result column="contact_specilu" property="contactSpecilu"/>
+        <result column="contact_typeg" property="contactTypeg"/>
+        <result column="contact_types" property="contactTypes"/>
+        <result column="contact_dayn" property="contactDayn"/>
+        <result column="contact_dayk" property="contactDayk"/>
+        <result column="contact_pencenty" property="contactPencenty"/>
+        <result column="contact_acceptw" property="contactAcceptw"/>
+        <result column="contactPencentr" property="contactPencentr"/>
+        <result column="contact_accept" property="contactAccept"/>
+        <result column="contact_pencente" property="contactPencente"/>
+        <result column="contact_dayp" property="contactDayp"/>
+        <result column="contact_pencentw" property="contactPencentw"/>
+        <result column="contact_pencentq" property="contactPencentq"/>
+        <result column="contact_quaty" property="contactQuaty"/>
+        <result column="contact_lawtime" property="contactLawtime"/>
+        <result column="contact_elsytype" property="contactElsytype"/>
+        <result column="contact_bbank" property="contactBbank"/>
+        <result column="contact_bname" property="contactBname"/>
+        <result column="contact_bnum" property="contactBnum"/>
+        <result column="contact_month" property="contactMonth"/>
+        <result column="contact_monthq" property="contactMonthq"/>
+        <result column="contact_monthw" property="contactMonthw"/>
+        <result column="contact_monthe" property="contactMonthe"/>
+        <result column="contact_monthr" property="contactMonthr"/>
+        <result column="contact_montht" property="contactMontht"/>
+        <result column="contact_monthy" property="contactMonthy"/>
+        <result column="contact_monthyy" property="contactMonthyy"/>
+        <result column="contact_monthu" property="contactMonthu"/>
+        <result column="contact_monthi" property="contactMonthi"/>
+        <result column="contact_montho" property="contactMontho"/>
+        <result column="contact_monthp" property="contactMonthp"/>
+        <result column="contact_montha" property="contactMontha"/>
+        <result column="contact_months" property="contactMonths"/>
+        <result column="contact_monthd" property="contactMonthd"/>
+        <result column="contact_monthf" property="contactMonthf"/>
+        <result column="contact_party_a_place" property="contactPartyAPlace"/>
+        <result column="contact_party_b_place" property="contactPartyBPlace"/>
+        <result column="contact_party_a_person" property="contactPartyAPerson"/>
+        <result column="contact_party_b_person" property="contactPartyBPerson"/>
+        <result column="contact_party_a_phone" property="contactPartyAPhone"/>
+        <result column="contact_party_b_phone" property="contactPartyBPhone"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contact_party_a_a,
+        contact_party_a_b,
+        contact_party_a_addr,
+        contact_party_b_addr,
+        contact_yuan_sma,
+        contact_yuan_big,
+        contact_bzbz,
+        contact_jhss,
+        contact_jhdz,
+        contact_ysff,
+        contact_cdf,
+        contact_bcdf,
+        contact_fycdf,
+        contact_tbyd,
+        contact_file,
+        contact_specil,
+        contact_when,
+        contact_day,
+        contact_next,
+        contact_dayt,
+        contact_hour,
+        contact_hourt,
+        contact_specilf,
+        contact_dayf,
+        contact_days,
+        contact_dayx,
+        contact_percent,
+        contact_specilu,
+        contact_typeg,
+        contact_types,
+        contact_dayn,
+        contact_dayk,
+        contact_pencenty,
+        contact_acceptw,
+        contactPencentr,
+        contact_accept,
+        contact_pencente,
+        contact_dayp,
+        contact_pencentw,
+        contact_pencentq,
+        contact_quaty,
+        contact_lawtime,
+        contact_elsytype,
+        contact_bbank,
+        contact_bname,
+        contact_bnum,
+        contact_month,
+        contact_monthq,
+        contact_monthw,
+        contact_monthe,
+        contact_monthr,
+        contact_montht,
+        contact_monthy,
+        contact_monthyy,
+        contact_monthu,
+        contact_monthi,
+        contact_montho,
+        contact_monthp,
+        contact_montha,
+        contact_months,
+        contact_monthd,
+        contact_monthf,
+        contact_party_a_place,
+        contact_party_b_place,
+        contact_party_a_person,
+        contact_party_b_person,
+        contact_party_a_phone,
+        contact_party_b_phone
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractMmhtResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_mmht
+        WHERE is_deleted = 0
+    </select>
+</mapper>

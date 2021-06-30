@@ -10,8 +10,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springblade.core.mp.base.BaseEntity;
 
-import java.math.BigDecimal;
-
 
 /**
  * 生产类：加工承揽合同（代工合同）关联表2 实体类
@@ -32,7 +30,7 @@ public class SclConstructionProject2Entity extends BaseEntity {
 	 * 序号
 	 */
     @ApiModelProperty(value="序号")
-	private BigDecimal serialNumber;
+	private String serialNumber;
 	/**
 	 * 原/物料
 	 */

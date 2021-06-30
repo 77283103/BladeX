@@ -22,6 +22,7 @@
         <result column="counterpart_id" property="counterpartId"/>
         <result column="counterpart_identity" property="counterpartIdentity"/>
         <result column="counterpart_name" property="counterpartName"/>
+        <result column="subsidiary_person" property="subsidiaryPerson"/>
         <result column="factories" property="factories"/>
         <result column="create_user" property="createUser"/>
         <result column="create_dept" property="createDept"/>
@@ -50,7 +51,7 @@
         return_condition,
         counterpart_id,
         counterpart_identity,
-        counterpart_name,
+        counterpart_name,subsidiary_person,
         factories,
         create_user,
         create_dept,
@@ -60,16 +61,31 @@
         status,
         is_deleted
     </sql>
-    <!-- 一般超期 -->
+
     <select id="pageList" resultMap="contractBondResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+        <include refid="baseColumnList"></include>
         FROM contract_bond a
         WHERE a.is_deleted = 0
-        AND ((SELECT count(*) FROM contract_bond_setting b  where b.bond_id=a.id)>=1)
+        AND ((SELECT count(*) FROM contract_bond_setting b where b.bond_id=a.id)>=1)
         AND a.is_not_bond in('0','2')
         <if test="contractBond.bondName != null and contractBond.bondName != ''">
-            AND bond_name like concat('%',#{contractBond.bondName},'%')
+            AND a.bond_name like concat('%',#{contractBond.bondName},'%')
+        </if>
+        -- 相对方ID
+        <if test="contractBond.counterpart.size != 0">
+            <foreach collection="contractBond.counterpart" item="counterpart_id" open="and a.counterpart_id in ("
+                     separator="," close=")">
+                #{counterpart_id}
+            </foreach>
+        </if>
+        -- 判断合同类型查询对应类型的保证金数据 独立 范本
+        <if test="contractBond.contractSoure =='10' or contractBond.contractSoure =='30'">
+            AND a.counterpart_identity IS NULL
+        </if>
+        -- 判断合同类型查询对应类型的保证金数据 多方
+        <if test="contractBond.contractSoure =='20'">
+            AND a.counterpart_identity IS NOT NULL
         </if>
     </select>
     <!-- 严重超期 -->
@@ -142,21 +158,25 @@
 
     <!--删除关联保证金-->
     <delete id="deleteBond" parameterType="java.lang.Long">
-          DELETE FROM contract_bond_setting  WHERE contract_id=#{id}
+        DELETE
+        FROM contract_bond_setting
+        WHERE contract_id = #{id}
     </delete>
 
     <!--删除保证金脏数据-->
     <delete id="deleteById" parameterType="java.lang.Long">
-          DELETE FROM contract_bond  WHERE id=#{id}
+        DELETE
+        FROM contract_bond
+        WHERE id = #{id}
     </delete>
 
     <!--根据合同id查询相对方集合-->
     <select id="selectByIds" resultMap="contractBondResultMap">
         SELECT
-        <include refid="baseColumnList"> </include>
+        <include refid="baseColumnList"></include>
         FROM contract_bond
         WHERE is_deleted = 0
         AND
-        id IN (SELECT c.bond_id FROM  contract_bond_setting c WHERE c.contract_id = #{id})
+        id IN (SELECT c.bond_id FROM contract_bond_setting c WHERE c.contract_id = #{id})
     </select>
 </mapper>

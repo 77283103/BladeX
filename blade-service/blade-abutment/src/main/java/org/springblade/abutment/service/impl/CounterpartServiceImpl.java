@@ -4,36 +4,39 @@ import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.methods.HttpHead;
+import lombok.extern.log4j.Log4j2;
 import org.springblade.abutment.entity.CounterpartEntity;
 import org.springblade.abutment.service.ICounterpartService;
 import org.springblade.abutment.vo.CounterpartVo;
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 相对方数据实现类
  * @author xhbbo
  */
-@Slf4j
+@Log4j2
 @Service
 public class CounterpartServiceImpl implements ICounterpartService{
 	@Autowired
 	private IContractClient contractClient;
-	@Value("${api.doc.tokenUrl}")
+	@Value("${api.doc.Token}")
 	private String tokenUrl;
 	@Value("${api.doc.counterpartUrl}")
 	private String counterpartUrl;
-	@Value("${api.doc.username}")
+	@Value("${api.doc.Username}")
 	private String userName;
-	@Value("${api.doc.password}")
+	@Value("${api.doc.Password}")
 	private String password;
 
 	/**
@@ -48,7 +51,7 @@ public class CounterpartServiceImpl implements ICounterpartService{
 		param.set("password", this.password);
 		JSONObject tokenJson = JSONUtil.parseObj(HttpUtil.createPost(this.tokenUrl).body(param.toString(),"application/json").execute().body());
 		log.info(tokenJson.toString());
-		return "success".equals(tokenJson.getStr("status")) ? tokenJson.getStr("token") : null;
+		return "success".equals(tokenJson.getStr("msg")) ? tokenJson.getStr("token") : null;
 	}
 
 	/**
@@ -78,12 +81,14 @@ public class CounterpartServiceImpl implements ICounterpartService{
 
 	@Override
 	public R<CounterpartVo> getInsOrUp(CounterpartEntity entity) throws Exception {
+		log.info("查看token是否传进来："+JSONUtil.toJsonStr(entity));
 		CounterpartVo vo=new CounterpartVo();
 		JSONObject docInfoJson = JSONUtil.parseObj(HttpUtil.createPost(this.counterpartUrl).body(JSONUtil.toJsonStr(entity), "application/json").execute().body());
-		log.info(docInfoJson.toString());
+		log.info(""+docInfoJson.toString());
 		if ("success".equals(docInfoJson.getStr("msg"))){
 			vo.setInsert(docInfoJson.get("insert", List.class));
 			vo.setUpdate(docInfoJson.get("update", List.class));
+			vo=JSONUtil.toBean(docInfoJson,CounterpartVo.class);
 			return R.data(vo);
 		}else {
 			return R.data(HttpStatus.NOT_FOUND.value(),null,"未查到数据");
@@ -93,8 +98,33 @@ public class CounterpartServiceImpl implements ICounterpartService{
 
 	@SneakyThrows
 	@Override
-	public boolean insOrUp(CounterpartEntity entity) {
-
+	public boolean insOrUp(CounterpartVo counterpartVo) {
+		List<ContractCounterpartEntity> listInsert = new ArrayList<>();
+		List<ContractCounterpartEntity> listUpdate = new ArrayList<>();
+		counterpartVo.getInsert().forEach(i -> {
+			ContractCounterpartEntity in = new ContractCounterpartEntity();
+			in.setName(i.getCustNm());
+			in.setUnifiedSocialCreditCode(i.getBusinessId());
+			in.setOrganizationCode(i.getBusinessId());
+			listInsert.add(in);
+		});
+		log.info("新增的数据：" + JsonUtil.toJson(listInsert));
+		contractClient.saveBatch(listInsert);
+		counterpartVo.getUpdate().forEach(u -> {
+			ContractCounterpartEntity up = new ContractCounterpartEntity();
+			up.setName(u.getCustNm());
+			up.setUnifiedSocialCreditCode(u.getBusinessId());
+			up.setOrganizationCode(u.getBusinessId());
+			listUpdate.add(up);
+		});
+		log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
+		listUpdate.forEach(l -> {
+			List<ContractCounterpartEntity> entityList=contractClient.selectByName(l.getUnifiedSocialCreditCode()).getData();
+			if (Func.isNotEmpty(entityList)){
+				l.setId(entityList.get(0).getId());
+				contractClient.updateById(l);
+			}
+		});
 		return false;
 	}
 }

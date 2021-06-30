@@ -6,6 +6,7 @@
                type="org.springblade.contract.entity.ContractBorrowApplicationEntity">
         <result column="id" property="id"/>
         <result column="application_id" property="applicationId"/>
+        <result column="applicant_code" property="applicantCode"/>
         <result column="applicant" property="applicant"/>
         <result column="application_department" property="applicationDepartment"/>
         <result column="data_type" property="dataType"/>
@@ -29,6 +30,7 @@
         id,
         application_id,
         applicant,
+        applicant_code,
         application_department,
         data_type,
         borrow_cycle_start,
@@ -69,10 +71,10 @@
             AND borrow_mode = #{contractBorrowApplication.borrowMode}
         </if>
         <if test="contractBorrowApplication.borrowCycleStartString != null">
-           AND borrow_cycle_start <![CDATA[>=]]> #{contractBorrowApplication.borrowCycleStartString}
+            AND borrow_cycle_start <![CDATA[>=]]> #{contractBorrowApplication.borrowCycleStartString}
         </if>
         <if test="contractBorrowApplication.borrowCycleEndString != null">
-           AND borrow_cycle_end  <![CDATA[<=]]> #{contractBorrowApplication.borrowCycleEndString}
+            AND borrow_cycle_end  <![CDATA[<=]]> #{contractBorrowApplication.borrowCycleEndString}
         </if>
     </select>
 
@@ -88,6 +90,8 @@
     </select>
     <!--修改借阅申请信息状态-->
     <update id="updateBorrowStatusById">
-        UPDATE contract_borrow_application SET borrow_status = #{borrowStatus} WHERE id = #{id}
+        UPDATE contract_borrow_application
+        SET borrow_status = #{borrowStatus}
+        WHERE id = #{id}
     </update>
 </mapper>

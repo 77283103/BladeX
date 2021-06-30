@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.ContractWbhtMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="contractWbhtResultMap" type="org.springblade.contract.entity.ContractWbhtEntity">
+        <result column="id" property="id"/>
+        <result column="status" property="status"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+        <result column="contact_party_a" property="contactPartyA"/>
+        <result column="contact_party_b" property="contactPartyB"/>
+        <result column="contact_party_a_addr" property="contactPartyAAddr"/>
+        <result column="contact_party_b_addr" property="contactPartyBAddr"/>
+        <result column="contact_party_a_email" property="contactPartyAEmail"/>
+        <result column="contact_party_b_email" property="contactPartyBEmail"/>
+        <result column="contact_addr" property="contactAddr"/>
+        <result column="contact_time_start" property="contactTimeStart"/>
+        <result column="contact_time_end" property="contactTimeEnd"/>
+        <result column="contact_time" property="contactTime"/>
+        <result column="contact_else_place" property="contactElsePlace"/>
+        <result column="contact_yuan" property="contactYuan"/>
+        <result column="contact_percent" property="contactPercent"/>
+        <result column="contact_account_bank" property="contactAccountBank"/>
+        <result column="contact_account_name" property="contactAccountName"/>
+        <result column="contact_account_num" property="contactAccountNum"/>
+        <result column="contact_percent_t" property="contactPercentT"/>
+        <result column="contact_percent_f" property="contactPercentF"/>
+        <result column="contact_times" property="contactTimes"/>
+        <result column="contact_party_a_person" property="contactPartyAPerson"/>
+        <result column="contact_party_b_person" property="contactPartyBPerson"/>
+        <result column="contact_party_a_phone" property="contactPartyAPhone"/>
+        <result column="contact_party_b_phone" property="contactPartyBPhone"/>
+        <result column="contact_fa_bao_fang" property="contactFaBaoFang"/>
+        <result column="contact_cheng_bao_fang" property="contactChengBaoFang"/>
+        <result column="contact_fa_ding_place" property="contactFaDingPlace"/>
+        <result column="contact_value" property="contactValue"/>
+        <result column="contract_leader" property="contractLeader"/>
+        <result column="contract_people" property="contractPeople"/>
+        <result column="annex" property="annex"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        status,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept,
+        contact_party_a,
+        contact_party_b,
+        contact_party_a_addr,
+        contact_party_b_addr,
+        contact_party_a_email,
+        contact_party_b_email,
+        contact_addr,
+        contact_time_start,
+        contact_time_end,
+        contact_time,
+        contact_else_place,
+        contact_yuan,
+        contact_percent,
+        contact_account_bank,
+        contact_account_name,
+        contact_account_num,
+        contact_percent_t,
+        contact_percent_f,
+        contact_times,
+        contact_party_a_person,
+        contact_party_b_person,
+        contact_party_a_phone,
+        contact_party_b_phone,
+        contact_fa_bao_fang,
+        contact_cheng_bao_fang,
+        contact_fa_ding_place,
+        contact_value,
+        contract_leader,
+        contract_people,
+        annex
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="contractWbhtResultMap">
+        SELECT
+            <include refid="baseColumnList"></include>
+        FROM contract_wbht
+        WHERE is_deleted = 0
+    </select>
+</mapper>

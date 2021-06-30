@@ -49,6 +49,7 @@
         <result column="contract_form" property="contractForm"/>
         <result column="seal_name" property="sealName"/>
         <result column="seal_type" property="sealType"/>
+        <result column="draft_type" property="draftType"/>
         <result column="seal_number" property="sealNumber"/>
         <result column="file_time" property="fileTime"/>
         <result column="json" property="json"/>
@@ -60,6 +61,8 @@
         <result column="a_bank_number" property="aBankNumber"/>
         <result column="a_bank_name" property="aBankName"/>
         <result column="a_account_name" property="aAccountName"/>
+        <result column="ekp_number" property="ekpNumber"/>
+        <result column="file_person" property="filePerson"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -110,6 +113,7 @@
         contract_form,
         seal_name,
         seal_type,
+        draft_type,
         seal_number,
         file_time,
         contract_template_id,
@@ -122,7 +126,9 @@
         a_email,
         a_bank_number,
         a_bank_name,
-        a_account_name
+        a_account_name,
+        ekp_number,
+        file_person
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">
@@ -196,7 +202,8 @@
         <include refid="baseColumnList"/>
         FROM contract_form_info
         WHERE is_deleted=0
-        AND contract_status=#{status}
+        AND contract_status IN (#{status})
+        AND contract_form IN (2,4)
     </select>
     <!--  变更合同详情  -->
     <select id="selectByChangeId" resultMap="formInfoResultMap">
@@ -298,6 +305,13 @@
                 #{seal_name}
             </foreach>
         </if>
+--       用印申请人模糊查询
+        <if test="contractFormInfo.createUserName != null and contractFormInfo.createUserName != ''">
+            <foreach collection="contractFormInfo.realName" item="create_user" open="and create_user in ("
+                     separator="," close=")">
+                #{create_user}
+            </foreach>
+        </if>
 --         合同审批状态
         <if test="contractFormInfo.submitStatus != null and contractFormInfo.submitStatus != ''">
             AND submit_status =#{contractFormInfo.submitStatus}
@@ -310,7 +324,23 @@
         <if test="contractFormInfo.contractName != null and contractFormInfo.contractName != ''">
             AND contract_name like concat('%', #{contractFormInfo.contractName}, '%')
         </if>
---         相对方名称查询
+--         合同名称查询
+        <if test="contractFormInfo.contractNumber != null and contractFormInfo.contractNumber != ''">
+        AND contract_number like concat('%', #{contractFormInfo.contractNumber}, '%')
+        </if>
+        --         合同负责人
+        <if test="contractFormInfo.personContract != null and contractFormInfo.personContract != ''">
+            AND person_contract like concat('%', #{contractFormInfo.personContract}, '%')
+        </if>
+        --         用印申请人
+        <if test="contractFormInfo.createUser != null and contractFormInfo.createUser != ''">
+            AND create_user like concat('%', #{contractFormInfo.createUser}, '%')
+        </if>
+        --         用印申请人
+        <if test="contractFormInfo.ekpNumber != null and contractFormInfo.ekpNumber != ''">
+            AND ekp_number like concat('%', #{contractFormInfo.ekpNumber}, '%')
+        </if>
+        --         相对方名称查询
         <if test="contractFormInfo.counterpartName != null and contractFormInfo.counterpartName != ''">
             AND id IN(SELECT contract_id FROM contract_counterpart_setting WHERE counterpart_id IN(SELECT id FROM
             contract_counterpart WHERE `name` like concat('%', #{contractFormInfo.counterpartName}, '%')))
@@ -628,7 +658,6 @@
             AND DATE_FORMAT(info.create_time,'%Y') BETWEEN #{contractFormInfo.yearStart} and #{contractFormInfo.yearEnd}
         </if>
         GROUP BY info.contract_big_category
-        ORDER BY info.update_time DESC
     </select>
     <!--根據支付類型計算合同金額-->
     <select id="payTypeAmount" resultType="java.math.BigDecimal">

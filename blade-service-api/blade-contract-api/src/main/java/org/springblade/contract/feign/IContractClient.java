@@ -1,5 +1,6 @@
 package org.springblade.contract.feign;
 
+import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,13 +29,48 @@ import java.util.List;
 public interface IContractClient {
 
 	String API_PREFIX = "/client";
+	String SAVEBATCH=API_PREFIX+"/savebatch";
+	String SAVEORUPDATE=API_PREFIX+"/save_or_update";
+	String UPDATEBYID=API_PREFIX+"/updatebyid";
+	String SELECTBYNAME=API_PREFIX+"/selectbyname";
 	String CONTRACT = API_PREFIX + "/contractFormInfo";
 	String STATUS=API_PREFIX +"/signingNot";
 	String TEMPLATE_UPDATE = API_PREFIX + "/template_update";
 	String CHOOSE=API_PREFIX + "/getChooseList";
 	String CONTRACT_SAVE = API_PREFIX + "/contractSave";
 	String TEMPLATE_GET_ID = API_PREFIX + "/template_getId";
-	String COUNTERPART_UPDATE_OR_INSERT=API_PREFIX+"/inOrUp";
+	String UTILS_FILE=API_PREFIX +"/utils_file";
+	String NOT_ARCHIVE_SAVE=API_PREFIX+"/not_archive_save";
+
+	/**
+	 * 保存相对方
+	 * @param listInsert
+	 * @return
+	 */
+	@PostMapping(SAVEBATCH)
+	R< List<ContractCounterpartEntity>> saveBatch(@RequestBody List<ContractCounterpartEntity> listInsert);
+	/**
+	 * 保存或修改相对方
+	 * @param list
+	 * @return
+	 */
+	@PostMapping(SAVEORUPDATE)
+	R<List<ContractCounterpartEntity>> saveOrUpdate(@RequestBody List<ContractCounterpartEntity> list);
+	/**
+	 * 修改相对方
+	 * @param updateCounterpart
+	 * @return
+	 */
+	@PostMapping(UPDATEBYID)
+	R<Boolean> updateById(@RequestBody ContractCounterpartEntity updateCounterpart);
+
+	/**
+	 * 根据一统一代码查询
+	 * @param unifiedSocialCreditCode
+	 * @return
+	 */
+	@GetMapping(SELECTBYNAME)
+	R<List<ContractCounterpartEntity>> selectByName(@RequestParam("unifiedSocialCreditCode") String  unifiedSocialCreditCode);
 	/**
 	 * 获取合同信息
 	 * @param id
@@ -67,7 +104,7 @@ public interface IContractClient {
 	 * @return
 	 */
 	@GetMapping(CONTRACT_SAVE)
-	R saveContractFormInfo(@RequestParam("id") Long id, @RequestParam("status") String status);
+	R saveContractFormInfo(@RequestParam("id") Long id, @RequestParam("status") String status,@RequestParam("ekp_number") String ekp_number);
 
 	/**
 	 * 根据模板查询id
@@ -76,11 +113,16 @@ public interface IContractClient {
 	 */
 	@GetMapping(TEMPLATE_GET_ID)
 	R<ContractTemplateEntity> getByTemplateId(@RequestParam("id") Long id);
-
 	/**
-	 * 相对方新增更新数据
-	 * @return
+	 * epk通过后返回给合同平台未归档信息
+	 * @author jitwxs
+	 * @date 2021/6/16 11:20
+	 * @param id 合同id
+	 * @param estimateArchiveDate 计划归档时间
+	 * @param notArchiveReason  未归档原因
+	 * @return org.springblade.core.tool.api.R
 	 */
-	@PostMapping(COUNTERPART_UPDATE_OR_INSERT)
-	R<String> inOrUp(Object obj);
+	@GetMapping(NOT_ARCHIVE_SAVE)
+	R saverArchiveNot(@RequestParam("id") Long id, @RequestParam("estimateArchiveDate") Date estimateArchiveDate, @RequestParam("notArchiveReason") String notArchiveReason);
+
 }

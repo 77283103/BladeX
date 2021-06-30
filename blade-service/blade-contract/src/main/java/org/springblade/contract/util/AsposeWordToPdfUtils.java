@@ -22,6 +22,7 @@ import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.util.ResourceUtils;
 
 import java.io.*;
@@ -31,67 +32,49 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author xhbbo
+ */
 public class AsposeWordToPdfUtils {
-	//正式
-	/*private static final String tokenUrl="https://unici.pec.com.cn/common/user/access";
-	private static final String tokenSY="https://unici.pec.com.cn/common/file/addWatermark";
-	private static final String tokenXZ="https://unici.pec.com.cn/common/file/downloadWaterMarkDoc/";
-	private static  final String username="admin_cont";
-	private static  final String password="148a0bed39597ef88f3f8b53134993a5";*/
-	//测试
-	private static final String tokenUrl="http://sa.pec.com.cn:9080/common/user/access";
-	private static final String tokenSY="http://sa.pec.com.cn:9080/common/file/addWatermark";
-	private static  final String tokenXZ="http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/";
-	private static  final String username="admin_ekp";
-	private static  final String password="c5c85e7ef7747ce3f1649f44feb8b3bf";
-    /**
-     * 判断是否有授权文件 如果没有则会认为是试用版，转换的文件会有水印
-     *@return
-     */
-    public static boolean getLicense() {
-        boolean result = false;
-        try {
-            InputStream is = AsposeWordToPdfUtils.class.getClassLoader().getResourceAsStream("license.xml");
-            License aposeLic = new License();
-            aposeLic.setLicense(is);
-            result = true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return result;
-    }
-
-    /**
-     * Word转PDF操作
-     *@param sourcerFile 源文件
-     *@param targetFile 目标文件
-     */
-    public static void doc2pdf(String sourcerFile,String targetFile) {
-		// 验证License 若不验证则转化出的pdf文档会有水印产生
-        if (!getLicense()) {
-            return;
-        }
-        try {
-			//新建一个空白pdf文档
-            //File file = new File(targetFile);
-			File file=ResourceUtils.getFile(targetFile);
-            FileOutputStream os = new FileOutputStream(file);
-			//sourcerFile是将要被转化的word文档
-            Document doc = new Document(sourcerFile);
-			//全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
-            doc.save(os, SaveFormat.PDF);
-            os.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+	/*//正式
+	private static final String TOKEN_URL="https://unici.pec.com.cn/common/user/access";
+	private static final String TOKEN_SY="https://unici.pec.com.cn/common/file/addWatermark";
+	private static final String TOKEN_XZ="https://unici.pec.com.cn/common/file/downloadWaterMarkDoc/";
+	private static final String USERNAME="admin_cont";
+	private static final String PASSWORD="148a0bed39597ef88f3f8b53134993a5";*/
+	/**
+	 * 测试
+	 */
+	private static final String TOKEN_URL = "http://sa.pec.com.cn:9080/common/user/access";
+	private static final String TOKEN_SY = "http://sa.pec.com.cn:9080/common/file/addWatermark";
+	private static final String TOKEN_XZ = "http://sa.pec.com.cn:9080/common/file/downloadWaterMarkDoc/";
+	private static final String USERNAME = "admin_ekp";
+	private static final String PASSWORD = "c5c85e7ef7747ce3f1649f44feb8b3bf";
+	/**
+	 * 判断是否有授权文件 如果没有则会认为是试用版，转换的文件会有水印
+	 *
+	 * @return
+	 */
+	public static boolean getLicense() {
+		boolean result = false;
+		try {
+			InputStream is = AsposeWordToPdfUtils.class.getClassLoader().getResourceAsStream("license.xml");
+			License aposeLic = new License();
+			aposeLic.setLicense(is);
+			result = true;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 	/**
-	 * doc 转 docx
-	 *@param sourcerFile 源文件
-	 *@param targetFile 目标文件
+	 * Word转PDF操作
+	 *
+	 * @param sourcerFile 源文件
+	 * @param targetFile  目标文件
 	 */
-	public static void doc2Docx(String sourcerFile,String targetFile) {
+	public static void doc2pdf(String sourcerFile, String targetFile) {
 		// 验证License 若不验证则转化出的pdf文档会有水印产生
 		if (!getLicense()) {
 			return;
@@ -99,7 +82,33 @@ public class AsposeWordToPdfUtils {
 		try {
 			//新建一个空白pdf文档
 			//File file = new File(targetFile);
-			File file=ResourceUtils.getFile(targetFile);
+			File file = ResourceUtils.getFile(targetFile);
+			FileOutputStream os = new FileOutputStream(file);
+			//sourcerFile是将要被转化的word文档
+			Document doc = new Document(sourcerFile);
+			//全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
+			doc.save(os, SaveFormat.PDF);
+			os.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * doc 转 docx
+	 *
+	 * @param sourcerFile 源文件
+	 * @param targetFile  目标文件
+	 */
+	public static void doc2Docx(String sourcerFile, String targetFile) {
+		// 验证License 若不验证则转化出的pdf文档会有水印产生
+		if (!getLicense()) {
+			return;
+		}
+		try {
+			//新建一个空白pdf文档
+			//File file = new File(targetFile);
+			File file = ResourceUtils.getFile(targetFile);
 			FileOutputStream os = new FileOutputStream(file);
 			//sourcerFile是将要被转化的word文档
 			Document docx = new Document(sourcerFile);
@@ -111,18 +120,20 @@ public class AsposeWordToPdfUtils {
 			e.printStackTrace();
 		}
 	}
+
 	/**
 	 * pdf转word操作
-	 *@param sourcerFile 源文件
-	 *@param targetFile 目标文件
+	 *
+	 * @param sourcerFile 源文件
+	 * @param targetFile  目标文件
 	 */
-	public static void pdf2doc(String sourcerFile,String targetFile) {
+	public static void pdf2doc(String sourcerFile, String targetFile) {
 		// 验证License 若不验证则转化出的pdf文档会有水印产生
 		if (!getLicense()) {
 			return;
 		}
 		try {
-			File file=ResourceUtils.getFile(targetFile);
+			File file = ResourceUtils.getFile(targetFile);
 			FileOutputStream os = new FileOutputStream(file);
 			Document doc = new Document(sourcerFile);
 			//全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
@@ -135,12 +146,11 @@ public class AsposeWordToPdfUtils {
 
 
 	//获取链接地址文件的byte数据
-	public static byte[] getUrlFileData(String fileUrl)
-	{
+	public static byte[] getUrlFileData(String fileUrl) {
 		//连不上就会一直不走
 		URL url = null;
-		HttpURLConnection httpConn=null;
-		byte[] fileData =null;
+		HttpURLConnection httpConn = null;
+		byte[] fileData = null;
 		try {
 			url = new URL(fileUrl);
 			httpConn = (HttpURLConnection) url.openConnection();
@@ -161,25 +171,24 @@ public class AsposeWordToPdfUtils {
 		return fileData;
 	}
 
-	public static String addWaterMak(InputStream in, String waterMarkText, String fileName, String paramfileId){
-
+	public static String addWaterMak(InputStream in, String waterMarkText, String fileName, String paramfileId) {
 		HttpPost method = null;
 		CloseableHttpClient client = null;
 		CloseableHttpResponse response = null;
 		HttpPost method_1 = null;
 		CloseableHttpClient client_1 = null;
 		CloseableHttpResponse response_1 = null;
-		try{
-			if(null==waterMarkText|| waterMarkText.length()>32) {
+		try {
+			if (null == waterMarkText || waterMarkText.length() > 32) {
 				throw new IllegalArgumentException();
 			}
 			Map<String, Object> tokenMap = new HashMap<String, Object>();
-			tokenMap.put("username", username);
-			tokenMap.put("password", password);
+			tokenMap.put("username", USERNAME);
+			tokenMap.put("password", PASSWORD);
 			JSONObject tokenMapJson = new JSONObject(tokenMap);
 			//获取token
 			client_1 = HttpClients.createDefault();
-			method_1 = new HttpPost(tokenUrl);
+			method_1 = new HttpPost(TOKEN_URL);
 			RequestConfig rc_1 = RequestConfig.custom().setConnectTimeout(60000).setConnectionRequestTimeout(60000).setSocketTimeout(60000).build();
 			method_1.setConfig(rc_1);
 			method_1.addHeader("Content-Type", "application/json;charset=UTF-8");
@@ -189,10 +198,10 @@ public class AsposeWordToPdfUtils {
 			String tokenResult = EntityUtils.toString(response_1.getEntity(), "utf-8");
 			JSONObject tokenJson = JSON.parseObject(tokenResult);
 			String token = tokenJson.getString("token");
-			if (null!=token) {
+			if (Func.isNotEmpty(token)) {
 				//添加水印
 				client = HttpClients.createDefault();
-				method = new HttpPost(tokenSY);
+				method = new HttpPost(TOKEN_SY);
 				RequestConfig rc = RequestConfig.custom().setConnectTimeout(350000).setConnectionRequestTimeout(350000).setSocketTimeout(200000).build();
 				method.setConfig(rc);
 				MultipartEntityBuilder builder = MultipartEntityBuilder.create();
@@ -200,7 +209,7 @@ public class AsposeWordToPdfUtils {
 				builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 				builder.addBinaryBody("file", in, ContentType.MULTIPART_FORM_DATA, fileName);
 				builder.addTextBody("watermark", waterMarkText, ContentType.create("text/plain", Consts.UTF_8.name()));
-				if(null!=paramfileId) {
+				if (null != paramfileId) {
 					builder.addTextBody("fileId", paramfileId, ContentType.create("text/plain", Consts.UTF_8.name()));
 				}
 				HttpEntity entity = builder.build();
@@ -211,12 +220,12 @@ public class AsposeWordToPdfUtils {
 					JSONObject jsonObject = null;
 					return (jsonObject = JSON.parseObject(EntityUtils.toString(response.getEntity(), Consts.UTF_8.name()))).getString("fileId");
 				}
-			}else{
+			} else {
 				return "获取token失败";
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally{
+		} finally {
 			try {
 				if (response != null) {
 					response.close();
@@ -244,14 +253,14 @@ public class AsposeWordToPdfUtils {
 		HttpPost method_1 = null;
 		CloseableHttpClient client_1 = null;
 		CloseableHttpResponse response_1 = null;
-		try{
+		try {
 			Map<String, Object> tokenMap = new HashMap<String, Object>();
-			tokenMap.put("username", username);
-			tokenMap.put("password", password);
+			tokenMap.put("username", USERNAME );
+			tokenMap.put("password", PASSWORD);
 			JSONObject tokenMapJson = new JSONObject(tokenMap);
 			//获取token
 			client_1 = HttpClients.createDefault();
-			method_1 = new HttpPost(tokenUrl);
+			method_1 = new HttpPost(TOKEN_URL);
 			RequestConfig rc_1 = RequestConfig.custom().setConnectTimeout(35000).setConnectionRequestTimeout(35000).setSocketTimeout(20000).build();
 			method_1.setConfig(rc_1);
 			method_1.addHeader("Content-Type", "application/json;charset=UTF-8");
@@ -261,9 +270,9 @@ public class AsposeWordToPdfUtils {
 			String tokenResult = EntityUtils.toString(response_1.getEntity(), "utf-8");
 			JSONObject tokenJson = JSON.parseObject(tokenResult);
 			String token = tokenJson.getString("token");
-			if (null!=token) {
+			if (null != token) {
 				client = HttpClients.createDefault();
-				method = new HttpGet( tokenXZ +fileId);
+				method = new HttpGet(TOKEN_XZ + fileId);
 				RequestConfig rc = RequestConfig.custom().setConnectTimeout(35000).setConnectionRequestTimeout(35000).setSocketTimeout(20000).build();
 				method.setConfig(rc);
 				method.addHeader("token", token);
@@ -274,13 +283,13 @@ public class AsposeWordToPdfUtils {
 				if ("0".equals(linkJson.getString("code"))) {
 					JSONObject linkDataJson = linkJson.getJSONObject("data");
 					return linkDataJson.getString("downloadUrl");
-				}else{
+				} else {
 					return linkResult;
 				}
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			if (response != null) {
 				response.close();
 			}
@@ -307,6 +316,8 @@ public class AsposeWordToPdfUtils {
 	public static void addWaterMark(String srcFile, String destFile, String text) throws Exception {
 		// 待加水印的文件
 		PdfReader reader = new PdfReader(srcFile);
+		//解决文件加密的问题  （报错 PdfReader not opened with owner password）
+		PdfReader.unethicalreading = true;
 		// 加完水印的文件
 		PdfStamper stamper = new PdfStamper(reader, new FileOutputStream(destFile));
 		PdfContentByte content;
@@ -325,7 +336,7 @@ public class AsposeWordToPdfUtils {
 		// 设置颜色 默认为黑色
 		content.setColorFill(BaseColor.BLACK);
 		// 开始写入水印
-		content.showTextAligned(Element.ALIGN_MIDDLE, text, 450,818, 0);
+		content.showTextAligned(Element.ALIGN_MIDDLE, text, 450, 818, 0);
 		content.endText();
 		stamper.close();
 		reader.close();
@@ -333,7 +344,7 @@ public class AsposeWordToPdfUtils {
 		 * 删除当前目录下的文件
 		 */
 		File file = new File(srcFile);
-		if(file.exists()) {
+		if (file.exists()) {
 			file.delete();
 			System.out.println("删除成功");
 		}
