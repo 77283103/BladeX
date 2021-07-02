@@ -24,6 +24,7 @@ import org.springblade.contract.util.TemplateSaveUntil;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.vo.ContractImportBatchDraftRequest;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
 import org.springblade.core.excel.util.ExcelUtil;
@@ -579,24 +580,37 @@ public class ContractFormInfoController extends BladeController {
 
 
 
-	@PostMapping("/importBatchDraft1")
+	@PostMapping("/importBatchDraft")
 	@ApiOperationSupport(order = 12)
-	@ApiOperation(value = "导入合同", notes = "传入excel")
-	public R importBatchDraft1(MultipartFile file){
-		return R.data(null);
+	@ApiOperation(value = "批量导入", notes = "传入excel、大小类、范本json")
+	public R importBatchDraft(ContractImportBatchDraftRequest contractImportBatchDraftRequest){
+		contractFormInfoService.batchDraftingImport(contractImportBatchDraftRequest);
+		return R.success("操作成功");
 	}
 
+
+	/**
+	 * 批量导入，更新
+	 */
+	@PostMapping("/importBatchDraftUp")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "批量导入更新", notes = "传入ContractFormInfoRequestVO")
+	@Transactional(rollbackFor = Exception.class)
+	public R importBatchDraftUp(@RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		contractFormInfoService.batchDraftingImportUp(contractFormInfo);
+		return R.success("操作成功");
+	}
 
 
 	/**
 	 * 批量导入
 	 */
-	@PostMapping("/importBatchDraft")
+	//@PostMapping("/importBatchDraft")
 	@ApiOperationSupport(order = 12)
 	@ApiOperation(value = "导入合同", notes = "传入excel")
 	@Transactional(rollbackFor = Exception.class)
 	public R importUser(MultipartFile file, String json, String contractTemplateId, String contractBigCategory, String contractSmallCategory) {
-		contractFormInfoService.batchDraftingImport(file,json,contractBigCategory,contractSmallCategory);
+
 //		//读取Excal 两个sheet数据
 //		List<ContractFormInfoImporter> read = ExcelUtil.read(file, 0, 5, ContractFormInfoImporter.class);
 //		List<ContractFormInfoImporterEx> read2 = ExcelUtil.read(file, 1, 1, ContractFormInfoImporterEx.class);

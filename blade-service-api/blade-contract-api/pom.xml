@@ -33,6 +33,10 @@
             <artifactId>easyexcel</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springblade</groupId>
+            <artifactId>blade-starter-excel</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.deepoove</groupId>
             <artifactId>poi-tl</artifactId>
             <version>1.9.1</version>

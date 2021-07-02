@@ -67,4 +67,11 @@ public interface IContractBondService extends BaseService<ContractBondEntity> {
 	 */
 	List<ContractBondEntity> saveByBatchDraftExcels(List<ContractBondImportBatchDraftExcel> contractBondImportBatchDraftExcels,Long contractInfoId);
 
+	/**
+	 * 根据合同标识保存保证金集合
+	 * @param contractBondEntityList
+	 * @param contractInfoId
+	 */
+	Boolean saveListByContractInfoId(List<ContractBondEntity> contractBondEntityList,Long contractInfoId);
+
 }

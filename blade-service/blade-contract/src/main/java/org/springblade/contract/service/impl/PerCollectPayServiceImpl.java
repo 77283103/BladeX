@@ -47,9 +47,11 @@ public class PerCollectPayServiceImpl extends BaseServiceImpl<PerCollectPayMappe
 		if(!this.verificationData(perCollectPayRequestVOList,contractId)){
 			return false;
 		}
+		this.deleteByContractId(contractId);
 		List<PerCollectPayEntity>perCollectPayEntityList = new ArrayList<>();
 		perCollectPayRequestVOList.forEach(perCollectPayRequestVO -> {
 			PerCollectPayEntity perCollectPayEntity = PerCollectPayWrapper.build().QVEntity(perCollectPayRequestVO);
+			perCollectPayEntity.setId(null);
 			perCollectPayEntity.setContractId(contractId);
 			perCollectPayEntity.setBusinessIds(perCollectPayRequestVO.generateBusinessIds());
 			perCollectPayEntityList.add(perCollectPayEntity);

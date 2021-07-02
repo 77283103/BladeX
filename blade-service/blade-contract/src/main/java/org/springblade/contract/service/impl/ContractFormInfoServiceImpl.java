@@ -24,9 +24,7 @@ import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.excel.importbatchdraft.ContractImportBatchDraftExcel;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
-import org.springblade.contract.util.AsposeWordToPdfUtils;
-import org.springblade.contract.util.ExcelSaveUntil;
-import org.springblade.contract.util.RedisCacheUtil;
+import org.springblade.contract.util.*;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -40,6 +38,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
 import org.springblade.system.cache.SysCache;
+import org.springblade.system.entity.Dept;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.feign.IDictBizClient;
@@ -252,8 +251,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		List<ContractFormInfoResponseVO> recordList = new ArrayList<>();
 		for (ContractFormInfoResponseVO v : records) {
 			/*为每个对象，设置创建者名字和组织名字*/
-			v.setUserRealName(userClient.userInfoById(v.getCreateUser()).getData().getRealName());
-			v.setUserDepartName(sysClient.getDept(v.getCreateDept()).getData().getDeptName());
+			R<User> user_r = userClient.userInfoById(v.getCreateUser());
+			if(user_r.isSuccess()){
+				v.setUserRealName(null == user_r.getData()?null:user_r.getData().getRealName());
+			}
+			R<Dept> dept_r = sysClient.getDept(v.getCreateDept());
+			if(dept_r.isSuccess()){
+				v.setUserDepartName(null == dept_r.getData()?null:dept_r.getData().getDeptName());
+			}
+
 			//将多方起草关联的   相对方存入合同分页显示 获取相对方名称
 			List<ContractCounterpartEntity> counterpartEntityList = contractCounterpartMapper.selectByIds(v.getId());
 			if (Func.isNotEmpty(counterpartEntityList)) {
@@ -2134,21 +2140,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	@Override
-	public void batchDraftingImport(MultipartFile file,String json,String contractBigCategory, String contractSmallCategory) {
-		//转换excel文件为合同模板集合
-		List<ContractImportBatchDraftExcel>contractImportBatchDraftExcels = ContractImportBatchDraftUtil.excelToContractExcelList(file);
+	public void batchDraftingImport(ContractImportBatchDraftRequest contractImportBatchDraftRequest) {
+		//获取合同模板集合
+		List<ContractImportBatchDraftExcel>contractImportBatchDraftExcels = contractImportBatchDraftRequest.getContractExcelList();
 		//合同模板集合转合同db实体
 		if(Func.isNotEmpty(contractImportBatchDraftExcels)){
 			List<ContractFormInfoEntity>contractFormInfoEntityList = new ArrayList<>();
 			for(ContractImportBatchDraftExcel contractImportBatchDraftExcel:contractImportBatchDraftExcels){
-				//合同主体信息转bean,保存
-				ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractImportBatchDraftExcel,ContractFormInfoEntity.class);
-				contractFormInfoEntity.setContractBigCategory(contractBigCategory);
-				contractFormInfoEntity.setContractSmallCategory(contractSmallCategory);
-				contractFormInfoEntity.setId(IdGenUtil.generateId().longValue());
-				contractFormInfoEntity.setJson(json);
-				contractFormInfoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
-				contractFormInfoEntity.setContractSoure(ContractTypeEnum.BATCH.getKey().toString());
+				ContractFormInfoEntity contractFormInfoEntity = ContractFormInfoWrapper.build().createEntityByBatchDraftExcel(contractImportBatchDraftExcel);
+
+				contractFormInfoEntity.setContractListName();
 				contractFormInfoEntityList.add(contractFormInfoEntity);
 				//相对方信息,保存
 				List<ContractCounterpartEntity>counterpartEntityList = contractCounterpartService.saveByBatchDraftExcel(contractImportBatchDraftExcel.getContractCounterpartImportBatchDraftExcels(),contractFormInfoEntity.getId());
@@ -2160,6 +2161,27 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			this.saveBatch(contractFormInfoEntityList);
 		}
 	}
+
+
+	public void batchDraftingImportUp(ContractFormInfoRequestVO contractFormInfo){
+		//更新合同主体
+		ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractFormInfo,ContractFormInfoEntity.class);
+		this.updateById(contractFormInfoEntity);
+		//更新相对方信息
+		List<ContractCounterpartEntity>contractCounterpartEntities = contractFormInfo.getCounterpart();
+		contractCounterpartService.saveSettingListByContractInfoId(contractFormInfoEntity.getId(),contractCounterpartEntities);
+		//更新保证金信息
+		List<ContractBondEntity>contractBondEntities = contractFormInfo.getContractBond();
+		contractBondService.saveListByContractInfoId(contractBondEntities,contractFormInfoEntity.getId());
+		//更新履约-计划收付款
+		List<PerCollectPayRequestVO> perCollectPayList = contractFormInfo.getPerCollectPayList();
+		perCollectPayService.addListData(perCollectPayList,contractFormInfoEntity.getId());
+		//更新履约-提供接收服务
+		List<PerServiceContentRequestVO> perServiceContentList = contractFormInfo.getPerServiceContentList();
+		perServiceContentService.addPerData(Func.isEmpty(perServiceContentList) ? null :perServiceContentList.get(0),contractFormInfoEntity.getId());
+	}
+
+
 
 	/**
 	 * 查询有编号的合同
