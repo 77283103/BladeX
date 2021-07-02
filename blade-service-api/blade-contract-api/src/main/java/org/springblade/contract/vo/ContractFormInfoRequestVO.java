@@ -53,6 +53,9 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 	@ApiModelProperty(value="相对方集合")
 	private List<ContractCounterpartEntity> counterpart;
 
+	@ApiModelProperty(value="子公司集合")
+	private List<ContractSealEntity> contractSeal;
+
 	@ApiModelProperty(value="依据集合")
 	private List<ContractAccordingEntity> according;
 

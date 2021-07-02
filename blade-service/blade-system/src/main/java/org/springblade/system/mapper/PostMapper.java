@@ -71,4 +71,17 @@ public interface PostMapper extends BaseMapper<Post> {
 	 * @return
 	 */
 	boolean saveBatchPost(@Param("postList") List<Post> postList);
+
+	/**
+	 *
+	 * 清理数据
+	 * @return
+	 */
+	boolean clearDate();
+	/**
+	 *
+	 * 清理数据
+	 * @return
+	 */
+	boolean clearEmpty();
 }

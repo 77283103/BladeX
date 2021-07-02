@@ -27,7 +27,9 @@ api:
     agencyUrl: https://oatest-interface.pec.com.cn/common/notify/todo
     account: iHR
     password: oaekp
+    #合同起草模板ID
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
+    #预警代办模板ID
     appTemplateId: 179c63d15205aa3926282a5461f9def3
     systemName: c_p_notify
     ftlPath: /ftl/

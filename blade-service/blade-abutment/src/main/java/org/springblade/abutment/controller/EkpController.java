@@ -12,7 +12,10 @@ import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.vo.ContractVo;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.core.log.annotation.ApiLog;
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
@@ -39,6 +42,7 @@ public class EkpController {
 	IContractClient contractClient;
 	IESealService eSealService;
 	IFileClient fileClient;
+	BladeLogger logger;
 
 	/**
 	 * epk通过后返回给合同平台合同状态
@@ -100,6 +104,7 @@ public class EkpController {
 	@GetMapping("/getArchiveInfo")
 	@AutoLog
 	@ApiOperation(value = "epk通过后返回给合同平台合同状态接口")
+	@ApiLog("EKP获取合同审批后状态以及相关归档文件链接信息")
 	public R<ContractVo> queryArchiveInfo(@RequestBody ContractSubmit contractSubmit) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		Long id = Long.valueOf(contractSubmit.getContractId());
@@ -144,6 +149,7 @@ public class EkpController {
 		cv.setCode("1");
 		//赋值合同状态
 		cv.setSubmitStatus(vo.getContractStatus());
+		logger.info("queryArchiveInfo", JsonUtil.toJson(cv));
 		return R.data(200, cv, "获取数据成功！");
 	}
 }

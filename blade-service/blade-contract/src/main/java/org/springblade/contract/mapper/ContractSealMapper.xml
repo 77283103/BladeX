@@ -48,14 +48,15 @@
             AND fd_taxNo like concat('%',#{contractSeal.fdTaxno},'%')
         </if>
     </select>
+<!--    根据单位编号查询签章单位信息-->
     <select id="selectAllByFdTaxnoAfter" resultMap="contractSealResultMap">
         SELECT
         <include refid="baseColumnList"/>
         FROM contract_seal
         WHERE is_deleted = 0
-        AND fd_factNo=#{fdTaxno}
+        AND fd_taxNo=#{fdTaxno}
     </select>
-    <!--根据合同id查询相对方集合-->
+    <!--根据合同id查询子公司集合-->
     <select id="selectByIds" resultMap="contractSealResultMap">
         SELECT
         <include refid="baseColumnList"> </include>

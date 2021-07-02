@@ -17,6 +17,7 @@ import org.springblade.contract.entity.*;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.core.log.annotation.ApiLog;
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -56,6 +58,8 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class AbutmentClient implements IAbutmentClient {
 
+	@Autowired
+	private BladeLogger logger;
 	@Autowired
 	private IEkpService ekpService;
 	@Autowired
@@ -108,7 +112,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(TEMPLATE_APP)
-	public R<EkpVo> temEkpFormPost(ContractTemplateEntity entity) {
+	@ApiLog("模板审批")
+	public R<EkpVo> temEkpFormPost(@RequestBody ContractTemplateEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
@@ -181,6 +186,7 @@ public class AbutmentClient implements IAbutmentClient {
 				rEkpVo.setData(null);
 				return rEkpVo;
 			}
+			logger.info("temEkpFormPost-return",JsonUtil.toJson(rEkpVo));
 		}
 		rEkpVo.setData(ekpVo);
 		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
@@ -198,7 +204,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@PostMapping(CONTRACT_BORROWING)
 	@Override
-	public R<EkpVo> borEkpFormPost(ContractBorrowApplicationEntity entity) {
+	@ApiLog("合同借阅申请")
+	public R<EkpVo> borEkpFormPost(@RequestBody ContractBorrowApplicationEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
@@ -247,6 +254,7 @@ public class AbutmentClient implements IAbutmentClient {
 				rEkpVo.setData(null);
 				return rEkpVo;
 			}
+			logger.info("borEkpFormPost-return",JsonUtil.toJson(rEkpVo));
 		}
 		rEkpVo.setData(ekpVo);
 		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
@@ -256,15 +264,15 @@ public class AbutmentClient implements IAbutmentClient {
 	}
 
 	/**
-	 * 合同起草
+	 * 独立起草/范本起草-合同起草
 	 *
 	 * @param entity
 	 * @return
 	 */
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
-	//推送代办
-	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
+	@ApiLog("独立起草/范本起草-合同起草")
+	public R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
@@ -300,7 +308,7 @@ public class AbutmentClient implements IAbutmentClient {
 					//合同附件名称   合同附件：电子合同 附件只上传一份需要盖章的合同文本     实体合同需要上传多份合同文本
 					List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
 					if (fileVO.size() > 0) {
-						if ("2".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
+						if ("3".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
 							StringBuilder name = new StringBuilder();
 							fileVO.forEach(f -> {
 								name.append(f.getName());
@@ -391,8 +399,10 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_onetoone("1");
 					}
 				}
-				//处理签章关键字 和多页合同
-				formValuesEntity = fileText(formValuesEntity, entity);
+				//处理签章关键字 和多页合同 只有电子合同-我司用印   实体合同-我司用电子印  需要处理和传递keyword字段
+				if (entity.getContractForm().contains("1") || entity.getContractForm().contains("2")){
+					formValuesEntity = fileText(formValuesEntity, entity);
+				}
 				//合同主旨
 				formValuesEntity.setFd_main(entity.getContractName());
 				//合同大类
@@ -653,6 +663,7 @@ public class AbutmentClient implements IAbutmentClient {
 						rEkpVo.setData(null);
 						return rEkpVo;
 					}
+					logger.info("sendEkpFormPost-return",JsonUtil.toJson(rEkpVo));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -674,7 +685,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_SEND_MULTI_POST)
-	public R<EkpVo> sendEkpMultiPost(ContractFormInfoEntity entity) {
+	@ApiLog("合同起草-多方 推送EKP信息")
+	public R<EkpVo> sendEkpMultiPost(@RequestBody ContractFormInfoEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
@@ -687,7 +699,7 @@ public class AbutmentClient implements IAbutmentClient {
 				docCreatorEntity.setEmplno(entity.getPersonCodeContract());
 				pushEkpEntity.setDocCreator(docCreatorEntity);
 				FormValuesEntity formValuesEntity = new FormValuesEntity();
-				//合同方对应关系
+				//合同方对应关系   多方的角色值在ContractFormIfoController 保存多方向对方身份信息 那段代码里处理的
 				if ("甲".equals(entity.getContractRoles())) {
 					formValuesEntity.setFd_onetoone("1");
 				} else if ("乙".equals(entity.getContractRoles())) {
@@ -699,20 +711,30 @@ public class AbutmentClient implements IAbutmentClient {
 				} else {
 					formValuesEntity.setFd_onetoone("5");
 				}
-				//依据文档id
+				//依据文档id    唯一
 				formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
-				//合同id
+				//合同id       唯一
 				formValuesEntity.setFd_contract_id(entity.getId().toString());
-				//pdf的id
+				//pdf的id      唯一【实体合同-我司不用电子印，电子合同-对方平台    这两种方式，可以上传多份 】
 				formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
 				//合同查看链接
 				formValuesEntity.setFd_contract_url("");
 				//合同文件名称
 				List<FileVO> fileText = fileClient.getByIds(entity.getTextFile()).getData();
 				if (fileText.size() > 0) {
-					formValuesEntity.setFd_contract_name(fileText.get(0).getName());
+					if ("3".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
+						StringBuilder name = new StringBuilder();
+						fileText.forEach(f -> {
+							name.append(f.getName());
+							name.append(",");
+						});
+						name.substring(0, name.length());
+						formValuesEntity.setFd_contract_name(name.toString());
+					} else {
+						formValuesEntity.setFd_contract_name(fileText.get(0).getName());
+					}
 				}
-				//合同起草类型  可能设计变更暂时做判断
+				//合同起草类型  可能涉及变更暂时做判断
 				if ("20".equals(entity.getContractSoure())) {
 					formValuesEntity.setFd_contract_type("40");
 				}
@@ -736,14 +758,8 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_small(dictBiz.getDictKey());
 					}
 				}
-				//申请用公章全称
-				R<List<DictBiz>> application_seal = bizClient.getList("application_seal");
-				List<DictBiz> dataSeal = application_seal.getData();
-				for (DictBiz dictBiz : dataSeal) {
-					if ((dictBiz.getDictValue()).equals(entity.getSealName())) {
-						formValuesEntity.setFd_offical_seal(dictBiz.getDictKey());
-					}
-				}
+				//申请用公章全称  多方该字段由前端赋值form.sealName 签章申请单位的单位编号
+				formValuesEntity.setFd_offical_seal(entity.getSealName());
 				//合同负责人
 				formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
 				//合同份数
@@ -781,6 +797,19 @@ public class AbutmentClient implements IAbutmentClient {
 				}
 				//合同形式
 				formValuesEntity.setFd_contract_no(entity.getContractForm());
+				//子公司以及签章单位信息（关联表）
+				List<MultiSa> sas = new ArrayList<>();
+				entity.getContractSeal().forEach(c -> {
+					MultiSa sa = new MultiSa();
+					//子公司名称
+					sa.setFd_seal_factName(c.getFdFactname());
+					//单位编号
+					sa.setFd_role_taxNo(c.getFdTaxno());
+					//企业编号
+					sa.setFd_seal_factNo(c.getFdFactno());
+					sas.add(sa);
+				});
+				formValuesEntity.setFd_multise(sas);
 				//相对方企业信息（关联表）
 				List<MultiCo> cos = new ArrayList<>();
 				entity.getCounterpart().forEach(c -> {
@@ -792,10 +821,12 @@ public class AbutmentClient implements IAbutmentClient {
 					cos.add(co);
 				});
 				formValuesEntity.setFd_multico(cos);
-				//多方相对方身份信息列表
+				//多方身份信息列表
 				List<MultiRo> ros = new ArrayList<>();
 				entity.getDraftContractCounterpartList().forEach(r -> {
 					MultiRo ro = new MultiRo();
+					//子公司名称
+					ro.setFd_role_real(r.getSubsidiaryPerson());
 					//相对方身份
 					ro.setFd_role_identity(r.getCounterpartIdentity());
 					//相对方联系人
@@ -813,6 +844,8 @@ public class AbutmentClient implements IAbutmentClient {
 				List<MultiPay> pays = new ArrayList<>();
 				entity.getMultPaymenEntityList().forEach(p -> {
 					MultiPay pay = new MultiPay();
+					//子公司名称
+					pay.setFd_pay_seal(p.getSubsidiaryPerson());
 					//相对方名称
 					pay.setFd_pay_name(p.getCounterpartName());
 					//收付款
@@ -885,6 +918,8 @@ public class AbutmentClient implements IAbutmentClient {
 				List<MultiBon> bons = new ArrayList<>();
 				entity.getContractBond().forEach(b -> {
 					MultiBon bon = new MultiBon();
+					//子公司名称
+					bon.setFd_bon_seal(b.getSubsidiaryPerson());
 					//相对方名称
 					bon.setFd_bon_name(b.getCounterpartName());
 					//计划缴纳金额
@@ -965,11 +1000,13 @@ public class AbutmentClient implements IAbutmentClient {
 					pay.setFd_plan_psum(performanceColPay.getPlanPayAmount().toString());
 					payList.add(pay);
 				}
-				//处理签章关键字 和多页合同
+				//履约，服务
 				formValuesEntity.setFd_keep_list(keepList);
 				formValuesEntity.setFd_pay_list(payList);
-				//处理签章关键字 和多页合同
-				formValuesEntity = fileTextMulti(formValuesEntity, entity);
+				//处理签章关键字 和多页合同  只有电子合同-我司用印   实体合同-我司用电子印  需要处理和传递keyword字段
+				if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm())){
+				 formValuesEntity = fileTextMulti(formValuesEntity, entity);
+				}
 				pushEkpEntity.setFormValues(formValuesEntity);
 				try {
 					//处理合同补充依据
@@ -1051,6 +1088,7 @@ public class AbutmentClient implements IAbutmentClient {
 						rEkpVo.setData(null);
 						return rEkpVo;
 					}
+					logger.info("sendEkpMultiPost-return",JsonUtil.toJson(rEkpVo));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1072,7 +1110,8 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_NODE_FORM_POST)
-	public R<EkpVo> nodeEkpFormPost(ContractFormInfoResponseVO entity) {
+	@ApiLog("推送EKP节点信息")
+	public R<EkpVo> nodeEkpFormPost(@RequestBody ContractFormInfoResponseVO entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		//KEP接口传输的入参
@@ -1201,6 +1240,7 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_SIG_FORM_POST)
+	@ApiLog("需要推送预警的数据")
 	public R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity) {
 		List<EkpVo> ekpVo = new ArrayList<>();
 		HashMap<String, String> mapVo = new HashMap<>();
@@ -1262,6 +1302,8 @@ public class AbutmentClient implements IAbutmentClient {
 				e.printStackTrace();
 			}
 		});
+		logger.info("contractFormList",JsonUtil.toJson(formInfoEntities));
+		logger.info("pushEkpContractFormList",JsonUtil.toJson(ekpVo));
 		log.info("推送完成返回的依据信息：" + JsonUtil.toJson(ekpVo));
 		return R.data(200, ekpVo, "数据推送成功");
 	}
@@ -1405,6 +1447,14 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 						}
 					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractSealEntity cs : entity.getContractSeal()) {
+							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
+								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
 					formValuesEntity.setFd_keyword(s);
 				} else if ((threeHalf)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
@@ -1421,6 +1471,14 @@ public class AbutmentClient implements IAbutmentClient {
 						for (ContractCounterpartEntity ce : entity.getCounterpart()) {
 							if (dr.getCounterpartId().equals(String.valueOf(ce.getId()))) {
 								s.put(ce.getUnifiedSocialCreditCode(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractSealEntity cs : entity.getContractSeal()) {
+							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
+								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
 							}
 						}
 					}
@@ -1445,6 +1503,14 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 						}
 					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractSealEntity cs : entity.getContractSeal()) {
+							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
+								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
 					formValuesEntity.setFd_keyword(s);
 				} else if ((fourHalf)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
@@ -1461,6 +1527,14 @@ public class AbutmentClient implements IAbutmentClient {
 						for (ContractCounterpartEntity ce : entity.getCounterpart()) {
 							if (dr.getCounterpartId().equals(String.valueOf(ce.getId()))) {
 								s.put(ce.getUnifiedSocialCreditCode(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractSealEntity cs : entity.getContractSeal()) {
+							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
+								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
 							}
 						}
 					}
@@ -1527,13 +1601,14 @@ public class AbutmentClient implements IAbutmentClient {
 
 	@Override
 	@GetMapping(SIGNATURE_QUERY_INFO)
+	@ApiLog("签章单位接口更新或来的源数据")
 	public R<AsDictVo> querySigatureInfo(AsDict entity) {
 		AsDictVo sigVo = null;
 		try {
 			String token = iAsService.getToken();
 			if (StrUtil.isNotEmpty(token)) {
 				sigVo = iAsService.getDocInfo(token).getData();
-
+				logger.info("as_dict", JsonUtil.toJson(sigVo));
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage());
@@ -1668,6 +1743,7 @@ public class AbutmentClient implements IAbutmentClient {
 	 */
 	@Override
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
+	@ApiLog("组织机构任务更新时间")
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
 		log.info("查看查询时间的参数：" + param);
 		return iOrganizationService.getOrganizationInfoIncrement(param);
@@ -1682,7 +1758,7 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
-	@ApiLog("相对方定时任务触发")
+	@ApiLog("相对方定时任务触发-获取数据")
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		CounterpartVo counterpartVo = null;
@@ -1699,6 +1775,8 @@ public class AbutmentClient implements IAbutmentClient {
 		if (Func.isEmpty(counterpartVo.getInsert()) & Func.isEmpty(counterpartVo.getUpdate())) {
 			return R.data(200, counterpartVo, "获取数据成功,暂时没有需要更新的数据！");
 		}
+		//保存获取到的数据的日志
+		logger.info("counterpartVo", JsonUtil.toJson(counterpartVo));
 		log.info("更新到的向对方数据：" + JsonUtil.toJson(counterpartVo));
 		List<ContractCounterpartEntity> listInsert = new ArrayList<>();
 		List<ContractCounterpartEntity> listUpdate = new ArrayList<>();
@@ -1719,10 +1797,12 @@ public class AbutmentClient implements IAbutmentClient {
 			if (Func.isEmpty(entityList)) {
 				listInsert.add(in);
 			} else {
+				in.setId(entityList.get(0).getId());
 				listUpdate.add(in);
 			}
 		});
 		counterpartVo.getUpdate().forEach(u -> {
+			List<ContractCounterpartEntity> entityList = contractClient.selectByName(u.getBusinessId()).getData();
 			ContractCounterpartEntity up = new ContractCounterpartEntity();
 			up.setName(u.getCustNm());
 			up.setUnifiedSocialCreditCode(u.getBusinessId());
@@ -1735,8 +1815,8 @@ public class AbutmentClient implements IAbutmentClient {
 			up.setRenameReview(simpleDateFormat.format(new Date()));
 			//半角名称
 			up.setHalfWidthName(u.getCustNm());
-			List<ContractCounterpartEntity> entityList = contractClient.selectByName(up.getUnifiedSocialCreditCode()).getData();
 			if (Func.isNotEmpty(entityList) && Func.isNotEmpty(entityList.get(0).getId())) {
+				up.setId(entityList.get(0).getId());
 				listUpdate.add(up);
 			} else {
 				listInsert.add(up);

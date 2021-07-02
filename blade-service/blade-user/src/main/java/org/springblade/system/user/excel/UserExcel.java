@@ -42,6 +42,10 @@ public class UserExcel implements Serializable {
 	@ExcelProperty("账户")
 	private String account;
 
+	@ColumnWidth(15)
+	@ExcelProperty("用户编号")
+	private String code;
+
 	@ColumnWidth(10)
 	@ExcelProperty("姓名")
 	private String realName;

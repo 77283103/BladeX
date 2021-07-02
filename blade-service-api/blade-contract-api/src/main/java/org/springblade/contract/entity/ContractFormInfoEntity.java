@@ -298,11 +298,17 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private ContractAssessmentEntity assessmentEntity;
 
 	/**
-	 * 多方起草向对方信息
+	 * 多方起草相对方信息
 	 */
-	@ApiModelProperty(value = "多方起草向对方信息")
+	@ApiModelProperty(value = "多方起草相对方信息")
 	@TableField(exist = false)
 	private List<DraftContractCounterpartEntity> draftContractCounterpartList;
+	/**
+	 * 多方起草向子公司信息
+	 */
+	@ApiModelProperty(value = "多方起草子公司信息")
+	@TableField(exist = false)
+	private List<ContractSealEntity> contractSeal;
 	/**
 	 * 关联合同归档信息
 	 */

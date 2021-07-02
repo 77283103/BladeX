@@ -13,8 +13,10 @@ import org.springblade.contract.vo.ContractArchiveNotResponseVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.core.log.annotation.ApiLog;
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.system.cache.SysCache;
@@ -67,6 +69,8 @@ public class ContractClient implements IContractClient {
 	private ContractCounterpartMapper counterpartMapper;
 	@Autowired
 	private IContractCounterpartService counterpartService;
+	@Autowired
+	private BladeLogger logger;
 	//模板路径
 	private static final String ftlPath = "D:/ftl/";
 	@Value("${api.signing.day.fifteen}")
@@ -122,6 +126,7 @@ public class ContractClient implements IContractClient {
 
 	@Override
 	@GetMapping(STATUS)
+	@ApiLog("归档预警")
 	public R<List<ContractFormInfoEntity>> getByStatus(String status) {
 		List<ContractFormInfoEntity> infoEntityList = new ArrayList<>();
 		List<ContractFormInfoEntity> formInfoEntities = formInfoService.getByStatus(status);
@@ -158,6 +163,7 @@ public class ContractClient implements IContractClient {
 				}
 			}
 		});
+		logger.info("查询出满足预警的合同信息", JsonUtil.toJson(infoEntityList));
 		return R.data(200, infoEntityList, "需要推送的数据");
 	}
 
@@ -203,6 +209,7 @@ public class ContractClient implements IContractClient {
 	@SneakyThrows
 	@Override
 	@GetMapping(CONTRACT_SAVE)
+	@ApiLog("EKP返回合同平台的信息")
 	public R saveContractFormInfo(Long id, String status,String ekp_number) {
 		ContractFormInfoEntity contractFormInfo = contractFormInfoMapper.selectById(id);
 		ContractSigningEntity entity = new ContractSigningEntity();

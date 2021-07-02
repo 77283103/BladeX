@@ -25,6 +25,14 @@
         </if>
     </select>
 
+    <select id="getByUserIdDeptUser" resultMap="user_departResultMap">
+        select
+        t.*
+        from blade_user_depart t
+        <if test="associationId != null and associationId != ''">
+            where t.user_id = #{associationId}
+        </if>
+    </select>
     <insert id="saveBatchUserDepart">
         INSERT INTO blade_user_depart (id, user_id, role_id, dept_id, post_id)
         VALUES

@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 @ApiModel(value = "多方保证金信息列表")
 public class MultiBon {
+	@ApiModelProperty(value = "单据内容:子公司名称（）")
+	private String fd_bon_seal;
 	@ApiModelProperty(value = "单据内容:相对方名称（）")
 	private String fd_bon_name;
 	@ApiModelProperty(value = "有无押金（关联表）")

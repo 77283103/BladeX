@@ -80,7 +80,8 @@ public class PostServiceImpl extends BaseServiceImpl<PostMapper, Post> implement
 
 	@Override
 	public boolean saveBatchPost(List<Post> postList) {
+		postMapper.clearEmpty();
+		postMapper.clearDate();
 		return postMapper.saveBatchPost(postList);
 	}
-
 }

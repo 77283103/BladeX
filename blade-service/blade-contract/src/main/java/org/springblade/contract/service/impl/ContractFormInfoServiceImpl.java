@@ -204,9 +204,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	private IContractBondService contractBondService;
 	@Autowired
 	private IContractCounterpartService contractCounterpartService;
-
-
-
+	@Autowired
+	private IContractSealService iContractSealService;
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -221,15 +220,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			String[] code = contractFormInfo.getContractStatus().split(",");
 			contractFormInfo.setCode(Arrays.asList(code));
 		}
-		if (Func.isNotEmpty(contractFormInfo.getCreateUserName())){
+		if (Func.isNotEmpty(contractFormInfo.getCreateUserName())) {
 			List<User> user = userClient.getByRealName(contractFormInfo.getCreateUserName()).getData();
-			if (Func.isNotEmpty(user)){
-				StringBuilder real=new StringBuilder();
-				user.forEach(u->{
+			if (Func.isNotEmpty(user)) {
+				StringBuilder real = new StringBuilder();
+				user.forEach(u -> {
 					real.append(u.getId());
 					real.append(",");
 				});
-				real.substring(0, real.length()-1);
+				real.substring(0, real.length() - 1);
 				String[] reaN = real.toString().split(",");
 				contractFormInfo.setRealName(Arrays.asList(reaN));
 			}
@@ -380,8 +379,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 			//合同文本下载日志
-			List<ContractFileDownloadLogEntity> fileDownloadLogEntity=fileDownloadLogService.getList(v.getId());
-			if (Func.isNotEmpty(fileDownloadLogEntity)){
+			List<ContractFileDownloadLogEntity> fileDownloadLogEntity = fileDownloadLogService.getList(v.getId());
+			if (Func.isNotEmpty(fileDownloadLogEntity)) {
 				v.setFileDownloadLogEntities(fileDownloadLogEntity);
 			}
 			if ("30".equals(v.getContractSoure())) {
@@ -920,6 +919,17 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
+	 * 保存子公司信息
+	 *
+	 * @param vo 提取合同id和相对方id
+	 */
+	@Override
+	public void saveContractSeal(ContractFormInfoRequestVO vo) {
+		contractFormInfoMapper.deleteContractSeal(vo.getId());
+		contractFormInfoMapper.saveContractSeal(vo.getId(), vo.getContractSeal());
+	}
+
+	/**
 	 * 处理依据保存信息
 	 *
 	 * @param vo 合同信
@@ -1025,13 +1035,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			String[] sealNameList = contractFormInfoResponseVO.getSealName().split(",");
 			contractFormInfoResponseVO.setSealNameList(sealNameList);
 		}
-		//多方起草关联的签章单位列表
-		if ("20".equals(contractFormInfoResponseVO.getContractSoure())) {
-			List<ContractSealEntity> sealEntity = contractSealMapper.selectByIds(contractFormInfoResponseVO.getId());
-			if (Func.isNotEmpty(sealEntity)) {
-				contractFormInfoResponseVO.setContractSeal(sealEntity);
-			}
-		}
 		//查询依据
 		List<ContractAccordingEntity> contractAccordingList = contractAccordingMapper.selectByIds(contractFormInfoResponseVO.getId());
 		contractFormInfoResponseVO.setAccording(contractAccordingList);
@@ -1052,6 +1055,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		if (Func.isNotEmpty(dcc)) {
 			contractFormInfoResponseVO.setDraftContractCounterpartList(dcc);
 		}
+		//多方起草关联的签章单位列表
+		if ("20".equals(contractFormInfoResponseVO.getContractSoure())) {
+			List<ContractSealEntity> sealEntity = contractSealMapper.selectByIds(contractFormInfoResponseVO.getId());
+			if (Func.isNotEmpty(sealEntity)) {
+				contractFormInfoResponseVO.setContractSeal(sealEntity);
+			}
+		}
+		//多方起草查询履约保证金集合
+		List<ContractBondPlanEntity> contractBondPlanList = contractBondPlanMapper.selectByIds(contractFormInfoResponseVO.getId());
+		contractFormInfoResponseVO.setBondPlanEntityList(contractBondPlanList);
 		//查询保证金
 		List<ContractBondEntity> contractBondList = contractBondMapper.selectByIds(contractFormInfoResponseVO.getId());
 		contractFormInfoResponseVO.setContractBond(contractBondList);
@@ -2322,6 +2335,4 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	public ContractFormInfoEntity selectByChangeId(Long id) {
 		return contractFormInfoMapper.selectByChangeId(id);
 	}
-
-
 }

@@ -21,20 +21,22 @@
 
 
     <select id="selectPostPage" resultMap="postResultMap">
-        select * from blade_post where is_deleted = 0
+        select *
+        from blade_post
+        where is_deleted = 0
     </select>
 
     <select id="getPostNames" resultType="java.lang.String">
         SELECT
-            post_name
+        post_name
         FROM
-            blade_post
+        blade_post
         WHERE
-            id IN
-            <foreach collection="array" item="ids" index="index" open="(" close=")" separator=",">
-                #{ids}
-            </foreach>
-            and is_deleted = 0
+        id IN
+        <foreach collection="array" item="ids" index="index" open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+        and is_deleted = 0
     </select>
 
     <sql id="baseColumnList">
@@ -67,7 +69,8 @@
         </if>
     </select>
 
-    <select id="getPostIdByAssociationId" resultType="org.springblade.system.entity.Post" parameterType="java.lang.String">
+    <select id="getPostIdByAssociationId" resultType="org.springblade.system.entity.Post"
+            parameterType="java.lang.String">
         select
         t.*
         from blade_post t
@@ -75,15 +78,30 @@
             where t.association_id = #{associationId}
         </if>
     </select>
-
+    <delete id="clearDate">
+        DELETE
+        FROM blade_post
+        WHERE id NOT IN (
+            SELECT t.max_id
+            FROM (SELECT max(id) AS max_id from blade_post group by association_id) as t
+        );
+    </delete>
+    <delete id="clearEmpty">
+        DELETE
+        FROM blade_post
+        WHERE association_id IN (NULL,'null','');
+    </delete>
 
     <insert id="saveBatchPost">
-        INSERT INTO blade_post (id, post_name, association_id, update_time , status, is_deleted)
+        INSERT INTO blade_post (id, post_name, association_id, update_time
+        ,update_user,create_user,create_time,create_dept, status, is_deleted)
         VALUES
         <foreach collection="postList" separator="," item="item">
-            (#{item.id}, #{item.postName}, #{item.associationId}, #{item.updateTime}, 1, 0 )
+            (#{item.id}, #{item.postName}, #{item.associationId},
+            #{item.updateTime},#{item.updateUser},#{item.createUser},#{item.createTime},#{item.createDept}, 1, 0 )
         </foreach>
         ON DUPLICATE KEY UPDATE
-        post_name = VALUES(post_name),is_deleted = VALUES(is_deleted),update_time = VALUES(update_time),status = VALUES(status)
+        post_name = VALUES(post_name),is_deleted = VALUES(is_deleted),update_time = VALUES(update_time),update_user =
+        VALUES(update_user),status = VALUES(status)
     </insert>
 </mapper>

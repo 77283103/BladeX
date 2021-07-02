@@ -99,17 +99,17 @@ public interface LauncherConstant {
 	/**
 	 * elk dev 地址
 	 */
-	String ELK_DEV_ADDR = "127.0.0.1:9000";
+	String ELK_DEV_ADDR = "192.168.152.125:9000";
 
 	/**
 	 * elk prod 地址
 	 */
-	String ELK_PROD_ADDR = "172.30.0.72:9000";
+	String ELK_PROD_ADDR = "127.0.0.1:9101";
 
 	/**
 	 * elk test 地址
 	 */
-	String ELK_TEST_ADDR = "172.30.0.72:9000";
+	String ELK_TEST_ADDR = "127.0.0.1:9101";
 
 	/**
 	 * seata file模式

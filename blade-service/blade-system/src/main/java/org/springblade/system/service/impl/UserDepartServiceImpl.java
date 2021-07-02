@@ -37,9 +37,19 @@ public class UserDepartServiceImpl extends ServiceImpl<UserDepartMapper, UserDep
 	}
 
 	@Override
+	public UserDepartEntity getUserDepart(Long associationId) {
+		UserDepartEntity userDepart = userDepartMapper.getDeptIdByAssociationId(associationId);
+		if (Func.isNotEmpty(userDepart)) {
+			return userDepart;
+		}else {
+			userDepart=new UserDepartEntity();
+			userDepart.setRoleId(1270659143136452610L);
+			return userDepart;
+		}
+	}
+
+	@Override
 	public boolean saveBatchUserDepart(List<UserDepartEntity> userDepartList) {
 		return userDepartMapper.saveBatchUserDepart(userDepartList);
 	}
-
-
 }

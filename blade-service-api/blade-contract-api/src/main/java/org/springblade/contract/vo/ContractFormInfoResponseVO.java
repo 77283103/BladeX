@@ -222,7 +222,7 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * @param null
 	 * @return null
 	 */
-	private List<ContractSealEntity> ContractSeal;
+	private List<ContractSealEntity> contractSeal;
 
 
 
@@ -240,4 +240,5 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 		return stringBuffer.toString();
 	}
 
+	private List<ContractSealEntity> contractSeal;
 }

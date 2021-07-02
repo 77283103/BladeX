@@ -1,10 +1,7 @@
 package org.springblade.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springblade.core.mp.base.BaseService;
 import org.springblade.system.entity.UserDepartEntity;
-import org.springblade.system.user.entity.User;
-import org.springblade.system.user.entity.UserDepart;
 
 import java.util.List;
 
@@ -32,6 +29,13 @@ public interface IUserDepartService extends IService<UserDepartEntity> {
 	 * @return 主键
 	 */
 	Long getUserDepartIdByAssociationId(Long associationId);
+	/**
+	 * 根据lunid获取id
+	 *
+	 * @param associationId 接口唯一标识
+	 * @return 主键
+	 */
+	UserDepartEntity getUserDepart(Long associationId);
 
 	/**
 	 *

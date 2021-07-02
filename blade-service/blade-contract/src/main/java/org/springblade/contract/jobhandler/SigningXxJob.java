@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.abutment.vo.EkpVo;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
@@ -30,6 +31,7 @@ import java.util.List;
 public class SigningXxJob {
 	private static Logger logger = LoggerFactory.getLogger(SigningXxJob.class);
 	private final IAbutmentClient abutmentClient;
+	private BladeLogger bladeLogger;
 	/**
 	 * @param param 形参
 	 * @return

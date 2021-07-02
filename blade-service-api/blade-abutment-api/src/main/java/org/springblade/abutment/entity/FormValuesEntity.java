@@ -96,6 +96,8 @@ public class FormValuesEntity implements Serializable {
 	private String fd_email;
 	@ApiModelProperty(value = "单据内容:相对方联系地址（）")
 	private String fd_address;
+	@ApiModelProperty(value = "子公司以及签章单位信息（关联表）")
+	private List<MultiSa> fd_multise;
 	@ApiModelProperty(value = "相对方企业信息（关联表）")
 	private List<MultiCo> fd_multico;
 	@ApiModelProperty(value = "相对方角色信息列表（关联表）")
