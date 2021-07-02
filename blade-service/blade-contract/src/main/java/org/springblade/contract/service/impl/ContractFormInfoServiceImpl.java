@@ -17,13 +17,14 @@ import org.springblade.abutment.vo.EkpVo;
 import org.springblade.abutment.vo.UploadFileVo;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.enums.ContractStatusEnum;
+import org.springblade.contract.enums.ContractTypeEnum;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
+import org.springblade.contract.excel.importbatchdraft.ContractImportBatchDraftExcel;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
-import org.springblade.contract.util.AsposeWordToPdfUtils;
-import org.springblade.contract.util.ExcelSaveUntil;
-import org.springblade.contract.util.RedisCacheUtil;
+import org.springblade.contract.util.*;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -2153,6 +2154,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			for(ContractImportBatchDraftExcel contractImportBatchDraftExcel:contractImportBatchDraftExcels){
 				//合同主体信息转bean,保存
 				ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractImportBatchDraftExcel,ContractFormInfoEntity.class);
+				assert contractFormInfoEntity != null;
 				contractFormInfoEntity.setContractBigCategory(contractBigCategory);
 				contractFormInfoEntity.setContractSmallCategory(contractSmallCategory);
 				contractFormInfoEntity.setId(IdGenUtil.generateId().longValue());
@@ -2163,7 +2165,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				//相对方信息,保存
 				List<ContractCounterpartEntity>counterpartEntityList = contractCounterpartService.saveByBatchDraftExcel(contractImportBatchDraftExcel.getContractCounterpartImportBatchDraftExcels(),contractFormInfoEntity.getId());
 				//保证金信息,保存
-				List<ContractBondEntity>contractBondEntityList = contractBondService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getContractBondImportBatchDraftExcels(),contractFormInfoEntity.getId());
+				List<ContractBondEntity> contractBondEntityList = contractBondService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getContractBondImportBatchDraftExcels(),contractFormInfoEntity.getId());
 				//履约-计划收付款,保存
 				List<PerCollectPayEntity>perCollectPayEntityList = perCollectPayService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getPerCollectPayImportBatchDraftExcels(),contractFormInfoEntity.getId());
 			}

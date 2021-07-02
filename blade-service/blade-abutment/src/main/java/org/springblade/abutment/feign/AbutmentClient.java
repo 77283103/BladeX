@@ -264,14 +264,14 @@ public class AbutmentClient implements IAbutmentClient {
 	}
 
 	/**
-	 * 独立起草/多方起草-合同起草
+	 * 独立起草/范本起草-合同起草
 	 *
 	 * @param entity
 	 * @return
 	 */
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
-	@ApiLog("独立起草/多方起草-合同起草")
+	@ApiLog("独立起草/范本起草-合同起草")
 	public R<EkpVo> sendEkpFormPost(@RequestBody ContractFormInfoEntity entity) {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
@@ -308,7 +308,7 @@ public class AbutmentClient implements IAbutmentClient {
 					//合同附件名称   合同附件：电子合同 附件只上传一份需要盖章的合同文本     实体合同需要上传多份合同文本
 					List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
 					if (fileVO.size() > 0) {
-						if ("2".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
+						if ("3".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
 							StringBuilder name = new StringBuilder();
 							fileVO.forEach(f -> {
 								name.append(f.getName());
@@ -399,8 +399,10 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_onetoone("1");
 					}
 				}
-				//处理签章关键字 和多页合同
-				formValuesEntity = fileText(formValuesEntity, entity);
+				//处理签章关键字 和多页合同 只有电子合同-我司用印   实体合同-我司用电子印  需要处理和传递keyword字段
+				if (entity.getContractForm().contains("1") || entity.getContractForm().contains("2")){
+					formValuesEntity = fileText(formValuesEntity, entity);
+				}
 				//合同主旨
 				formValuesEntity.setFd_main(entity.getContractName());
 				//合同大类
@@ -697,7 +699,7 @@ public class AbutmentClient implements IAbutmentClient {
 				docCreatorEntity.setEmplno(entity.getPersonCodeContract());
 				pushEkpEntity.setDocCreator(docCreatorEntity);
 				FormValuesEntity formValuesEntity = new FormValuesEntity();
-				//合同方对应关系
+				//合同方对应关系   多方的角色值在ContractFormIfoController 保存多方向对方身份信息 那段代码里处理的
 				if ("甲".equals(entity.getContractRoles())) {
 					formValuesEntity.setFd_onetoone("1");
 				} else if ("乙".equals(entity.getContractRoles())) {
@@ -709,18 +711,28 @@ public class AbutmentClient implements IAbutmentClient {
 				} else {
 					formValuesEntity.setFd_onetoone("5");
 				}
-				//依据文档id
+				//依据文档id    唯一
 				formValuesEntity.setFd_accord_id(entity.getAccording().get(0).getFileId());
-				//合同id
+				//合同id       唯一
 				formValuesEntity.setFd_contract_id(entity.getId().toString());
-				//pdf的id
+				//pdf的id      唯一【实体合同-我司不用电子印，电子合同-对方平台    这两种方式，可以上传多份 】
 				formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
 				//合同查看链接
 				formValuesEntity.setFd_contract_url("");
 				//合同文件名称
 				List<FileVO> fileText = fileClient.getByIds(entity.getTextFile()).getData();
 				if (fileText.size() > 0) {
-					formValuesEntity.setFd_contract_name(fileText.get(0).getName());
+					if ("3".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
+						StringBuilder name = new StringBuilder();
+						fileText.forEach(f -> {
+							name.append(f.getName());
+							name.append(",");
+						});
+						name.substring(0, name.length());
+						formValuesEntity.setFd_contract_name(name.toString());
+					} else {
+						formValuesEntity.setFd_contract_name(fileText.get(0).getName());
+					}
 				}
 				//合同起草类型  可能涉及变更暂时做判断
 				if ("20".equals(entity.getContractSoure())) {
@@ -746,14 +758,8 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_small(dictBiz.getDictKey());
 					}
 				}
-				//申请用公章全称
-				R<List<DictBiz>> application_seal = bizClient.getList("application_seal");
-				List<DictBiz> dataSeal = application_seal.getData();
-				for (DictBiz dictBiz : dataSeal) {
-					if ((dictBiz.getDictValue()).equals(entity.getSealName())) {
-						formValuesEntity.setFd_offical_seal(dictBiz.getDictKey());
-					}
-				}
+				//申请用公章全称  多方该字段由前端赋值form.sealName 签章申请单位的单位编号
+				formValuesEntity.setFd_offical_seal(entity.getSealName());
 				//合同负责人
 				formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
 				//合同份数
@@ -791,6 +797,19 @@ public class AbutmentClient implements IAbutmentClient {
 				}
 				//合同形式
 				formValuesEntity.setFd_contract_no(entity.getContractForm());
+				//子公司以及签章单位信息（关联表）
+				List<MultiSa> sas = new ArrayList<>();
+				entity.getContractSeal().forEach(c -> {
+					MultiSa sa = new MultiSa();
+					//子公司名称
+					sa.setFd_seal_factName(c.getFdFactname());
+					//单位编号
+					sa.setFd_role_taxNo(c.getFdTaxno());
+					//企业编号
+					sa.setFd_seal_factNo(c.getFdFactno());
+					sas.add(sa);
+				});
+				formValuesEntity.setFd_multise(sas);
 				//相对方企业信息（关联表）
 				List<MultiCo> cos = new ArrayList<>();
 				entity.getCounterpart().forEach(c -> {
@@ -802,10 +821,12 @@ public class AbutmentClient implements IAbutmentClient {
 					cos.add(co);
 				});
 				formValuesEntity.setFd_multico(cos);
-				//多方相对方身份信息列表
+				//多方身份信息列表
 				List<MultiRo> ros = new ArrayList<>();
 				entity.getDraftContractCounterpartList().forEach(r -> {
 					MultiRo ro = new MultiRo();
+					//子公司名称
+					ro.setFd_role_real(r.getSubsidiaryPerson());
 					//相对方身份
 					ro.setFd_role_identity(r.getCounterpartIdentity());
 					//相对方联系人
@@ -823,6 +844,8 @@ public class AbutmentClient implements IAbutmentClient {
 				List<MultiPay> pays = new ArrayList<>();
 				entity.getMultPaymenEntityList().forEach(p -> {
 					MultiPay pay = new MultiPay();
+					//子公司名称
+					pay.setFd_pay_seal(p.getSubsidiaryPerson());
 					//相对方名称
 					pay.setFd_pay_name(p.getCounterpartName());
 					//收付款
@@ -895,6 +918,8 @@ public class AbutmentClient implements IAbutmentClient {
 				List<MultiBon> bons = new ArrayList<>();
 				entity.getContractBond().forEach(b -> {
 					MultiBon bon = new MultiBon();
+					//子公司名称
+					bon.setFd_bon_seal(b.getSubsidiaryPerson());
 					//相对方名称
 					bon.setFd_bon_name(b.getCounterpartName());
 					//计划缴纳金额
@@ -975,11 +1000,13 @@ public class AbutmentClient implements IAbutmentClient {
 					pay.setFd_plan_psum(performanceColPay.getPlanPayAmount().toString());
 					payList.add(pay);
 				}
-				//处理签章关键字 和多页合同
+				//履约，服务
 				formValuesEntity.setFd_keep_list(keepList);
 				formValuesEntity.setFd_pay_list(payList);
-				//处理签章关键字 和多页合同
-				formValuesEntity = fileTextMulti(formValuesEntity, entity);
+				//处理签章关键字 和多页合同  只有电子合同-我司用印   实体合同-我司用电子印  需要处理和传递keyword字段
+				if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm())){
+				 formValuesEntity = fileTextMulti(formValuesEntity, entity);
+				}
 				pushEkpEntity.setFormValues(formValuesEntity);
 				try {
 					//处理合同补充依据
@@ -1420,6 +1447,14 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 						}
 					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractSealEntity cs : entity.getContractSeal()) {
+							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
+								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
 					formValuesEntity.setFd_keyword(s);
 				} else if ((threeHalf)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
@@ -1436,6 +1471,14 @@ public class AbutmentClient implements IAbutmentClient {
 						for (ContractCounterpartEntity ce : entity.getCounterpart()) {
 							if (dr.getCounterpartId().equals(String.valueOf(ce.getId()))) {
 								s.put(ce.getUnifiedSocialCreditCode(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractSealEntity cs : entity.getContractSeal()) {
+							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
+								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
 							}
 						}
 					}
@@ -1460,6 +1503,14 @@ public class AbutmentClient implements IAbutmentClient {
 							}
 						}
 					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractSealEntity cs : entity.getContractSeal()) {
+							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
+								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
 					formValuesEntity.setFd_keyword(s);
 				} else if ((fourHalf)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
@@ -1476,6 +1527,14 @@ public class AbutmentClient implements IAbutmentClient {
 						for (ContractCounterpartEntity ce : entity.getCounterpart()) {
 							if (dr.getCounterpartId().equals(String.valueOf(ce.getId()))) {
 								s.put(ce.getUnifiedSocialCreditCode(), dr.getCounterpartIdentity() + "方（签章）");
+							}
+						}
+					}
+					//给向对方设置角色
+					for (DraftContractCounterpartEntity dr : entity.getDraftContractCounterpartList()) {
+						for (ContractSealEntity cs : entity.getContractSeal()) {
+							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
+								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
 							}
 						}
 					}

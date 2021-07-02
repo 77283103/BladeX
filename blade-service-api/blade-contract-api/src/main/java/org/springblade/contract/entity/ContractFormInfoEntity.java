@@ -308,7 +308,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "多方起草子公司信息")
 	@TableField(exist = false)
-	private List<ContractSealEntity> contractSealList;
+	private List<ContractSealEntity> contractSeal;
 	/**
 	 * 关联合同归档信息
 	 */

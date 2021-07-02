@@ -171,7 +171,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	@SneakyThrows
 	@Override
 	@Transactional(rollbackFor = Exception.class)
-	@ApiLog("组织机构接口获取到的数据-【1】")
+	@ApiLog("组织机构接口获取到的数据的条件")
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
 		log.info("查看查询时间的参数：" + JSONUtil.toJsonStr(param));
 		Calendar calendar = Calendar.getInstance();
@@ -190,7 +190,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		try {
 			entity.setOrgType("2");
 			organizationList = getOrganizationInfo(entity);
-			logger.info("dept", JsonUtil.toJson(organizationList));
+			logger.info("元数据dept", JsonUtil.toJson(organizationList));
 			log.info("组织机构信息：" + JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)) {
 				return R.data(404, null, "TAG2:getOrganizationInfo()链接获取信息的方法异常，请检查");
@@ -207,7 +207,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		try {
 			entity.setOrgType("4");
 			organizationList = getOrganizationInfo(entity);
-			logger.info("post", JsonUtil.toJson(organizationList));
+			logger.info("元数据post", JsonUtil.toJson(organizationList));
 			log.info("岗位信息：" + JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)) {
 				return R.data(404, null, "TAG4:getOrganizationInfo()链接获取信息的方法异常，请检查");
@@ -222,7 +222,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		try {
 			entity.setOrgType("8");
 			organizationList = getOrganizationInfo(entity);
-			logger.info("user", JsonUtil.toJson(organizationList));
+			logger.info("元数据user", JsonUtil.toJson(organizationList));
 			log.info("个人信息：" + JSONUtil.toJsonStr(organizationList));
 			if (Func.isNull(organizationList)) {
 				return R.data(404, null, "TAG8:getOrganizationInfo()链接获取信息的方法异常，请检查");
@@ -233,7 +233,6 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		if (Func.isNotEmpty(organizationList)) {
 			getPersonListUpdate(organizationList, param);
 		}
-
 		return R.data(200, organizationList, "数据更新成功");
 	}
 
@@ -247,7 +246,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		List<Dept> in = new ArrayList<>();
 		for (OrganizationVo organizationVo : organizationList) {
 			Dept dept = new Dept();
-			dept.setIsEnable(organizationVo.getIsAvailable().equals("1") ? 1 : 0);
+			dept.setIsEnable("1".equals(organizationVo.getIsAvailable()) ? 1 : 0);
 			dept.setUpdateTime(DateUtil.parse(organizationVo.getAlterTime(), "yyyy-MM-dd HH:mm:ss"));
 			dept.setDeptName(organizationVo.getName());
 			dept.setPinyinName(organizationVo.getNamePinyin());
@@ -288,6 +287,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			}
 			in.add(dept);
 		}
+		logger.info("合同平台处理的部门数据",JsonUtil.toJson(in));
 		if (Func.isNotEmpty(in)) {
 			in.forEach(dept -> {
 				sysClient.saveDept(dept);
@@ -325,6 +325,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			}
 			in.add(post);
 		}
+		logger.info("合同平台处理的岗位数据",JsonUtil.toJson(in));
 		if (Func.isNotEmpty(in)) {
 			sysClient.saveOrUpdateBatchPost(in);
 		}
@@ -337,6 +338,9 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	 */
 	private void getPersonListUpdate(List<OrganizationVo> organizationList, OrgParme param) throws ParseException {
 		List<UserDepartEntity> inud = new ArrayList<>();
+		List<User> in=new ArrayList<>();
+		List<User> up=new ArrayList<>();
+		Map<String, List<User>> map=new HashMap<>();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for (OrganizationVo organizationVo : organizationList) {
 			if (Func.isEmpty(organizationVo.getEmplno()) && Func.isEmpty(organizationVo.getLoginName())) {
@@ -370,8 +374,10 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			R<Long> userIdResult = userClient.getUserIdByAssociationId(organizationVo.getId());
 			if (userIdResult.isSuccess()) {
 				user.setId(userIdResult.getData());
+				up.add(user);
 			} else {
 				user.setId(IdWorker.getId(user));
+				in.add(user);
 			}
 			inu.add(user);
 			userClient.saveOrUpdateBatch(inu);
@@ -394,14 +400,20 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			R<Long> userDepartIdByAssociationId = sysClient.getUserDepartByAssociationId(user.getId());
 			if (userDepartIdByAssociationId.isSuccess() && !Objects.equals(userDepartIdByAssociationId.getData(), 0L)) {
 				userDepart.setId(userDepartIdByAssociationId.getData());
+				UserDepartEntity ud=sysClient.getUserDepart(user.getId()).getData();
+				userDepart.setRoleId(ud.getRoleId());
+				userDepart.setPostId(ud.getPostId());
 			} else {
 //				userDepart.setId(IdWorker.getId(userDepart));
 				userDepart.setId(null);
+				userDepart.setRoleId(1270659143136452610L);
 			}
-			userDepart.setRoleId(1270659143136452610L);
 			userDepart.setUserId(user.getId());
 			inud.add(userDepart);
 		}
+		map.put("新增",in);
+		map.put("更新",up);
+		logger.info("合同平台处理的用户数据",JsonUtil.toJson(map));
 		if (Func.isNotEmpty(inud)) {
 			sysClient.saveOrUpdateBatchUserDepart(inud);
 		}

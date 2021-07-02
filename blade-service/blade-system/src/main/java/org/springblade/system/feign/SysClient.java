@@ -214,14 +214,12 @@ public class SysClient implements ISysClient {
 
 	@Override
 	@PostMapping(SUBMIT_DEPT_API)
-	@ApiLog("新增或更新的部门数据")
 	public R<Boolean> saveDept(@RequestBody Dept dept) {
 		return R.data(deptService.saveOrUpdate(dept));
 	}
 
 	@Override
 	@PostMapping(SUBMIT_POST_API)
-	@ApiLog("新增或更新的岗位信息")
 	public R<Boolean> savePost(Post post) {
 		return R.data(postService.saveOrUpdate(post));
 	}
@@ -242,6 +240,12 @@ public class SysClient implements ISysClient {
 	@GetMapping(GET_USER_DEPART_ID_BY_LUNID)
 	public R<Long> getUserDepartByAssociationId(Long associationId) {
 		return R.data(userDepartService.getUserDepartIdByAssociationId(associationId));
+	}
+
+	@Override
+	@GetMapping(GET_USER_DEPART)
+	public R<UserDepartEntity> getUserDepart(Long associationId) {
+		return R.data(userDepartService.getUserDepart(associationId));
 	}
 
 	@Override

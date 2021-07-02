@@ -2,6 +2,7 @@ package org.springblade.contract.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractSealEntity;
 import org.springblade.contract.vo.ContractSealRequestVO;
 
@@ -29,7 +30,7 @@ public interface ContractSealMapper extends BaseMapper<ContractSealEntity> {
 	 * @param fdFactno
 	 * @return org.springblade.contract.entity.ContractSealEntity
 	 */
-	ContractSealEntity selectAllByFdTaxnoAfter(String fdFactno);
+	ContractSealEntity selectAllByFdTaxnoAfter(@Param("fdTaxno") String fdFactno);
 	/**
 	 * 根据合同id查询相对方集合
 	 * @param id 合同id

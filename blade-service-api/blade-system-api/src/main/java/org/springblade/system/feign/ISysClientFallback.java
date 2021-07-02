@@ -178,6 +178,11 @@ public class ISysClientFallback implements ISysClient {
 	}
 
 	@Override
+	public R<UserDepartEntity> getUserDepart(Long associationId) {
+		return R.fail("根据用户ID未查询到该用户关联部门和岗位和角色信息");
+	}
+
+	@Override
 	public R<String> getAncestors(Long ancestorIds) {
 		return R.fail("获取数据失败");
 	}

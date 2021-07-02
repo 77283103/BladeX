@@ -13,8 +13,6 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.contract.entity.*;
-import org.springblade.contract.excel.ContractFormInfoImporter;
-import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.mapper.ContractMultPaymenMapper;
 import org.springblade.contract.mapper.DraftContractCounterpartMapper;
 import org.springblade.contract.service.*;
@@ -26,7 +24,6 @@ import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.core.boot.ctrl.BladeController;
-import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.log.exception.ServiceException;
 import org.springblade.core.mp.support.Condition;
 import org.springblade.core.mp.support.Query;
@@ -42,7 +39,6 @@ import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.entity.FileEntity;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
-import org.springblade.system.entity.DictBiz;
 import org.springblade.system.entity.TemplateFieldEntity;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
@@ -119,6 +115,8 @@ public class ContractFormInfoController extends BladeController {
 	private IPerCollectPayService perCollectPayService;
 	@Autowired
 	private IContractFileDownloadLogService fileDownloadLogService;
+	@Autowired
+	private IContractSealService iContractSealService;
 	private static final String CHANGE_REVIEW_STATUS = "10";
 	private static final String APPROVE_REVIEW_STATUS = "10";
 	private static final String CONTRACT_REVIEW_STATUS = "20";
@@ -241,7 +239,11 @@ public class ContractFormInfoController extends BladeController {
 		/*保存多方向对方身份信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getDraftContractCounterpartList())) {
 			draftContractCounterpartMapper.deleteDraftCounterpart(contractFormInfo.getId());
+			ContractSealEntity se=iContractSealService.getByFdNo(entity.getSealName());
 			contractFormInfo.getDraftContractCounterpartList().forEach(dcl -> {
+				if (se.getFdFactname().equals(dcl.getSubsidiaryPerson())){
+					entity.setContractRoles(dcl.getCounterpartIdentity());
+				}
 				dcl.setContractId(contractFormInfo.getId().toString());
 				draftContractCounterparService.save(dcl);
 			});
@@ -258,12 +260,6 @@ public class ContractFormInfoController extends BladeController {
 		/*保存子公司信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractSeal())) {
 			contractFormInfoService.saveContractSeal(contractFormInfo);
-			contractFormInfo.getDraftContractCounterpartList().forEach(dcc->{
-				if ("甲".equals(dcc.getCounterpartIdentity())){
-					entity.setSealName(dcc.getSubsidiaryPerson());
-					entity.setContractRoles(dcc.getCounterpartIdentity());
-				}
-			});
 		}
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {

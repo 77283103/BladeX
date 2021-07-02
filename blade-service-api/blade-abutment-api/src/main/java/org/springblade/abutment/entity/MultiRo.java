@@ -10,8 +10,10 @@ import lombok.Data;
 @Data
 @ApiModel(value = "多方相对方身份信息列表")
 public class MultiRo {
-	@ApiModelProperty(value = "单据内容:相对方身份（）")
+	@ApiModelProperty(value = "单据内容:身份（）")
 	private String fd_role_identity;
+	@ApiModelProperty(value = "单据内容:子公司名称（）")
+	private String fd_role_real;
 	@ApiModelProperty(value = "单据内容:相对方名称（）")
 	private String fd_role_name;
 	@ApiModelProperty(value = "单据内容:相对方联系电话（）")

@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 @ApiModel(value = "多方收付款信息列表")
 public class MultiPay {
+	@ApiModelProperty(value = "单据内容:子公司名称（）")
+	private String fd_pay_seal;
 	@ApiModelProperty(value = "单据内容:相对方名称（）")
 	private String fd_pay_name;
 	@ApiModelProperty(value = "单据内容:收付款(必填,付款|1 收款|2 合同无价款|3)")
