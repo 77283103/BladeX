@@ -94,6 +94,7 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 		contractBondMapper.deleteBond(id);
 	}
 
+
 	@Override
 	public List<ContractBondEntity> saveByBatchDraftExcels(List<ContractBondImportBatchDraftExcel> contractBondImportBatchDraftExcels,Long contractInfoId) {
 		List<ContractBondEntity> contractBondEntityList = new ArrayList<>();
@@ -122,5 +123,21 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 			this.saveBond(ids,contractInfoId);
 		}
 		return contractBondEntityList;
+	}
+
+	@Override
+	public Boolean saveListByContractInfoId(List<ContractBondEntity> contractBondEntityList, Long contractInfoId) {
+		if(Func.isEmpty(contractBondEntityList)){
+			return false;
+		}
+		this.deleteByContractId(contractInfoId);
+		List<Long> ids = new ArrayList<>();
+		contractBondEntityList.forEach(contractBondEntity -> {
+			contractBondEntity.setId(IdGenUtil.generateId().longValue());
+			ids.add(contractBondEntity.getId());
+		});
+		this.saveBatch(contractBondEntityList);
+		this.saveBond(ids,contractInfoId);
+		return true;
 	}
 }

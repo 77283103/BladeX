@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.springblade.contract.entity.*;
 import org.springblade.core.tool.utils.DateUtil;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.vo.FileVO;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -57,6 +58,11 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 创建者所在组织
 	 */
 	private String userDepartName;
+
+	/**
+	 * 相对方名称表达式
+	 */
+	private String counterpartNames;
 
 
 	/**
@@ -216,5 +222,23 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * @param null
 	 * @return null
 	 */
+	private List<ContractSealEntity> contractSeal;
+
+
+
+
+	public String getCounterpartNames(){
+		StringBuffer stringBuffer = new StringBuffer("");
+		if(Func.isNotEmpty(this.counterpart)){
+			this.counterpart.forEach(contractCounterpartEntity -> {
+				if(stringBuffer.length() > 0){
+					stringBuffer.append(",");
+				}
+				stringBuffer.append(contractCounterpartEntity.getName());
+			});
+		}
+		return stringBuffer.toString();
+	}
+
 	private List<ContractSealEntity> contractSeal;
 }

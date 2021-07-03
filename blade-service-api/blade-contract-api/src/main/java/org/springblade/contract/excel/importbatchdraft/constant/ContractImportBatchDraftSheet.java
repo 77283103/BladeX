@@ -1,4 +1,4 @@
-package org.springblade.contract.constant;
+package org.springblade.contract.excel.importbatchdraft.constant;
 
 public final class ContractImportBatchDraftSheet {
 

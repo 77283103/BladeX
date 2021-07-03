@@ -89,6 +89,9 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
 
 
 	public void saveSettingListByContractInfoId(Long contractInfoId,List<ContractCounterpartEntity>counterpartEntityList){
+    	if(Func.isEmpty(counterpartEntityList)){
+    		return;
+		}
 		baseMapper.deleteByContractId(contractInfoId);
 		baseMapper.saveListByContractId(contractInfoId, counterpartEntityList);
 	}

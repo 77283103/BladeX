@@ -5,6 +5,7 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.vo.ContractImportBatchDraftRequest;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.core.tool.api.R;
 import org.springblade.resource.vo.FileVO;
@@ -196,7 +197,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 
 
-	void batchDraftingImport(MultipartFile file,String json,String contractBigCategory, String contractSmallCategory);
+	void batchDraftingImport(ContractImportBatchDraftRequest contractImportBatchDraftRequest);
 
 
 	/**
@@ -248,4 +249,11 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	ContractFormInfoEntity selectByChangeId(Long id);
+
+
+	/**
+	 * 模板批量导入-更新
+	 * @param contractFormInfo
+	 */
+	void batchDraftingImportUp(ContractFormInfoRequestVO contractFormInfo);
 }

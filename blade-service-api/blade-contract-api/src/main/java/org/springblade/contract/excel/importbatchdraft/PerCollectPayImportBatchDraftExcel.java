@@ -17,18 +17,11 @@
 package org.springblade.contract.excel.importbatchdraft;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springblade.core.tool.utils.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
 
 @Data
 public class PerCollectPayImportBatchDraftExcel implements Serializable {

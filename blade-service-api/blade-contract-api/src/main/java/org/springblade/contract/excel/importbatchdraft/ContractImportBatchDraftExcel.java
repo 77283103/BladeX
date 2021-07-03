@@ -17,6 +17,8 @@
 package org.springblade.contract.excel.importbatchdraft;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springblade.core.tool.utils.Func;
@@ -120,6 +122,13 @@ public class ContractImportBatchDraftExcel implements Serializable {
 
 	@ApiModelProperty(value = "履约-计划收付款")
 	private List<PerCollectPayImportBatchDraftExcel> perCollectPayImportBatchDraftExcels;
+
+	@ApiModelProperty(value = "逻辑字段，用于携带模板信息")
+	private String json;
+
+	@JsonSerialize(using = ToStringSerializer.class)
+	@ApiModelProperty(value = "逻辑字段, 用于携带模板标识")
+	private Long contractTemplateId;
 
 
 	/**
