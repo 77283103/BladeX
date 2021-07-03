@@ -1452,9 +1452,13 @@ public class AbutmentClient implements IAbutmentClient {
 						for (ContractSealEntity cs : entity.getContractSeal()) {
 							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
 								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
+								if (entity.getSealName().equals(cs.getFdTaxno())){
+									s.remove(cs.getFdTaxno());
+								}
 							}
 						}
 					}
+
 					formValuesEntity.setFd_keyword(s);
 				} else if ((threeHalf)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
@@ -1479,6 +1483,9 @@ public class AbutmentClient implements IAbutmentClient {
 						for (ContractSealEntity cs : entity.getContractSeal()) {
 							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
 								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
+								if (entity.getSealName().equals(cs.getFdTaxno())){
+									s.remove(cs.getFdTaxno());
+								}
 							}
 						}
 					}
@@ -1508,6 +1515,9 @@ public class AbutmentClient implements IAbutmentClient {
 						for (ContractSealEntity cs : entity.getContractSeal()) {
 							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
 								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
+								if (entity.getSealName().equals(cs.getFdTaxno())){
+									s.remove(cs.getFdTaxno());
+								}
 							}
 						}
 					}
@@ -1535,6 +1545,9 @@ public class AbutmentClient implements IAbutmentClient {
 						for (ContractSealEntity cs : entity.getContractSeal()) {
 							if (dr.getCounterpartId().equals(String.valueOf(cs.getId()))) {
 								s.put(cs.getFdTaxno(), dr.getCounterpartIdentity() + "方（签章）");
+								if (entity.getSealName().equals(cs.getFdTaxno())){
+									s.remove(cs.getFdTaxno());
+								}
 							}
 						}
 					}
@@ -1758,7 +1771,7 @@ public class AbutmentClient implements IAbutmentClient {
 	@SneakyThrows
 	@Override
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
-	@ApiLog("相对方定时任务触发-获取数据")
+	@ApiLog("相对方定时任务-查询参数")
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 		CounterpartVo counterpartVo = null;
@@ -1776,7 +1789,7 @@ public class AbutmentClient implements IAbutmentClient {
 			return R.data(200, counterpartVo, "获取数据成功,暂时没有需要更新的数据！");
 		}
 		//保存获取到的数据的日志
-		logger.info("counterpartVo", JsonUtil.toJson(counterpartVo));
+		logger.info("相对方元数据", JsonUtil.toJson(counterpartVo));
 		log.info("更新到的向对方数据：" + JsonUtil.toJson(counterpartVo));
 		List<ContractCounterpartEntity> listInsert = new ArrayList<>();
 		List<ContractCounterpartEntity> listUpdate = new ArrayList<>();
@@ -1824,11 +1837,11 @@ public class AbutmentClient implements IAbutmentClient {
 		});
 		if (Func.isNotEmpty(listInsert)) {
 			R<List<ContractCounterpartEntity>> listIn = contractClient.saveBatch(listInsert);
-			log.info("新增的数据：" + JsonUtil.toJson(listIn));
+			log.info("新增的数据：" + JsonUtil.toJson(listIn.getData()));
 		}
 		if (Func.isNotEmpty(listUpdate)) {
 			R<List<ContractCounterpartEntity>> listUp = contractClient.saveOrUpdate(listUpdate);
-			log.info("更新的数据：" + JsonUtil.toJson(listUp));
+			log.info("更新的数据：" + JsonUtil.toJson(listUp.getData()));
 		}
 		log.info("新增的数据：" + JsonUtil.toJson(listInsert));
 		log.info("更新的数据：" + JsonUtil.toJson(listUpdate));

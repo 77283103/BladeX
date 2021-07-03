@@ -1258,7 +1258,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	/**
 	 * 统计合同下载次数
-	 *  @param id                 合同id
+	 *
+	 * @param id                 合同id
 	 * @param fileExportCount    下载次数
 	 * @param fileExportCategory
 	 */
@@ -1455,30 +1456,30 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		// 入参是个file文件
 		List<File> files = new ArrayList<File>();
 		//处理保存合同编号
-		entity=this.makeContractN(entity);
+		entity = this.makeContractN(entity);
 		//独立起草的pdf处理
 		List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
-		for (FileVO f:fileVO) {
+		for (FileVO f : fileVO) {
 			String newFileDoc = "";
 			String newFilePdf = "";
 			String suffix = "";
 			//doc转为pdf
 			log.info("TAG获取合同文本文件转换成PDF，前端已经处理判空，即断言此处文本获取成功！");
-			newFileDoc =  f.getLink();
-			int suffixL= f.getName().length();
-			log.info("合同文本文件名称的长度："+suffixL);
+			newFileDoc = f.getLink();
+			int suffixL = f.getName().length();
+			log.info("合同文本文件名称的长度：" + suffixL);
 			int index = f.getName().lastIndexOf(".");
-			log.info("合同文本文件名称不带后缀的长度："+index);
-			suffix = f.getName().substring(suffixL -3,suffixL);
+			log.info("合同文本文件名称不带后缀的长度：" + index);
+			suffix = f.getName().substring(suffixL - 3, suffixL);
 			log.info("合同文本文件名称的后三位（判断文件后缀类型" +
-				"）："+suffix);
+				"）：" + suffix);
 			//判断是否为pdf文件，pdf文件不需要转换
 			if (!"pdf".equals(suffix)) {
-				newFilePdf = ftlPath +  f.getName().substring(0, index) + date + ".pdf";
+				newFilePdf = ftlPath + f.getName().substring(0, index) + date + ".pdf";
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 				filePDF = new File(newFilePdf);
 			} else {
-				filePDF = new File(ftlPath +  f.getName().substring(0, index) + date + ".pdf");
+				filePDF = new File(ftlPath + f.getName().substring(0, index) + date + ".pdf");
 				//建立输出字节流
 				FileOutputStream fos = null;
 				try {
@@ -1537,7 +1538,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//上传合同文件 结束
 		//epk流程接口  处理合同文本上传壹钱包的合同文本信息
 		StringBuilder name = new StringBuilder();
-		uploadFileVoList.forEach(up->{
+		uploadFileVoList.forEach(up -> {
 			name.append(up.getId());
 			name.append(",");
 		});
@@ -1574,7 +1575,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	@Override
 	public ContractFormInfoEntity makeContractN(ContractFormInfoEntity entity) {
-		ContractFormInfoEntity formInfoEntity=new ContractFormInfoEntity();
+		ContractFormInfoEntity formInfoEntity = new ContractFormInfoEntity();
 		BeanUtil.copy(entity, formInfoEntity);
 		/*处理编号 开始*/
 		List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);
@@ -2145,15 +2146,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	@Override
-	public void batchDraftingImport(MultipartFile file,String json,String contractBigCategory, String contractSmallCategory) {
+	public void batchDraftingImport(MultipartFile file, String json, String contractBigCategory, String contractSmallCategory) {
 		//转换excel文件为合同模板集合
-		List<ContractImportBatchDraftExcel>contractImportBatchDraftExcels = ContractImportBatchDraftUtil.excelToContractExcelList(file);
+		List<ContractImportBatchDraftExcel> contractImportBatchDraftExcels = ContractImportBatchDraftUtil.excelToContractExcelList(file);
 		//合同模板集合转合同db实体
-		if(Func.isNotEmpty(contractImportBatchDraftExcels)){
-			List<ContractFormInfoEntity>contractFormInfoEntityList = new ArrayList<>();
-			for(ContractImportBatchDraftExcel contractImportBatchDraftExcel:contractImportBatchDraftExcels){
+		if (Func.isNotEmpty(contractImportBatchDraftExcels)) {
+			List<ContractFormInfoEntity> contractFormInfoEntityList = new ArrayList<>();
+			for (ContractImportBatchDraftExcel contractImportBatchDraftExcel : contractImportBatchDraftExcels) {
 				//合同主体信息转bean,保存
-				ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractImportBatchDraftExcel,ContractFormInfoEntity.class);
+				ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractImportBatchDraftExcel, ContractFormInfoEntity.class);
 				assert contractFormInfoEntity != null;
 				contractFormInfoEntity.setContractBigCategory(contractBigCategory);
 				contractFormInfoEntity.setContractSmallCategory(contractSmallCategory);
@@ -2163,11 +2164,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				contractFormInfoEntity.setContractSoure(ContractTypeEnum.BATCH.getKey().toString());
 				contractFormInfoEntityList.add(contractFormInfoEntity);
 				//相对方信息,保存
-				List<ContractCounterpartEntity>counterpartEntityList = contractCounterpartService.saveByBatchDraftExcel(contractImportBatchDraftExcel.getContractCounterpartImportBatchDraftExcels(),contractFormInfoEntity.getId());
+				List<ContractCounterpartEntity> counterpartEntityList = contractCounterpartService.saveByBatchDraftExcel(contractImportBatchDraftExcel.getContractCounterpartImportBatchDraftExcels(), contractFormInfoEntity.getId());
 				//保证金信息,保存
-				List<ContractBondEntity> contractBondEntityList = contractBondService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getContractBondImportBatchDraftExcels(),contractFormInfoEntity.getId());
+				List<ContractBondEntity> contractBondEntityList = contractBondService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getContractBondImportBatchDraftExcels(), contractFormInfoEntity.getId());
 				//履约-计划收付款,保存
-				List<PerCollectPayEntity>perCollectPayEntityList = perCollectPayService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getPerCollectPayImportBatchDraftExcels(),contractFormInfoEntity.getId());
+				List<PerCollectPayEntity> perCollectPayEntityList = perCollectPayService.saveByBatchDraftExcels(contractImportBatchDraftExcel.getPerCollectPayImportBatchDraftExcels(), contractFormInfoEntity.getId());
 			}
 			this.saveBatch(contractFormInfoEntityList);
 		}
@@ -2231,7 +2232,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			//判断是否为pdf文件，pdf文件不需要转换
 			if (!"pdf".equals(suffix)) {
 				//设置日期格式
-
 				newFilePdf = ftlPath + fileVO.getName().substring(0, index) + date + ".pdf";
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 				filePDF = new File(newFilePdf);
@@ -2254,6 +2254,24 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					}
 				}
 			}
+			if ("20".equals(contractFormInfo.getContractSoure())) {
+				return judgeKeywordsMulti(filePDF);
+			}else {
+				return judgeKeywordsIndeOrTemplate(filePDF);
+			}
+		} else {
+			return R.data(2, "文件获取失败", "文件获取失败");
+		}
+	}
+
+	/**
+	 * 多方处理合同文本关键字
+	 * @param filePDF
+	 * @return org.springblade.core.tool.api.R
+	 * @author jitwxs
+	 * @date 2021/7/2 16:46
+	 */
+	public R judgeKeywordsMulti(File filePDF) {
 			InputStream input = null;
 			PDDocument document = null;
 			try {
@@ -2266,18 +2284,41 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				String text = stripper.getText(document);
 				int az = text.indexOf("甲方（签章）");
 				int bz = text.indexOf("乙方（签章）");
+				int ey = text.indexOf("丙方（签章）");
 				int ay = text.indexOf("甲方(签章)");
 				int by = text.indexOf("乙方(签章)");
+				int ez = text.indexOf("丙方(签章)");
 				int cz = text.indexOf("甲方(签章）");
 				int cy = text.indexOf("乙方(签章）");
+				int ex = text.indexOf("丙方(签章）");
 				int dz = text.indexOf("甲方（签章)");
 				int dy = text.indexOf("乙方（签章)");
-				if ((-1 == az || -1 == bz) && (-1 == ay || -1 == by) && (-1 == cz || -1 == cy) && (-1 == dz || -1 == dy) &&
-					(-1 == az || -1 == by) && (-1 == az || -1 == cy) && (-1 == az || -1 == dy) &&
-					(-1 == bz || -1 == ay) && (-1 == bz || -1 == cz) && (-1 == bz || -1 == dz) &&
-					(-1 == ay || -1 == cy) && (-1 == ay || -1 == dy) &&
-					(-1 == by || -1 == cz) && (-1 == by || -1 == dz) &&
-					(-1 == cz || -1 == dy) && (-1 == cy || -1 == dz)) {
+				int eo = text.indexOf("丙方（签章)");
+				if ((-1 == az || -1 == bz || -1==ey) && (-1 == ay || -1 == by || -1==ez) && (-1 == cz || -1 == cy || -1==ex) && (-1 == dz || -1 == dy || -1==eo) &&
+					(-1 == az || -1 == by || -1==ez) && (-1 == az || -1 == cy || -1==ez) &&
+					(-1 == az || -1 == dy || -1==ez) && (-1 == bz || -1 == ay || -1==ez) &&
+					(-1 == bz || -1 == cz || -1==ez) && (-1 == bz || -1 == dz || -1==ez) &&
+					(-1 == ay || -1 == cy || -1==ez) && (-1 == ay || -1 == dy || -1==ez) &&
+					(-1 == by || -1 == cz || -1==ez) && (-1 == by || -1 == dz || -1==ez) &&
+					(-1 == cz || -1 == dy || -1==ez) && (-1 == cy || -1 == dz || -1==ez) &&
+					(-1 == az || -1 == by || -1==ey) && (-1 == az || -1 == cy || -1==ey) &&
+					(-1 == az || -1 == dy || -1==ey) && (-1 == bz || -1 == ay || -1==ey) &&
+					(-1 == bz || -1 == cz || -1==ey) && (-1 == bz || -1 == dz || -1==ey) &&
+					(-1 == ay || -1 == cy || -1==ey) && (-1 == ay || -1 == dy || -1==ey) &&
+					(-1 == by || -1 == cz || -1==ey) && (-1 == by || -1 == dz || -1==ey) &&
+					(-1 == cz || -1 == dy || -1==ey) && (-1 == cy || -1 == dz || -1==ey) &&
+					(-1 == az || -1 == by || -1==ex) && (-1 == az || -1 == cy || -1==ex) &&
+					(-1 == az || -1 == dy || -1==ex) && (-1 == bz || -1 == ay || -1==ex) &&
+					(-1 == bz || -1 == cz || -1==ex) && (-1 == bz || -1 == dz || -1==ex) &&
+					(-1 == ay || -1 == cy || -1==ex) && (-1 == ay || -1 == dy || -1==ex) &&
+					(-1 == by || -1 == cz || -1==ex) && (-1 == by || -1 == dz || -1==ex) &&
+					(-1 == cz || -1 == dy || -1==ex) && (-1 == cy || -1 == dz || -1==ex) &&
+					(-1 == az || -1 == by || -1==eo) && (-1 == az || -1 == cy || -1==eo) &&
+					(-1 == az || -1 == dy || -1==eo) && (-1 == bz || -1 == ay || -1==eo) &&
+					(-1 == bz || -1 == cz || -1==eo) && (-1 == bz || -1 == dz || -1==eo) &&
+					(-1 == ay || -1 == cy || -1==eo) && (-1 == ay || -1 == dy || -1==eo) &&
+					(-1 == by || -1 == cz || -1==eo) && (-1 == by || -1 == dz || -1==eo) &&
+					(-1 == cz || -1 == dy || -1==eo) && (-1 == cy || -1 == dz || -1==eo)) {
 					return R.data(2, "缺失签章关键字", "缺失签章关键字");
 				}
 				if ((-1 != cz && -1 != cy) || (-1 != dz && -1 != dy) ||
@@ -2303,9 +2344,65 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 			return R.data(0, "成功", "成功");
-		} else {
-			return R.data(2, "文件获取失败", "文件获取失败");
+	}
+
+	/**
+	 * 独立起草  范本起草-处理合同文本关键字
+	 * @author jitwxs
+	 * @date 2021/7/2 16:53
+	 * @param filePDF
+	 * @return org.springblade.core.tool.api.R
+	 */
+	public R judgeKeywordsIndeOrTemplate(File filePDF) {
+		InputStream input = null;
+		PDDocument document = null;
+		try {
+			input = new FileInputStream(filePDF);
+			// 新建一个PDF解析器对象
+			PDFParser parser = new PDFParser(input);
+			parser.parse();
+			document = parser.getPDDocument();
+			PDFTextStripper stripper = new PDFTextStripper();
+			String text = stripper.getText(document);
+			int az = text.indexOf("甲方（签章）");
+			int bz = text.indexOf("乙方（签章）");
+			int ay = text.indexOf("甲方(签章)");
+			int by = text.indexOf("乙方(签章)");
+			int cz = text.indexOf("甲方(签章）");
+			int cy = text.indexOf("乙方(签章）");
+			int dz = text.indexOf("甲方（签章)");
+			int dy = text.indexOf("乙方（签章)");
+			if ((-1 == az || -1 == bz) && (-1 == ay || -1 == by) && (-1 == cz || -1 == cy) && (-1 == dz || -1 == dy) &&
+				(-1 == az || -1 == by) && (-1 == az || -1 == cy) && (-1 == az || -1 == dy) &&
+				(-1 == bz || -1 == ay) && (-1 == bz || -1 == cz) && (-1 == bz || -1 == dz) &&
+				(-1 == ay || -1 == cy) && (-1 == ay || -1 == dy) &&
+				(-1 == by || -1 == cz) && (-1 == by || -1 == dz) &&
+				(-1 == cz || -1 == dy) && (-1 == cy || -1 == dz)) {
+				return R.data(2, "缺失签章关键字", "缺失签章关键字");
+			}
+			if ((-1 != cz && -1 != cy) || (-1 != dz && -1 != dy) ||
+				(-1 != az && -1 != by) || (-1 != az && -1 != cy) || (-1 != az && -1 != dy) ||
+				(-1 != bz && -1 != ay) || (-1 != bz && -1 != cz) || (-1 != bz && -1 != dz) ||
+				(-1 != ay && -1 != cy) || (-1 != ay && -1 != dy) ||
+				(-1 != by && -1 != cz) || (-1 != by && -1 != dz) ||
+				(-1 != cz && -1 != dy) || (-1 != cy && -1 != dz)) {
+				return R.data(2, "关键字" + "()" + "存在全角半角字符,请检查修改统一", "关键字" + "()" + "存在全角半角字符,请检查修改统一");
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (document != null) {
+					document.close();
+				}
+				if (input != null) {
+					input.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		return R.data(0, "成功", "成功");
 	}
 
 	@Override

@@ -109,7 +109,7 @@ public interface LauncherConstant {
 	/**
 	 * elk test 地址
 	 */
-	String ELK_TEST_ADDR = "127.0.0.1:9101";
+	String ELK_TEST_ADDR = "10.93.1.43:9101";
 
 	/**
 	 * seata file模式

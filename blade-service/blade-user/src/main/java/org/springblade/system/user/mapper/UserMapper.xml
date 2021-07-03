@@ -146,6 +146,7 @@
         WHERE a.tenant_id = #{param1}
           and a.account = #{param2}
           and a.is_deleted = 0
+          and a.is_enable=2
     </select>
 
     <select id="exportUser" resultType="org.springblade.system.user.excel.UserExcel">
@@ -247,6 +248,7 @@
         FROM
         blade_user u
         where u.is_deleted = 0
+        and u.is_enable = 2
         <if test="deptId!=null and deptId != ''">
             and u.account = #{userName}
         </if>
@@ -256,6 +258,7 @@
         FROM blade_user u
         where u.is_deleted = 0
           and tenant_id = 000000
+          and u.is_enable = 2
           and u.real_name like concat('%', #{user.realName}, '%')
     </select>
 
