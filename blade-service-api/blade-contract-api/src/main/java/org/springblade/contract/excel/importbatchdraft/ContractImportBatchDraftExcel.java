@@ -196,8 +196,4 @@ public class ContractImportBatchDraftExcel implements Serializable {
 			});
 		}
 	}
-
-
-
-
 }

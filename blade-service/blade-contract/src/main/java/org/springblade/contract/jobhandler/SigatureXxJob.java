@@ -12,7 +12,6 @@ import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.abutment.vo.AsDictVo;
 import org.springblade.contract.entity.ContractSealEntity;
 import org.springblade.contract.service.IContractSealService;
-import org.springblade.core.log.logger.BladeLogger;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
@@ -35,7 +34,6 @@ public class SigatureXxJob {
 	private final IDictBizClient dictService;
 	private final IAbutmentClient abutmentClient;
 	private final IContractSealService contractSealService;
-	private final BladeLogger bladeLogger;
 	/**
 	 * 更新添加申请用印单位的单位数据
 	 *

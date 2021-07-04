@@ -41,7 +41,7 @@ public class OrganizationJob {
 		if (Func.isNotEmpty(param)) {
 			String[] code = param.split(",");
 			List<String> tagP = Arrays.asList(code);
-			log.info("启动获取组织及人员增量信息任务:" + Arrays.toString(code) + ":" + param);
+			log.info("启动获取组织及人员增量信息任务:" + JsonUtil.toJson(tagP) + ":" + param);
 			orgParme.setParme(tagP.get(0));
 			orgParme.setTag(tagP.get(1));
 		}else {

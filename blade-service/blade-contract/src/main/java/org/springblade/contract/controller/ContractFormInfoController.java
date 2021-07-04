@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.log4j.Log4j2;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.enums.ContractStatusEnum;
 import org.springblade.contract.mapper.ContractMultPaymenMapper;
 import org.springblade.contract.mapper.DraftContractCounterpartMapper;
 import org.springblade.contract.service.*;
@@ -314,7 +315,7 @@ public class ContractFormInfoController extends BladeController {
 			});
 		}
 		//开始接口处理
-		if ("20".equals(entity.getContractStatus())) {
+		if (ContractStatusEnum.APPROVAL.getKey().toString().equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm())) {
 				r = contractFormInfoService.SingleSign(R.data(entity));

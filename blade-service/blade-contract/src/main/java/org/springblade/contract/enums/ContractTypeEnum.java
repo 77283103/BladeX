@@ -2,8 +2,8 @@ package org.springblade.contract.enums;
 
 public enum ContractTypeEnum {
 
-	BATCH("批量", 40);
-
+	BATCH("批量", 40),
+	MULTI("多方", 20);
 	// 成员变量
 	private String value;
 	private Integer key;

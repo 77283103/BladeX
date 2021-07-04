@@ -2,7 +2,8 @@ package org.springblade.contract.enums;
 
 public enum ContractStatusEnum {
 
-	DRAFT("草稿", 10);
+	DRAFT("草稿", 10),
+	APPROVAL("送审", 20);
 
 	// 成员变量
 	private String value;

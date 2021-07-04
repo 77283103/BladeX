@@ -41,7 +41,7 @@ public class LauncherServiceImpl implements LauncherService {
 		PropsUtil.setProperty(props, "spring.cloud.sentinel.transport.dashboard", LauncherConstant.sentinelAddr(profile));
 		PropsUtil.setProperty(props, "spring.zipkin.base-url", LauncherConstant.zipkinAddr(profile));
 		// 开启elk日志
-		 PropsUtil.setProperty(props, "blade.log.elk.destination", LauncherConstant.elkAddr(profile));
+//		 PropsUtil.setProperty(props, "blade.log.elk.destination", LauncherConstant.elkAddr(profile));
 		// seata注册地址
 		 PropsUtil.setProperty(props, "seata.service.grouplist.default", LauncherConstant.seataAddr(profile));
 		// seata注册group格式

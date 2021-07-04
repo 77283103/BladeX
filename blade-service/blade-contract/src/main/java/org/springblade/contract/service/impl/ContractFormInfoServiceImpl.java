@@ -17,14 +17,15 @@ import org.springblade.abutment.vo.EkpVo;
 import org.springblade.abutment.vo.UploadFileVo;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
 import org.springblade.contract.entity.*;
-import org.springblade.contract.enums.ContractStatusEnum;
 import org.springblade.contract.enums.ContractTypeEnum;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.excel.importbatchdraft.ContractImportBatchDraftExcel;
 import org.springblade.contract.mapper.*;
 import org.springblade.contract.service.*;
-import org.springblade.contract.util.*;
+import org.springblade.contract.util.AsposeWordToPdfUtils;
+import org.springblade.contract.util.ExcelSaveUntil;
+import org.springblade.contract.util.RedisCacheUtil;
 import org.springblade.contract.vo.*;
 import org.springblade.contract.wrapper.*;
 import org.springblade.core.mp.base.BaseServiceImpl;
@@ -1298,6 +1299,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		File fileBH = null;
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = df.format(new Date());
+		//处理保存合同编号
+		entity=this.makeContractN(entity);
 		//独立起草的pdf处理
 		if ("10".equals(entity.getContractSoure()) || "20".equals(entity.getContractSoure())) {
 			List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
@@ -1351,36 +1354,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			assert fos != null;
 			fos.close();
 			in.close();
-			//处理编号
-			List<ContractFormInfoEntity> list = this.selectByContractNumber(entity);
-			log.info("开始处理编号:{}", JsonUtil.toJson(list));
-			//合同大类
-			final String[] FLCode = {null};
-			R<List<DictBiz>> HTDL = bizClient.getList("HTDL");
-			List<DictBiz> dataBiz = HTDL.getData();
-			dataBiz.forEach(bz -> {
-				if ((bz.getId().toString()).equals(entity.getContractBigCategory())) {
-					FLCode[0] = bz.getRemark();
-				}
-			});
-			log.info("合同大类:{}", JsonUtil.toJson(FLCode));
-			//合同用印全称编号
-			final String[] GSCode = {null};
-			R<List<DictBiz>> seal = bizClient.getList("application_seal");
-			log.info("获取到application_seal:{}", JsonUtil.toJson(seal));
-			seal.getData().forEach(bz -> {
-				if (bz.getDictValue().equals(entity.getSealName())) {
-					GSCode[0] = bz.getRemark();
-				}
-			});
-			log.info("合同用印全称编号:{}", JsonUtil.toJson(GSCode));
-			//存在合同编号按顺序+1
-			log.info("存在合同编号:{}", list.size());
-			if (list.size() > 0) {
-				entity.setContractNumber(redisCacheUtil.selectTaskNo(list.get(0).getContractNumber(), FLCode[0], GSCode[0]));
-			} else {
-				entity.setContractNumber(redisCacheUtil.selectTaskNo("", FLCode[0], GSCode[0]));
-			}
 			String BH = ftlPath + "BH-" + filePDF.getName();
 			AsposeWordToPdfUtils.addWaterMark(filePDF.getPath(), BH, entity.getContractNumber());
 			fileBH = new File(BH);
@@ -1439,7 +1412,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 	/**
 	 * 独立起草
-	 * 电子签章业务处理 -实体合同-我司用印  我是不用印
+	 * 电子签章业务处理 电子合同-对方用印   实体合同-我司不用电子印
 	 * <p>
 	 * 1.获取合同文本文件
 	 * 2.
@@ -1601,11 +1574,19 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		final String[] GSCode = {null};
 		R<List<DictBiz>> seal = bizClient.getList("application_seal");
 		log.info("获取到application_seal:{}", JsonUtil.toJson(seal));
-		seal.getData().forEach(bz -> {
-			if (bz.getDictValue().equals(entity.getSealName())) {
-				GSCode[0] = bz.getRemark();
+		if (entity.getContractSoure().equals(ContractTypeEnum.MULTI.getKey().toString())) {
+			for (ContractSealEntity cs : entity.getContractSeal()) {
+				if (entity.getSealName().equals(cs.getFdTaxno())) {
+					GSCode[0] = cs.getFdFactno();
+				}
 			}
-		});
+		}else {
+			seal.getData().forEach(bz -> {
+				if (bz.getDictValue().equals(entity.getSealName())) {
+					GSCode[0] = bz.getRemark();
+				}
+			});
+		}
 		log.info("合同用印全称编号:{}", JsonUtil.toJson(GSCode));
 		//存在合同编号按顺序+1
 		log.info("存在合同编号:{}", list.size());
@@ -2162,7 +2143,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			for(ContractImportBatchDraftExcel contractImportBatchDraftExcel:contractImportBatchDraftExcels){
 				ContractFormInfoEntity contractFormInfoEntity = ContractFormInfoWrapper.build().createEntityByBatchDraftExcel(contractImportBatchDraftExcel);
 
-				contractFormInfoEntity.setContractListName();
+				contractFormInfoEntity.setContractListName("");
 				contractFormInfoEntityList.add(contractFormInfoEntity);
 				//相对方信息,保存
 				List<ContractCounterpartEntity>counterpartEntityList = contractCounterpartService.saveByBatchDraftExcel(contractImportBatchDraftExcel.getContractCounterpartImportBatchDraftExcels(),contractFormInfoEntity.getId());
@@ -2176,6 +2157,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 
+	@Override
 	public void batchDraftingImportUp(ContractFormInfoRequestVO contractFormInfo){
 		//更新合同主体
 		ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractFormInfo,ContractFormInfoEntity.class);
@@ -2240,6 +2222,35 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		}
+		if (Func.isNotEmpty(contractFormInfo.getContractSeal())){
+			for (ContractSealEntity seal : contractFormInfo.getContractSeal()) {
+				// 查查公司有没有申请电子章
+				CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
+				companyInfoEntity.setQueryType("1");
+				// 企业信用代码  从相对方里面来  需要修改
+				companyInfoEntity.setOrganCode(seal.getFdTaxno());
+				// 如果是null的话,说明根本没注册,如果注册了那available是1的话表示有章,0是没章
+				CompanyInfoVo companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+				log.info("TAG01:查询电子签章信息的返回数据：" + JsonUtil.toJson(companyInfoVo));
+				if (null == companyInfoVo) {
+					companyInfoVo = abutmentClient.queryCompanyInfo(companyInfoEntity).getData();
+					log.info("TAG02:查询电子签章信息的返回数据：" + JsonUtil.toJson(companyInfoVo));
+				}
+				if (null != companyInfoVo) {
+					boolean code = "0".equals(companyInfoVo.getOrganCode());
+					boolean available = "1".equals(companyInfoVo.getCompany().getAvailable());
+					boolean contractForm1 = "1".equals(contractFormInfo.getContractForm());
+					boolean contractForm2 = "2".equals(contractFormInfo.getContractForm());
+					//不等于0就是没有电子签章
+					if ((!code || !available) && contractForm1) {
+						return R.data(1,seal.getFdFactname(), seal.getFdFactname() + "没有电子签章，请选择实体用印");
+					}
+					if (code && available && contractForm2) {
+						return R.data(1,seal.getFdFactname(), seal.getFdFactname() + "，有电子签章，请选择电子合同-我司平台");
+					}
+				}
+			}
+		}
 		String newFileDoc = "";
 		String newFilePdf = "";
 		String suffix = "";
@@ -2254,7 +2265,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			//判断是否为pdf文件，pdf文件不需要转换
 			if (!"pdf".equals(suffix)) {
 				//设置日期格式
-
 				newFilePdf = ftlPath + fileVO.getName().substring(0, index) + date + ".pdf";
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 				filePDF = new File(newFilePdf);
