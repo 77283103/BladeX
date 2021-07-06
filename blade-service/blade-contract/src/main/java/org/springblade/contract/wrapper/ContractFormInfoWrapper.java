@@ -61,7 +61,6 @@ public class ContractFormInfoWrapper implements IEntityWrapper<ContractFormInfoE
 		contractFormInfoEntity.setId(IdGenUtil.generateId().longValue());
 		contractFormInfoEntity.setJson(contractImportBatchDraftExcel.getJson());
 		contractFormInfoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
-		contractFormInfoEntity.setContractSoure(ContractTypeEnum.BATCH.getKey().toString());
 		BladeUser user = AuthUtil.getUser();
 		contractFormInfoEntity.setCreateDept((Long) Func.toLongList(user.getDeptId()).iterator().next());
 		contractFormInfoEntity.setCreateUser(user.getUserId());

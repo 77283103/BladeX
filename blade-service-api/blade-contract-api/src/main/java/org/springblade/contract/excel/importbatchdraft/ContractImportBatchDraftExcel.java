@@ -130,6 +130,9 @@ public class ContractImportBatchDraftExcel implements Serializable {
 	@ApiModelProperty(value = "逻辑字段, 用于携带模板标识")
 	private Long contractTemplateId;
 
+	@ApiModelProperty(value = "逻辑字段，合同来源")
+	private String contractSoure;
+
 
 	/**
 	 * 关联相对方集合

@@ -38,6 +38,9 @@ public class ContractImportBatchDraftRequest implements Serializable {
 	@ApiModelProperty(value = "导入文件")
 	private MultipartFile file;
 
+	@ApiModelProperty(value = "合同来源")
+	private String contractSoure;
+
 
 	public List<ContractImportBatchDraftExcel> getContractExcelList(){
 		if(Func.isNotEmpty(this.file)){
@@ -47,6 +50,7 @@ public class ContractImportBatchDraftRequest implements Serializable {
 				contractImportBatchDraftExcel.setContractBigCategory(this.contractBigCategory);
 				contractImportBatchDraftExcel.setContractSmallCategory(this.contractSmallCategory);
 				contractImportBatchDraftExcel.setContractTemplateId(this.contractTemplateId);
+				contractImportBatchDraftExcel.setContractSoure(this.contractSoure);
 			});
 			return contractImportBatchDraftExcels;
 		}
