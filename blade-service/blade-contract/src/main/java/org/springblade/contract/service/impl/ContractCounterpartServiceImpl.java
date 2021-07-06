@@ -82,8 +82,11 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
 		contractCounterpartImportBatchDraftExcels.forEach(contractCounterpartImportBatchDraftExcel -> {
 			counterpartCodes.add(contractCounterpartImportBatchDraftExcel.getUnifiedSocialCreditCode());
 		});
-		List<ContractCounterpartEntity>counterpartEntityList = baseMapper.findListByCodes(counterpartCodes);
-		this.saveSettingListByContractInfoId(contractInfoId,counterpartEntityList);
+		List<ContractCounterpartEntity>counterpartEntityList = new ArrayList<>();
+		if(Func.isNotEmpty(counterpartCodes)){
+			counterpartEntityList = baseMapper.findListByCodes(counterpartCodes);
+			this.saveSettingListByContractInfoId(contractInfoId,counterpartEntityList);
+		}
 		return counterpartEntityList;
 	}
 
