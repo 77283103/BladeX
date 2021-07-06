@@ -1,7 +1,6 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.ibatis.annotations.Param;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.excel.ContractCounterpartExcel;
 import org.springblade.contract.excel.importbatchdraft.ContractCounterpartImportBatchDraftExcel;
@@ -69,4 +68,17 @@ public interface IContractCounterpartService extends BaseService<ContractCounter
 	 * @param counterpartEntityList
 	 */
 	void saveSettingListByContractInfoId(Long contractInfoId,List<ContractCounterpartEntity>counterpartEntityList);
+
+	/**
+	 *
+	 * 清理数据
+	 * @return
+	 */
+	boolean clearDate();
+	/**
+	 *
+	 * 清理数据
+	 * @return
+	 */
+	boolean clearEmpty();
 }

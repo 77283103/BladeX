@@ -72,7 +72,8 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
     }
 
 
-    public List<ContractCounterpartEntity> findListByCodes(List<String> codes){
+    @Override
+	public List<ContractCounterpartEntity> findListByCodes(List<String> codes){
     	return baseMapper.findListByCodes(codes);
 	}
 
@@ -91,12 +92,23 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
 	}
 
 
-	public void saveSettingListByContractInfoId(Long contractInfoId,List<ContractCounterpartEntity>counterpartEntityList){
+	@Override
+	public void saveSettingListByContractInfoId(Long contractInfoId, List<ContractCounterpartEntity>counterpartEntityList){
     	if(Func.isEmpty(counterpartEntityList)){
     		return;
 		}
 		baseMapper.deleteByContractId(contractInfoId);
 		baseMapper.saveListByContractId(contractInfoId, counterpartEntityList);
+	}
+
+	@Override
+	public boolean clearDate() {
+		return baseMapper.clearDate();
+	}
+
+	@Override
+	public boolean clearEmpty() {
+		return baseMapper.clearDate();
 	}
 
 	/**

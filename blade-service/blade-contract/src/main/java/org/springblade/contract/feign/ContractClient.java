@@ -88,6 +88,8 @@ public class ContractClient implements IContractClient {
 	@ApiLog("相对方定时任务新增的数据")
 	public R<List<ContractCounterpartEntity>> saveBatch(List<ContractCounterpartEntity> listInsert) {
 		List<ContractCounterpartEntity> counterpartEntityList=new ArrayList<>();
+		counterpartService.clearEmpty();
+		counterpartService.clearDate();
 		boolean status=counterpartService.saveBatch(listInsert);
 		if (status){
 			counterpartEntityList.addAll(listInsert);
@@ -100,6 +102,8 @@ public class ContractClient implements IContractClient {
 	@ApiLog("相对方定时任务更新的数据")
 	public R<List<ContractCounterpartEntity>> saveOrUpdate(List<ContractCounterpartEntity> list) {
 		List<ContractCounterpartEntity> counterpartEntityList=new ArrayList<>();
+		counterpartService.clearEmpty();
+		counterpartService.clearDate();
 		boolean status=counterpartService.saveOrUpdateBatch(list);
 		if (status){
 			counterpartEntityList.addAll(list);

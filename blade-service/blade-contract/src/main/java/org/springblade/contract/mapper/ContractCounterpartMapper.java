@@ -88,5 +88,16 @@ public interface ContractCounterpartMapper extends BaseMapper<ContractCounterpar
 	void saveListByContractId(Long contractId,List<ContractCounterpartEntity> counterpartEntityList);
 
 
-
+	/**
+	 *
+	 * 清理数据
+	 * @return
+	 */
+	boolean clearDate();
+	/**
+	 *
+	 * 清理数据
+	 * @return
+	 */
+	boolean clearEmpty();
 }
