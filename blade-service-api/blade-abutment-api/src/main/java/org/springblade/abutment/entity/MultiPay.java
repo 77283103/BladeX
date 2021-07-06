@@ -28,4 +28,16 @@ public class MultiPay {
 	private String fd_pay_rate;
 	@ApiModelProperty(value = "单据内容:含税金额")
 	private String fd_pay_include;
+	@ApiModelProperty(value = "单据内容:付款信息-总期数")
+	private String fd_period_num;
+	@ApiModelProperty(value = "单据内容:付款信息-第几期")
+	private String fd_period_idx;
+	@ApiModelProperty(value = "单据内容:付款信息-条件+帐期天数")
+	private String fd_payee_condition;
+	@ApiModelProperty(value = "单据内容:付款信息-是否开票")
+	private String fd_is_receipt;
+	@ApiModelProperty(value = "单据内容:付款信息-比例")
+	private String fd_per;
+	@ApiModelProperty(value = "单据内容:付款信息-金额（未税）")
+	private String fd_pay_amount;
 }

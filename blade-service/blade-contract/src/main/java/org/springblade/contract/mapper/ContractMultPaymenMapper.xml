@@ -14,6 +14,12 @@
         <result column="col_pay_type" property="colPayType"/>
         <result column="col_pay_term" property="colPayTerm"/>
         <result column="days" property="days"/>
+        <result column="period_num" property="periodNum"/>
+        <result column="period_idx" property="periodIdx"/>
+        <result column="pay_condition" property="payCondition"/>
+        <result column="is_receipt" property="isReceipt"/>
+        <result column="pay_per" property="payPer"/>
+        <result column="pay_amount" property="payAmount"/>
         <result column="counterpart_id" property="counterpartId"/>
         <result column="counterpart_name" property="counterpartName"/>
         <result column="subsidiary_person" property="subsidiaryPerson"/>
@@ -36,7 +42,8 @@
         contract_tax_rate,
         col_pay_type,
         col_pay_term,
-        days,
+        days,period_num,period_idx,pay_condition,is_receipt,
+        pay_per,pay_amount,
         counterpart_id,
         counterpart_name,subsidiary_person,
         status,

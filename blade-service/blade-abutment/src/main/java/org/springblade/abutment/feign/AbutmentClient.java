@@ -437,8 +437,13 @@ public class AbutmentClient implements IAbutmentClient {
 						formValuesEntity.setFd_offical_seal(dictBiz.getDictKey());
 					}
 				}
+				/********************     相对方信息START   ***********************************/
 				//相对方名称
 				formValuesEntity.setFd_full_name(entity.getCounterpart().get(0).getName());
+				formValuesEntity.setFd_bank_code(entity.getBankCode());
+				formValuesEntity.setFd_account_code(entity.getBankAccountCode());
+				formValuesEntity.setFd_account_name(entity.getBankAccountName());
+				/********************     相对方信息END   ***********************************/
 				//合同负责人
 				formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
 				//合同份数
@@ -460,6 +465,7 @@ public class AbutmentClient implements IAbutmentClient {
 				formValuesEntity.setFd_start_time(sdf.format(entity.getStartingTime()));
 				//合同时间止
 				formValuesEntity.setFd_lasttime(sdf.format(entity.getEndTime()));
+				/***************************************   收付款START    ******************************************/
 				//收付款
 				switch (entity.getColPayType()) {
 					case "1323239541401841666":
@@ -507,8 +513,30 @@ public class AbutmentClient implements IAbutmentClient {
 						break;
 					default:
 				}
-				if (!Func.isEmpty(entity.getDays())) {
+				//总期数
+				if (Func.isNotEmpty(entity.getPeriodNum())) {
+					formValuesEntity.setFd_period_num(entity.getPeriodNum());
+				}
+				//第几期
+				if (Func.isNotEmpty(entity.getPeriodIdx())) {
+					formValuesEntity.setFd_period_idx(entity.getPeriodIdx());
+				}
+				//条件+帐期天数
+				if (Func.isNotEmpty(entity.getPayCondition()) && Func.isNotEmpty(entity.getDays())) {
+					formValuesEntity.setFd_pay_condition(entity.getPayCondition());
 					formValuesEntity.setFd_payee_days(entity.getDays().toString());
+				}
+				//是否开票
+				if (Func.isNotEmpty(entity.getIsReceipt())) {
+					formValuesEntity.setFd_is_receipt(entity.getIsReceipt());
+				}
+				//比例
+				if (Func.isNotEmpty(entity.getPayPer())) {
+					formValuesEntity.setFd_per(entity.getPayPer().toString());
+				}
+				//金额（未税）
+				if (Func.isNotEmpty(entity.getPayAmount())) {
+					formValuesEntity.setFd_pay_amount(entity.getPayAmount().toString());
 				}
 				if (!Func.isEmpty(entity.getContractAmount())) {
 					//合同未税金额
@@ -522,6 +550,7 @@ public class AbutmentClient implements IAbutmentClient {
 					//含税金额
 					formValuesEntity.setFd_tax_include(entity.getContractTaxAmount().toString());
 				}
+				/**************************************   收付款END    *********************************************/
 				//币种
 				R<List<DictBiz>> contract_bz = bizClient.getList("bz");
 				List<DictBiz> databz = contract_bz.getData();
@@ -841,9 +870,13 @@ public class AbutmentClient implements IAbutmentClient {
 					ro.setFd_role_email(r.getEmailPerson());
 					//相对方联系地址
 					ro.setFd_role_email(r.getAddressPerson());
+					ro.setFd_bank_code(r.getBankCode());
+					ro.setFd_account_code(r.getBankAccountCode());
+					ro.setFd_account_name(r.getBankAccountName());
 					ros.add(ro);
 				});
 				formValuesEntity.setFd_multiro(ros);
+				/******************************  收付款START  ***************************************************/
 				//多方收付款信息
 				List<MultiPay> pays = new ArrayList<>();
 				entity.getMultPaymenEntityList().forEach(p -> {
@@ -899,9 +932,30 @@ public class AbutmentClient implements IAbutmentClient {
 							break;
 						default:
 					}
-					if (Func.isNotEmpty(p.getDays())) {
-						//收付款天数
+					//总期数
+					if (Func.isNotEmpty(p.getPeriodNum())) {
+						pay.setFd_period_num(p.getPeriodNum());
+					}
+					//第几期
+					if (Func.isNotEmpty(p.getPeriodIdx())) {
+						pay.setFd_period_idx(p.getPeriodIdx());
+					}
+					//条件+帐期天数
+					if (Func.isNotEmpty(p.getPayCondition()) && Func.isNotEmpty(p.getDays())) {
+						pay.setFd_payee_condition(entity.getPayCondition());
 						pay.setFd_pay_days(p.getDays().toString());
+					}
+					//是否开票
+					if (Func.isNotEmpty(p.getIsReceipt())) {
+						pay.setFd_is_receipt(p.getIsReceipt());
+					}
+					//比例
+					if (Func.isNotEmpty(p.getPayPer())) {
+						pay.setFd_per(p.getPayPer().toString());
+					}
+					//金额（未税）
+					if (Func.isNotEmpty(p.getPayAmount())) {
+						pay.setFd_pay_amount(p.getPayAmount().toString());
 					}
 					if (Func.isNotEmpty(p.getContractAmount())) {
 						//合同未税金额
@@ -918,6 +972,7 @@ public class AbutmentClient implements IAbutmentClient {
 					pays.add(pay);
 				});
 				formValuesEntity.setFd_multipay(pays);
+				/******************************  收付款END   ***************************************************/
 				//多方保证金信息
 				List<MultiBon> bons = new ArrayList<>();
 				entity.getContractBond().forEach(b -> {

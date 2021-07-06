@@ -58,12 +58,24 @@ public class FormValuesEntity implements Serializable {
 	private String fd_lasttime;
 	@ApiModelProperty(value = "单据内容:收付款(必填,付款|1 收款|2 合同无价款|3)")
 	private String fd_payment;
-	@ApiModelProperty(value = "单据内容:收款条件(必填,全部预付货款|1 部分预付货款|2 帐扣|3 票折|4 补货|5 10天≤票期<45天|6 票期≥45天|7)")
+	@ApiModelProperty(value = "单据内容:收款条件(必填,一次性付款-预付货款|1 一次性付款-货到付款|2 帐扣|3 票折|4 补货|5 分期付款|6 <--票期≥45天|7   删除--> )")
 	private String fd_condition;
 	@ApiModelProperty(value = "单据内容:付款条件(必填,款到发货|1 赊销|2 签约后收款|3)")
 	private String fd_payee_condition;
 	@ApiModelProperty(value = "单据内容:收付款天数(“收付款”非“收款”可不传值)")
 	private String fd_payee_days;
+	@ApiModelProperty(value = "单据内容:付款信息-总期数")
+	private String fd_period_num;
+	@ApiModelProperty(value = "单据内容:付款信息-第几期")
+	private String fd_period_idx;
+	@ApiModelProperty(value = "单据内容:付款信息-条件+帐期天数")
+	private String fd_pay_condition;
+	@ApiModelProperty(value = "单据内容:付款信息-是否开票")
+	private String fd_is_receipt;
+	@ApiModelProperty(value = "单据内容:付款信息-比例")
+	private String fd_per;
+	@ApiModelProperty(value = "单据内容:付款信息-金额（未税）")
+	private String fd_pay_amount;
 	@ApiModelProperty(value = "单据内容:合同未税金额(yyyy-MM-dd文本格式)")
 	private String fd_taxed_price;
 	@ApiModelProperty(value = "单据内容:税率")
@@ -96,6 +108,12 @@ public class FormValuesEntity implements Serializable {
 	private String fd_email;
 	@ApiModelProperty(value = "单据内容:相对方联系地址（）")
 	private String fd_address;
+	@ApiModelProperty(value = "单据内容:银行信息-联行号")
+	private String fd_bank_code;
+	@ApiModelProperty(value = "单据内容:银行信息-帐户户号")
+	private String fd_account_code;
+	@ApiModelProperty(value = "单据内容:银行信息-银行帐户名称")
+	private String fd_account_name;
 	@ApiModelProperty(value = "子公司以及签章单位信息（关联表）")
 	private List<MultiSa> fd_multise;
 	@ApiModelProperty(value = "相对方企业信息（关联表）")

@@ -189,7 +189,7 @@ public class AsposeWordToPdfUtils {
 			//获取token
 			client_1 = HttpClients.createDefault();
 			method_1 = new HttpPost(TOKEN_URL);
-			RequestConfig rc_1 = RequestConfig.custom().setConnectTimeout(60000).setConnectionRequestTimeout(60000).setSocketTimeout(60000).build();
+			RequestConfig rc_1 = RequestConfig.custom().setConnectTimeout(360000).setConnectionRequestTimeout(360000).setSocketTimeout(360000).build();
 			method_1.setConfig(rc_1);
 			method_1.addHeader("Content-Type", "application/json;charset=UTF-8");
 			StringEntity entity_1 = new StringEntity(tokenMapJson.toString(), ContentType.APPLICATION_JSON);
@@ -202,7 +202,7 @@ public class AsposeWordToPdfUtils {
 				//添加水印
 				client = HttpClients.createDefault();
 				method = new HttpPost(TOKEN_SY);
-				RequestConfig rc = RequestConfig.custom().setConnectTimeout(350000).setConnectionRequestTimeout(350000).setSocketTimeout(200000).build();
+				RequestConfig rc = RequestConfig.custom().setConnectTimeout(120000).setConnectionRequestTimeout(120000).setSocketTimeout(120000).build();
 				method.setConfig(rc);
 				MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 				builder.setCharset(Charset.forName(Consts.UTF_8.name()));
@@ -261,7 +261,7 @@ public class AsposeWordToPdfUtils {
 			//获取token
 			client_1 = HttpClients.createDefault();
 			method_1 = new HttpPost(TOKEN_URL);
-			RequestConfig rc_1 = RequestConfig.custom().setConnectTimeout(35000).setConnectionRequestTimeout(35000).setSocketTimeout(20000).build();
+			RequestConfig rc_1 = RequestConfig.custom().setConnectTimeout(360000).setConnectionRequestTimeout(360000).setSocketTimeout(360000).build();
 			method_1.setConfig(rc_1);
 			method_1.addHeader("Content-Type", "application/json;charset=UTF-8");
 			StringEntity entity_1 = new StringEntity(tokenMapJson.toString(), ContentType.APPLICATION_JSON);
@@ -273,7 +273,7 @@ public class AsposeWordToPdfUtils {
 			if (null != token) {
 				client = HttpClients.createDefault();
 				method = new HttpGet(TOKEN_XZ + fileId);
-				RequestConfig rc = RequestConfig.custom().setConnectTimeout(35000).setConnectionRequestTimeout(35000).setSocketTimeout(20000).build();
+				RequestConfig rc = RequestConfig.custom().setConnectTimeout(360000).setConnectionRequestTimeout(360000).setSocketTimeout(360000).build();
 				method.setConfig(rc);
 				method.addHeader("token", token);
 				response = client.execute(method);

@@ -115,13 +115,13 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 付款信息-比例
 	 */
 	@ApiModelProperty(value = "付款信息-比例")
-	private String payPer;
+	private Double payPer;
 
 	/**
 	 * 付款信息-未税金额
 	 */
 	@ApiModelProperty(value = "付款信息-未税金额")
-	private String payAmount;
+	private Double payAmount;
 
 	/**
 	 * 是否有自我延展的功能
