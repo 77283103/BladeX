@@ -128,6 +128,8 @@ public class ContractSigningController extends BladeController {
             signingArchiveService.save(signingArchive);
         });
 		ContractFormInfoEntity formInfoEntity=contractFormInfoService.getById(contractSigning.getContractId());
+		formInfoEntity.setFileTime(new Date());
+		formInfoEntity.setFilePerson(formInfoEntity.getPersonContract());
 		contractFormInfoService.updateById(formInfoEntity);
         return R.data(entity);
     }

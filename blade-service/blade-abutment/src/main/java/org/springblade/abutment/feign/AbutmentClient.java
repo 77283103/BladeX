@@ -414,7 +414,11 @@ public class AbutmentClient implements IAbutmentClient {
 					}
 				}
 				//合同中类
-				formValuesEntity.setFd_secondary(entity.getContractListName());
+				if ("30".equals(entity.getContractStatus())){
+					formValuesEntity.setFd_secondary(entity.getContractListName());
+				}else {
+					formValuesEntity.setFd_secondary("其他");
+				}
 				//合同小类
 				R<List<DictBiz>> contract_HTXL = bizClient.getList("HTXL");
 				List<DictBiz> dataHTXLBiz = contract_HTXL.getData();
