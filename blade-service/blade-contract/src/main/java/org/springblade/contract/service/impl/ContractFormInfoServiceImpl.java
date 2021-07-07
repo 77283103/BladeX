@@ -1452,13 +1452,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			suffix = f.getName().substring(suffixL -3,suffixL);
 			log.info("合同文本文件名称的后三位（判断文件后缀类型" +
 				"）："+suffix);
+			newFilePdf = ftlPath +  f.getName().substring(0, index) + date + ".pdf";
 			//判断是否为pdf文件，pdf文件不需要转换
 			if (!"pdf".equals(suffix)) {
-				newFilePdf = ftlPath +  f.getName().substring(0, index) + date + ".pdf";
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 				filePDF = new File(newFilePdf);
 			} else {
-				filePDF = new File(ftlPath +  f.getName().substring(0, index) + date + ".pdf");
+				filePDF = new File(newFilePdf);
 				//建立输出字节流
 				FileOutputStream fos = null;
 				try {

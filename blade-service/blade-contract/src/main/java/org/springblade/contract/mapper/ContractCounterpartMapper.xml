@@ -254,5 +254,18 @@
         </foreach>
     </insert>
 
+    <delete id="clearDate">
+        DELETE
+        FROM contract_counterpart
+        WHERE id NOT IN (
+            SELECT t.max_id
+            FROM (SELECT max(id) AS max_id from contract_counterpart group by unified_social_credit_code) as t
+        );
+    </delete>
+    <delete id="clearEmpty">
+        DELETE
+        FROM contract_counterpart
+        WHERE unified_social_credit_code IN (NULL,'null','');
+    </delete>
 
 </mapper>

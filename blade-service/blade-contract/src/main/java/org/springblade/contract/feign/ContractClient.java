@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.enums.ContractStatusEnum;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.mapper.ContractTemplateMapper;
@@ -87,6 +88,8 @@ public class ContractClient implements IContractClient {
 	@ApiLog("相对方定时任务新增的数据")
 	public R<List<ContractCounterpartEntity>> saveBatch(List<ContractCounterpartEntity> listInsert) {
 		List<ContractCounterpartEntity> counterpartEntityList=new ArrayList<>();
+		counterpartService.clearEmpty();
+		counterpartService.clearDate();
 		boolean status=counterpartService.saveBatch(listInsert);
 		if (status){
 			counterpartEntityList.addAll(listInsert);
@@ -99,6 +102,8 @@ public class ContractClient implements IContractClient {
 	@ApiLog("相对方定时任务更新的数据")
 	public R<List<ContractCounterpartEntity>> saveOrUpdate(List<ContractCounterpartEntity> list) {
 		List<ContractCounterpartEntity> counterpartEntityList=new ArrayList<>();
+		counterpartService.clearEmpty();
+		counterpartService.clearDate();
 		boolean status=counterpartService.saveOrUpdateBatch(list);
 		if (status){
 			counterpartEntityList.addAll(list);
@@ -218,7 +223,7 @@ public class ContractClient implements IContractClient {
 			return R.fail("合同信息不存在");
 		}
 		//审批通过
-		if ("30".equals(status)) {
+		if (ContractStatusEnum.APPROVED.getKey().toString().equals(status)) {
 			log.info("审批状态为25说明为驳回，30说明为审批通过，140说明为起草废除,此节点状态为：" + status);
 			if ("1".equals(contractFormInfo.getContractForm())) {
 				log.info("合同形式为1表示为电子签章-我司平台，审批通过后直接转到已归档节点（待结案），至此合同形式为：" + contractFormInfo.getContractForm());
@@ -248,9 +253,12 @@ public class ContractClient implements IContractClient {
 				contractSigningService.save(entity);
 				sealUsingInfoService.save(sealUsingInfoEntity);
 				log.info("并创建保存对应合同的归档信息：" + entity.getContractId());
+				//归档人  归档时间
+				contractFormInfo.setFilePerson(contractFormInfo.getPersonContract());
+				contractFormInfo.setFileTime(new Date());
 				contractFormInfo.setContractStatus("60");
 			} else if ("3".equals(contractFormInfo.getContractForm())) {
-				log.info("合同形式为3表示为电子合同-对方平台，审批通过后直接转到用印节点（需要手动归档），至此合同形式为：" + contractFormInfo.getContractForm());
+				log.info("合同形式为3表示为电子合同-对方平台，审批通过后直接转到已用印待归档节点（需要手动归档），至此合同形式为：" + contractFormInfo.getContractForm());
 				sealUsingInfoEntity.setRefContractId(contractFormInfo.getId());
 				sealUsingInfoEntity.setSignTime(new Date());
 				//用印申请人 部门
@@ -262,18 +270,22 @@ public class ContractClient implements IContractClient {
 				sealUsingInfoService.save(sealUsingInfoEntity);
 				contractFormInfo.setContractStatus("50");
 			} else {
-				log.info("合同形式为2，4表示为实体签章-我司不用电子印/实体签章-我司用电子印，审批通过后转到印节，至此合同形式为：" + contractFormInfo.getContractForm());
+				log.info("合同形式为2，4表示为实体签章-我司不用电子印/实体签章-我司用电子印，审批通过后转到审批通过待到出节点，至此合同形式为：" + contractFormInfo.getContractForm());
 				contractFormInfo.setContractStatus("30");
 				//实体合同需要第一次预警时机：合同用印审批流通过后即发出代办于申请人系统
 				contractFormInfo.setFilePerson(String.valueOf(this.signingDaysZero));
 				//更新合同信息的审核时间
 				formInfoService.updateById(contractFormInfo);
 				log.info("审批通过后查看合同的修改时间是否更新："+formInfoService);
-				//使用更新后的合同信息的审核时间来计算预警时间和预警内容
-				abutmentClient.pushNotSig(contractFormInfo);
+				//使用更新后的合同信息的审核时间来计算预警时间和预警内容  ----7.05  取消该预警节点
+				//abutmentClient.pushNotSig(contractFormInfo);
 			}
 			contractFormInfo.setEkpNumber(ekp_number);
-		} else {
+		} else if (ContractStatusEnum.NOPRINTING.getKey().toString().equals(status)){
+			//电子合同-我司用印  未用印时EKP返回合同平台未用印状态-40
+			contractFormInfo.setEkpNumber(ekp_number);
+			contractFormInfo.setContractStatus(status);
+		}else {
 			contractFormInfo.setEkpNumber(ekp_number);
 			contractFormInfo.setContractStatus(status);
 		}

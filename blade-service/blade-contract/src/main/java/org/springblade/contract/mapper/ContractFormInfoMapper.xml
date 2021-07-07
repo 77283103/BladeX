@@ -40,6 +40,12 @@
         <result column="col_pay_term" property="colPayTerm"/>
         <result column="col_pay_type" property="colPayType"/>
         <result column="days" property="days"/>
+        <result column="period_num" property="periodNum"/>
+        <result column="period_idx" property="periodIdx"/>
+        <result column="pay_condition" property="payCondition"/>
+        <result column="is_receipt" property="isReceipt"/>
+        <result column="pay_per" property="payPer"/>
+        <result column="pay_amount" property="payAmount"/>
         <result column="extension" property="extension"/>
         <result column="counterpart_person" property="counterpartPerson"/>
         <result column="rel_contract_id" property="relContractId"/>
@@ -63,6 +69,9 @@
         <result column="a_account_name" property="aAccountName"/>
         <result column="ekp_number" property="ekpNumber"/>
         <result column="file_person" property="filePerson"/>
+        <result column="bank_code" property="bankCode"/>
+        <result column="bank_account_code" property="bankAccountCode"/>
+        <result column="bank_account_name" property="bankAccountName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -104,7 +113,8 @@
         end_time,
         col_pay_type,
         col_pay_term,
-        days,
+        days,period_num,period_idx,pay_condition,is_receipt,
+        pay_per,pay_amount,
         extension,
         counterpart_person,
         telephone_person,
@@ -128,7 +138,7 @@
         a_bank_name,
         a_account_name,
         ekp_number,
-        file_person
+        file_person,bank_code,bank_account_code,bank_account_name
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">

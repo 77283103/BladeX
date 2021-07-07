@@ -13,7 +13,10 @@
         <result column="telephone_person" property="telephonePerson"/>
         <result column="address_person" property="addressPerson"/>
         <result column="email_person" property="emailPerson"/>
-       <result column="status" property="status"/>
+        <result column="bank_code" property="bankCode"/>
+        <result column="bank_account_code" property="bankAccountCode"/>
+        <result column="bank_account_name" property="bankAccountName"/>
+        <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
         <result column="create_time" property="createTime"/>
@@ -30,7 +33,7 @@
         counterpart_person, subsidiary_person,
         telephone_person,
         address_person,
-        email_person,
+        email_person,bank_code,bank_account_code,bank_account_name,
         status,
         is_deleted,
         create_user,
