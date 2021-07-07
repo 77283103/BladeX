@@ -123,15 +123,18 @@ public class ContractImportBatchDraftExcel implements Serializable {
 	@ApiModelProperty(value = "履约-计划收付款")
 	private List<PerCollectPayImportBatchDraftExcel> perCollectPayImportBatchDraftExcels;
 
-	@ApiModelProperty(value = "逻辑字段，用于携带模板信息")
+	@ApiModelProperty(value = "赋值字段，用于携带模板信息")
 	private String json;
 
 	@JsonSerialize(using = ToStringSerializer.class)
-	@ApiModelProperty(value = "逻辑字段, 用于携带模板标识")
+	@ApiModelProperty(value = "赋值字段, 用于携带模板标识")
 	private Long contractTemplateId;
 
-	@ApiModelProperty(value = "逻辑字段，合同来源")
+	@ApiModelProperty(value = "赋值字段，用于携带合同来源")
 	private String contractSoure;
+
+	@ApiModelProperty(value = "赋值字段，用于携带负责人名称")
+	private String personContract;
 
 
 	/**

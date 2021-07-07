@@ -397,7 +397,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			recordList.add(v);
 		}
 		pages.setRecords(recordList);
-		log.info("338TAG" + page.getRecords().toString());
 		return pages;
 	}
 

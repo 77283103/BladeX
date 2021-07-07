@@ -57,5 +57,4 @@ public class ContractImportBatchDraftRequest implements Serializable {
 		return new ArrayList<>();
 	}
 
-
 }
