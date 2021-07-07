@@ -42,9 +42,7 @@ import java.util.*;
  * <p>
  * 组织及人员信息 服务实现类
  * </p>
- *
- * @Author: gym
- * @Date: 2018-12-20
+
  */
 @Service
 @Slf4j
@@ -340,6 +338,8 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		List<UserDepartEntity> inud = new ArrayList<>();
 		List<User> in=new ArrayList<>();
 		List<User> up=new ArrayList<>();
+		List<User> IsAvailable=new ArrayList<>();
+		List<User> inu = new ArrayList<>();
 		Map<String, List<User>> map=new HashMap<>();
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for (OrganizationVo organizationVo : organizationList) {
@@ -349,7 +349,6 @@ public class OrganizationServiceImpl implements IOrganizationService {
 				}
 			}
 			User user = new User();
-			List<User> inu = new ArrayList<>();
 			UserDepartEntity userDepart = new UserDepartEntity();
 			user.setIsEnable("1".equals(organizationVo.getIsAvailable()) ? 2 : 1);
 			user.setIsDeleted(0);
@@ -380,7 +379,9 @@ public class OrganizationServiceImpl implements IOrganizationService {
 				in.add(user);
 			}
 			inu.add(user);
-			userClient.saveOrUpdateBatch(inu);
+			if (1==user.getIsEnable()){
+				IsAvailable.add(user);
+			}
 			/**
 			 * 用户关联部门和岗位和角色表
 			 * @author jitwxs
@@ -414,8 +415,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		map.put("新增",in);
 		map.put("更新",up);
 		logger.info("合同平台处理的用户数据",JsonUtil.toJson(map));
+		logger.info("失效的用户信息数据",JsonUtil.toJson(IsAvailable));
+		if (Func.isNotEmpty(inu)){
+			userClient.saveOrUpdateBatch(inu);
+		}
 		if (Func.isNotEmpty(inud)) {
 			sysClient.saveOrUpdateBatchUserDepart(inud);
 		}
+
 	}
 }
