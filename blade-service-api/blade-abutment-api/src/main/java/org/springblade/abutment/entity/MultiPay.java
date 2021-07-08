@@ -32,7 +32,10 @@ public class MultiPay {
 	private String fd_period_num;
 	@ApiModelProperty(value = "单据内容:付款信息-第几期")
 	private String fd_period_idx;
-	@ApiModelProperty(value = "单据内容:付款信息-条件+帐期天数")
+	@ApiModelProperty(value = "单据内容:【付款信息-条件+帐期天数】 合同签定生效后（≥3）天||a1 料到启动施工后（≥3）天||a2 备货完成后（≥3）天||a3 \" +\n" +
+		"\t\t\"货到票未到（≥3）天||a4 其他（手填描述）(计算日期结果-申请日期≥3天)||a5 约定日期||a6 货到票到（≥10）天||b1 \" +\n" +
+		"\t\t\"货到票到固定日期||b2 合同签定生效后（≥3）天||c1 料到启动施工后（≥3）天||c2 完成程度（手工填写）%（≥3）天||c3 \" +\n" +
+		"\t\t\"质保期满（≥3）天||c4 备货完成后（≥3）天||c5 其他（手填描述）(计算日期结果-申请日期≥3天)||c6 约定日期||c7")
 	private String fd_payee_condition;
 	@ApiModelProperty(value = "单据内容:付款信息-是否开票")
 	private String fd_is_receipt;

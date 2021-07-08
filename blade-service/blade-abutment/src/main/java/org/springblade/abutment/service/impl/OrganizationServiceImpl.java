@@ -27,14 +27,12 @@ import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.namespace.QName;
 import javax.xml.soap.SOAPHeaderElement;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -42,19 +40,17 @@ import java.util.*;
  * <p>
  * 组织及人员信息 服务实现类
  * </p>
- *
- * @Author: gym
- * @Date: 2018-12-20
+ * @author xhbbo
+
  */
 @Service
 @Slf4j
 public class OrganizationServiceImpl implements IOrganizationService {
-	@Autowired
+	final
 	ISysClient sysClient;
-	@Autowired
+	final
 	IUserClient userClient;
-	@Autowired
-	private BladeLogger logger;
+	private final BladeLogger logger;
 
 	@Value("${api.organization.account}")
 	private String account;
@@ -67,10 +63,16 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	@Value("${api.organization.namespace}")
 	private String namespace;
 
+	public OrganizationServiceImpl(ISysClient sysClient, IUserClient userClient, BladeLogger logger) {
+		this.sysClient = sysClient;
+		this.userClient = userClient;
+		this.logger = logger;
+	}
+
 	@Override
 	public List<OrganizationVo> getOrganizationInfo(OrganizationEntity entity) throws Exception {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
-		List<Map<String, String>> fieldsList = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> fieldsList = new ArrayList<>();
 		if (entity.getFieldsName() != null && entity.getFieldsName().size() > 1) {
 			for (String fieldName : entity.getFieldsName()) {
 				fieldsList.add(this.getFieldMap(fieldName));
@@ -99,7 +101,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 			fieldsList.add(this.getFieldMap("thisLeaderid"));
 		}
 		paramMap.put("select", fieldsList);
-		List<Map<String, String>> whereList = new ArrayList<Map<String, String>>();
+		List<Map<String, String>> whereList = new ArrayList<>();
 		if (StrUtil.isNotEmpty(entity.getId())) {
 			whereList.add(this.getWhereMap("id", entity.getId()));
 		}
@@ -158,15 +160,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	}
 
 	private Map<String, String> getFieldMap(String fieldName) throws Exception {
-		Map<String, String> fieldMap = new HashMap<String, String>();
+		Map<String, String> fieldMap = new HashMap<>();
 		fieldMap.put("type", fieldName);
 		return fieldMap;
 	}
 
 	/**
-	 * 获取组织及人员增量信息
-	 *
-	 * @return
+	 * 获取组织及人员增量信
 	 */
 	@SneakyThrows
 	@Override
@@ -240,7 +240,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	/**
 	 * 增量处理org或dept机构数据
 	 *
-	 * @param organizationList
+	 * @param organizationList 查询的数据
 	 */
 	private void getOrgListUpdate(List<OrganizationVo> organizationList) {
 		List<Dept> in = new ArrayList<>();
@@ -289,16 +289,16 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		}
 		logger.info("合同平台处理的部门数据",JsonUtil.toJson(in));
 		if (Func.isNotEmpty(in)) {
-			in.forEach(dept -> {
+			for (Dept dept : in) {
 				sysClient.saveDept(dept);
-			});
+			}
 		}
 	}
 
 	/**
 	 * 增量处理岗位数据
 	 *
-	 * @param organizationList
+	 * @param organizationList 获取到的数据
 	 */
 	private void getPostListUpdate(List<OrganizationVo> organizationList) {
 		List<Post> in = new ArrayList<>();
@@ -333,15 +333,15 @@ public class OrganizationServiceImpl implements IOrganizationService {
 
 	/**
 	 * 增量处理人员数据
-	 *
-	 * @param organizationList
+	 * @param organizationList 获取到的数据
 	 */
-	private void getPersonListUpdate(List<OrganizationVo> organizationList, OrgParme param) throws ParseException {
+	private void getPersonListUpdate(List<OrganizationVo> organizationList, OrgParme param) {
 		List<UserDepartEntity> inud = new ArrayList<>();
 		List<User> in=new ArrayList<>();
 		List<User> up=new ArrayList<>();
+		List<User> IsAvailable=new ArrayList<>();
+		List<User> inu = new ArrayList<>();
 		Map<String, List<User>> map=new HashMap<>();
-		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for (OrganizationVo organizationVo : organizationList) {
 			if (Func.isEmpty(organizationVo.getEmplno()) && Func.isEmpty(organizationVo.getLoginName())) {
 				{
@@ -349,7 +349,6 @@ public class OrganizationServiceImpl implements IOrganizationService {
 				}
 			}
 			User user = new User();
-			List<User> inu = new ArrayList<>();
 			UserDepartEntity userDepart = new UserDepartEntity();
 			user.setIsEnable("1".equals(organizationVo.getIsAvailable()) ? 2 : 1);
 			user.setIsDeleted(0);
@@ -380,13 +379,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
 				in.add(user);
 			}
 			inu.add(user);
-			userClient.saveOrUpdateBatch(inu);
-			/**
-			 * 用户关联部门和岗位和角色表
-			 * @author jitwxs
-			 * @date 2021/6/22 11:45
+			if (1==user.getIsEnable()){
+				IsAvailable.add(user);
+			}
+			/*
+			 * 用户关联部门和岗位和角色表 获取到的数据
+			 * //根据唯一ID查询岗位信息  赋值岗位ID
 			 */
-			//根据唯一ID查询岗位信息  赋值岗位ID
 			R<Long> postIdByAssociationId = sysClient.getPostIdByAssociationId(organizationVo.getId());
 			if (postIdByAssociationId.isSuccess() ) {
 				userDepart.setPostId(postIdByAssociationId.getData());
@@ -414,8 +413,13 @@ public class OrganizationServiceImpl implements IOrganizationService {
 		map.put("新增",in);
 		map.put("更新",up);
 		logger.info("合同平台处理的用户数据",JsonUtil.toJson(map));
+		logger.info("失效的用户信息数据",JsonUtil.toJson(IsAvailable));
+		if (Func.isNotEmpty(inu)){
+			userClient.saveOrUpdateBatch(inu);
+		}
 		if (Func.isNotEmpty(inud)) {
 			sysClient.saveOrUpdateBatchUserDepart(inud);
 		}
+
 	}
 }

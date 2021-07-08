@@ -440,9 +440,15 @@ public class AbutmentClient implements IAbutmentClient {
 				/********************     相对方信息START   ***********************************/
 				//相对方名称
 				formValuesEntity.setFd_full_name(entity.getCounterpart().get(0).getName());
-				formValuesEntity.setFd_bank_code(entity.getBankCode());
-				formValuesEntity.setFd_account_code(entity.getBankAccountCode());
-				formValuesEntity.setFd_account_name(entity.getBankAccountName());
+				if (Func.isNotEmpty(entity.getBankCode())){
+					formValuesEntity.setFd_bank_code(entity.getBankCode());
+				}
+				if (Func.isNotEmpty(entity.getBankAccountCode())){
+					formValuesEntity.setFd_account_code(entity.getBankAccountCode());
+				}
+				if (Func.isNotEmpty(entity.getBankAccountName())){
+					formValuesEntity.setFd_account_name(entity.getBankAccountName());
+				}
 				/********************     相对方信息END   ***********************************/
 				//合同负责人
 				formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
