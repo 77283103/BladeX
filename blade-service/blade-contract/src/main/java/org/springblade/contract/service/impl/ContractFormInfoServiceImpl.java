@@ -2140,10 +2140,13 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		if(Func.isNotEmpty(contractImportBatchDraftExcels)){
 			List<ContractFormInfoEntity>contractFormInfoEntityList = new ArrayList<>();
 			for(ContractImportBatchDraftExcel contractImportBatchDraftExcel:contractImportBatchDraftExcels){
+				contractImportBatchDraftExcel = this.setDictValueByBatchDraftExcel(contractImportBatchDraftExcel);
 				ContractFormInfoEntity contractFormInfoEntity = ContractFormInfoWrapper.build().createEntityByBatchDraftExcel(contractImportBatchDraftExcel);
-
 				contractFormInfoEntity.setContractListName("");
 				contractFormInfoEntityList.add(contractFormInfoEntity);
+				/* excel模板填写负责人编号，负责人名称后台获取.如后期数据量过大，改为excel填写负责人名称 */
+				User user = this.getUserByCode(contractFormInfoEntity.getPersonCodeContract());
+				contractFormInfoEntity.setPersonContract(Func.isEmpty(user)?"":user.getRealName());
 				//相对方信息,保存
 				List<ContractCounterpartEntity>counterpartEntityList = contractCounterpartService.saveByBatchDraftExcel(contractImportBatchDraftExcel.getContractCounterpartImportBatchDraftExcels(),contractFormInfoEntity.getId());
 				//保证金信息,保存
@@ -2441,4 +2444,67 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	public ContractFormInfoEntity selectByChangeId(Long id) {
 		return contractFormInfoMapper.selectByChangeId(id);
 	}
+
+
+	private User getUserByCode(String code){
+		if(Func.isNotEmpty(code)){
+			R<User> user = userClient.userByCode("000000", code);
+			if(user.isSuccess()){
+				return	Func.isEmpty(user.getData())?null:user.getData();
+			}
+		}
+		return null;
+	}
+
+	private String getDictByCodeValue(String code,String value,Boolean returnId){
+		//获取id
+		if(returnId){
+			R<List<DictBiz>> r = bizClient.getList(code);
+			if(r.isSuccess()){
+				return Func.isEmpty(r.getData())?"":Long.toString(r.getData().stream()
+					.filter(dictBiz -> dictBiz.getDictValue().equals(value)).findFirst().orElse(new DictBiz()).getId());
+			}
+			return "";
+		}
+		//获取key
+		R<String>r = bizClient.getKey(code,value);
+		if(r.isSuccess()){
+			return Func.isEmpty(r.getData())?r.getData():"";
+		}
+		return "";
+	}
+
+
+
+
+
+	/**
+	 * 将模板类中字典字段value替换为key或id
+	 * @param contractImportBatchDraftExcel
+	 * @return ContractImportBatchDraftExcel
+	 */
+	private ContractImportBatchDraftExcel setDictValueByBatchDraftExcel(ContractImportBatchDraftExcel contractImportBatchDraftExcel){
+		if(Func.isNotEmpty(contractImportBatchDraftExcel)){
+			//合同期限
+			contractImportBatchDraftExcel.setContractPeriod(this.getDictByCodeValue("contract_period",
+				contractImportBatchDraftExcel.getContractPeriod(),false));
+			//合同形式
+			contractImportBatchDraftExcel.setContractForm(this.getDictByCodeValue("contract_form",
+				contractImportBatchDraftExcel.getContractForm(),false));
+			//币种
+			contractImportBatchDraftExcel.setCurrencyCategory(this.getDictByCodeValue("bz",
+				contractImportBatchDraftExcel.getCurrencyCategory(),false));
+			//收付款
+			contractImportBatchDraftExcel.setColPayType(this.getDictByCodeValue("col_pay_term",
+				contractImportBatchDraftExcel.getColPayType(),true));
+			//收付款条件
+			contractImportBatchDraftExcel.setColPayTerm(this.getDictByCodeValue("col_pay_term",
+				contractImportBatchDraftExcel.getColPayTerm(),true));
+			//自动延展条款
+			contractImportBatchDraftExcel.setExtension(this.getDictByCodeValue("yes_no",
+				contractImportBatchDraftExcel.getExtension(),false));
+		}
+		return contractImportBatchDraftExcel;
+	}
+
 }

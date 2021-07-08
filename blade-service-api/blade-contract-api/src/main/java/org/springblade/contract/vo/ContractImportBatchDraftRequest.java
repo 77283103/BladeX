@@ -25,6 +25,9 @@ public class ContractImportBatchDraftRequest implements Serializable {
 	@ApiModelProperty(value = "模板json")
 	private String json;
 
+	@ApiModelProperty(value = "模板名称")
+	private String contractListName;
+
 	@JsonSerialize(using = ToStringSerializer.class)
 	@ApiModelProperty(value = "模板标识")
 	private Long contractTemplateId;
@@ -51,6 +54,7 @@ public class ContractImportBatchDraftRequest implements Serializable {
 				contractImportBatchDraftExcel.setContractSmallCategory(this.contractSmallCategory);
 				contractImportBatchDraftExcel.setContractTemplateId(this.contractTemplateId);
 				contractImportBatchDraftExcel.setContractSoure(this.contractSoure);
+				contractImportBatchDraftExcel.setContractListName(this.contractListName);
 			});
 			return contractImportBatchDraftExcels;
 		}
