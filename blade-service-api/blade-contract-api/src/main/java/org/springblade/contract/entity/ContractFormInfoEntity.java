@@ -606,11 +606,22 @@ public class ContractFormInfoEntity extends BaseEntity {
 	/**
 	 * 相对方账户户号
 	 */
-	@ApiModelProperty(value = "相对方账户户号")
+	@ApiModelProperty(value = "相对方银行账号")
 	private String bankAccountCode;
 	/**
 	 * 相对方银行帐户名称
 	 */
 	@ApiModelProperty(value = "相对方银行帐户名称")
 	private String bankAccountName;
+	/**
+	 * 相对方开户行名称
+	 */
+	@ApiModelProperty(value = "相对方开户行名称")
+	private String bankDepositName;
+	/**
+	 * 收款明细列表
+	 */
+	@TableField(exist = false)
+	@ApiModelProperty(value = "合同收款明细")
+	private List<CollectionEntity> collection;
 }

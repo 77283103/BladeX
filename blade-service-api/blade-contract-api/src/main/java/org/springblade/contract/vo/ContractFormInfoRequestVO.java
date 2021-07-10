@@ -119,4 +119,5 @@ public class ContractFormInfoRequestVO extends ContractFormInfoEntity {
 
 	@ApiModelProperty(value = "合同申请人")
 	private List<String> realName;
+
 }

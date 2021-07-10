@@ -21,6 +21,7 @@ import org.springblade.core.tool.utils.Func;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 
 /**
@@ -43,9 +44,9 @@ public class ContractFileDownloadLogController extends BladeController {
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入contractFileDownloadLog")
-	public R<ContractFileDownloadLogResponseVO> detail(@RequestParam Long id) {
-		ContractFileDownloadLogEntity detail = contractFileDownloadLogService.getById(id);
-		return R.data(ContractFileDownloadLogWrapper.build().entityPV(detail));
+	public R<List<ContractFileDownloadLogEntity>> detail(@RequestParam Long id) {
+		List<ContractFileDownloadLogEntity> detail = contractFileDownloadLogService.getList(id);
+		return R.data(detail);
 	}
 
 	/**

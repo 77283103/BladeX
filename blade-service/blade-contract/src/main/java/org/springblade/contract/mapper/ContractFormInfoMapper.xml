@@ -72,6 +72,7 @@
         <result column="bank_code" property="bankCode"/>
         <result column="bank_account_code" property="bankAccountCode"/>
         <result column="bank_account_name" property="bankAccountName"/>
+        <result column="bank_deposit_name" property="bankDepositName"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -138,7 +139,7 @@
         a_bank_name,
         a_account_name,
         ekp_number,
-        file_person,bank_code,bank_account_code,bank_account_name
+        file_person,bank_code,bank_account_code,bank_account_name,bank_deposit_name
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">

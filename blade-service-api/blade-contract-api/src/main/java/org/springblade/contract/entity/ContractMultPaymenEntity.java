@@ -1,14 +1,16 @@
 package org.springblade.contract.entity;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 
 /**
@@ -117,5 +119,11 @@ public class ContractMultPaymenEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "子公司名称")
 	private String subsidiaryPerson;
+	/**
+	 * 收款明细列表
+	 */
+	@TableField(exist = false)
+	@ApiModelProperty(value = "合同收款明细")
+	private List<CollectionEntity> collection;
 
 }

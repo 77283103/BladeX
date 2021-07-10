@@ -80,4 +80,9 @@ public class DraftContractCounterpartEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "相对方银行帐户名称")
 	private String bankAccountName;
+	/**
+	 * 相对方开户行名称
+	 */
+	@ApiModelProperty(value = "相对方开户行名称")
+	private String bankDepositName;
 }

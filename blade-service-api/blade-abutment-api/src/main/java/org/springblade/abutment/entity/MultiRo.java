@@ -23,9 +23,11 @@ public class MultiRo {
 	@ApiModelProperty(value = "单据内容:相对方联系地址（）")
 	private String fd_role_address;
 	@ApiModelProperty(value = "单据内容:银行信息-联行号")
-	private String fd_bank_code;
-	@ApiModelProperty(value = "单据内容:银行信息-帐户户号")
-	private String fd_account_code;
+	private String fd_role_bank_code;
+	@ApiModelProperty(value = "单据内容:银行信息-银行账号")
+	private String fd_role_account_code;
 	@ApiModelProperty(value = "单据内容:银行信息-银行帐户名称")
-	private String fd_account_name;
+	private String fd_role_account_name;
+	@ApiModelProperty(value = "单据内容:银行信息-开户行名称")
+	private String fd_role_deposit_name;
 }
