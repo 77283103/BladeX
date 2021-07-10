@@ -36,6 +36,8 @@ import java.util.List;
 public class ContractImportBatchDraftExcel implements Serializable {
 	private static final long serialVersionUID = 1L;
 
+	/* excel 合同主体信息 */
+
 	@ExcelProperty("合同标识号码（非重复数字）")
 	private String contractNumber;
 
@@ -109,7 +111,7 @@ public class ContractImportBatchDraftExcel implements Serializable {
 	private String extension;
 
 
-	/* 合同关联信息 */
+	/* excel 合同关联信息 */
 
 	@ApiModelProperty(value = "相对方")
 	private List<ContractCounterpartImportBatchDraftExcel> contractCounterpartImportBatchDraftExcels;
@@ -123,6 +125,9 @@ public class ContractImportBatchDraftExcel implements Serializable {
 	@ApiModelProperty(value = "履约-计划收付款")
 	private List<PerCollectPayImportBatchDraftExcel> perCollectPayImportBatchDraftExcels;
 
+
+	/* db合同赋值字段 */
+
 	@ApiModelProperty(value = "赋值字段，用于携带模板信息")
 	private String json;
 
@@ -135,6 +140,9 @@ public class ContractImportBatchDraftExcel implements Serializable {
 
 	@ApiModelProperty(value = "赋值字段，用于携带负责人名称")
 	private String personContract;
+
+	@ApiModelProperty(value = "赋值字段，用于携带模板名称")
+	private String contractListName;
 
 
 	/**

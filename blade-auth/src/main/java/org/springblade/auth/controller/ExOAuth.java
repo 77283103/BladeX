@@ -1,9 +1,10 @@
-//package org.springblade.auth.controller;
+package org.springblade.auth.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.auth.entity.OAuthExRequest;
 
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -33,7 +34,7 @@ import java.util.Map;
 //		method = {RequestMethod.POST}
 //	)
 //	public ResponseEntity<OAuth2AccessToken> getAccessToken(Principal principal, @RequestBody OAuthExRequest oAuthExRequest) throws HttpRequestMethodNotSupportedException {
-//		Map<String,String> parameters = JSONObject.parseObject(JSONObject.toJSONString(oAuthExRequest), HashMap.class);
+//		Map<String,String>parameters = JSONObject.parseObject(JSONObject.toJSONString(oAuthExRequest), HashMap.class);
 //		ResponseEntity<OAuth2AccessToken>responseEntity = tokenEndpoint.postAccessToken(principal,parameters);
 //		return responseEntity;
 //	}
