@@ -10,6 +10,7 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 import org.springblade.abutment.entity.CompanyInfoEntity;
+import org.springblade.abutment.entity.PushEkpEntity;
 import org.springblade.abutment.entity.UploadFileEntity;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.abutment.vo.CompanyInfoVo;
@@ -2177,7 +2178,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		List<PerServiceContentRequestVO> perServiceContentList = contractFormInfo.getPerServiceContentList();
 		perServiceContentService.addPerData(Func.isEmpty(perServiceContentList) ? null :perServiceContentList.get(0),contractFormInfoEntity.getId());
 	}
-
 
 
 	/**

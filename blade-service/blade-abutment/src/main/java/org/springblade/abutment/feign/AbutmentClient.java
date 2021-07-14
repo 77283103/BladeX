@@ -1915,6 +1915,80 @@ public class AbutmentClient implements IAbutmentClient {
 	}
 
 	@Override
+	public R sendEkp(PushEkpEntity pushEkpEntity) {
+		try {
+			pushEkpEntity.setToken(ekpService.getToken());
+			return R.data(ekpService.pushData(pushEkpEntity));
+		} catch (Exception e) {
+			return R.fail(e.getMessage());
+		}
+	}
+
+	@Override
+	public R sendFileToFastDfs(String filesIds) {
+		//处理合同补充依据
+		if (Func.isNotEmpty(filesIds)) {
+			List<FileVO> fileVOs = fileClient.getByIds(filesIds).getData();
+			String[] fileIds = new String[0];
+			List<Attachment> listAttachment = new ArrayList<>();
+			for (FileVO fileVO : fileVOs) {
+				// 开始上传fastDFS服务器
+				Attachment attachment = new Attachment();
+				NameValuePair[] nvp = new NameValuePair[5];
+				int index = fileVO.getName().lastIndexOf(".");
+				String fileSuffix = fileVO.getName().substring(index + 1);
+				nvp[0] = new NameValuePair("fdFileName", fileVO.getName());
+				nvp[1] = new NameValuePair("fileSuffix", fileSuffix);
+				nvp[2] = new NameValuePair("fdKey", "");
+				nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());
+				nvp[4] = new NameValuePair("fileType", "");
+				//3.创建trackerServer
+				TrackerServer trackerServer = null;
+				try {
+					trackerServer = trackerClient.getConnection();
+				} catch (IOException e) {
+					return R.fail(e.getMessage());
+				}
+				// 4、创建一个 StorageServer 的引用，值为 null
+				StorageServer storageServer = null;
+				// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+				StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+				InputStream in = null;
+				BufferedInputStream bin = null;
+				ByteArrayOutputStream baos = null;
+				BufferedOutputStream bout = null;
+				byte[] bytes = null;
+				try {
+					URL url = new URL(fileVO.getLink());
+					URLConnection conn = url.openConnection();
+					in = conn.getInputStream();
+					bin = new BufferedInputStream(in);
+					baos = new ByteArrayOutputStream();
+					bout = new BufferedOutputStream(baos);
+					byte[] buffer = new byte[1024];
+					int len = bin.read(buffer);
+					while (len != -1) {
+						bout.write(buffer, 0, len);
+						len = bin.read(buffer);
+					}
+					//刷新此输出流并强制写出所有缓冲的输出字节
+					bout.flush();
+					bytes = baos.toByteArray();
+					// 上传
+					fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+				} catch (IOException | MyException e) {
+					return R.fail(e.getMessage());
+				}
+				attachment.setFilename(fileVO.getName());
+				attachment.setFilePath(fileIds[0] + '/' + fileIds[1]);
+				listAttachment.add(attachment);
+			}
+			return R.data(listAttachment);
+		}
+		return R.fail("文件标识表达式不能为空");
+	}
+
+	@Override
 	@GetMapping(E_EKP_TOKEN)
 	public R<String> tokenEkp() {
 		String token = null;
@@ -1931,4 +2005,6 @@ public class AbutmentClient implements IAbutmentClient {
 	public R<EkpVo> pushData(PushEkpEntity entity) throws Exception {
 		return R.data(ekpService.pushData(entity));
 	}
+
+
 }

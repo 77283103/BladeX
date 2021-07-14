@@ -11,6 +11,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -30,6 +31,8 @@ public interface IAbutmentClient {
 	String EKP = "/ekp";
 	String DOC = "/doc";
 	String E_SEAL = "/eSeal";
+	String SEND_FILE_TO_FASTDFS= API_PREFIX + "sendFastDfs";
+	String SEND_EKP=API_PREFIX+"sendEkp";
 	String COUNTERPART_INSERT_OR_UPDATE=API_PREFIX+"getCounterpart";
 	String ORGANIZATION_INFO_INCREMENT=API_PREFIX +ORG+"/getOrganization";
 	String EKP_SEND_FORM = API_PREFIX + EKP + "/sendForm";
@@ -203,4 +206,18 @@ public interface IAbutmentClient {
 	 */
 	@GetMapping(COUNTERPART_INSERT_OR_UPDATE)
 	R<CounterpartVo> getCounterpart(CounterpartEntity entity);
+
+	/**
+	 * 向ekp推送数据
+	 * @param pushEkpEntity
+	 * @return R
+	 */
+	@PostMapping(SEND_EKP)
+	R sendEkp(@RequestBody PushEkpEntity pushEkpEntity);
+
+
+	@GetMapping(SEND_FILE_TO_FASTDFS)
+	R sendFileToFastDfs(@RequestParam String filesIds);
+
+
 }

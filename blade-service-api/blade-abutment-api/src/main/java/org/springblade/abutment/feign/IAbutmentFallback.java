@@ -113,4 +113,14 @@ public class IAbutmentFallback implements IAbutmentClient {
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
 		return R.fail("获取数据失败");
 	}
+
+	@Override
+	public R sendEkp(PushEkpEntity pushEkpEntity) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R sendFileToFastDfs(String fileIds) {
+		return R.fail("获取数据失败");
+	}
 }
