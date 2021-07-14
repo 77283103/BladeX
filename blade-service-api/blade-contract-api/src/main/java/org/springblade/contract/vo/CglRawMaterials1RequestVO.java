@@ -1,19 +1,10 @@
 package org.springblade.contract.vo;
 
-import lombok.ToString;
+import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import java.util.Date;
-import org.springblade.core.tool.utils.DateUtil;
-import org.springframework.format.annotation.DateTimeFormat;
-
-import org.springblade.core.mp.base.BaseEntity;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+import lombok.ToString;
+import org.springblade.contract.entity.CglRawMaterials1Entity;
 
 
 /**
@@ -30,7 +21,7 @@ import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 @Setter
 @ToString
 @ApiModel(description = "采购类：原物料-买卖合同请求对象")
-public class CglRawMaterials1RequestVO extends BaseEntity{
+public class CglRawMaterials1RequestVO extends CglRawMaterials1Entity {
 
 	private static final long serialVersionUID = 1L;
 

@@ -11,6 +11,7 @@ import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.*;
 import org.springblade.abutment.entity.*;
+import org.springblade.abutment.enumJson.TemplateJsonEnum;
 import org.springblade.abutment.service.*;
 import org.springblade.abutment.vo.*;
 import org.springblade.contract.entity.*;
@@ -301,10 +302,10 @@ public class AbutmentClient implements IAbutmentClient {
 				formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
 				//合同的url
 				formValuesEntity.setFd_contract_url("");
+				//合同形式
+				formValuesEntity.setFd_contract_no(entity.getContractForm());
 				//合同起草流程类型
 				if ("10".equals(entity.getContractSoure()) || "20".equals(entity.getContractSoure())) {
-					//合同形式
-					formValuesEntity.setFd_contract_no(entity.getContractForm());
 					//合同附件名称   合同附件：电子合同 附件只上传一份需要盖章的合同文本     实体合同需要上传多份合同文本
 					List<FileVO> fileVO = fileClient.getByIds(entity.getTextFile()).getData();
 					if (fileVO.size() > 0) {
@@ -320,7 +321,7 @@ public class AbutmentClient implements IAbutmentClient {
 							formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
 						}
 					}
-					//  独立起草10  传10   范本起草为30  传20 范本起草其他约定暂时未定义  传30   多方起草为20  传40
+					//  独立起草10传10   范本起草为30传20 范本起草其他约定暂时未定义 传30   多方起草为20  传40
 					if ("10".equals(entity.getContractSoure())) {
 						formValuesEntity.setFd_contract_type("10");
 					} else if ("30".equals(entity.getContractSoure())){
@@ -396,11 +397,23 @@ public class AbutmentClient implements IAbutmentClient {
 					} else {
 						formValuesEntity.setFd_contract_type("30");
 					}
+					// 特殊模板对合同方对应关系进行特殊处理
 					if ("FWZL_36".equals(templateEntity.getData().getTemplateCode())) {
 						formValuesEntity.setFd_onetoone("2");
 					} else {
 						formValuesEntity.setFd_onetoone("1");
 					}
+					/*************************************处理模板字段START*****************************************/
+					//模板编号
+					formValuesEntity.setFd_template_type(templateEntity.getData().getTemplateCode());
+					//模板关键字段数据相关内容信息处理
+					JSONObject jsonObject=new JSONObject();
+					jsonObject.put("targetKey", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler());
+					jsonObject.put("ChineseColumn", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler(entity.getJson(),true));
+					jsonObject.put("targetParentJson", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler(entity.getJson()));
+					formValuesEntity.setFd_template_content(jsonObject);
+					/********************************  *****处理模板字段END*****************************************/
+
 				}
 				//处理签章关键字 和多页合同 只有电子合同-我司用印   实体合同-我司用电子印  需要处理和传递keyword字段
 				if (entity.getContractForm().contains("1") || entity.getContractForm().contains("2")){
@@ -698,6 +711,7 @@ public class AbutmentClient implements IAbutmentClient {
 					}
 					pushEkpEntity.setDocSubject(entity.getContractName());
 					pushEkpEntity.setFdTemplateId(fdTemplateId);
+					logger.info("inde-pushData",JsonUtil.toJson(pushEkpEntity));
 					ekpVo = ekpService.pushData(pushEkpEntity);
 					log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
 					if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
@@ -1157,6 +1171,7 @@ public class AbutmentClient implements IAbutmentClient {
 					}
 					pushEkpEntity.setDocSubject(entity.getContractName());
 					pushEkpEntity.setFdTemplateId(fdTemplateId);
+					logger.info("multi-pushData",JsonUtil.toJson(pushEkpEntity));
 					ekpVo = ekpService.pushData(pushEkpEntity);
 					log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
 					if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
@@ -1440,7 +1455,6 @@ public class AbutmentClient implements IAbutmentClient {
 				for (int i = 0; i < entity.getCounterpart().size(); i++) {
 					s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(), arrays[i] + "方（签章）");
 				}
-				//formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
 				formValuesEntity.setFd_keyword(s);
 			} else if ((-1 != ay && -1 != by)) {
 				if ("1".equals(formValuesEntity.getFd_onetoone())) {
@@ -1453,7 +1467,6 @@ public class AbutmentClient implements IAbutmentClient {
 				for (int i = 0; i < entity.getCounterpart().size(); i++) {
 					s.put(entity.getCounterpart().get(i).getUnifiedSocialCreditCode(), arrays[i] + "方(签章)");
 				}
-				//formValuesEntity.setFd_keyword(StringEscapeUtils.unescapeJava(s.toJSONString()));
 				formValuesEntity.setFd_keyword(s);
 			}
 			document.close();
@@ -1886,7 +1899,9 @@ public class AbutmentClient implements IAbutmentClient {
 			in.setHalfWidthName(i.getCustNm());
 			List<ContractCounterpartEntity> entityList = contractClient.selectByName(in.getUnifiedSocialCreditCode()).getData();
 			if (Func.isEmpty(entityList)) {
-				listInsert.add(in);
+				if (in.getUnifiedSocialCreditCode().length()>=18){
+					listInsert.add(in);
+				}
 			} else {
 				in.setId(entityList.get(0).getId());
 				listUpdate.add(in);
@@ -1910,7 +1925,9 @@ public class AbutmentClient implements IAbutmentClient {
 				up.setId(entityList.get(0).getId());
 				listUpdate.add(up);
 			} else {
-				listInsert.add(up);
+				if (up.getUnifiedSocialCreditCode().length()>=18){
+					listInsert.add(up);
+				}
 			}
 		});
 		if (Func.isNotEmpty(listInsert)) {

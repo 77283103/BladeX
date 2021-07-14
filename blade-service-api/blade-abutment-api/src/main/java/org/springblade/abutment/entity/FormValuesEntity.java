@@ -146,4 +146,10 @@ public class FormValuesEntity implements Serializable {
 	private String fd_name;
 	@ApiModelProperty(value = "(合同借阅实体):事由说明")
 	private String fd_reason;
+
+	@ApiModelProperty(value = "范本起草-模板内容的字段JSON")
+	private JSONObject fd_template_content;
+	@ApiModelProperty(value = "范本起草-模板类型")
+	private String fd_template_type;
+
 }

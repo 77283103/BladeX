@@ -2253,6 +2253,50 @@ public enum TemplateExporterEnum {
 			modle.put("config", config);
 			return modle;
 		}
+	},
+	/**
+	 * MMHT_10
+	 * TAG-21-07.12
+	 * 原物料-买卖合同
+	 */
+	MMHT_10("MMHT_10") {
+		@Override
+		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map modle = new HashMap();
+			Map dataModel = new HashMap();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
+			List<CglRawMaterials1ResponseVO> CglRawMaterials1 = new ArrayList();
+			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+			for (TemplateFieldJsonEntity templateField : templateFieldList) {
+				//买卖合同（国内设备购买）(关联表1)
+				if (ContractFormInfoTemplateContract.CONTRACT_CGLRAWMATERIALS1.equals(templateField.getRelationCode())) {
+					CglRawMaterials1 = JSON.parseArray(templateField.getTableData(), CglRawMaterials1ResponseVO.class);
+					for (int i = 0; i < CglRawMaterials1.size(); i++) {
+						CglRawMaterials1.get(i).setCglNumber(i + 1);
+						DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglRawMaterials1.get(i).getCglStartingTime()));
+						DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglRawMaterials1.get(i).getCglEndOfTime()));
+					}
+				}
+			}
+			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
+			Configure config = Configure.builder().bind("CglRawMaterials1", policy).build();
+			dataModel.put("CglRawMaterials1", CglRawMaterials1);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			dataModel.put("cglBuyer", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+			dataModel.put("cglSeller", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
+			dataModel.put("annex", j.get("annex"));
+			modle.put("dataModel", setFile(filepaths, dataModel));
+			modle.put("config", config);
+			return modle;
+		}
 	};
 
 	public abstract Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j);

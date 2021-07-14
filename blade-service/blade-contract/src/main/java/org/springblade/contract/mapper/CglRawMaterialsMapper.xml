@@ -24,6 +24,8 @@
         <result column="cgl_name_of_the_account" property="cglNameOfTheAccount"/>
         <result column="cgl_other_conventions_3" property="cglOtherConventions3"/>
         <result column="cgl_other_conventions_4" property="cglOtherConventions4"/>
+        <result column="cgl_payment" property="cglPayment"/>
+        <result column="annex" property="annex"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -53,7 +55,7 @@
         cgl_account,
         cgl_name_of_the_account,
         cgl_other_conventions_3,
-        cgl_other_conventions_4,
+        cgl_other_conventions_4,cgl_payment,annex,
         status,
         is_deleted,
         create_user,

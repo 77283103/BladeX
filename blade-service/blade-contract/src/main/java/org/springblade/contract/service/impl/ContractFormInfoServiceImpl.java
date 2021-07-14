@@ -1793,16 +1793,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 						templateField.setTableDataList(list);
 					}
 				}
-				//*原物料-买卖合同联表
-				if (ContractFormInfoTemplateContract.CONTRACT_CGLRAWMATERIALS1.equals(templateField.getRelationCode())) {
-					List<SclEquipmentMaintenance1ResponseVO> sclEquipmentMaintenance1List = JSON.parseArray(templateField.getTableData(), SclEquipmentMaintenance1ResponseVO.class);
-					if (CollectionUtil.isNotEmpty(sclEquipmentMaintenance1List)) {
-						sclEquipmentMaintenance1Service.saveBatchByRefId(contractFormInfo.getId(), sclEquipmentMaintenance1List);
-						List<SclEquipmentMaintenance1ResponseVO> list = sclEquipmentMaintenance1Service.selectRefList(contractFormInfo.getId());
-						templateField.setTableData(JSONObject.toJSONString(list));
-						templateField.setTableDataList(list);
-					}
-				}
 				//*视频广告改编合同 广告完成形式关联表
 				if (ContractFormInfoTemplateContract.CONTRACT_MTADAPTATIONCONTRACT1.equals(templateField.getRelationCode())) {
 					List<MtlAdaptationContract1ResponseVO> mtlAdaptationContract1List = JSON.parseArray(templateField.getTableData(), MtlAdaptationContract1ResponseVO.class);

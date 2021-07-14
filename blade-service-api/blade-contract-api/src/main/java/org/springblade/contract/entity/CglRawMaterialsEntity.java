@@ -1,24 +1,14 @@
 package org.springblade.contract.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Date;
+import org.springblade.core.mp.base.BaseEntity;
+
 import java.util.List;
 
 
@@ -132,6 +122,16 @@ public class CglRawMaterialsEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="（第十一.11.2项）其他约定")
 	private String cglOtherConventions4;
+	/**
+	 * 收付款条件
+	 */
+	@ApiModelProperty(value="收付款条件")
+	private String cglPayment;
+	/**
+	 * 拼接附件
+	 */
+	@ApiModelProperty(value="拼接附件")
+	private String annex;
 
 	@ApiModelProperty(value = "原物料-买卖合同关联表")
 	@TableField(exist = false)
