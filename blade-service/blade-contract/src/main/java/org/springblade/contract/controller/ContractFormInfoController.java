@@ -102,6 +102,8 @@ public class ContractFormInfoController extends BladeController {
 	@Autowired
 	private ContractMultPaymenMapper contractMultPaymenMapper;
 	@Autowired
+	private ICollectionService iCollectionService;
+	@Autowired
 	private IDictBizClient bizClient;
 	@Autowired
 	private IFileClient fileClient;
@@ -252,11 +254,17 @@ public class ContractFormInfoController extends BladeController {
 		}
 		/*保存相对方收付款信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getMultPaymenEntityList())) {
+			iCollectionService.deleteContractId(contractFormInfo.getId());
 			contractMultPaymenMapper.deleteMult(contractFormInfo.getId());
 			contractFormInfo.getMultPaymenEntityList().forEach(mult -> {
+				ContractMultPaymenEntity contractMultPaymenEntity=new ContractMultPaymenEntity();
 				mult.setCurrencyCategory(contractFormInfo.getCurrencyCategory());
 				mult.setContractId(contractFormInfo.getId().toString());
-				contractMultPaymenService.save(mult);
+				BeanUtil.copy(mult,contractMultPaymenEntity);
+				contractMultPaymenService.saveOrUpdate(contractMultPaymenEntity);
+				if (CollectionUtil.isNotEmpty(contractMultPaymenEntity.getCollection())) {
+					contractFormInfoService.saveCollectionMulti(contractMultPaymenEntity,contractFormInfo.getId());
+				}
 			});
 		}
 		/*保存子公司信息*/
@@ -360,6 +368,10 @@ public class ContractFormInfoController extends BladeController {
 		//增加履约计划信息
 		//perServiceContentService.addPerData(contractFormInfo.getPerServiceContentList().get(0),entity.getId());
 		contractFormInfo.setId(entity.getId());
+		//保存合同首款明细数据
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getCollection())) {
+			contractFormInfoService.saveCollection(contractFormInfo);
+		}
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
 			contractFormInfoService.saveCounterpart(contractFormInfo);

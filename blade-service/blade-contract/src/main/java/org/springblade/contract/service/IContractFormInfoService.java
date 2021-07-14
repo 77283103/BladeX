@@ -3,6 +3,7 @@ package org.springblade.contract.service;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.abutment.entity.PushEkpEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
+import org.springblade.contract.entity.ContractMultPaymenEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -74,6 +75,20 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	void saveCounterpart(ContractFormInfoRequestVO vo);
+	/**
+	 * 合同收款明细保存 独立起草
+	 *
+	 * @param vo 合同信息
+	 * @return
+	 */
+	void saveCollection(ContractFormInfoRequestVO vo);
+	/**
+	 * 合同收款明细保存 多方起草
+	 *
+	 * @param vo 合同信息
+	 * @return
+	 */
+	void saveCollectionMulti(ContractMultPaymenEntity vo,Long contractId);
 	/**
 	 * 子公司保存方法
 	 *

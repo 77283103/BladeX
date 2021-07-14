@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.springblade.contract.mapper.CollectionMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="changeResultMap" type="org.springblade.contract.entity.CollectionEntity">
+        <result column="id" property="id"/>
+        <result column="days" property="days"/>
+        <result column="period_num" property="periodNum"/>
+        <result column="period_idx" property="periodIdx"/>
+        <result column="pay_condition" property="payCondition"/>
+        <result column="is_receipt" property="isReceipt"/>
+        <result column="pay_per" property="payPer"/>
+        <result column="pay_amount" property="payAmount"/>
+        <result column="ref_contract_id" property="refContractId"/>
+        <result column="ref_paymen_id" property="refPaymenId"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_user" property="createUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_user" property="updateUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="create_dept" property="createDept"/>
+    </resultMap>
+    <!-- 通用查询结果列 -->
+    <sql id="baseColumnList">
+        id,
+        days,
+        period_num,
+        period_idx,
+        pay_condition,
+        is_receipt,
+        pay_per,
+        pay_amount,
+        ref_contract_id,ref_paymen_id,
+        is_deleted,
+        create_user,
+        create_time,
+        update_user,
+        update_time,
+        create_dept
+    </sql>
+    <!-- 分页 -->
+    <select id="pageList" resultMap="changeResultMap">
+        SELECT
+            <include refid="baseColumnList"/>
+        FROM contract_form_collection
+        WHERE is_deleted = 0
+    </select>
+    <!--根据合同id查询变更信息-->
+    <select id="selectByIdList" resultMap="changeResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM contract_form_collection
+        WHERE is_deleted = 0
+        AND ref_contract_id = #{contractId}
+    </select>
+    <!--根据id查询变更信息-->
+    <select id="selectByFileId" resultMap="changeResultMap">
+        SELECT
+        <include refid="baseColumnList"/>
+        FROM contract_form_collection
+        WHERE is_deleted = 0
+        AND id = #{id}
+    </select>
+    <!--删除关联相对方-->
+    <delete id="deleteCounterpart" parameterType="java.lang.Long">
+        DELETE
+        FROM contract_form_collection
+        WHERE ref_contract_id = #{id}
+    </delete>
+    <!--保存关联相对方-->
+    <!--删除关联收款明细-->
+    <delete id="deleteContractId" parameterType="java.lang.Long">
+        DELETE
+        FROM contract_form_collection
+        WHERE ref_paymen_id = #{id}
+    </delete>
+</mapper>

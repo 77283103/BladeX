@@ -52,7 +52,7 @@
         </if>
         --         用印申请人
         <if test="contractFileDownloadLog.contractId != null and contractFileDownloadLog.contractId != ''">
-            AND contract_id like concat('%', #{contractFileDownloadLog.contractId}, '%')
+            AND contract_id=#{contractFileDownloadLog.contractId}
         </if>
     </select>
     <select id="selectList" resultMap="contractFileDownloadLogResultMap">

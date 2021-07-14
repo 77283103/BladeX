@@ -154,7 +154,7 @@ public class OrganizationServiceImpl implements IOrganizationService {
 	}
 
 	private Map<String, String> getWhereMap(String key, String value) throws Exception {
-		Map<String, String> whereMap = new HashMap<String, String>();
+		Map<String, String> whereMap = new HashMap<>();
 		whereMap.put("type", key + "='" + value + "'");
 		return whereMap;
 	}

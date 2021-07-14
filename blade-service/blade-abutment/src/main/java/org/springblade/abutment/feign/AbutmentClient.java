@@ -320,9 +320,12 @@ public class AbutmentClient implements IAbutmentClient {
 							formValuesEntity.setFd_contract_name(fileVO.get(0).getName());
 						}
 					}
+					//  独立起草10  传10   范本起草为30  传20 范本起草其他约定暂时未定义  传30   多方起草为20  传40
 					if ("10".equals(entity.getContractSoure())) {
 						formValuesEntity.setFd_contract_type("10");
-					} else {
+					} else if ("30".equals(entity.getContractSoure())){
+						formValuesEntity.setFd_contract_type("20");
+					}else if ("20".equals(entity.getContractSoure())){
 						formValuesEntity.setFd_contract_type("40");
 					}
 					//合同方对应关系
@@ -449,6 +452,10 @@ public class AbutmentClient implements IAbutmentClient {
 				if (Func.isNotEmpty(entity.getBankAccountName())){
 					formValuesEntity.setFd_account_name(entity.getBankAccountName());
 				}
+				if (Func.isNotEmpty(entity.getBankDepositName())){
+					//相对方开户行名称
+					formValuesEntity.setFd_account_name(entity.getBankDepositName());
+				}
 				/********************     相对方信息END   ***********************************/
 				//合同负责人
 				formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
@@ -519,30 +526,28 @@ public class AbutmentClient implements IAbutmentClient {
 						break;
 					default:
 				}
-				//总期数
-				if (Func.isNotEmpty(entity.getPeriodNum())) {
-					formValuesEntity.setFd_period_num(entity.getPeriodNum());
-				}
-				//第几期
-				if (Func.isNotEmpty(entity.getPeriodIdx())) {
-					formValuesEntity.setFd_period_idx(entity.getPeriodIdx());
-				}
-				//条件+帐期天数
-				if (Func.isNotEmpty(entity.getPayCondition()) && Func.isNotEmpty(entity.getDays())) {
-					formValuesEntity.setFd_pay_condition(entity.getPayCondition());
+				//收款明细列表
+				List<CollectionInde> indeList=new ArrayList<>();
+				entity.getCollection().forEach(conI->{
+					CollectionInde collectionInde=new CollectionInde();
+					//总期数
+					collectionInde.setFd_period_num(conI.getPeriodNum());
+					//第几期
+					collectionInde.setFd_period_idx(conI.getPeriodIdx());
+					//条件+帐期天数
+					collectionInde.setFd_pay_condition(conI.getPayCondition());
+					collectionInde.setFd_pay_days_inde(conI.getDays().toString());
+					//是否开票
+					collectionInde.setFd_is_receipt(conI.getIsReceipt());
+					//比例
+					collectionInde.setFd_per(conI.getPayPer().toString());
+					collectionInde.setFd_pay_amount(conI.getPayAmount().toString());
+					indeList.add(collectionInde);
+				});
+				formValuesEntity.setFd_collection_inde(indeList);
+				if (!Func.isEmpty(entity.getDays())) {
+					//签约后收款  需要填写
 					formValuesEntity.setFd_payee_days(entity.getDays().toString());
-				}
-				//是否开票
-				if (Func.isNotEmpty(entity.getIsReceipt())) {
-					formValuesEntity.setFd_is_receipt(entity.getIsReceipt());
-				}
-				//比例
-				if (Func.isNotEmpty(entity.getPayPer())) {
-					formValuesEntity.setFd_per(entity.getPayPer().toString());
-				}
-				//金额（未税）
-				if (Func.isNotEmpty(entity.getPayAmount())) {
-					formValuesEntity.setFd_pay_amount(entity.getPayAmount().toString());
 				}
 				if (!Func.isEmpty(entity.getContractAmount())) {
 					//合同未税金额
@@ -876,9 +881,19 @@ public class AbutmentClient implements IAbutmentClient {
 					ro.setFd_role_email(r.getEmailPerson());
 					//相对方联系地址
 					ro.setFd_role_email(r.getAddressPerson());
-					ro.setFd_bank_code(r.getBankCode());
-					ro.setFd_account_code(r.getBankAccountCode());
-					ro.setFd_account_name(r.getBankAccountName());
+					if (Func.isNotEmpty(r.getBankCode())){
+						ro.setFd_role_bank_code(r.getBankCode());
+					}
+					if (Func.isNotEmpty(r.getBankAccountCode())){
+						ro.setFd_role_account_code(r.getBankAccountCode());
+					}
+					if (Func.isNotEmpty(r.getBankAccountName())){
+						ro.setFd_role_account_name(r.getBankAccountName());
+					}
+					if (Func.isNotEmpty(r.getBankDepositName())){
+						//相对方开户行名称
+						ro.setFd_role_deposit_name(r.getBankDepositName());
+					}
 					ros.add(ro);
 				});
 				formValuesEntity.setFd_multiro(ros);
@@ -938,30 +953,28 @@ public class AbutmentClient implements IAbutmentClient {
 							break;
 						default:
 					}
-					//总期数
-					if (Func.isNotEmpty(p.getPeriodNum())) {
-						pay.setFd_period_num(p.getPeriodNum());
-					}
-					//第几期
-					if (Func.isNotEmpty(p.getPeriodIdx())) {
-						pay.setFd_period_idx(p.getPeriodIdx());
-					}
-					//条件+帐期天数
-					if (Func.isNotEmpty(p.getPayCondition()) && Func.isNotEmpty(p.getDays())) {
-						pay.setFd_payee_condition(entity.getPayCondition());
+					//收款明细列表
+					List<CollectionMulti> multiList=new ArrayList<>();
+					p.getCollection().forEach(pI->{
+						CollectionMulti collectionInde=new CollectionMulti();
+						//总期数
+						collectionInde.setFd_period_num_multi(pI.getPeriodNum());
+						//第几期
+						collectionInde.setFd_period_idx_multi(pI.getPeriodIdx());
+						//条件+帐期天数
+						collectionInde.setFd_payee_condition_multi(pI.getPayCondition());
+						collectionInde.setFd_pay_days_multi(pI.getDays().toString());
+						//是否开票
+						collectionInde.setFd_is_receipt_multi(pI.getIsReceipt());
+						//比例
+						collectionInde.setFd_per_multi(pI.getPayPer().toString());
+						collectionInde.setFd_pay_amount_multi(pI.getPayAmount().toString());
+						multiList.add(collectionInde);
+					});
+					pay.setFd_collection_multi(multiList);
+					if (Func.isNotEmpty(p.getDays())) {
+						//合同未税金额
 						pay.setFd_pay_days(p.getDays().toString());
-					}
-					//是否开票
-					if (Func.isNotEmpty(p.getIsReceipt())) {
-						pay.setFd_is_receipt(p.getIsReceipt());
-					}
-					//比例
-					if (Func.isNotEmpty(p.getPayPer())) {
-						pay.setFd_per(p.getPayPer().toString());
-					}
-					//金额（未税）
-					if (Func.isNotEmpty(p.getPayAmount())) {
-						pay.setFd_pay_amount(p.getPayAmount().toString());
 					}
 					if (Func.isNotEmpty(p.getContractAmount())) {
 						//合同未税金额

@@ -189,7 +189,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 
 
 	/* 引用service */
-
+    @Autowired
+    private ICollectionService iCollectionService;
 	@Autowired
 	private IPerServiceContentService perServiceContentService;
 	@Autowired
@@ -920,6 +921,29 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	/**
+	 * 保存相对方信息
+	 *
+	 * @param vo 提取合同id和相对方id
+	 */
+	@Override
+	public void saveCollection(ContractFormInfoRequestVO vo) {
+		iCollectionService.deleteCounterpart(vo.getId());
+		vo.getCollection().forEach(collectionEntity -> {
+			collectionEntity.setRefContractId(vo.getId().toString());
+			iCollectionService.save(collectionEntity);
+		});
+	}
+
+	@Override
+	public void saveCollectionMulti(ContractMultPaymenEntity multPaymenEntity,Long contractId) {
+		multPaymenEntity.getCollection().forEach(cl->{
+			cl.setRefContractId(multPaymenEntity.getId().toString());
+			cl.setRefPaymenId(contractId.toString());
+			iCollectionService.save(cl);
+			});
+	}
+
+	/**
 	 * 保存子公司信息
 	 *
 	 * @param vo 提取合同id和相对方id
@@ -1078,6 +1102,10 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//查询多方相对方的收付款信息
 		List<ContractMultPaymenEntity> multPaymenEntityList = multPaymenMapper.selectByMultId(contractFormInfoResponseVO.getId());
 		if (Func.isNotEmpty(multPaymenEntityList)) {
+			multPaymenEntityList.forEach(ml->{
+				//合同收款明细列表
+				ml.setCollection(iCollectionService.getByIdList(ml.getId()));
+			});
 			contractFormInfoResponseVO.setMultPaymenEntityList(multPaymenEntityList);
 		}
 		//查询解除信息
@@ -1203,6 +1231,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		}
+		//合同收款明细列表
+		contractFormInfoResponseVO.setCollection(iCollectionService.getByIdList(contractFormInfoResponseVO.getId()));
 		//履约计划信息
 		contractFormInfoResponseVO.setPerServiceContentList(perServiceContentService.findInfoByContractId(contractFormInfoResponseVO.getId()));
 		contractFormInfoResponseVO.setPerCollectPayList(perCollectPayService.findListByContractId(contractFormInfoResponseVO.getId()));
