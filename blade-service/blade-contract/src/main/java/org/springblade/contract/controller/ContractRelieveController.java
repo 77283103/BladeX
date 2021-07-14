@@ -84,23 +84,20 @@ public class ContractRelieveController extends BladeController {
 	@ApiOperationSupport(order = 3)
 	@ApiOperation(value = "新增", notes = "传入contractRelieve")
 	@PreAuth("hasPermission('contractRelieve:relieve:add')")
-	public R save(@Valid @RequestBody ContractRelieveResponseVO contractRelieve) {
-		String contractStatus=CONTRACT_RELIEVE_SAVE;
-		formInfoService.updateExportStatus(contractStatus,contractRelieve.getRefContractId());
-		return R.status(contractRelieveService.save(ContractRelieveWrapper.build().PVEntity(contractRelieve)));
+	public R save(@Valid @RequestBody ContractRelieveRequestVO contractRelieveRequestVO) {
+		formInfoService.updateExportStatus(CONTRACT_RELIEVE_SAVE,contractRelieveRequestVO.getRefContractId());
+		return R.status(contractRelieveService.save(ContractRelieveWrapper.build().QVEntity(contractRelieveRequestVO)));
 	}
 
 	/**
-	 * 提交
+	 * 提交送审
 	 */
 	@PostMapping("/submit")
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "提交", notes = "传入contractCaseRegistration")
 	@PreAuth("hasPermission('contractCaseRegistation:contractCaseRegistration:submit')")
-	public R submit(@Valid @RequestBody ContractRelieveResponseVO relieveResponseVO) {
-		String contractStatus=CONTRACT_RELIEVE_SUBMIT;
-		formInfoService.updateExportStatus(contractStatus,relieveResponseVO.getRefContractId());
-		return R.status(contractRelieveService.save(ContractRelieveWrapper.build().PVEntity(relieveResponseVO)));
+	public R submit(@RequestParam Long contractId) {
+		return contractRelieveService.submit(contractId);
 	}
 	/**
 	 * 修改
@@ -109,13 +106,12 @@ public class ContractRelieveController extends BladeController {
 	@ApiOperationSupport(order = 4)
 	@ApiOperation(value = "修改", notes = "传入contractRelieve")
 	@PreAuth("hasPermission('contractRelieve:relieve:update')")
-	public R update(@Valid @RequestBody ContractRelieveResponseVO contractRelieve) {
-	    if (Func.isEmpty(contractRelieve.getId())){
+	public R update(@Valid @RequestBody ContractRelieveRequestVO contractRelieveRequestVO) {
+	    if (Func.isEmpty(contractRelieveRequestVO.getId())){
             throw new ServiceException("id不能为空");
         }
-		String contractStatus=CONTRACT_RELIEVE_SUBMIT;
-		formInfoService.updateExportStatus(contractStatus,contractRelieve.getRefContractId());
-		return R.status(contractRelieveService.updateById(ContractRelieveWrapper.build().PVEntity(contractRelieve)));
+		formInfoService.updateExportStatus(CONTRACT_RELIEVE_SAVE,contractRelieveRequestVO.getRefContractId());
+		return R.status(contractRelieveService.updateById(ContractRelieveWrapper.build().QVEntity(contractRelieveRequestVO)));
 	}
 
 	/**

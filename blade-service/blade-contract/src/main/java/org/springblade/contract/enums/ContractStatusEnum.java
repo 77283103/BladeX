@@ -5,7 +5,12 @@ public enum ContractStatusEnum {
 	DRAFT("草稿", 10),
 	APPROVAL("送审", 20),
 	NOPRINTING("未用印",40),
-	APPROVED("审批通过",30);
+	APPROVED("审批通过",30),
+
+	/*合同解除状态*/
+	RELIEVE_SAVE("解除暂存",88),
+	RELIEVE_SUBMIT("解除已送审",89),
+	RELIEVE_PASS("解除通过",90);
 
 	// 成员变量
 	private String value;

@@ -7,4 +7,10 @@ import java.io.Serializable;
 @Data
 public class DocCreatorEntity implements Serializable {
     private String emplno;
+
+	public DocCreatorEntity(){}
+
+    public DocCreatorEntity(String emplno){
+    	this.emplno = emplno;
+	}
 }

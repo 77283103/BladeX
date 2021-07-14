@@ -44,7 +44,7 @@ public class ContractRelieveResponseVO extends ContractRelieveEntity {
 	private  List<FileVO> termAgreementFileVOList;
 
 	/**
-	 * 解除协议
+	 * 合同依据管理
 	 */
 	private ContractAccordingEntity accordingEntity;
 }

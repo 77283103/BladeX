@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.core.mp.base.BaseService;
 import org.springblade.contract.entity.ContractRelieveEntity;
 import org.springblade.contract.vo.ContractRelieveRequestVO;
+import org.springblade.core.tool.api.R;
 
 /**
  * 合同解除 服务类
@@ -20,4 +21,12 @@ public interface IContractRelieveService extends BaseService<ContractRelieveEnti
 	 * @return
 	 */
 	IPage<ContractRelieveEntity> pageList(IPage<ContractRelieveEntity> page, ContractRelieveRequestVO contractRelieve);
+
+	/**
+	 * 提交送审
+	 * @param contractId
+	 * @return
+	 */
+	R submit(Long contractId);
+
 }

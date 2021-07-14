@@ -152,4 +152,32 @@ public class FormValuesEntity implements Serializable {
 	@ApiModelProperty(value = "范本起草-模板类型")
 	private String fd_template_type;
 
+
+	/*合同解除字段*/
+	@ApiModelProperty(value = "合同金额")
+	private String fd_amount;
+	@ApiModelProperty(value = "解除日期")
+	private String fd_relieve_date;
+	@ApiModelProperty(value = "解除原因")
+	private String fd_relieve_reason;
+	@ApiModelProperty(value = "违约金金额")
+	private String fd_liquidated;
+	@ApiModelProperty(value = "赔偿款流向")
+	private String fd_flow_direction;
+	@ApiModelProperty(value = "解除说明")
+	private String fd_remarks;
+
+	@ApiModelProperty(value = "解除说明")
+	private String fd_compensation;
+	@ApiModelProperty(value = "解除说明")
+	private String fd_flow_compensation;
+	@ApiModelProperty(value = "解除说明")
+	private String fd_organizer;
+	@ApiModelProperty(value = "解除说明")
+	private String fd_department;
+	@ApiModelProperty(value = "解除说明")
+	private String fd_undertaker;
+	@ApiModelProperty(value = "解除说明")
+	private String fd_time;
+
 }
