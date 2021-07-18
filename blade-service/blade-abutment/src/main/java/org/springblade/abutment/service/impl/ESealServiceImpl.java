@@ -1,11 +1,9 @@
 package org.springblade.abutment.service.impl;
 
-import cn.hutool.core.map.MapUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
@@ -23,14 +21,13 @@ import org.springblade.abutment.entity.*;
 import org.springblade.abutment.service.IESealService;
 import org.springblade.abutment.vo.*;
 import org.springblade.core.tool.jackson.JsonUtil;
-import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,15 +105,15 @@ public class ESealServiceImpl implements IESealService {
 
 	@Override
 	public List<UploadFileVo> uploadFiles(String token, UploadFileEntity uploadFilesEntity) {
-		HttpPost method = null;
+		HttpPost method;
 		CloseableHttpClient client = HttpClients.createDefault();
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
-		builder.setCharset(Charset.forName("utf-8"));
+		builder.setCharset(StandardCharsets.UTF_8);
 		builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
 		for (File file : uploadFilesEntity.getFile()) {
 			builder.addPart("file", new FileBody(file));
 		}
-		if (uploadFilesEntity.getIsMerge().equals("1")) {
+		if ("1".equals(uploadFilesEntity.getIsMerge())) {
 			method = new HttpPost(this.uploadFileMergeUrl);
 			builder.addTextBody("fileName", uploadFilesEntity.getFileName(), ContentType.create("text/plain", "UTF-8"));
 		} else {
@@ -132,6 +129,7 @@ public class ESealServiceImpl implements IESealService {
 			e.printStackTrace();
 		}
 		JSONObject uploadFilesJson = null;
+		assert response != null;
 		if (response.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
 			String info = null;
 			try {
@@ -142,29 +140,24 @@ public class ESealServiceImpl implements IESealService {
 			log.info(info);
 			uploadFilesJson = JSONUtil.parseObj(info);
 		}
-        /*for(File file : uploadFilesEntity.getFile()) {
-            file.delete();
-        }*/
 		List<UploadFileVo> uploadFileVoList = null;
 		if (uploadFilesJson != null) {
-			if (uploadFilesEntity.getIsMerge().equals("0")) {
+			if ("0".equals(uploadFilesEntity.getIsMerge())) {
 				JSONArray jsonArray = uploadFilesJson.getJSONArray("fileData");
 				for (int i = 0; i < jsonArray.size(); i++) {
 					JSONObject jsonObject = jsonArray.getJSONObject(i);
-					if (jsonObject.getStr("errorCode").equals("0")) {
+					if ("0".equals(jsonObject.getStr("errorCode"))) {
 						if (uploadFileVoList == null) {
-							uploadFileVoList = new ArrayList<UploadFileVo>();
+							uploadFileVoList = new ArrayList<>();
 						}
 						uploadFileVoList.add(new UploadFileVo(jsonObject.getStr("id")));
 					}
 				}
 			} else {
-				uploadFileVoList = new ArrayList<UploadFileVo>();
+				uploadFileVoList = new ArrayList<>();
 				uploadFileVoList.add(new UploadFileVo(uploadFilesJson.getStr("id")));
 			}
 		}
-		System.out.println(uploadFileVoList.size() + "/n" + uploadFileVoList.get(0).getId());
-
 		return uploadFileVoList;
 	}
 
@@ -188,7 +181,7 @@ public class ESealServiceImpl implements IESealService {
 	public SingleSignVo singleSign(String token, SingleSignEntity singleSignEntity) throws Exception {
 		SingleSignVo singleSignVo = null;
 		if (singleSignEntity.getSignPos() != null) {
-			if (singleSignEntity.getSignType().equals("Key")) {
+			if ("Key".equals(singleSignEntity.getSignType())) {
 				singleSignEntity.getSignPos().setPosType(1);
 			} else {
 				singleSignEntity.getSignPos().setPosType(0);

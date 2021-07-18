@@ -1,16 +1,11 @@
 package org.springblade.contract.wrapper;
 
-import org.springblade.contract.entity.ContractBondEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.enums.ContractStatusEnum;
-import org.springblade.contract.enums.ContractTypeEnum;
 import org.springblade.contract.excel.importbatchdraft.ContractImportBatchDraftExcel;
 import org.springblade.contract.util.IdGenUtil;
-import org.springblade.contract.vo.ContractBondRequestVO;
-import org.springblade.contract.vo.ContractBondResponseVO;
 import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
-import org.springblade.core.mp.support.BaseEntityWrapper;
 import org.springblade.core.mp.support.IEntityWrapper;
 import org.springblade.core.secure.BladeUser;
 import org.springblade.core.secure.utils.AuthUtil;
@@ -57,11 +52,16 @@ public class ContractFormInfoWrapper implements IEntityWrapper<ContractFormInfoE
 	}
 
 	public ContractFormInfoEntity createEntityByBatchDraftExcel(ContractImportBatchDraftExcel contractImportBatchDraftExcel){
+		//给合同赋值
 		ContractFormInfoEntity contractFormInfoEntity = BeanUtil.copy(contractImportBatchDraftExcel,ContractFormInfoEntity.class);
+		//自动生成ID
 		contractFormInfoEntity.setId(IdGenUtil.generateId().longValue());
+		//赋值JSON数据
 		contractFormInfoEntity.setJson(contractImportBatchDraftExcel.getJson());
+		//赋值合同状态
 		contractFormInfoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
 		BladeUser user = AuthUtil.getUser();
+		//创建合同创建记录信息
 		contractFormInfoEntity.setCreateDept((Long) Func.toLongList(user.getDeptId()).iterator().next());
 		contractFormInfoEntity.setCreateUser(user.getUserId());
 		return contractFormInfoEntity;

@@ -215,7 +215,6 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(ContractFormInfoWrapper.build().entityPVPage(pages));
 	}
 
-
 	/**
 	 * 多方起草新增
 	 */
@@ -243,9 +242,9 @@ public class ContractFormInfoController extends BladeController {
 		/*保存多方向对方身份信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getDraftContractCounterpartList())) {
 			draftContractCounterpartMapper.deleteDraftCounterpart(contractFormInfo.getId());
-			ContractSealEntity se=iContractSealService.getByFdNo(entity.getSealName());
+			ContractSealEntity se = iContractSealService.getByFdNo(entity.getSealName());
 			contractFormInfo.getDraftContractCounterpartList().forEach(dcl -> {
-				if (se.getFdFactname().equals(dcl.getSubsidiaryPerson())){
+				if (se.getFdFactname().equals(dcl.getSubsidiaryPerson())) {
 					entity.setContractRoles(dcl.getCounterpartIdentity());
 				}
 				dcl.setContractId(contractFormInfo.getId().toString());
@@ -257,13 +256,13 @@ public class ContractFormInfoController extends BladeController {
 			iCollectionService.deleteContractId(contractFormInfo.getId());
 			contractMultPaymenMapper.deleteMult(contractFormInfo.getId());
 			contractFormInfo.getMultPaymenEntityList().forEach(mult -> {
-				ContractMultPaymenEntity contractMultPaymenEntity=new ContractMultPaymenEntity();
+				ContractMultPaymenEntity contractMultPaymenEntity = new ContractMultPaymenEntity();
 				mult.setCurrencyCategory(contractFormInfo.getCurrencyCategory());
 				mult.setContractId(contractFormInfo.getId().toString());
-				BeanUtil.copy(mult,contractMultPaymenEntity);
+				BeanUtil.copy(mult, contractMultPaymenEntity);
 				contractMultPaymenService.saveOrUpdate(contractMultPaymenEntity);
 				if (CollectionUtil.isNotEmpty(contractMultPaymenEntity.getCollection())) {
-					contractFormInfoService.saveCollectionMulti(contractMultPaymenEntity,contractFormInfo.getId());
+					contractFormInfoService.saveCollectionMulti(contractMultPaymenEntity, contractFormInfo.getId());
 				}
 			});
 		}
@@ -341,6 +340,7 @@ public class ContractFormInfoController extends BladeController {
 		}
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
+
 	/**
 	 * 独立起草新增
 	 */
@@ -441,7 +441,6 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
 	}
 
-
 	/**
 	 * 范本起草新增
 	 */
@@ -452,8 +451,6 @@ public class ContractFormInfoController extends BladeController {
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		R<ContractFormInfoEntity> r = null;
-		/*List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
-		JSONObject j = new JSONObject();*/
 		//把json串转换成一个对象
 		TemplateRequestVO template = contractFormInfo.getTemplate();
 		List<TemplateFieldEntity> templateFieldList = JSON.parseArray(template.getJson(), TemplateFieldEntity.class);
@@ -463,9 +460,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
 		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
-		/*if(Func.isEmpty(contractFormInfoEntity.getContractTemplateId())){
-			contractFormInfoEntity.setContractTemplateId(contractFormInfo.getContractListId());
-		}*/
 		Long id = TemplateSaveUntil.templateSave(contractFormInfoEntity, template, j);
 		contractFormInfo.setId(id);
 		/*保存相对方信息*/
@@ -522,13 +516,14 @@ public class ContractFormInfoController extends BladeController {
 		if ("20".equals(template.getBean())) {
 			//导出pdf文件
 			FileVO filevo = templateExportUntil.templateSave(contractFormInfoEntity, template, contractFormInfoEntity.getJson(), j);
-			contractFormInfoEntity.setContractStatus("20");
 			contractFormInfoEntity.setTextFile(filevo.getId() + ",");
 			contractFormInfoEntity.setTextFilePdf(filevo.getId() + ",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
 			contractFormInfoEntity.setFilePDF(filevo.getDomain());
 			r = contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
 			if (r.getCode() != HttpStatus.OK.value()) {
+				contractFormInfoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+				contractFormInfoService.updateById(contractFormInfoEntity);
 				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity));
 				return r;
 			}
@@ -547,8 +542,6 @@ public class ContractFormInfoController extends BladeController {
 
 	/**
 	 * 判断电子签章和关键字是否存在
-	 *
-	 * @return
 	 */
 	@PostMapping("/singleSignIsNot")
 	@ApiOperationSupport(order = 5)
@@ -565,7 +558,6 @@ public class ContractFormInfoController extends BladeController {
 		}
 		return contractFormInfoService.singleSignIsNot(contractFormInfo, files);
 	}
-
 
 	/**
 	 * 合同预览
@@ -586,10 +578,8 @@ public class ContractFormInfoController extends BladeController {
 			//把json串转换成一个对象
 			ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
 			BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
-			//String json = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
 			//导出pdf文件
 			files = templateExportUntil.templateSave(contractFormInfoEntity, template, template.getJson(), j);
-
 		} else {
 			List<FileVO> list = fileClient.getByIds(contractFormInfo.getTextFile().trim()).getData();
 			files = list.get(0);
@@ -597,16 +587,13 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(files);
 	}
 
-
-
 	@PostMapping("/importBatchDraft")
 	@ApiOperationSupport(order = 12)
 	@ApiOperation(value = "批量导入", notes = "传入excel、大小类、范本json")
-	public R importBatchDraft(ContractImportBatchDraftRequest contractImportBatchDraftRequest){
+	public R importBatchDraft(ContractImportBatchDraftRequest contractImportBatchDraftRequest) {
 		contractFormInfoService.batchDraftingImport(contractImportBatchDraftRequest);
 		return R.success("操作成功");
 	}
-
 
 	/**
 	 * 批量导入，更新
@@ -619,7 +606,6 @@ public class ContractFormInfoController extends BladeController {
 		contractFormInfoService.batchDraftingImportUp(contractFormInfo);
 		return R.success("操作成功");
 	}
-
 
 	/**
 	 * 批量导入
@@ -684,37 +670,42 @@ public class ContractFormInfoController extends BladeController {
 	@ApiOperationSupport(order = 12)
 	@ApiOperation(value = "批量送审", notes = "传入依据和合同ids")
 	@Transactional(rollbackFor = Exception.class)
-	public R<ContractFormInfoEntity> submitBatch(@Valid @RequestBody ContractAccordingRequestVO according) {
-		ContractAccordingEntity entity = new ContractAccordingEntity();
-		ContractFormInfoEntity infoEntity = new ContractFormInfoEntity();
+	public R submitBatch(@Valid @RequestBody ContractAccordingRequestVO according) {
+		List<ContractFormInfoEntity> infoEntityList = new ArrayList<>();
 		//保存依据信息，把依据信息替换到json串中
 		for (String id : according.getContractIds()) {
-			BeanUtil.copy(according, entity);
-			entity.setContractId(Long.parseLong(id));
-			accordingService.save(entity);
+			ContractAccordingEntity entity = BeanUtil.copy(according, ContractAccordingEntity.class);
+			//保存依据  与  关联关系
+			accordingService.saveAccording(entity, Long.parseLong(id));
 			JSONObject jsonObj = JSON.parseObject(JSON.toJSONString(entity));
-			infoEntity = contractFormInfoService.getById(id);
+			ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 			String json = infoEntity.getJson();
-			com.alibaba.fastjson.JSONArray objects = new com.alibaba.fastjson.JSONArray();
-			try {
-				objects = JSONArray.parseArray(json);
-				for (int i = 0; i < objects.size(); i++) {
-					JSONObject temp = objects.getJSONObject(i);
-					String relationCode = temp.getString("relationCode");
-					if ("ContractAccording".equals(relationCode)) {
-						temp.put("tableData", jsonObj);
-						objects.set(i, temp);
+			if (Func.isNotEmpty(json)) {
+				com.alibaba.fastjson.JSONArray objects = new com.alibaba.fastjson.JSONArray();
+				try {
+					objects = JSONArray.parseArray(json);
+					for (int i = 0; i < objects.size(); i++) {
+						JSONObject temp = objects.getJSONObject(i);
+						String relationCode = temp.getString("relationCode");
+						if ("ContractAccording".equals(relationCode)) {
+							temp.put("tableData", jsonObj);
+							objects.set(i, temp);
+						}
 					}
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-			} catch (Exception e) {
-				e.printStackTrace();
+				infoEntity.setJson(objects.toJSONString());
 			}
-			json = objects.toJSONString();
-			infoEntity.setJson(json);
-			infoEntity.setContractStatus("20");
-			contractFormInfoService.saveOrUpdate(infoEntity);
+			//先存储为状态为草稿  保证出现异常 避免无法回滚
+			infoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+			infoEntityList.add(infoEntity);
 		}
-		return R.data(ContractFormInfoWrapper.build().entityPV(infoEntity));
+		boolean status = contractFormInfoService.saveOrUpdateBatch(infoEntityList);
+		if (status) {
+			contractFormInfoService.pushBatch(infoEntityList);
+		}
+		return R.data("送审成功");
 	}
 
 
@@ -795,12 +786,12 @@ public class ContractFormInfoController extends BladeController {
 		}
 		infoEntity.setFileExportCount(fileExportCount);
 		infoEntity.setFileExportCategory(FILE_EXPORT_CATEGORY);
-		boolean status=contractFormInfoService.updateById(infoEntity);
-		if (status){
+		boolean status = contractFormInfoService.updateById(infoEntity);
+		if (status) {
 			BladeUser user = AuthUtil.getUser();
-			ContractFileDownloadLogEntity fileDownloadLogEntity=new ContractFileDownloadLogEntity();
-			R<User> info=userClient.userInfoById(user.getUserId());
-			if (info.getCode()== HttpStatus.OK.value() ){
+			ContractFileDownloadLogEntity fileDownloadLogEntity = new ContractFileDownloadLogEntity();
+			R<User> info = userClient.userInfoById(user.getUserId());
+			if (info.getCode() == HttpStatus.OK.value()) {
 				fileDownloadLogEntity.setCode(info.getData().getCode());
 				fileDownloadLogEntity.setRealName(info.getData().getRealName());
 			}
@@ -1047,13 +1038,14 @@ public class ContractFormInfoController extends BladeController {
 
 	/**
 	 * 导出导出相对方数据excel
+	 *
 	 * @param response
 	 */
 	@PostMapping("/exportCounterpart")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "导出相对方数据", notes = "")
 	public void exportCounterpart(HttpServletResponse response) {
-		List<ContractCounterpartEntity> ce=counterpartService.list();
+		List<ContractCounterpartEntity> ce = counterpartService.list();
 		if (CollectionUtil.isNotEmpty(ce)) {
 			/* 导出文件名称 */
 			String fileName = "相对方信息导出";
@@ -1077,9 +1069,9 @@ public class ContractFormInfoController extends BladeController {
 				/*更新时间*/
 				cloumns.add(counterpartEntity.getUpdateTime());
 				/*状态*/
-				cloumns.add(1==counterpartEntity.getStatus()?"使用中":"未使用");
+				cloumns.add(1 == counterpartEntity.getStatus() ? "使用中" : "未使用");
 				/*是否删除*/
-				cloumns.add(counterpartEntity.getIsDeleted()==0?"正常":"已删除");
+				cloumns.add(counterpartEntity.getIsDeleted() == 0 ? "正常" : "已删除");
 				data.add(cloumns);
 			}
 			/* 表头名称，excel的表头 一个list对象为一行里的一个表头名称 */
@@ -1106,6 +1098,7 @@ public class ContractFormInfoController extends BladeController {
 			}
 		}
 	}
+
 	/**
 	 * 独立起草变更
 	 */

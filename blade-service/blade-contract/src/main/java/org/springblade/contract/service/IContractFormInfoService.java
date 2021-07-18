@@ -1,7 +1,6 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.abutment.entity.PushEkpEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractMultPaymenEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
@@ -173,6 +172,12 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return 返回统计状态
 	 */
 	R<ContractFormInfoEntity> SingleSign(R<ContractFormInfoEntity> r);
+	/**
+	 * 电子签章业务处理 -批量送审
+	 *
+	 * @param r 合同信息 列表
+	 */
+	void pushBatch(List<ContractFormInfoEntity> r);
 
 	/**
 	 * 电子签章业务处理 -实体合同-我司用印   不用印

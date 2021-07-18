@@ -127,6 +127,9 @@ public class EkpServiceImpl implements IEkpService {
 			HttpEntity responseEntity = response.getEntity();
 			if (null != responseEntity) {
 				json = EntityUtils.toString(responseEntity);
+				if (json.contains("\"")){
+					json=json.replaceAll("\"","");
+				}
 				docInfoJson = JSONUtil.parseObj(json);
 				log.info("从响应模型中获取响应实体：" + JSONUtil.toJsonStr(docInfoJson));
 				if (!docInfoJson.getBool("success")) {

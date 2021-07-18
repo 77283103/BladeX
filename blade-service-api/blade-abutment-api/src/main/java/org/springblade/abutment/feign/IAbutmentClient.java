@@ -53,6 +53,7 @@ public interface IAbutmentClient {
 	String E_SEAL_TOKEN = API_PREFIX + E_SEAL + "/token";
 	String CONTRACT_BORROWING=API_PREFIX+"/appContract";
 	String TEMPLATE_APP=API_PREFIX+"/templateApp";
+	String EKP_SEND_BATCH_POST=API_PREFIX+"/sendEkpBatchPost";
 
 
 
@@ -72,6 +73,14 @@ public interface IAbutmentClient {
 	 */
 	@PostMapping(CONTRACT_BORROWING)
 	R<EkpVo> borEkpFormPost(@RequestBody ContractBorrowApplicationEntity entity);
+	/**
+	 * 合同起草-(批量独立  批量范本）
+	 * 推送EKP信息
+	 * @param entity
+	 * @return
+	 */
+	@PostMapping(EKP_SEND_BATCH_POST)
+	R<EkpVo> sendEkpBatchPost(@RequestBody ContractFormInfoEntity entity);
 	/**
 	 * 合同起草-(独立、范本）
 	 * 推送EKP信息

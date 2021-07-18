@@ -5,14 +5,16 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.AllArgsConstructor;
 import org.springblade.contract.entity.ContractAccordingEntity;
 import org.springblade.contract.mapper.ContractAccordingMapper;
+import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractAccordingService;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.tool.constant.BladeConstant;
-import org.springblade.system.user.entity.User;
+import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,7 +27,8 @@ import java.util.List;
 @Service
 public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccordingMapper, ContractAccordingEntity> implements IContractAccordingService {
 
-
+    private final ContractAccordingMapper contractAccordingMapper;
+	private final ContractFormInfoMapper contractFormInfoMapper;
 	@Override
 	public IPage<ContractAccordingResponseVO> pageList(IPage<ContractAccordingResponseVO> page, ContractAccordingRequestVO according) {
 		page= baseMapper.pageList(page, according);
@@ -33,7 +36,31 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 	}
 
 	@Override
-	public void saveAccording(List<Long> ids, Long id) {
+	public void saveAccording(ContractAccordingEntity accordingEntity, Long id) {
+		List<ContractAccordingEntity> list = new ArrayList<>();
+		List<String> acList = new ArrayList<>();
+		List<String> acIdList = new ArrayList<>();
+		//根据合同ID查询关联依据  用于处理新增，修改操作所产生的脏数据
+		Integer count = contractAccordingMapper.selectByContractIds(id);
+		if (count != 0) {
+			contractAccordingMapper.deleteAccording(id);
+		}
+		/********保存新新依据数据到依据库 START*******/
+		//根据依据的文件编号查询依据是否已经存在于依据库
+		acList.add(accordingEntity.getFileId());
+		List<ContractAccordingEntity> ac = contractAccordingMapper.selectByFileId(acList);
+		if (Func.isEmpty(ac)) {
+			baseMapper.insert(accordingEntity);
+			//并把新增的依据set替换到合同依据
+			list.add(accordingEntity);
+			contractFormInfoMapper.saveAccording(id, list);
+		} else {
+			ac.forEach(foe -> {
+				acIdList.add(foe.getId().toString());
+			});
+			contractFormInfoMapper.saveAccordingIds(id, acIdList);
+		}
+		/**********保存新新依据数据到依据库END********/
 	}
 
 
