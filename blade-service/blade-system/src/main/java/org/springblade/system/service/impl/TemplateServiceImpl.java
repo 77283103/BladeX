@@ -67,4 +67,11 @@ public class TemplateServiceImpl extends BaseServiceImpl<TemplateMapper, Templat
 	public List<TemplateEntity> selectByCode(String code) {
 		return baseMapper.selectByCode(code);
 	}
+
+	@Override
+	public TemplateEntity selectTemplateByCode(String code){
+		return baseMapper.selectTemplateByCode(code);
+	}
+
+
 }

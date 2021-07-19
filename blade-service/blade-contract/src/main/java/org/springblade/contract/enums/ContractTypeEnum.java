@@ -2,6 +2,9 @@ package org.springblade.contract.enums;
 
 public enum ContractTypeEnum {
 
+	BATCH_MODEL("批量-独立", 41),
+	BATCH_SINGLE("批量-范本", 43),
+
 	BATCH("批量", 40),
 	MULTI("多方", 20),
 	INDE("独立",10),

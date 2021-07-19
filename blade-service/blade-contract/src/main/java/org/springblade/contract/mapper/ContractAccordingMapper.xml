@@ -110,6 +110,32 @@
             #{code}
         </foreach>
     </select>
+
+    <select id="findListByCode" resultMap="accordingResultMap">
+    SELECT
+    <include refid="baseColumnList"></include>
+    FROM contract_according
+    where
+    is_deleted = 0
+    and
+    code = #{code}
+    </select>
+
+
+    <!--保存关联依据-->
+    <insert id="saveByBatchDraft">
+        insert into contract_according_setting
+        (contract_id,
+        contract_according_id)
+        values
+        <foreach collection="contractIds" item="contractId" index="index" open="" close="" separator=",">
+            (#{contractId},
+            #{accordingId})
+        </foreach>
+    </insert>
+
+
+
     <delete id="clearDate">
         DELETE
         FROM contract_counterpart

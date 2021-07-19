@@ -77,6 +77,8 @@ public interface ISysClient {
 	String GET_DATA_SEAL_AUTHORITY = API_PREFIX + "/get-data-seal-authority";
 	String GET_DATA_SEAL_ADMIN_INFO =API_PREFIX +"/get-data-seal-admin-info";
 
+	String GET_TEMPLATE_BY_CODE =API_PREFIX +"/get-template-by-code";
+
 	/**
 	 * 获取菜单
 	 *
@@ -376,4 +378,17 @@ public interface ISysClient {
 	 */
 	@GetMapping(GET_DATA_SEAL_ADMIN_INFO)
 	R<String> adminInfo(String sealVale);
+
+
+
+	/**
+	 * 根据模板代码获取模板信息
+	 * @param templateCode 模板代码
+	 * @return java.lang.String
+	 * @author chenzy
+	 * @date 2021/7/16 18:04
+	 */
+	@GetMapping(GET_TEMPLATE_BY_CODE)
+	R<TemplateEntity> getTemplateByCode(@RequestParam("templateCode") String templateCode);
+
 }

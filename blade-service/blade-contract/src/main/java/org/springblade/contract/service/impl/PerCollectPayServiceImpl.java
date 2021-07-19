@@ -14,6 +14,8 @@ import org.springblade.contract.service.IPerCollectPayService;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.feign.IDictBizClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,6 +33,10 @@ import java.util.Map;
 @Log4j2
 @Service
 public class PerCollectPayServiceImpl extends BaseServiceImpl<PerCollectPayMapper, PerCollectPayEntity> implements IPerCollectPayService {
+
+	@Autowired
+	private IDictBizClient dictBizClient;
+
 
 	@Override
 	public IPage<PerCollectPayEntity> pageList(IPage<PerCollectPayEntity> page, PerCollectPayRequestVO perCollectPay) {
@@ -72,6 +78,10 @@ public class PerCollectPayServiceImpl extends BaseServiceImpl<PerCollectPayMappe
 		List<PerCollectPayEntity> perCollectPayEntityList = new ArrayList<>();
 		if(Func.isNotEmpty(perCollectPayImportBatchDraftExcels)){
 			perCollectPayImportBatchDraftExcels.forEach(perCollectPayImportBatchDraftExcel -> {
+				//将模板类中字典值根据value转换为key
+				perCollectPayImportBatchDraftExcel.setContractTranType(
+				dictBizClient.getDictByCodeValue("transaction_type",perCollectPayImportBatchDraftExcel.getContractTranType(),false).getData()
+				);
 				PerCollectPayEntity perCollectPayEntity = BeanUtil.copy(perCollectPayImportBatchDraftExcel,PerCollectPayEntity.class);
 				perCollectPayEntity.setContractId(contractId);
 				perCollectPayEntityList.add(perCollectPayEntity);

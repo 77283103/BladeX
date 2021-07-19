@@ -22,6 +22,8 @@ import org.springblade.contract.mapper.ContractBondMapper;
 import org.springblade.contract.service.IContractBondService;
 import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
+import org.springblade.system.feign.IDictBizClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -40,6 +42,9 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 	private final ContractFormInfoMapper formInfoMapper;
 	private final ContractCounterpartMapper counterpartMapper;
 	private final ContractBondMapper contractBondMapper;
+
+	@Autowired
+	private IDictBizClient dictBizClient;
 
 	@Override
 	public IPage<ContractBondResponseVO> pageList(IPage<ContractBondEntity> page, ContractBondRequestVO contractBond) {
@@ -107,6 +112,8 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 			List<Long> ids = new ArrayList<>();
 			List<ContractCounterpartEntity> counterpartEntityList = counterpartMapper.findListByCodes(codes);
 			contractBondImportBatchDraftExcels.forEach(contractBondImportBatchDraftExcel -> {
+				//将模板类中字典值根据value转换为key
+				contractBondImportBatchDraftExcel.setType(dictBizClient.getDictByCodeValue("bond_type",contractBondImportBatchDraftExcel.getType(),false).getData());
 				ContractBondEntity contractBondEntity = BeanUtil.copy(contractBondImportBatchDraftExcel,ContractBondEntity.class);
 				contractBondEntity.setId(IdGenUtil.generateId().longValue());
 				ids.add(contractBondEntity.getId());
@@ -118,7 +125,7 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 				});
 				contractBondEntityList.add(contractBondEntity);
 			});
-			this.saveBatch(contractBondEntityList);
+			saveBatch(contractBondEntityList);
 			baseMapper.deleteBond(contractInfoId);
 			this.saveBond(ids,contractInfoId);
 		}
@@ -136,8 +143,10 @@ public class ContractBondServiceImpl extends BaseServiceImpl<ContractBondMapper,
 			contractBondEntity.setId(IdGenUtil.generateId().longValue());
 			ids.add(contractBondEntity.getId());
 		});
-		this.saveBatch(contractBondEntityList);
-		this.saveBond(ids,contractInfoId);
+		saveBatch(contractBondEntityList);
+		saveBond(ids,contractInfoId);
 		return true;
 	}
+
+
 }

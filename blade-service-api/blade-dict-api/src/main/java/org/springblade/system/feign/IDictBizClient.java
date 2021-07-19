@@ -44,6 +44,7 @@ public interface IDictBizClient {
 	String GET_VALUE = API_PREFIX + "/dict-biz/get-value";
 	String GET_VALUES = API_PREFIX + "/dict-biz/get-values";
 	String GET_LIST = API_PREFIX + "/dict-biz/get-list";
+	String GET_DICT_BY_CODE_VALUE = API_PREFIX + "/dict-biz/get-dict-by-code-value";
 	String GET_KEY = API_PREFIX + "/dict-biz/get-key";
 	String INFO = API_PREFIX + "/dict-biz/info";
 
@@ -94,6 +95,17 @@ public interface IDictBizClient {
 	 */
 	@GetMapping(GET_LIST)
 	R<List<DictBiz>> getList(@RequestParam("code") String code);
+
+
+	/**
+	 * 根据code、value获取key或id
+	 * @param code
+	 * @param value
+	 * @param returnId
+	 * @return
+	 */
+	@GetMapping(GET_DICT_BY_CODE_VALUE)
+	R<String> getDictByCodeValue(@RequestParam("code") String code,@RequestParam("value") String value,@RequestParam("returnId") Boolean returnId);
 
 
 	/**

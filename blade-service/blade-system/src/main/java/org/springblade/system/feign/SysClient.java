@@ -26,6 +26,7 @@ import org.springblade.system.entity.*;
 import org.springblade.system.service.*;
 import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.DeptVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,6 +67,8 @@ public class SysClient implements ISysClient {
 	private IDataSealAuthorityService dataSealAuthorityService;
 
 	private IDictBizClient iDictBizClient;
+
+	private ITemplateService itemplateService;
 
 	@Override
 	@GetMapping(MENU)
@@ -282,6 +285,13 @@ public class SysClient implements ISysClient {
 			}
 		});
 		return R.data(adIf.get(0));
+	}
+
+	@Override
+	@GetMapping(GET_TEMPLATE_BY_CODE)
+	public R<TemplateEntity> getTemplateByCode(String templateCode) {
+		TemplateEntity templateEntity = itemplateService.selectTemplateByCode(templateCode);
+		return R.data(templateEntity);
 	}
 
 }

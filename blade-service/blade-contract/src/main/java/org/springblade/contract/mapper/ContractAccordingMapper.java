@@ -78,5 +78,21 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 	 */
 	List<ContractAccordingEntity> findListByCodes(List<String> codes);
 
+
+	/**
+	 * 根据code获取依据
+	 * @param code
+	 * @return
+	 */
+	ContractAccordingEntity findListByCode(String code);
+
+
+	/**
+	 * 批量起草-保存合同、依据关系数据
+	 * @param accordingId
+	 * @param contractIds
+	 */
+	void saveByBatchDraft(Long accordingId, List<Long> contractIds);
+
 }
 
