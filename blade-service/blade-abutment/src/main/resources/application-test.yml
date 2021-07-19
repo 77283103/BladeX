@@ -58,7 +58,8 @@ api:
   #    未归档合同节点状态 以及不同预警级别的预警内容
   contract:
     notSign:
-      status: 30
+      entityStatus: 30
+      electronicStatus: 50
       firstWarning: "合同送申流程结束，请及时加盖公章并将双方盖章后的合同原件寄于合同管理师处習档:"
       secondWarning: ",已超期15天末进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
       thirdWarning: ",已超期45天未进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"

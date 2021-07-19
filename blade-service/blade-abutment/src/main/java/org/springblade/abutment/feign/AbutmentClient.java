@@ -45,7 +45,6 @@ import java.net.URLConnection;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -93,8 +92,10 @@ public class AbutmentClient implements IAbutmentClient {
 	private String downloadUrl;
 	@Value("${api.ekp.ftlPath}")
 	private String ftlPath;
-	@Value("${api.contract.notSign.status}")
-	private String status;
+	@Value("${api.contract.notSign.entityStatus}")
+	private String entityStatus;
+	@Value("${api.contract.notSign.electronicStatus}")
+	private String electronicStatus;
 	@Value("${api.contract.notSign.firstWarning}")
 	private String firstWarning;
 	@Value("${api.contract.notSign.secondWarning}")
@@ -1513,13 +1514,12 @@ public class AbutmentClient implements IAbutmentClient {
 					rEkpVo.setData(null);
 					return rEkpVo;
 				}
-
 				logger.info("multi-pushData", JsonUtil.toJson(pushEkpEntity));
 				ekpVo = ekpService.pushData(pushEkpEntity);
 				log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
 				if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 					rEkpVo.setCode(2);
-					rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+					rEkpVo.setMsg("合同送审失败，请联系系统管理员！");
 					rEkpVo.setSuccess(false);
 					rEkpVo.setData(null);
 					return rEkpVo;
@@ -1609,7 +1609,6 @@ public class AbutmentClient implements IAbutmentClient {
 	@ApiLog("需要推送预警的数据")
 	public R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity) {
 		List<EkpVo> ekpVo = new ArrayList<>();
-		HashMap<String, String> mapVo = new HashMap<>();
 		//KEP接口传输的入参
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
 		List<ContractFormInfoEntity> formInfoEntities = new ArrayList<>();
@@ -1617,25 +1616,36 @@ public class AbutmentClient implements IAbutmentClient {
 			//第一次预警时机：合同用印审批流通过后即发出代办于申请人系统
 			formInfoEntities.add(entity);
 		} else {
-			formInfoEntities = contractClient.getByStatus(this.status).getData();
-			if (Func.isNull(formInfoEntities) || Func.isEmpty(formInfoEntities)) {
+//			List<ContractFormInfoEntity> entities=  contractClient.getByStatus(this.electronicStatus).getData();
+			List<ContractFormInfoEntity> InfoEntities = contractClient.getByStatus(this.entityStatus).getData();
+//			if (Func.isEmpty(entities) && Func.isEmpty(formInfoEntities)) {
+//				return R.data(200, ekpVo, "暂无数据推送");
+//			}
+			if (Func.isNull(InfoEntities) || Func.isEmpty(InfoEntities)) {
 				return R.data(200, ekpVo, "暂无数据推送");
 			}
-			formInfoEntities.forEach(l -> {
-				int day = differentDaysByMillisecond(l.getCreateTime(), new Date());
-				mapVo.put("day", String.valueOf(day));
-				mapVo.put("contractName", l.getContractName() + "---（归档预警：请及时归档）");
-			});
-			log.info("需要推送的符合条件的数据：" + JsonUtil.toJson(formInfoEntities));
+//			if (Func.isNotEmpty(entities)){
+//				formInfoEntities.addAll(entities);
+//			}
+			if (Func.isNotEmpty(InfoEntities)){
+				formInfoEntities.addAll(InfoEntities);
+			}
 		}
+		ekpVo=pushNotDate(formInfoEntities,pushEkpEntity).getData();
+		logger.info("contractFormList", JsonUtil.toJson(formInfoEntities));
+		logger.info("pushEkpContractFormList", JsonUtil.toJson(ekpVo));
+		return R.data(200, ekpVo, "数据推送成功");
+	}
+	@SneakyThrows
+	public  R<List<EkpVo>> pushNotDate(List<ContractFormInfoEntity> formInfoEntities, PushEkpEntity pushEkpEntity) {
+		List<EkpVo> ekpVo = new ArrayList<>();
 		//获取TOKEN
 		pushEkpEntity.setToken(ekpService.getToken());
 		if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
 			return R.data(404, null, "获取token失败");
 		}
-		log.info("获取一次token信息：" + JsonUtil.toJson(pushEkpEntity.getToken()));
 		formInfoEntities.forEach(f -> {
-			EkpVo ekp = null;
+			EkpVo ekp;
 			try {
 				//docCreator 待办接收人员工编号
 				pushEkpEntity.setEmplno(f.getPersonCodeContract());
@@ -1668,12 +1678,8 @@ public class AbutmentClient implements IAbutmentClient {
 				e.printStackTrace();
 			}
 		});
-		logger.info("contractFormList", JsonUtil.toJson(formInfoEntities));
-		logger.info("pushEkpContractFormList", JsonUtil.toJson(ekpVo));
-		log.info("推送完成返回的依据信息：" + JsonUtil.toJson(ekpVo));
-		return R.data(200, ekpVo, "数据推送成功");
+		return R.data(ekpVo);
 	}
-
 	/**
 	 * 通过时间秒毫秒数判断两个时间的间隔
 	 *
@@ -2153,7 +2159,6 @@ public class AbutmentClient implements IAbutmentClient {
 		}
 		//保存获取到的数据的日志
 		logger.info("相对方元数据", JsonUtil.toJson(counterpartVo));
-		log.info("更新到的向对方数据：" + JsonUtil.toJson(counterpartVo));
 		List<ContractCounterpartEntity> listInsert = new ArrayList<>();
 		List<ContractCounterpartEntity> listUpdate = new ArrayList<>();
 		counterpartVo.getInsert().forEach(i -> {
@@ -2204,15 +2209,10 @@ public class AbutmentClient implements IAbutmentClient {
 		});
 		if (Func.isNotEmpty(listInsert)) {
 			R<List<ContractCounterpartEntity>> listIn = contractClient.saveBatch(listInsert);
-			log.info("新增的数据：" + JsonUtil.toJson(listIn.getData()));
 		}
 		if (Func.isNotEmpty(listUpdate)) {
 			R<List<ContractCounterpartEntity>> listUp = contractClient.saveOrUpdate(listUpdate);
-			log.info("更新的数据：" + JsonUtil.toJson(listUp.getData()));
 		}
-		log.info("新增的数据：" + JsonUtil.toJson(listInsert));
-		log.info("更新的数据：" + JsonUtil.toJson(listUpdate));
-		log.info("counterpartVo：" + JsonUtil.toJson(counterpartVo));
 		return R.data(200, counterpartVo, "获取数据成功！");
 	}
 

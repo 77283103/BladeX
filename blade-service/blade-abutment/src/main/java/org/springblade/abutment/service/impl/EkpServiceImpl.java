@@ -126,16 +126,15 @@ public class EkpServiceImpl implements IEkpService {
 			// 从响应模型中获取响应实体
 			HttpEntity responseEntity = response.getEntity();
 			if (null != responseEntity) {
+				log.info("从响应模型中获取响应实体【getEntity】：" + JSONUtil.toJsonStr(responseEntity));
 				json = EntityUtils.toString(responseEntity);
-				if (json.contains("\"")){
-					json=json.replaceAll("\"","");
-				}
+				log.info("从响应模型中获取响应实体，转成jsonString：" + json);
 				docInfoJson = JSONUtil.parseObj(json);
 				log.info("从响应模型中获取响应实体：" + JSONUtil.toJsonStr(docInfoJson));
-				if (!docInfoJson.getBool("success")) {
+				if (Func.isNull(docInfoJson.getStr("errMessage"))) {
 					docInfoJson.set("errMessage", " ");
+					log.info("从响应模型中获取响应实体-修改格式后：" + JSONUtil.toJsonStr(docInfoJson));
 				}
-				log.info("从响应模型中获取响应实体-修改格式后：" + JSONUtil.toJsonStr(docInfoJson));
 			}
 		} catch (ParseException | IOException e) {
 			e.printStackTrace();

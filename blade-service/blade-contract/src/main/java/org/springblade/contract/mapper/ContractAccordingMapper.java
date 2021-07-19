@@ -27,6 +27,18 @@ public interface ContractAccordingMapper extends BaseMapper<ContractAccordingEnt
 	IPage<ContractAccordingResponseVO> pageList(IPage<ContractAccordingResponseVO> page, ContractAccordingRequestVO according);
 
 	/**
+	 *
+	 * 清理数据
+	 * @return
+	 */
+	boolean clearDate();
+	/**
+	 *
+	 * 清理数据
+	 * @return
+	 */
+	boolean clearEmpty();
+	/**
 	 * 根据合同id查询查询相关依据信息
 	 *
 	 * @param id

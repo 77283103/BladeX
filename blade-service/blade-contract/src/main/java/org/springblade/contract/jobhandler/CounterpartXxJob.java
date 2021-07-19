@@ -1,6 +1,5 @@
 package org.springblade.contract.jobhandler;
 
-import cn.hutool.json.JSONUtil;
 import com.xxl.job.core.biz.model.ReturnT;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import com.xxl.job.core.log.XxlJobLogger;
@@ -49,10 +48,7 @@ public class CounterpartXxJob {
 		}else {
 			orgParme.setParme(param);
 		}
-		log.info("启动相对方增量更新任务");
 		CounterpartEntity entity=new CounterpartEntity();
-		log.info("相对方模板实体："+JsonUtil.toJson(entity));
-		log.info("查看查询时间的参数：" + JSONUtil.toJsonStr(param));
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
 		calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -66,8 +62,6 @@ public class CounterpartXxJob {
 		R<CounterpartVo> vo=abutmentClient.getCounterpart(entity);
 		log.info("counterpartVo：" + JsonUtil.toJson(vo));
 		if (HttpStatus.OK.value()==vo.getCode()) {
-			log.info("获取相对方新增信息集合结果:{}", JsonUtil.toJson(vo.getData().getInsert()));
-			log.info("获取相对方更新信息集合结果:{}", JsonUtil.toJson(vo.getData().getUpdate()));
 			XxlJobLogger.log("获取相对方新增信息集合结果:"+JsonUtil.toJson(vo.getData().getInsert()));
 			XxlJobLogger.log("获取相对方更新信息集合结果:"+JsonUtil.toJson(vo.getData().getUpdate()));
 			return new ReturnT<>(vo.getData());

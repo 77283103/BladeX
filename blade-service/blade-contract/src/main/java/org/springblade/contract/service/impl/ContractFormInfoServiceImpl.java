@@ -934,6 +934,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	@Override
+	@Transactional(rollbackFor = Exception.class)
 	public void saveCollectionMulti(ContractMultPaymenEntity multPaymenEntity, Long contractId) {
 		multPaymenEntity.getCollection().forEach(cl -> {
 			cl.setRefContractId(multPaymenEntity.getId().toString());
@@ -966,6 +967,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//根据合同ID查询关联依据  用于处理新增，修改操作所产生的脏数据
 		Integer count = contractAccordingMapper.selectByContractIds(vo.getId());
 		if (count != 0) {
+			contractAccordingMapper.clearEmpty();
+			contractAccordingMapper.clearDate();
 			contractAccordingMapper.deleteAccording(vo.getId());
 		}
 		/********保存新新依据数据到依据库 START*******/
