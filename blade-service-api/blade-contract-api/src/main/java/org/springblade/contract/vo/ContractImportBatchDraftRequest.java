@@ -44,6 +44,9 @@ public class ContractImportBatchDraftRequest implements Serializable {
 	@ApiModelProperty(value = "合同来源")
 	private String contractSoure;
 
+	@ApiModelProperty(value = "合同依据编号")
+	private String accordingCode;
+
 
 	public List<ContractImportBatchDraftExcel> getContractExcelList(){
 		if(Func.isNotEmpty(this.file)){

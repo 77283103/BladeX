@@ -10,7 +10,14 @@ import org.springblade.contract.service.IContractAccordingService;
 import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.core.mp.base.BaseServiceImpl;
+import org.springblade.core.secure.BladeUser;
+import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.constant.BladeConstant;
+import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.Func;
+import org.springblade.system.user.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +36,10 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 
     private final ContractAccordingMapper contractAccordingMapper;
 	private final ContractFormInfoMapper contractFormInfoMapper;
+	@Autowired
+	private RedisTemplate redisTemplate;
+
+
 	@Override
 	public IPage<ContractAccordingResponseVO> pageList(IPage<ContractAccordingResponseVO> page, ContractAccordingRequestVO according) {
 		page= baseMapper.pageList(page, according);
@@ -73,4 +84,24 @@ public class ContractAccordingServiceImpl extends BaseServiceImpl<ContractAccord
 	public ContractAccordingEntity selectAccordingById(Long id) {
 		return baseMapper.selectOne(Wrappers.<ContractAccordingEntity>query().lambda().eq(ContractAccordingEntity::getContractId, id).eq(ContractAccordingEntity::getIsDeleted, BladeConstant.DB_NOT_DELETED));
 	}
+
+	@Override
+	public ContractAccordingEntity selectAccordingByCode(String code) {
+		BladeUser user = AuthUtil.getUser();
+		String j= String.valueOf(redisTemplate.opsForValue().get(user.getAccount()+"-according"));
+		if(!j.equals("null")){
+			ContractAccordingEntity contractAccordingEntity = JsonUtil.parse(j,ContractAccordingEntity.class);
+			if(code.equals(contractAccordingEntity.getCode())){
+				save(contractAccordingEntity);
+				return contractAccordingEntity;
+			}
+		}
+		return baseMapper.findListByCode(code);
+	}
+
+	@Override
+	public void saveByBatchDraft(Long accordingId, List<Long> contractIds) {
+		 baseMapper.saveByBatchDraft(accordingId,contractIds);
+	}
+
 }

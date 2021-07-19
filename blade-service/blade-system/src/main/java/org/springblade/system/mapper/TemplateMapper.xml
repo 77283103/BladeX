@@ -6,6 +6,7 @@
     <resultMap id="templateResultMap" type="org.springblade.system.entity.TemplateEntity">
         <result column="id" property="id"/>
         <result column="bean" property="bean"/>
+        <result column="json" property="json"/>
         <result column="bean_name" property="beanName"/>
         <result column="form_code" property="formCode"/>
         <result column="template_code" property="templateCode"/>
@@ -23,6 +24,7 @@
         bean,
         bean_name,
         form_code,
+        json,
         template_code,
         create_user,
         create_dept,
@@ -54,5 +56,15 @@
         WHERE is_deleted = 0
         AND form_code = concat(#{code})
     </select>
+
+
+    <select id="selectTemplateByCode" resultMap="templateResultMap">
+        SELECT
+        <include refid="baseColumnList"></include>
+        FROM template
+        WHERE is_deleted = 0
+        AND template_code = #{code}
+    </select>
+
 
 </mapper>

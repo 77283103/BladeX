@@ -36,4 +36,12 @@ public interface ITemplateService extends BaseService<TemplateEntity> {
 	 */
 	List<TemplateEntity> selectByCode(String code);
 
+
+	/**
+	 * 根据模板code获取模板信息
+	 * @param code
+	 * @return TemplateEntity
+	 */
+	TemplateEntity selectTemplateByCode(String code);
+
 }

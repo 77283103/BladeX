@@ -19,6 +19,7 @@ package org.springblade.system.feign;
 
 import lombok.AllArgsConstructor;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.DictBiz;
 import org.springblade.system.service.IDictBizService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -67,6 +68,21 @@ public class DictBizClient implements IDictBizClient {
 	@GetMapping(GET_LIST)
 	public R<List<DictBiz>> getList(String code) {
 		return R.data(service.getList(code));
+	}
+
+	@Override
+	public R<String> getDictByCodeValue(String code, String value, Boolean returnId) {
+		//获取id
+		if(returnId){
+			R<List<DictBiz>> r = getList(code);
+			if(r.isSuccess()){
+				return Func.isEmpty(r.getData())?R.data(""):R.data(Long.toString(r.getData().stream()
+					.filter(dictBiz -> dictBiz.getDictValue().equals(value)).findFirst().orElse(new DictBiz()).getId()));
+			}
+			return R.data("");
+		}
+		//获取key
+		return getKey(code,value);
 	}
 
 	@Override

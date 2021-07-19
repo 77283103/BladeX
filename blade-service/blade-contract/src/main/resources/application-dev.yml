@@ -10,7 +10,7 @@ spring:
     password: ${blade.datasource.dev.password}
 api:
   file:
-    ftlPath: D:/ftl/
+    ftlPath: C:/ftl/
   eSeal:
     tokenUrl: http://sa.pec.com.cn:9080/common/user/access
     tokenSY: http://sa.pec.com.cn:9080/common/file/addWatermark

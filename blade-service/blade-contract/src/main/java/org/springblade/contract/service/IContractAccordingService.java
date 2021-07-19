@@ -6,6 +6,8 @@ import org.springblade.contract.vo.ContractAccordingRequestVO;
 import org.springblade.contract.vo.ContractAccordingResponseVO;
 import org.springblade.core.mp.base.BaseService;
 
+import java.util.List;
+
 /**
  * 合同依据管理 服务类
  *
@@ -44,5 +46,23 @@ public interface IContractAccordingService extends BaseService<ContractAccording
 	 * @return
 	 */
 	ContractAccordingEntity selectAccordingById(Long id);
+
+
+	/**
+	 * 根据编码查询依据
+	 * @param code
+	 * @return
+	 */
+	ContractAccordingEntity selectAccordingByCode(String code);
+
+
+	/**
+	 * 批量起草-保存合同、依据关系数据
+	 * @param accordingId
+	 * @param contractIds
+	 */
+	void saveByBatchDraft(Long accordingId, List<Long> contractIds);
+
+
 
 }
