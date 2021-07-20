@@ -1360,7 +1360,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		} else {
-			filePDF = new File(entity.getFilePDF());
+			filePDF = new File(entity.getFilePdf());
 		}
 		log.info("TAG此时断言合同文本获取操作成功，开始");
 		InputStream in;
@@ -2390,7 +2390,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//范本-生成文件
 		FileVO filevo = new FileVO();
 		if(contractFormInfoEntity.getContractSoure().equals(ContractTypeEnum.BATCH_SINGLE.getKey().toString())){
-			if(Func.isEmpty(contractFormInfoEntity.getFilePDF())){
+			if(Func.isEmpty(contractFormInfoEntity.getFilePdf())){
 				ContractTemplateResponseVO contractTemplateResponseVO = templateService.getById(contractFormInfoEntity.getContractTemplateId());
 				if(null != contractTemplateResponseVO){
 					R<TemplateEntity> r = sysClient.getTemplateByCode(contractTemplateResponseVO.getTemplateCode());
@@ -2405,7 +2405,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					contractFormInfoEntity.setTextFile(filevo.getId() + ",");
 					contractFormInfoEntity.setTextFilePdf(filevo.getId() + ",");
 					contractFormInfoEntity.setContractStatus(templateEntity.getBean());
-					contractFormInfoEntity.setFilePDF(filevo.getDomain());
+					contractFormInfoEntity.setFilePdf(filevo.getDomain());
 				}
 			}
 		}

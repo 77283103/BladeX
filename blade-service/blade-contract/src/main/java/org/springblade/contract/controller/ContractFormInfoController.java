@@ -519,7 +519,7 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setTextFile(filevo.getId() + ",");
 			contractFormInfoEntity.setTextFilePdf(filevo.getId() + ",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
-			contractFormInfoEntity.setFilePDF(filevo.getDomain());
+			contractFormInfoEntity.setFilePdf(filevo.getDomain());
 			r = contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
 			if (r.getCode() != HttpStatus.OK.value()) {
 				contractFormInfoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
@@ -1313,7 +1313,7 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity.setTextFile(filevo.getId() + ",");
 			contractFormInfoEntity.setTextFilePdf(filevo.getId() + ",");
 			contractFormInfoEntity.setContractStatus(template.getBean());
-			contractFormInfoEntity.setFilePDF(filevo.getDomain());
+			contractFormInfoEntity.setFilePdf(filevo.getDomain());
 			//处理电子签章和oa流程
 			r = contractFormInfoService.SingleSign(R.data(contractFormInfoEntity));
 			if (r.getCode() != HttpStatus.OK.value()) {
