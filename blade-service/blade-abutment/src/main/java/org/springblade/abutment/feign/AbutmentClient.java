@@ -1026,7 +1026,7 @@ public class AbutmentClient implements IAbutmentClient {
 				});
 				formValuesEntity.setFd_collection_inde(indeList);
 			}
-			if (!Func.isEmpty(entity.getDays())) {
+			if (!Func.isNull(entity.getDays())) {
 				//签约后收款  需要填写
 				formValuesEntity.setFd_payee_days(entity.getDays().toString());
 			}

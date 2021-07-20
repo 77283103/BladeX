@@ -453,7 +453,7 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 * 范本起草的pdf文件本地地址
 	 */
 	@ApiModelProperty(value = "范本起草的pdf文件本地地址")
-	private String filePDF;
+	private String filePdf;
 	/**
 	 * 归档日期
 	 */
