@@ -1307,6 +1307,7 @@ public class AbutmentClient implements IAbutmentClient {
 			List<MultiPay> pays = new ArrayList<>();
 			entity.getMultPaymenEntityList().forEach(p -> {
 				MultiPay pay = new MultiPay();
+				pay.setFd_pay_id(p.getId().toString());
 				//子公司名称
 				pay.setFd_pay_seal(p.getSubsidiaryPerson());
 				//相对方名称
@@ -1362,6 +1363,7 @@ public class AbutmentClient implements IAbutmentClient {
 				List<CollectionMulti> multiList = new ArrayList<>();
 				p.getCollection().forEach(pI -> {
 					CollectionMulti collectionInde = new CollectionMulti();
+					collectionInde.setFd_multi_id(p.getId().toString());
 					//总期数
 					collectionInde.setFd_period_num_multi(pI.getPeriodNum());
 					//第几期

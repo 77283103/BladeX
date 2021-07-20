@@ -75,6 +75,7 @@
         <result column="bank_deposit_name" property="bankDepositName"/>
         <result column="ywl_settlement" property="ywlSettlement"/>
         <result column="ywl_breach_of_contract" property="ywlBreachOfContract"/>
+        <result column="file_pdf" property="filePDF"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
@@ -141,7 +142,7 @@
         a_bank_name,
         a_account_name,
         ekp_number,
-        file_person,bank_code,bank_account_code,bank_account_name,bank_deposit_name,ywl_settlement,ywl_breach_of_contract
+        file_person,bank_code,bank_account_code,bank_account_name,bank_deposit_name,ywl_settlement,ywl_breach_of_contract,file_pdf
     </sql>
     <!-- 通用查询结果列 -->
     <sql id="baseColumnListJoin">

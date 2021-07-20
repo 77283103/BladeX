@@ -10,6 +10,8 @@ import lombok.Data;
 @Data
 @ApiModel(value = "收款明细列表")
 public class CollectionMulti {
+	@ApiModelProperty(value = "唯一标识ID")
+	private String fd_multi_id;
 	@ApiModelProperty(value = "单据内容:付款信息-总期数")
 	private String fd_period_num_multi;
 	@ApiModelProperty(value = "单据内容:付款信息-第几期")

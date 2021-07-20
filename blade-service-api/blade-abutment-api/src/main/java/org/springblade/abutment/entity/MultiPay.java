@@ -12,6 +12,8 @@ import java.util.List;
 @Data
 @ApiModel(value = "多方收付款信息列表")
 public class MultiPay {
+	@ApiModelProperty(value = "单据内容:唯一ID")
+	private String fd_pay_id;
 	@ApiModelProperty(value = "单据内容:子公司名称（）")
 	private String fd_pay_seal;
 	@ApiModelProperty(value = "单据内容:相对方名称（）")

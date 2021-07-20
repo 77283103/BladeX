@@ -180,4 +180,7 @@ public class FormValuesEntity implements Serializable {
 	@ApiModelProperty(value = "解除说明")
 	private String fd_time;
 
+
+	@ApiModelProperty(value = "收款明细列表JSONObject")
+	private JSONObject fd_collection_multi_object;
 }

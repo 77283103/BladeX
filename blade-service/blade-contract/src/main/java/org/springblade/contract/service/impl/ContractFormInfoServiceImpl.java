@@ -10,7 +10,6 @@ import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.util.PDFTextStripper;
 import org.springblade.abutment.entity.CompanyInfoEntity;
-import org.springblade.abutment.entity.PushEkpEntity;
 import org.springblade.abutment.entity.UploadFileEntity;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.abutment.vo.CompanyInfoVo;
@@ -45,7 +44,6 @@ import org.springblade.system.cache.SysCache;
 import org.springblade.system.entity.*;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
-import org.springblade.system.service.ITemplateService;
 import org.springblade.system.user.cache.UserCache;
 import org.springblade.system.user.entity.User;
 import org.springblade.system.user.feign.IUserClient;
@@ -1568,8 +1566,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		int suffixL = file.getName().length();
 		String suffix = file.getName().substring(suffixL - 3, suffixL);
 		String newFilePdf = ftlPath + file.getName().substring(0, file.getName().lastIndexOf(".")) + date + ".pdf";
-		if (ContractTypeEnum.BATCH_INDE.getKey().toString().equals(indeE.getContractSoure()) ||
-			ContractTypeEnum.MULTI.getKey().toString().equals(indeE.getContractSoure())) {
+		if (ContractTypeEnum.BATCH_INDE.getKey().toString().equals(indeE.getContractSoure())) {
 			if (!"pdf".equals(suffix)) {
 				AsposeWordToPdfUtils.doc2pdf(newFileDoc, newFilePdf);
 				filePDF = new File(newFilePdf);
@@ -1585,7 +1582,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		} else {
-			filePDF = new File(indeE.getFilePDF());
+			List<FileVO> fileVO=fileClient.getByIds(indeE.getTextFile()).getData();
+			filePDF = new File(fileVO.get(0).getDomain());
 		}
 		InputStream in;
 		try {
@@ -2387,8 +2385,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		perServiceContentService.addPerData(Func.isEmpty(perServiceContentList) ? null :perServiceContentList.get(0),contractFormInfoEntity.getId());
 	}
 
-
-	public R batchDraftingHandleSignature(ContractFormInfoEntity contractFormInfoEntity){
+    @Override
+	public R<ContractFormInfoEntity> batchDraftingHandleSignature(ContractFormInfoEntity contractFormInfoEntity){
 		//范本-生成文件
 		FileVO filevo = new FileVO();
 		if(contractFormInfoEntity.getContractSoure().equals(ContractTypeEnum.BATCH_SINGLE.getKey().toString())){

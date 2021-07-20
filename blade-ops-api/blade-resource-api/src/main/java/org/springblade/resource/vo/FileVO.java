@@ -22,4 +22,6 @@ import org.springblade.resource.entity.FileEntity;
 public class FileVO extends FileEntity {
 
 	private static final long serialVersionUID = 1L;
+
+
 }

@@ -1,7 +1,6 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractMultPaymenEntity;
 import org.springblade.contract.excel.ContractFormInfoImporter;
@@ -14,7 +13,6 @@ import org.springblade.resource.vo.FileVO;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 服务类
@@ -285,7 +283,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @param contractFormInfoEntity
 	 * @return
 	 */
-	R batchDraftingHandleSignature(ContractFormInfoEntity contractFormInfoEntity);
+	R<ContractFormInfoEntity> batchDraftingHandleSignature(ContractFormInfoEntity contractFormInfoEntity);
 
 
 }

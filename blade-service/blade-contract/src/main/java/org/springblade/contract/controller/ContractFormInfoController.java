@@ -675,8 +675,6 @@ public class ContractFormInfoController extends BladeController {
 		//保存依据信息，把依据信息替换到json串中
 		for (String id : according.getContractIds()) {
 			ContractAccordingEntity entity = BeanUtil.copy(according, ContractAccordingEntity.class);
-			//保存依据  与  关联关系
-			accordingService.saveAccording(entity, Long.parseLong(id));
 			JSONObject jsonObj = JSON.parseObject(JSON.toJSONString(entity));
 			ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
 			String json = infoEntity.getJson();
