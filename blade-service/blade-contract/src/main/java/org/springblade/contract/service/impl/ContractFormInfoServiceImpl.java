@@ -241,15 +241,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 		//合同管理员根据长
 		if (Func.isNotEmpty(contractFormInfo.getSealNames())) {
-			log.info("195TAG" + contractFormInfo.getSealNames());
 		} else {
 			List<String> stringList = new ArrayList<>();
 			contractFormInfo.setSealNames(stringList);
-			log.info("200TAG" + contractFormInfo.getSealNames());
 		}
-		log.info("202TAG" + contractFormInfo.toString());
 		page = contractFormInfoMapper.pageList(page, contractFormInfo);
-		log.info("204TAG" + page.getRecords().toString());
 		IPage<ContractFormInfoResponseVO> pages = ContractFormInfoWrapper.build().entityPVPage(page);
 		List<ContractFormInfoResponseVO> records = pages.getRecords();
 		log.info("207TAG" + records.toString());
@@ -1582,8 +1578,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		} else {
-			List<FileVO> fileVO=fileClient.getByIds(indeE.getTextFile()).getData();
-			filePDF = new File(fileVO.get(0).getDomain());
+			filePDF = new File(indeE.getFilePdf());
 		}
 		InputStream in;
 		try {
