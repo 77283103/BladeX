@@ -7,8 +7,12 @@
         <result column="id" property="id"/>
         <result column="cgl_the_buyer" property="cglTheBuyer"/>
         <result column="cgl_buyer_domicile" property="cglBuyerDomicile"/>
+        <result column="cgl_buyer_contact" property="cglBuyerContact"/>
+        <result column="cgl_contact_information" property="cglContactInformation"/>
         <result column="cgl_the_seller" property="cglTheSeller"/>
         <result column="cgl_seller_residence" property="cglSellerResidence"/>
+        <result column="cgl_seller_contact" property="cglSellerContact"/>
+        <result column="cgl_seller_contact_information" property="cglSellerContactInformation"/>
         <result column="cgl_amount_of_units" property="cglAmountOfUnits"/>
         <result column="cgl_email_address" property="cglEmailAddress"/>
         <result column="cgl_number" property="cglNumber"/>

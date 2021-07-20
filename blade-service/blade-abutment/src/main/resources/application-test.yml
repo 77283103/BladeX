@@ -31,6 +31,8 @@ api:
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
     #预警代办模板ID
     appTemplateId: 179c63d15205aa3926282a5461f9def3
+    #多方起草模板id
+    multiTemplateId: 17ac1b59f79a105dac5d3954958abe4f
     systemName: c_p_notify
     ftlPath: /ftl/
 #    d65937df2000cc755253956bd1403aa5

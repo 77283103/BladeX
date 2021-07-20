@@ -676,7 +676,9 @@ public class ContractFormInfoController extends BladeController {
 		for (String id : according.getContractIds()) {
 			ContractAccordingEntity entity = BeanUtil.copy(according, ContractAccordingEntity.class);
 			JSONObject jsonObj = JSON.parseObject(JSON.toJSONString(entity));
-			ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
+			ContractFormInfoResponseVO infoEntity = contractFormInfoService.getById(Long.parseLong(id));
+			ContractFormInfoEntity contractFormInfoEntity = new ContractFormInfoEntity();
+			BeanUtil.copy(infoEntity, contractFormInfoEntity);
 			String json = infoEntity.getJson();
 			if (Func.isNotEmpty(json)) {
 				com.alibaba.fastjson.JSONArray objects = new com.alibaba.fastjson.JSONArray();
@@ -697,7 +699,7 @@ public class ContractFormInfoController extends BladeController {
 			}
 			//先存储为状态为草稿  保证出现异常 避免无法回滚
 			infoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
-			infoEntityList.add(infoEntity);
+			infoEntityList.add(contractFormInfoEntity);
 		}
 		boolean status = contractFormInfoService.saveOrUpdateBatch(infoEntityList);
 		if (status) {

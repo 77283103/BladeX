@@ -84,6 +84,8 @@ public class AbutmentClient implements IAbutmentClient {
 	private ICounterpartService counterpartService;
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
+	@Value("${api.ekp.multiTemplateId}")
+	private String multiTemplateId;
 	@Value("${api.ekp.appTemplateId}")
 	private String appTemplateId;
 	@Value("${api.ekp.systemName}")
@@ -1085,7 +1087,6 @@ public class AbutmentClient implements IAbutmentClient {
 				}
 			}
 			pushEkpEntity.setDocSubject(entity.getContractName());
-			pushEkpEntity.setFdTemplateId(fdTemplateId);
 			pushEkpEntity.setFormValues(formValuesEntity);
 			try {
 				if (Func.isNotEmpty(entity.getAttachedFiles())) {
@@ -1140,12 +1141,13 @@ public class AbutmentClient implements IAbutmentClient {
 		R<EkpVo> rEkpVo = new R<>();
 		EkpVo ekpVo = null;
 		PushEkpEntity pushEkpEntity = new PushEkpEntity();
-		pushEkpEntity.setFdTemplateId(fdTemplateId);
+		pushEkpEntity.setFdTemplateId(multiTemplateId);
 		if (StrUtil.isNotEmpty(entity.getPersonCodeContract()) && StrUtil.isNotEmpty(entity.getAccording().get(0).getFileId())) {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			DocCreatorEntity docCreatorEntity = new DocCreatorEntity();
 			//人员编号
-			docCreatorEntity.setEmplno(entity.getPersonCodeContract());
+			R<User> user = userClient.userInfoById(AuthUtil.getUserId());
+			docCreatorEntity.setEmplno(String.valueOf("".equals(user.getData().getCode()) ? entity.getPersonCodeContract() : user.getData().getCode()));
 			pushEkpEntity.setDocCreator(docCreatorEntity);
 			FormValuesEntity formValuesEntity = new FormValuesEntity();
 			//合同方对应关系   多方的角色值在ContractFormIfoController 保存多方向对方身份信息 那段代码里处理的
@@ -1168,20 +1170,33 @@ public class AbutmentClient implements IAbutmentClient {
 			formValuesEntity.setFd_attachment_id(entity.getTextFilePdf());
 			//合同查看链接
 			formValuesEntity.setFd_contract_url("");
-			//合同文件名称
-			List<FileVO> fileText = fileClient.getByIds(entity.getTextFile()).getData();
-			if (fileText.size() > 0) {
-				if ("3".equals(entity.getContractForm()) || "4".equals(entity.getContractForm())) {
-					StringBuilder name = new StringBuilder();
-					fileText.forEach(f -> {
-						name.append(f.getName());
-						name.append(",");
-					});
-					name.substring(0, name.length());
-					formValuesEntity.setFd_contract_name(name.toString());
-				} else {
-					formValuesEntity.setFd_contract_name(fileText.get(0).getName());
+			//合同名称
+			formValuesEntity.setFd_contract_name(entity.getContractName());
+			//合同形式
+			formValuesEntity.setFd_contract_no(entity.getContractForm());
+			//合同时间起
+			formValuesEntity.setFd_start_time(sdf.format(entity.getStartingTime()));
+			//合同时间止
+			formValuesEntity.setFd_lasttime(sdf.format(entity.getEndTime()));
+			//申请用公章全称  多方该字段由前端赋值form.sealName 签章申请单位的单位编号
+			formValuesEntity.setFd_offical_seal(entity.getSealName());
+			//合同负责人
+			formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
+			//合同份数
+			formValuesEntity.setFd_copies(entity.getShare());
+			//币种
+			R<List<DictBiz>> contract_bz = bizClient.getList("bz");
+			List<DictBiz> databz = contract_bz.getData();
+			for (DictBiz dictBiz : databz) {
+				if ((dictBiz.getDictKey()).equals(entity.getCurrencyCategory())) {
+					formValuesEntity.setFd_currency(dictBiz.getDictValue());
 				}
+			}
+			//是否延期条款
+			if ("0".equals(entity.getExtension())) {
+				formValuesEntity.setFd_automatic("1");
+			} else {
+				formValuesEntity.setFd_automatic("2");
 			}
 			//合同起草类型  可能涉及变更暂时做判断
 			if ("20".equals(entity.getContractSoure())) {
@@ -1197,8 +1212,6 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_broad(dictBiz.getDictKey());
 				}
 			}
-			//合同中类
-			formValuesEntity.setFd_secondary(entity.getContractListName());
 			//合同小类
 			R<List<DictBiz>> contract_HTXL = bizClient.getList("HTXL");
 			List<DictBiz> dataHTXLBiz = contract_HTXL.getData();
@@ -1207,12 +1220,6 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_small(dictBiz.getDictKey());
 				}
 			}
-			//申请用公章全称  多方该字段由前端赋值form.sealName 签章申请单位的单位编号
-			formValuesEntity.setFd_offical_seal(entity.getSealName());
-			//合同负责人
-			formValuesEntity.setFd_emplno(entity.getPersonCodeContract());
-			//合同份数
-			formValuesEntity.setFd_copies(entity.getShare());
 			//合同期限
 			switch (entity.getContractPeriod()) {
 				case "1095":
@@ -1226,82 +1233,64 @@ public class AbutmentClient implements IAbutmentClient {
 					break;
 				default:
 			}
-			//合同时间起
-			formValuesEntity.setFd_start_time(sdf.format(entity.getStartingTime()));
-			//合同时间止
-			formValuesEntity.setFd_lasttime(sdf.format(entity.getEndTime()));
-			//币种
-			R<List<DictBiz>> contract_bz = bizClient.getList("bz");
-			List<DictBiz> databz = contract_bz.getData();
-			for (DictBiz dictBiz : databz) {
-				if ((dictBiz.getDictKey()).equals(entity.getCurrencyCategory())) {
-					formValuesEntity.setFd_currency(dictBiz.getDictValue());
-				}
-			}
-			//是否延期条款
-			if ("0".equals(entity.getExtension())) {
-				formValuesEntity.setFd_automatic("1");
-			} else {
-				formValuesEntity.setFd_automatic("2");
-			}
-			//合同形式
-			formValuesEntity.setFd_contract_no(entity.getContractForm());
 			//子公司以及签章单位信息（关联表）
 			List<MultiSa> sas = new ArrayList<>();
 			entity.getContractSeal().forEach(c -> {
 				MultiSa sa = new MultiSa();
 				//子公司名称
-				sa.setFd_seal_factName(c.getFdFactname());
+				sa.setFd_enterprise_name(c.getFdFactname());
 				//单位编号
-				sa.setFd_role_taxNo(c.getFdTaxno());
+				sa.setFd_number(c.getFdTaxno());
 				//企业编号
-				sa.setFd_seal_factNo(c.getFdFactno());
+				sa.setFd_enterprise_no(c.getFdFactno());
 				sas.add(sa);
 			});
-			formValuesEntity.setFd_multise(sas);
+			formValuesEntity.setFd_company(sas);
 			//相对方企业信息（关联表）
 			List<MultiCo> cos = new ArrayList<>();
 			entity.getCounterpart().forEach(c -> {
 				MultiCo co = new MultiCo();
 				//相对方名称
-				co.setFd_opposite_name(c.getName());
+				co.setFd_opp_name(c.getName());
 				//乙方税籍编号(必填)
-				co.setFd_opposite_taxno(c.getUnifiedSocialCreditCode());
+				co.setFd_opp_taxno(c.getUnifiedSocialCreditCode());
+				//法定代表人
+				co.setFd_legal_person(c.getName());
 				cos.add(co);
 			});
-			formValuesEntity.setFd_multico(cos);
+			formValuesEntity.setFd_opposite(cos);
 			//多方身份信息列表
 			List<MultiRo> ros = new ArrayList<>();
 			entity.getDraftContractCounterpartList().forEach(r -> {
 				MultiRo ro = new MultiRo();
 				//子公司名称
-				ro.setFd_role_real(r.getSubsidiaryPerson());
-				//相对方身份
-				ro.setFd_role_identity(r.getCounterpartIdentity());
-				//相对方联系人
-				ro.setFd_role_name(r.getCounterpartPerson());
+				ro.setFd_subsidiary_name(r.getSubsidiaryPerson());
+				//身份
+				ro.setFd_opp_identity(r.getCounterpartIdentity());
+				//相对方名称
+				ro.setFd_identity_name(r.getCounterpartPerson());
 				//相对方联系电话
-				ro.setFd_role_number(entity.getTelephonePerson());
+				ro.setFd_contract_number(entity.getTelephonePerson());
 				//相对方邮箱
-				ro.setFd_role_email(r.getEmailPerson());
+				ro.setFd_contact_email(r.getEmailPerson());
 				//相对方联系地址
-				ro.setFd_role_email(r.getAddressPerson());
+				ro.setFd_contact_address(r.getAddressPerson());
 				if (Func.isNotEmpty(r.getBankCode())) {
-					ro.setFd_role_bank_code(r.getBankCode());
+					ro.setFd_contact_bank_code(r.getBankCode());
 				}
 				if (Func.isNotEmpty(r.getBankAccountCode())) {
-					ro.setFd_role_account_code(r.getBankAccountCode());
+					ro.setFd_contact_account_code(r.getBankAccountCode());
 				}
 				if (Func.isNotEmpty(r.getBankAccountName())) {
-					ro.setFd_role_account_name(r.getBankAccountName());
+					ro.setFd_contact_account_name(r.getBankAccountName());
 				}
 				if (Func.isNotEmpty(r.getBankDepositName())) {
 					//相对方开户行名称
-					ro.setFd_role_deposit_name(r.getBankDepositName());
+					ro.setFd_contact_deposit_name(r.getBankDepositName());
 				}
 				ros.add(ro);
 			});
-			formValuesEntity.setFd_multiro(ros);
+			formValuesEntity.setFd_identity(ros);
 			/******************************  收付款START  ***************************************************/
 			//多方收付款信息
 			List<MultiPay> pays = new ArrayList<>();
@@ -1404,15 +1393,15 @@ public class AbutmentClient implements IAbutmentClient {
 			entity.getContractBond().forEach(b -> {
 				MultiBon bon = new MultiBon();
 				//子公司名称
-				bon.setFd_bon_seal(b.getSubsidiaryPerson());
+				bon.setFd_bond_factnm(b.getSubsidiaryPerson());
 				//相对方名称
-				bon.setFd_bon_name(b.getCounterpartName());
+				bon.setFd_bond_oppnm(b.getCounterpartName());
 				//计划缴纳金额
 				if (Func.isNotEmpty(b.getPlanPayAmount())) {
-					bon.setFd_bon_cash(b.getPlanPayAmount().toString());
+					bon.setFd_amount(b.getPlanPayAmount().toString());
 				}
 				//保证金类别
-				bon.setFd_bon_type(b.getType());
+				bon.setFd_bond_type(b.getType());
 				//保证金编号
 				bon.setFd_bon_id(b.getId().toString());
 				//有无押金
@@ -1421,7 +1410,7 @@ public class AbutmentClient implements IAbutmentClient {
 				} else if ("1".equals(b.getIsNotBond())) {
 					bon.setFd_bon_pledge("2");
 					//押金
-					bon.setFd_bon_cash("");
+					bon.setFd_amount("");
 				} else {
 					bon.setFd_bon_pledge("3");
 				}
@@ -1433,9 +1422,13 @@ public class AbutmentClient implements IAbutmentClient {
 					//退回时间
 					bon.setFd_bon_backtime(sdf.format(b.getPlanReturnTime()));
 				}
+				if (Func.isNotEmpty(b.getReturnCondition())) {
+					//退回条件
+					bon.setFd_condition(b.getReturnCondition());
+				}
 				bons.add(bon);
 			});
-			formValuesEntity.setFd_multibon(bons);
+			formValuesEntity.setFd_deposit(bons);
 			//履约信息
 			List<KeepList> keepList = new ArrayList<KeepList>();
 			List<PayList> payList = new ArrayList<PayList>();
@@ -1493,7 +1486,6 @@ public class AbutmentClient implements IAbutmentClient {
 				formValuesEntity = fileTextMulti(formValuesEntity, entity);
 			}
 			pushEkpEntity.setDocSubject(entity.getContractName());
-			pushEkpEntity.setFdTemplateId(fdTemplateId);
 			pushEkpEntity.setFormValues(formValuesEntity);
 			try {
 				//处理合同补充依据
@@ -1800,7 +1792,7 @@ public class AbutmentClient implements IAbutmentClient {
 			//全角 （半角）判断--四方
 			boolean fourHalf = (-1 != ay) && (-1 != by) && (-1 != cy) && (-1 != dy);
 			//给统一集团设置-角色
-			if (formValuesEntity.getFd_multico().size() <= 3) {
+			if (formValuesEntity.getFd_opposite().size() <= 3) {
 				if ((threeFull)) {
 					if ("1".equals(formValuesEntity.getFd_onetoone())) {
 						s.put("统一集团", "甲方（签章）");

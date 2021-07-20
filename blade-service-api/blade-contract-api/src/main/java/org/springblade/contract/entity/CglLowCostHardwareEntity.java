@@ -1,25 +1,20 @@
 package org.springblade.contract.entity;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springblade.core.tool.utils.DateUtil;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.fasterxml.jackson.databind.ser.std.NullSerializer;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import org.springblade.core.mp.base.BaseEntity;
-import lombok.EqualsAndHashCode;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import org.springblade.core.mp.base.BaseEntity;
+import org.springblade.core.tool.utils.DateUtil;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.math.BigDecimal;
 import java.util.Date;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -48,6 +43,16 @@ public class CglLowCostHardwareEntity extends BaseEntity {
     @ApiModelProperty(value="买方住所")
 	private String cglBuyerDomicile;
 	/**
+	 * 买方联系人
+	 */
+	@ApiModelProperty(value="买方联系人")
+	private String cglBuyerContact;
+	/**
+	 * 买方联系方式
+	 */
+	@ApiModelProperty(value="买方联系方式")
+	private String cglContactInformation;
+	/**
 	 * 卖方
 	 */
     @ApiModelProperty(value="卖方")
@@ -57,6 +62,16 @@ public class CglLowCostHardwareEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="卖方住所")
 	private String cglSellerResidence;
+	/**
+	 * 卖方联系人
+	 */
+	@ApiModelProperty(value="卖方联系人")
+	private String cglSellerContact;
+	/**
+	 * 卖方联系方式
+	 */
+	@ApiModelProperty(value="卖方联系方式")
+	private String cglSellerContactInformation;
 	/**
 	 * 金额单位：人民币【？】元
 	 */
@@ -128,24 +143,19 @@ public class CglLowCostHardwareEntity extends BaseEntity {
     @ApiModelProperty(value="特别约定")
 	private String cglAgreed;
 	/**
-	 * 货款支付：按如下第【？】种账期予以付款
-	 */
-    @ApiModelProperty(value="货款支付：按如下第【？】种账期予以付款")
-	private String cglPayment;
-	/**
 	 * 乙方开户行
 	 */
-    @ApiModelProperty(value="乙方开户行")
+    @ApiModelProperty(value="开户行")
 	private String cglBankNumber;
 	/**
 	 * 乙方户号
 	 */
-    @ApiModelProperty(value="乙方户号")
+    @ApiModelProperty(value="帐户名称")
 	private String cglAccount;
 	/**
 	 * 乙方账号
 	 */
-    @ApiModelProperty(value="乙方账号")
+    @ApiModelProperty(value="账号")
 	private String cglAccounts;
 	/**
 	 * 本合同履行期限:开始时间
@@ -166,5 +176,18 @@ public class CglLowCostHardwareEntity extends BaseEntity {
 	 */
     @ApiModelProperty(value="其他约定")
 	private String cglConventions;
+	/**
+	 * 货款支付：按如下第【？】种账期予以付款
+	 */
+	@ApiModelProperty(value="货款支付：按如下第【？】种账期予以付款")
+	private String cglPayment;
+	/**
+	 * 拼接附件
+	 */
+	@ApiModelProperty(value="拼接附件")
+	private String annex;
 
+	@ApiModelProperty(value = "原物料-买卖合同关联表")
+	@TableField(exist = false)
+	private List<CglLowCostHardware1Entity> cglLowCostHardware1List;
 }

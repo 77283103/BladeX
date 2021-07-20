@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springblade.contract.entity.CglRawMaterials1Entity;
+import org.springblade.contract.entity.CglLowCostHardware1Entity;
 
 import java.math.BigDecimal;
 
@@ -24,7 +24,7 @@ import java.math.BigDecimal;
 @ToString
 @ApiModel(description = "采购类：原物料-买卖合同返回对象")
 @EqualsAndHashCode(callSuper = true)
-public class CglRawMaterials1ResponseVO extends CglRawMaterials1Entity {
+public class CglLowCostHardware1ResponseVO extends CglLowCostHardware1Entity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -95,6 +95,11 @@ public class CglRawMaterials1ResponseVO extends CglRawMaterials1Entity {
 	 */
 	@ApiModelProperty(value="合作数量")
 	public String cglMount;
+	/**
+	 * 品牌
+	 */
+	@ApiModelProperty(value="品牌")
+	public String cglBrand;
 	/**
 	 * 单位  度量衡
 	 */

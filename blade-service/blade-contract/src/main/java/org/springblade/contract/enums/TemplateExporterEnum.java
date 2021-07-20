@@ -2273,8 +2273,12 @@ public enum TemplateExporterEnum {
 					CglRawMaterials1 = JSON.parseArray(templateField.getTableData(), CglRawMaterials1ResponseVO.class);
 					for (int i = 0; i < CglRawMaterials1.size(); i++) {
 						CglRawMaterials1.get(i).setCglNumber(i + 1);
-						DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglRawMaterials1.get(i).getCglStartingTime()));
-						DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglRawMaterials1.get(i).getCglEndOfTime()));
+						if (Func.isNotEmpty(CglRawMaterials1.get(i).getCglStartingTime())){
+							CglRawMaterials1.get(i).setCglStartingTime(DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglRawMaterials1.get(i).getCglStartingTime())));
+						}
+						if (Func.isNotEmpty(CglRawMaterials1.get(i).getCglEndOfTime())){
+							CglRawMaterials1.get(i).setCglEndOfTime(DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglRawMaterials1.get(i).getCglEndOfTime())));
+						}
 					}
 				}
 			}
@@ -2292,6 +2296,59 @@ public enum TemplateExporterEnum {
 			}
 			dataModel.put("cglBuyer", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("cglSeller", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
+			dataModel.put("cglAccount", Func.isNull(contractFormInfoEntity.getBankAccountCode()) ? "" : contractFormInfoEntity.getBankAccountCode());
+			dataModel.put("cglBankNumber", Func.isNull(contractFormInfoEntity.getBankDepositName()) ? "" : contractFormInfoEntity.getBankDepositName());
+			dataModel.put("cglNameOfTheAccount", Func.isNull(contractFormInfoEntity.getBankAccountName()) ? "" : contractFormInfoEntity.getBankAccountName());
+			dataModel.put("annex", j.get("annex"));
+			modle.put("dataModel", setFile(filepaths, dataModel));
+			modle.put("config", config);
+			return modle;
+		}
+	},
+	/**
+	 * MMHT_08
+	 * 买卖合同-五金低耗类
+	 */
+	MMHT_08("MMHT_08") {
+		@Override
+		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
+			Map modle = new HashMap();
+			Map dataModel = new HashMap();
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
+			List<CglLowCostHardware1ResponseVO> CglLowCostHardware1 = new ArrayList();
+			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
+			for (TemplateFieldJsonEntity templateField : templateFieldList) {
+				//买卖合同-五金低耗类
+				if (ContractFormInfoTemplateContract.CONTRACT_CGLLOWCOSTHARDWARE1.equals(templateField.getRelationCode())) {
+					CglLowCostHardware1 = JSON.parseArray(templateField.getTableData(), CglLowCostHardware1ResponseVO.class);
+					for (int i = 0; i < CglLowCostHardware1.size(); i++) {
+						CglLowCostHardware1.get(i).setCglNumber(i + 1);
+						if (Func.isNotEmpty(CglLowCostHardware1.get(i).getCglStartingTime())){
+							CglLowCostHardware1.get(i).setCglStartingTime(DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglLowCostHardware1.get(i).getCglStartingTime())));
+						}
+						if (Func.isNotEmpty(CglLowCostHardware1.get(i).getCglEndOfTime())){
+							CglLowCostHardware1.get(i).setCglEndOfTime(DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglLowCostHardware1.get(i).getCglEndOfTime())));
+						}
+					}
+				}
+			}
+			HackLoopTableRenderPolicy policy = new HackLoopTableRenderPolicy();
+			Configure config = Configure.builder().bind("CglLowCostHardware1", policy).build();
+			dataModel.put("CglLowCostHardware1", CglLowCostHardware1);
+			//迭代器遍历json对象
+			Iterator iter = j.entrySet().iterator();
+			while (iter.hasNext()) {
+				Map.Entry entry = (Map.Entry) iter.next();
+				if (entry.getKey() == null) {
+					continue;
+				}
+				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			dataModel.put("cglTheBuyer", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
+			dataModel.put("cglTheSeller", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
+			dataModel.put("cglAccount", Func.isNull(contractFormInfoEntity.getBankAccountCode()) ? "" : contractFormInfoEntity.getBankAccountCode());
+			dataModel.put("cglBankNumber", Func.isNull(contractFormInfoEntity.getBankDepositName()) ? "" : contractFormInfoEntity.getBankDepositName());
+			dataModel.put("cglAccounts", Func.isNull(contractFormInfoEntity.getBankAccountName()) ? "" : contractFormInfoEntity.getBankAccountName());
 			dataModel.put("annex", j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));
 			modle.put("config", config);
