@@ -89,6 +89,11 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
+	public R<List<Dept>> getDeptAll() {
+		return R.data(deptService.list());
+	}
+
+	@Override
 	public R<String> getDeptIds(String tenantId, String deptNames) {
 		return R.data(deptService.getDeptIds(tenantId, deptNames));
 	}

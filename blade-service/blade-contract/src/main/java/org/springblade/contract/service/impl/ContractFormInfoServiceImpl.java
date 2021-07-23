@@ -2404,10 +2404,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		}
-		//处理电子签章
-		if ("1".equals(contractFormInfoEntity.getContractForm()) || "2".equals(contractFormInfoEntity.getContractForm())) {
+		//处理电子签章-范本
+		if(contractFormInfoEntity.getContractSoure().equals(ContractTypeEnum.BATCH_SINGLE.getKey().toString())){
 			contractFormInfoEntity = SingleSign(R.data(contractFormInfoEntity)).getData();
-		} else {
+		}
+		//处理电子签章-独立
+		if(contractFormInfoEntity.getContractSoure().equals(ContractTypeEnum.BATCH_MODEL.getKey().toString())){
 			contractFormInfoEntity = SingleSignE(R.data(contractFormInfoEntity)).getData();
 		}
 		//检测合同电子印章(独立和范本)

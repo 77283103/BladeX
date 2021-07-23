@@ -43,6 +43,7 @@ public interface ISysClient {
 
 	String API_PREFIX = "/client";
 	String MENU = API_PREFIX + "/menu";
+	String DEPT_ALL = API_PREFIX + "/dept-all";
 	String DEPT = API_PREFIX + "/dept";
 	String DEPT_TREE = API_PREFIX + "/dept-tree";
 	String DEPT_IDS = API_PREFIX + "/dept-ids";
@@ -104,6 +105,14 @@ public interface ISysClient {
 	 */
 	@GetMapping(DEPT)
 	R<Dept> getDept(@RequestParam("id") Long id);
+
+
+	/**
+	 * 获取所有部门
+	 * @return List<Dept>
+	 */
+	@GetMapping(DEPT_ALL)
+	R<List<Dept>> getDeptAll();
 
 	/**
 	 * 获取部门id

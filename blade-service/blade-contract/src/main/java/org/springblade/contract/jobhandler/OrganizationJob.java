@@ -9,6 +9,7 @@ import lombok.extern.log4j.Log4j2;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springblade.abutment.feign.IAbutmentClient;
+import org.springblade.abutment.vo.EkpSyncRequestVO;
 import org.springblade.abutment.vo.OrgParme;
 import org.springblade.abutment.vo.OrganizationVo;
 import org.springblade.core.tool.api.R;
@@ -56,4 +57,15 @@ public class OrganizationJob {
 		XxlJobLogger.log(organizationVos.getCode()+":"+organizationVos.getMsg());
 		return new ReturnT<>(organizationVos.getCode(),organizationVos.getMsg());
 	}
+
+
+	@SneakyThrows
+	@XxlJob("synEkpUserDepartJob")
+	public ReturnT synEkpUserDepart(String param){
+		EkpSyncRequestVO ekpSyncRequestVO = JsonUtil.parse(param,EkpSyncRequestVO.class);
+		R r = iAbutmentClient.synEkpUserDepart(ekpSyncRequestVO);
+		return new ReturnT<>(r.getData());
+	}
+
+
 }

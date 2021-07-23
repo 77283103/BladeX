@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.springblade.system.entity.UserDepartEntity;
 
+import java.util.List;
+
 /**
  *  Mapper 接口
  *
@@ -16,4 +18,10 @@ public interface UserDepartMapper extends BaseMapper<UserDepartEntity> {
 	 * @param userId
 	 */
 	void delByUserId(@Param("userId") Long userId);
+
+	/**
+	 * 根据UserIds删除身份信息
+	 * @param userIds
+	 */
+	void delByUserIds(@Param("userIds") List<Long> userIds);
 }

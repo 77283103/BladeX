@@ -6,6 +6,8 @@ import org.springblade.system.user.mapper.UserDepartMapper;
 import org.springblade.system.user.service.IUserDepartService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  *  服务实现类
  *
@@ -17,5 +19,10 @@ public class UserDepartServiceImpl extends ServiceImpl<UserDepartMapper, UserDep
 	@Override
 	public void delByUserId(Long userId) {
 		baseMapper.delByUserId(userId);
+	}
+
+	@Override
+	public void delByUserIds(List<Long> userIds) {
+		baseMapper.delByUserIds(userIds);
 	}
 }

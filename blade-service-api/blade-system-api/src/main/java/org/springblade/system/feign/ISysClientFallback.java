@@ -49,6 +49,11 @@ public class ISysClientFallback implements ISysClient {
 	}
 
 	@Override
+	public R<List<Dept>> getDeptAll() {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
 	public R<String> getDeptIds(String tenantId, String deptNames) {
 		return R.fail("获取数据失败");
 	}

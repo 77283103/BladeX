@@ -215,6 +215,10 @@ public class ContractFormInfoResponseVO extends ContractFormInfoEntity {
 	 * 多方起草关联的签章单位子公司信息
 	 */
 	private List<ContractSealEntity> contractSeal;
+	/**
+	 * 合同文本集合
+	 */
+	private List<FileVO> textFileList;
 
 
 	public String getCounterpartNames(){
