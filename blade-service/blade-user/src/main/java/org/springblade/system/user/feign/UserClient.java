@@ -140,4 +140,15 @@ public class UserClient implements IUserClient {
 	public R<Long> getUserIdByAssociationId(String associationId) {
 		return R.data(service.getUserIdByAssociationId(associationId));
 	}
+
+	@Override
+	public R<List<User>> getUserAll() {
+		return R.data(service.list());
+	}
+
+	@Override
+	public R deleteUserDepart(List<Long> userIds) {
+		departService.delByUserIds(userIds);
+		return R.success("删除成功");
+	}
 }

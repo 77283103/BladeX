@@ -592,25 +592,6 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(files);
 	}
 
-	@PostMapping("/importBatchDraft")
-	@ApiOperationSupport(order = 12)
-	@ApiOperation(value = "批量导入", notes = "传入excel、大小类、范本json")
-	public R importBatchDraft(ContractImportBatchDraftRequest contractImportBatchDraftRequest) {
-		contractFormInfoService.batchDraftingImport(contractImportBatchDraftRequest);
-		return R.success("操作成功");
-	}
-
-	/**
-	 * 批量导入，更新
-	 */
-	@PostMapping("/importBatchDraftUp")
-	@ApiOperationSupport(order = 12)
-	@ApiOperation(value = "批量导入更新", notes = "传入ContractFormInfoRequestVO")
-	@Transactional(rollbackFor = Exception.class)
-	public R importBatchDraftUp(@RequestBody ContractFormInfoRequestVO contractFormInfo) {
-		contractFormInfoService.batchDraftingImportUp(contractFormInfo);
-		return R.success("操作成功");
-	}
 
 	/**
 	 * 批量送审
@@ -1450,5 +1431,25 @@ public class ContractFormInfoController extends BladeController {
 		} catch (Exception ex) {
 			System.out.println("导出失败");
 		}
+	}
+
+
+
+
+	@PostMapping("/importBatchDraft")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "批量导入", notes = "传入excel、大小类、范本json")
+	public R importBatchDraft(ContractImportBatchDraftRequest contractImportBatchDraftRequest) {
+		contractFormInfoService.batchDraftingImport(contractImportBatchDraftRequest);
+		return R.success("操作成功");
+	}
+
+	@PostMapping("/importBatchDraftUp")
+	@ApiOperationSupport(order = 12)
+	@ApiOperation(value = "批量导入更新", notes = "传入ContractFormInfoRequestVO")
+	@Transactional(rollbackFor = Exception.class)
+	public R importBatchDraftUp(@RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		contractFormInfoService.batchDraftingImportUp(contractFormInfo);
+		return R.success("操作成功");
 	}
 }

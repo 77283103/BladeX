@@ -10,8 +10,16 @@
         <result column="dept_id" property="deptId"/>
         <result column="post_id" property="postId"/>
     </resultMap>
+
     <delete id="delByUserId">
         delete from blade_user_depart where user_id = #{userId}
+    </delete>
+
+    <delete id="delByUserIds">
+        delete from blade_user_depart where user_id in
+        <foreach collection="userIds" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
     </delete>
 
 </mapper>

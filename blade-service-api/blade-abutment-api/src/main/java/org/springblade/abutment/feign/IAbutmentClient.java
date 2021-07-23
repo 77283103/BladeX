@@ -35,6 +35,7 @@ public interface IAbutmentClient {
 	String SEND_EKP=API_PREFIX+"sendEkp";
 	String COUNTERPART_INSERT_OR_UPDATE=API_PREFIX+"getCounterpart";
 	String ORGANIZATION_INFO_INCREMENT=API_PREFIX +ORG+"/getOrganization";
+	String SYN_EKP_USER_DEPART =  API_PREFIX + EKP + "/synEkpUserDepart";
 	String EKP_SEND_FORM = API_PREFIX + EKP + "/sendForm";
 	String EKP_SEND_FORM_POST = API_PREFIX + EKP + "/sendFormPost";
 	String EKP_SEND_MULTI_POST =API_PREFIX +EKP+"/sendMultiPost";
@@ -209,6 +210,11 @@ public interface IAbutmentClient {
 	 */
 	@PostMapping(ORGANIZATION_INFO_INCREMENT)
 	R<List<OrganizationVo>> getOrganizationInfoIncrement(@RequestBody OrgParme param);
+
+
+	@PostMapping(SYN_EKP_USER_DEPART)
+	R synEkpUserDepart(@RequestBody EkpSyncRequestVO ekpSyncRequestVO);
+
 	/**
 	 * 获取相对方信息的数据
 	 * @return

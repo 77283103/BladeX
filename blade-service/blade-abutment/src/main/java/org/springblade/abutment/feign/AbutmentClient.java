@@ -82,6 +82,8 @@ public class AbutmentClient implements IAbutmentClient {
 	private IOrganizationService iOrganizationService;
 	@Autowired
 	private ICounterpartService counterpartService;
+	@Autowired
+	private EkpUserDeptService ekpUserDeptService;
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
 	@Value("${api.ekp.multiTemplateId}")
@@ -2125,6 +2127,12 @@ public class AbutmentClient implements IAbutmentClient {
 	public R<List<OrganizationVo>> getOrganizationInfoIncrement(OrgParme param) {
 		log.info("查看查询时间的参数：" + param);
 		return iOrganizationService.getOrganizationInfoIncrement(param);
+	}
+
+	@Override
+	public R synEkpUserDepart(EkpSyncRequestVO ekpSyncRequestVO) {
+		ekpUserDeptService.synchronizationEkpUserData(ekpSyncRequestVO);
+		return R.success("同步完成");
 	}
 
 	/**

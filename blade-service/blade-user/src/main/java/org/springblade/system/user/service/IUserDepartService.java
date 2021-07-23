@@ -17,4 +17,10 @@ public interface IUserDepartService extends IService<UserDepartEntity> {
 	 * @param id
 	 */
 	void delByUserId(Long id);
+
+	/**
+	 * 根据userIds删除身份信息
+	 * @param userIds
+	 */
+	void delByUserIds(List<Long> userIds);
 }

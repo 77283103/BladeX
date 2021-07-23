@@ -57,6 +57,10 @@ public interface IUserClient {
 	String SAVE_USER_BACH_API=API_PREFIX +"/save-user-api";
 	String SAVE_USER_DEPART_BACH_API=API_PREFIX +"/save-user-depart-bach-api";
 	String GET_ID_BY_LUNID = API_PREFIX + "/get-id-by-lunid";
+	String GET_USER_ALL = API_PREFIX + "/get-user-all";
+	String DELETE_USER_DEPART_BY_USERIDS = API_PREFIX + "/delete-user-depart-by-userids";
+
+
 	/**
 	 * 获取用户信息
 	 *
@@ -184,4 +188,11 @@ public interface IUserClient {
 	 */
 	@GetMapping(GET_ID_BY_LUNID)
 	R<Long> getUserIdByAssociationId(@RequestParam("associationId") String associationId);
+
+	@GetMapping(GET_USER_ALL)
+	R<List<User>> getUserAll();
+
+	@PostMapping(DELETE_USER_DEPART_BY_USERIDS)
+	R deleteUserDepart(@RequestBody List<Long> userIds);
+
 }

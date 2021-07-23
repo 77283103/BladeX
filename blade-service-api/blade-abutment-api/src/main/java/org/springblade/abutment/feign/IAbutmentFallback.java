@@ -115,6 +115,11 @@ public class IAbutmentFallback implements IAbutmentClient {
 	}
 
 	@Override
+	public R synEkpUserDepart(EkpSyncRequestVO ekpSyncRequestVO) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
 	public R<CounterpartVo> getCounterpart(CounterpartEntity entity) {
 		return R.fail("获取数据失败");
 	}
