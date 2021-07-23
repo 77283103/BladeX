@@ -138,7 +138,7 @@
 
     <delete id="clearDate">
         DELETE
-        FROM contract_counterpart
+        FROM contract_according
         WHERE id NOT IN (
             SELECT t.max_id
             FROM (SELECT max(id) AS max_id from contract_according group by file_id) as t

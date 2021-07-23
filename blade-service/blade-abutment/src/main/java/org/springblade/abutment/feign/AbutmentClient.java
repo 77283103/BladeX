@@ -185,7 +185,7 @@ public class AbutmentClient implements IAbutmentClient {
 			log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
 			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 				rEkpVo.setCode(2);
-				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+				rEkpVo.setMsg(ekpVo.getMsg_info());
 				rEkpVo.setSuccess(false);
 				rEkpVo.setData(null);
 				return rEkpVo;
@@ -253,7 +253,7 @@ public class AbutmentClient implements IAbutmentClient {
 			log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
 			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 				rEkpVo.setCode(2);
-				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+				rEkpVo.setMsg("数据推送失败，请联系管理员处理");
 				rEkpVo.setSuccess(false);
 				rEkpVo.setData(null);
 				return rEkpVo;
@@ -261,7 +261,7 @@ public class AbutmentClient implements IAbutmentClient {
 			logger.info("borEkpFormPost-return", JsonUtil.toJson(rEkpVo));
 		}
 		rEkpVo.setData(ekpVo);
-		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setMsg("成功");
 		rEkpVo.setCode(HttpStatus.OK.value());
 		rEkpVo.setSuccess(true);
 		return rEkpVo;
@@ -401,7 +401,7 @@ public class AbutmentClient implements IAbutmentClient {
 					//模板编号
 					formValuesEntity.setFd_template_type(templateEntity.getData().getTemplateCode());
 					//模板关键字段数据相关内容信息处理
-					JSONObject jsonObject = new JSONObject();
+					JSONObject jsonObject = new JSONObject(true);
 					jsonObject.put("targetKey", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler());
 					jsonObject.put("ChineseColumn", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler(entity.getJson(), true));
 					jsonObject.put("targetParentJson", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler(entity.getJson()));
@@ -461,7 +461,7 @@ public class AbutmentClient implements IAbutmentClient {
 			}
 			if (Func.isNotEmpty(entity.getBankDepositName())) {
 				//相对方开户行名称
-				formValuesEntity.setFd_account_name(entity.getBankDepositName());
+				formValuesEntity.setFd_deposit_name(entity.getBankDepositName());
 			}
 			if (Func.isNotEmpty(entity.getCounterpartPerson())) {
 				//相对方联系人
@@ -651,13 +651,14 @@ public class AbutmentClient implements IAbutmentClient {
 			ekpVo = ekpService.pushData(pushEkpEntity);
 			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 				rEkpVo.setCode(2);
-				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+				rEkpVo.setMsg("数据推送失败，请联系管理员处理");
 				rEkpVo.setSuccess(false);
 				rEkpVo.setData(null);
 				return rEkpVo;
 			}
 		}
 		rEkpVo.setData(ekpVo);
+		rEkpVo.setMsg("成功");
 		rEkpVo.setCode(HttpStatus.OK.value());
 		rEkpVo.setSuccess(true);
 		return rEkpVo;
@@ -868,7 +869,7 @@ public class AbutmentClient implements IAbutmentClient {
 				//模板编号
 				formValuesEntity.setFd_template_type(templateEntity.getData().getTemplateCode());
 				//模板关键字段数据相关内容信息处理
-				JSONObject jsonObject = new JSONObject();
+				JSONObject jsonObject = new JSONObject(true);
 				jsonObject.put("targetKey", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler());
 				jsonObject.put("ChineseColumn", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler(entity.getJson(), true));
 				jsonObject.put("targetParentJson", TemplateJsonEnum.fromValue(formValuesEntity.getFd_template_type()).setScheduler(entity.getJson()));
@@ -927,7 +928,7 @@ public class AbutmentClient implements IAbutmentClient {
 			}
 			if (Func.isNotEmpty(entity.getBankDepositName())) {
 				//相对方开户行名称
-				formValuesEntity.setFd_account_name(entity.getBankDepositName());
+				formValuesEntity.setFd_deposit_name(entity.getBankDepositName());
 			}
 			//相对方联系人
 			formValuesEntity.setFd_linkman(entity.getCounterpartPerson());
@@ -1009,25 +1010,23 @@ public class AbutmentClient implements IAbutmentClient {
 			}
 			//收款明细列表
 			List<CollectionInde> indeList = new ArrayList<>();
-			if (Func.isNotEmpty(indeList)) {
-				entity.getCollection().forEach(conI -> {
-					CollectionInde collectionInde = new CollectionInde();
-					//总期数
-					collectionInde.setFd_period_num(conI.getPeriodNum());
-					//第几期
-					collectionInde.setFd_period_idx(conI.getPeriodIdx());
-					//条件+帐期天数
-					collectionInde.setFd_pay_condition(conI.getPayCondition());
-					collectionInde.setFd_pay_days_inde(conI.getDays().toString());
-					//是否开票
-					collectionInde.setFd_is_receipt(conI.getIsReceipt());
-					//比例
-					collectionInde.setFd_per(conI.getPayPer().toString());
-					collectionInde.setFd_pay_amount(conI.getPayAmount().toString());
-					indeList.add(collectionInde);
-				});
-				formValuesEntity.setFd_collection_inde(indeList);
-			}
+			entity.getCollection().forEach(conI -> {
+				CollectionInde collectionInde = new CollectionInde();
+				//总期数
+				collectionInde.setFd_period_num(conI.getPeriodNum());
+				//第几期
+				collectionInde.setFd_period_idx(conI.getPeriodIdx());
+				//条件+帐期天数
+				collectionInde.setFd_pay_condition(conI.getPayCondition());
+				collectionInde.setFd_pay_days_inde(conI.getDays().toString());
+				//是否开票
+				collectionInde.setFd_is_receipt(conI.getIsReceipt());
+				//比例
+				collectionInde.setFd_per(conI.getPayPer().toString());
+				collectionInde.setFd_pay_amount(conI.getPayAmount().toString());
+				indeList.add(collectionInde);
+			});
+			formValuesEntity.setFd_collection_inde(indeList);
 			if (!Func.isNull(entity.getDays())) {
 				//签约后收款  需要填写
 				formValuesEntity.setFd_payee_days(entity.getDays().toString());
@@ -1113,7 +1112,7 @@ public class AbutmentClient implements IAbutmentClient {
 				log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
 				if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 					rEkpVo.setCode(2);
-					rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+					rEkpVo.setMsg("数据推送失败，请联系管理员处理");
 					rEkpVo.setSuccess(false);
 					rEkpVo.setData(null);
 					return rEkpVo;
@@ -1124,7 +1123,7 @@ public class AbutmentClient implements IAbutmentClient {
 			}
 		}
 		rEkpVo.setData(ekpVo);
-		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setMsg("成功");
 		rEkpVo.setCode(HttpStatus.OK.value());
 		rEkpVo.setSuccess(true);
 		return rEkpVo;
@@ -1270,7 +1269,7 @@ public class AbutmentClient implements IAbutmentClient {
 				//相对方名称
 				ro.setFd_identity_name(r.getCounterpartPerson());
 				//相对方联系电话
-				ro.setFd_contract_number(entity.getTelephonePerson());
+				ro.setFd_contract_number(r.getTelephonePerson());
 				//相对方邮箱
 				ro.setFd_contact_email(r.getEmailPerson());
 				//相对方联系地址
@@ -1294,6 +1293,7 @@ public class AbutmentClient implements IAbutmentClient {
 			/******************************  收付款START  ***************************************************/
 			//多方收付款信息
 			List<MultiPay> pays = new ArrayList<>();
+			List<CollectionMulti> multiList = new ArrayList<>();
 			entity.getMultPaymenEntityList().forEach(p -> {
 				MultiPay pay = new MultiPay();
 				pay.setFd_pay_id(p.getId().toString());
@@ -1349,7 +1349,6 @@ public class AbutmentClient implements IAbutmentClient {
 					default:
 				}
 				//收款明细列表
-				List<CollectionMulti> multiList = new ArrayList<>();
 				p.getCollection().forEach(pI -> {
 					CollectionMulti collectionInde = new CollectionMulti();
 					collectionInde.setFd_multi_id(p.getId().toString());
@@ -1367,7 +1366,7 @@ public class AbutmentClient implements IAbutmentClient {
 					collectionInde.setFd_pay_amount_multi(pI.getPayAmount().toString());
 					multiList.add(collectionInde);
 				});
-				pay.setFd_collection_multi(multiList);
+//				pay.setFd_collection_multi(multiList);
 				if (Func.isNotEmpty(p.getDays())) {
 					//合同未税金额
 					pay.setFd_pay_days(p.getDays().toString());
@@ -1386,6 +1385,7 @@ public class AbutmentClient implements IAbutmentClient {
 				}
 				pays.add(pay);
 			});
+			formValuesEntity.setFd_collection_multi(multiList);
 			formValuesEntity.setFd_multipay(pays);
 			/******************************  收付款END   ***************************************************/
 			//多方保证金信息
@@ -1513,7 +1513,7 @@ public class AbutmentClient implements IAbutmentClient {
 				log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
 				if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 					rEkpVo.setCode(2);
-					rEkpVo.setMsg("合同送审失败，请联系系统管理员！");
+					rEkpVo.setMsg("数据推送失败，请联系管理员处理");
 					rEkpVo.setSuccess(false);
 					rEkpVo.setData(null);
 					return rEkpVo;
@@ -1524,7 +1524,7 @@ public class AbutmentClient implements IAbutmentClient {
 			}
 		}
 		rEkpVo.setData(ekpVo);
-		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setMsg("成功");
 		rEkpVo.setCode(HttpStatus.OK.value());
 		rEkpVo.setSuccess(true);
 		return rEkpVo;
@@ -1581,14 +1581,14 @@ public class AbutmentClient implements IAbutmentClient {
 			log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
 			if (StrUtil.isEmpty(ekpVo.getDoc_info())) {
 				rEkpVo.setCode(2);
-				rEkpVo.setMsg("当前员工编号在系统中不存在，请换一个试试");
+				rEkpVo.setMsg("数据推送失败，请联系管理员处理");
 				rEkpVo.setSuccess(false);
 				rEkpVo.setData(null);
 				return rEkpVo;
 			}
 		}
 		rEkpVo.setData(ekpVo);
-		log.info("HttpStatus.OK.value()" + HttpStatus.OK.value());
+		rEkpVo.setMsg("成功");
 		rEkpVo.setCode(HttpStatus.OK.value());
 		rEkpVo.setSuccess(true);
 		return rEkpVo;
@@ -1621,17 +1621,18 @@ public class AbutmentClient implements IAbutmentClient {
 //			if (Func.isNotEmpty(entities)){
 //				formInfoEntities.addAll(entities);
 //			}
-			if (Func.isNotEmpty(InfoEntities)){
+			if (Func.isNotEmpty(InfoEntities)) {
 				formInfoEntities.addAll(InfoEntities);
 			}
 		}
-		ekpVo=pushNotDate(formInfoEntities,pushEkpEntity).getData();
+		ekpVo = pushNotDate(formInfoEntities, pushEkpEntity).getData();
 		logger.info("contractFormList", JsonUtil.toJson(formInfoEntities));
 		logger.info("pushEkpContractFormList", JsonUtil.toJson(ekpVo));
 		return R.data(200, ekpVo, "数据推送成功");
 	}
+
 	@SneakyThrows
-	public  R<List<EkpVo>> pushNotDate(List<ContractFormInfoEntity> formInfoEntities, PushEkpEntity pushEkpEntity) {
+	public R<List<EkpVo>> pushNotDate(List<ContractFormInfoEntity> formInfoEntities, PushEkpEntity pushEkpEntity) {
 		List<EkpVo> ekpVo = new ArrayList<>();
 		//获取TOKEN
 		pushEkpEntity.setToken(ekpService.getToken());
@@ -1674,6 +1675,7 @@ public class AbutmentClient implements IAbutmentClient {
 		});
 		return R.data(ekpVo);
 	}
+
 	/**
 	 * 通过时间秒毫秒数判断两个时间的间隔
 	 *

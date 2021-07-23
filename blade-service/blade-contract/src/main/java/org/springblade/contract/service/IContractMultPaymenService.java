@@ -14,9 +14,24 @@ public interface IContractMultPaymenService extends BaseService<ContractMultPaym
 
 	/**
 	 * 分页查询
+	 *
 	 * @param page
 	 * @param contractMultPaymen
 	 * @return
 	 */
 	IPage<ContractMultPaymenEntity> pageList(IPage<ContractMultPaymenEntity> page, ContractMultPaymenEntity contractMultPaymen);
+
+	/**
+	 * 删除合同相对方关联表
+	 *
+	 * @param id 合同id
+	 */
+	void deleteMult(Long id);
+
+	/**
+	 * @param paymenEntity 保存
+	 * @author jitwxs
+	 * @date 2021/7/23 11:57
+	 */
+	ContractMultPaymenEntity saveMultPay(ContractMultPaymenEntity paymenEntity);
 }

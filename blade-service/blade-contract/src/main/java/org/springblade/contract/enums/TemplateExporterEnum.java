@@ -2264,7 +2264,6 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 			List<CglRawMaterials1ResponseVO> CglRawMaterials1 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
@@ -2274,10 +2273,10 @@ public enum TemplateExporterEnum {
 					for (int i = 0; i < CglRawMaterials1.size(); i++) {
 						CglRawMaterials1.get(i).setCglNumber(i + 1);
 						if (Func.isNotEmpty(CglRawMaterials1.get(i).getCglStartingTime())){
-							CglRawMaterials1.get(i).setCglStartingTime(DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglRawMaterials1.get(i).getCglStartingTime())));
+							CglRawMaterials1.get(i).setCglStartingTime(DataFormatUtils.systemTimeFormat(CglRawMaterials1.get(i).getCglStartingTime()));
 						}
 						if (Func.isNotEmpty(CglRawMaterials1.get(i).getCglEndOfTime())){
-							CglRawMaterials1.get(i).setCglEndOfTime(DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglRawMaterials1.get(i).getCglEndOfTime())));
+							CglRawMaterials1.get(i).setCglEndOfTime(DataFormatUtils.systemTimeFormat(CglRawMaterials1.get(i).getCglEndOfTime()));
 						}
 					}
 				}
@@ -2314,7 +2313,6 @@ public enum TemplateExporterEnum {
 		public Map setScheduler(List<String> filepaths, ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO templateVO, String json, JSONObject j) {
 			Map modle = new HashMap();
 			Map dataModel = new HashMap();
-			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("YYYY-MM-dd");
 			List<CglLowCostHardware1ResponseVO> CglLowCostHardware1 = new ArrayList();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(json, TemplateFieldJsonEntity.class);
 			for (TemplateFieldJsonEntity templateField : templateFieldList) {
@@ -2324,10 +2322,10 @@ public enum TemplateExporterEnum {
 					for (int i = 0; i < CglLowCostHardware1.size(); i++) {
 						CglLowCostHardware1.get(i).setCglNumber(i + 1);
 						if (Func.isNotEmpty(CglLowCostHardware1.get(i).getCglStartingTime())){
-							CglLowCostHardware1.get(i).setCglStartingTime(DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglLowCostHardware1.get(i).getCglStartingTime())));
+							CglLowCostHardware1.get(i).setCglStartingTime(DataFormatUtils.systemTimeFormat(CglLowCostHardware1.get(i).getCglStartingTime()));
 						}
 						if (Func.isNotEmpty(CglLowCostHardware1.get(i).getCglEndOfTime())){
-							CglLowCostHardware1.get(i).setCglEndOfTime(DataFormatUtils.systemTimeFormat(simpleDateFormat.format(CglLowCostHardware1.get(i).getCglEndOfTime())));
+							CglLowCostHardware1.get(i).setCglEndOfTime(DataFormatUtils.systemTimeFormat(CglLowCostHardware1.get(i).getCglEndOfTime()));
 						}
 					}
 				}

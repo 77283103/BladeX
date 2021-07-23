@@ -53,7 +53,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -254,17 +253,20 @@ public class ContractFormInfoController extends BladeController {
 		/*保存相对方收付款信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getMultPaymenEntityList())) {
 			iCollectionService.deleteContractId(contractFormInfo.getId());
-			contractMultPaymenMapper.deleteMult(contractFormInfo.getId());
+			contractMultPaymenService.deleteMult(contractFormInfo.getId());
+			List<ContractMultPaymenEntity> list=new ArrayList<>();
 			contractFormInfo.getMultPaymenEntityList().forEach(mult -> {
 				ContractMultPaymenEntity contractMultPaymenEntity = new ContractMultPaymenEntity();
 				mult.setCurrencyCategory(contractFormInfo.getCurrencyCategory());
 				mult.setContractId(contractFormInfo.getId().toString());
 				BeanUtil.copy(mult, contractMultPaymenEntity);
 				contractMultPaymenService.saveOrUpdate(contractMultPaymenEntity);
-				if (CollectionUtil.isNotEmpty(contractMultPaymenEntity.getCollection())) {
+				if (CollectionUtil.isNotEmpty(contractMultPaymenEntity.getCollection()) && contractMultPaymenEntity.getCollection().size()>0) {
 					contractFormInfoService.saveCollectionMulti(contractMultPaymenEntity, contractFormInfo.getId());
 				}
+				list.add(contractMultPaymenEntity);
 			});
+			contractFormInfo.setMultPaymenEntityList(list);
 		}
 		/*保存子公司信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractSeal())) {
@@ -325,20 +327,20 @@ public class ContractFormInfoController extends BladeController {
 		if (ContractStatusEnum.APPROVAL.getKey().toString().equals(entity.getContractStatus())) {
 			//处理电子签章和oa流程
 			if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm())) {
-				r = contractFormInfoService.SingleSign(R.data(entity));
+				r = contractFormInfoService.SingleSign(R.data(contractFormInfo));
 			} else {
-				r = contractFormInfoService.SingleSignE(R.data(entity));
+				r = contractFormInfoService.SingleSignE(R.data(contractFormInfo));
 			}
 			if (r.getCode() != HttpStatus.OK.value()) {
 				entity.setContractStatus(CHANGE_REVIEW_STATUS);
-				contractFormInfoService.updateById(entity);
-				r.setData(ContractFormInfoWrapper.build().entityPV(entity));
+				contractFormInfoService.updateById(contractFormInfo);
+				r.setData(ContractFormInfoWrapper.build().entityPV(contractFormInfo));
 				return r;
 			}
 			r.getData().setCreateTime(new Date());
 			contractFormInfoService.updateById(r.getData());
 		}
-		return R.data(ContractFormInfoWrapper.build().entityPV(entity));
+		return R.data(ContractFormInfoWrapper.build().entityPV(contractFormInfo));
 	}
 
 	/**
@@ -462,6 +464,10 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
 		Long id = TemplateSaveUntil.templateSave(contractFormInfoEntity, template, j);
 		contractFormInfo.setId(id);
+		//保存合同首款明细数据
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getCollection())) {
+			contractFormInfoService.saveCollection(contractFormInfo);
+		}
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
 			contractFormInfoService.saveCounterpart(contractFormInfo);
@@ -509,7 +515,6 @@ public class ContractFormInfoController extends BladeController {
 				contractPerformanceColPayService.save(performanceColPay);
 			});
 		}
-		//ContractFormInfoEntity contractFormInfoEntity = JSONObject.toJavaObject(j, ContractFormInfoEntity.class);
 		//保存合同和关联表 这个方法有问题
 		contractFormInfoEntity = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
 		//页面用这个字段来判断是否提交
@@ -604,62 +609,6 @@ public class ContractFormInfoController extends BladeController {
 	@Transactional(rollbackFor = Exception.class)
 	public R importBatchDraftUp(@RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		contractFormInfoService.batchDraftingImportUp(contractFormInfo);
-		return R.success("操作成功");
-	}
-
-	/**
-	 * 批量导入
-	 */
-	//@PostMapping("/importBatchDraft")
-	@ApiOperationSupport(order = 12)
-	@ApiOperation(value = "导入合同", notes = "传入excel")
-	@Transactional(rollbackFor = Exception.class)
-	public R importUser(MultipartFile file, String json, String contractTemplateId, String contractBigCategory, String contractSmallCategory) {
-
-//		//读取Excal 两个sheet数据
-//		List<ContractFormInfoImporter> read = ExcelUtil.read(file, 0, 5, ContractFormInfoImporter.class);
-//		List<ContractFormInfoImporterEx> read2 = ExcelUtil.read(file, 1, 1, ContractFormInfoImporterEx.class);
-//		read.forEach(readEx -> {
-//			if (("≤3年").equals(readEx.getContractPeriod())) {
-//				readEx.setContractPeriod("小于等于3年");
-//			} else if ((">3年").equals(readEx.getContractPeriod())) {
-//				readEx.setContractPeriod("大于3年");
-//			}
-//			if (("票期<10天").equals(readEx.getColPayTerm())) {
-//				readEx.setColPayTerm("票期小于10天");
-//			} else if (("10天≤票期<45天").equals(readEx.getColPayTerm())) {
-//				readEx.setColPayTerm("票期大于等于10天小于45天");
-//			} else if (("45天≤票期").equals(readEx.getColPayTerm())) {
-//				readEx.setColPayTerm("票期大于等于45天");
-//			}
-//			//contract_form合同形式
-//			R<List<DictBiz>> contract_form = bizClient.getList("contract_form");
-//			List<DictBiz> dataBiz = contract_form.getData();
-//			dataBiz.forEach(contractForm -> {
-//				if (readEx.getContractForm().equals(contractForm.getDictValue())) {
-//					readEx.setContractForm(contractForm.getDictKey());
-//				}
-//			});
-//			//收付款-收付款条件
-//			R<List<DictBiz>> col_pay_term = bizClient.getList("col_pay_term");
-//			List<DictBiz> dataBiz1 = col_pay_term.getData();
-//			dataBiz1.forEach(colPayTerm -> {
-//				if (readEx.getColPayType().equals(colPayTerm.getDictValue())) {
-//					readEx.setColPayType(colPayTerm.getId().toString());
-//				} else if (readEx.getColPayTerm().equals(colPayTerm.getDictValue())) {
-//					readEx.setColPayTerm(colPayTerm.getId().toString());
-//				}
-//			});
-//			//contract_period  合同期限
-//			R<List<DictBiz>> contract_period = bizClient.getList("contract_period");
-//			List<DictBiz> dataBiz2 = contract_period.getData();
-//			dataBiz2.forEach(contractPeriod -> {
-//				if (readEx.getContractPeriod().equals(contractPeriod.getDictValue())) {
-//					readEx.setContractPeriod(contractPeriod.getDictKey());
-//				}
-//			});
-//		});
-//		contractFormInfoService.importContractFormInfo(read, file, json, contractTemplateId, contractBigCategory, contractSmallCategory);
 		return R.success("操作成功");
 	}
 

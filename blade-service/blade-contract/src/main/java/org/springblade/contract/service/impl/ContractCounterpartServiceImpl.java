@@ -12,6 +12,7 @@ import org.springblade.contract.vo.ContractCounterpartResponseVO;
 import org.springblade.contract.wrapper.ContractCounterpartWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.utils.BeanUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
@@ -237,12 +238,15 @@ public class ContractCounterpartServiceImpl extends BaseServiceImpl<ContractCoun
 			if (!"-".equals(counterpartExcel.getHalfWidthName()) && !"".equals(counterpartExcel.getHalfWidthName()) && null!=counterpartExcel.getHalfWidthName()) {
 				contractCounterpartEntity.setHalfWidthName(counterpartExcel.getHalfWidthName());
 			}
-
-            if (contractCounterpartMapper.selectByName(contractCounterpartEntity.getUnifiedSocialCreditCode()).size()<=0){
-                this.save(contractCounterpartEntity);
+			List<ContractCounterpartEntity> counterpartEntityList=contractCounterpartMapper.selectByName(contractCounterpartEntity.getUnifiedSocialCreditCode());
+            if (Func.isEmpty(counterpartEntityList) || counterpartEntityList.size()<=0){
+            	contractCounterpartEntity.setId(null);
+                list.add(contractCounterpartEntity);
             }else {
-                contractCounterpartMapper.updateByName(contractCounterpartEntity);
+            	ContractCounterpartEntity counterpartEntity= BeanUtil.copy(counterpartEntityList.get(0),ContractCounterpartEntity.class);
+                list.add(counterpartEntity);
             }
         });
+        this.saveOrUpdateBatch(list);
     }
 }
