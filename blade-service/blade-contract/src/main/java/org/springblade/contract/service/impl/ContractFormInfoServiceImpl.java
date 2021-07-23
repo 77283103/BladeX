@@ -130,6 +130,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Autowired
 	private ICglRawMaterials1Service cglRawMaterials1Service;
 	@Autowired
+	private ICglLowCostHardware1Service iCglLowCostHardware1Service;
+	@Autowired
 	private IMtlAdaptationContract1Service mtlAdaptationContract1Service;
 	@Autowired
 	private IMtlAdaptationContract2Service mtlAdaptationContract2Service;
@@ -1361,7 +1363,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		log.info("TAG此时断言合同文本获取操作成功，开始");
 		InputStream in;
 		try {
-			assert filePDF != null;
 			in = new FileInputStream(filePDF);
 			String fileId = AsposeWordToPdfUtils.addWaterMak(in, "统一集团", filePDF.getName(), null);
 			Thread.sleep(2000);
@@ -1578,7 +1579,15 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				}
 			}
 		} else {
-			filePDF = new File(indeE.getFilePdf());
+			filePDF = new File(newFilePdf);
+			FileOutputStream fos;
+			try {
+				fos = new FileOutputStream(filePDF);
+				fos.write(AsposeWordToPdfUtils.getUrlFileData(newFileDoc));
+				fos.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 		InputStream in;
 		try {
@@ -1960,6 +1969,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					if (CollectionUtil.isNotEmpty(cglRawMaterials1List)) {
 						cglRawMaterials1Service.saveBatchByRefId(contractFormInfo.getId(), cglRawMaterials1List);
 						List<CglRawMaterials1ResponseVO> list = cglRawMaterials1Service.selectRefList(contractFormInfo.getId());
+						templateField.setTableData(JSONObject.toJSONString(list));
+						templateField.setTableDataList(list);
+					}
+				}
+				//*买卖合同-五金低耗-关联表
+				if (ContractFormInfoTemplateContract.CONTRACT_CGLLOWCOSTHARDWARE1.equals(templateField.getRelationCode())) {
+					List<CglLowCostHardware1ResponseVO> cglLowCostHardware1List = JSON.parseArray(templateField.getTableData(), CglLowCostHardware1ResponseVO.class);
+					if (CollectionUtil.isNotEmpty(cglLowCostHardware1List)) {
+						iCglLowCostHardware1Service.saveBatchByRefId(contractFormInfo.getId(), cglLowCostHardware1List);
+						List<CglLowCostHardware1ResponseVO> list = iCglLowCostHardware1Service.selectRefList(contractFormInfo.getId());
 						templateField.setTableData(JSONObject.toJSONString(list));
 						templateField.setTableDataList(list);
 					}

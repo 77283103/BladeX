@@ -24,6 +24,8 @@ public interface ContractFormInfoTemplateContract {
 	String CONTRACT_CGLTHESALESCONTRACT1 = "CglTheSalesContract1";
 	//原物料-买卖合同
 	String CONTRACT_CGLRAWMATERIALS1 = "CglRawMaterials1";
+	//买卖合同-五金低耗
+	String CONTRACT_CGLLOWCOSTHARDWARE1="CglLowCostHardware1";
 	//设备维修保养合同(关联表）
 	String CONTRACT_SCLEQUIOMENTMAINTENANCE1 = "SclEquipmentMaintenance1";
 	//采购类——打样合同书

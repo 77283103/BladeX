@@ -15,17 +15,17 @@ import java.math.BigDecimal;
 
 
 /**
- * 采购类：原物料-买卖合同 实体类
+ * 采购类：原物料-买卖合同 买卖合同（五金低耗类）
  *
  * @author 采购类：原物料-买卖合同
  * @date : 2020-12-10 18:54:33
  */
 @Getter
 @Setter
-@TableName("cgl_raw_materials_1")
+@TableName("cgl_low_cost_hardware1")
 @EqualsAndHashCode(callSuper = true)
-@ApiModel(value = "CglRawMaterials1对象", description = "采购类：原物料-买卖合同")
-public class CglRawMaterials1Entity extends BaseEntity {
+@ApiModel(value = "CglLowCostHardware1对象", description = "采购类：买卖合同（五金低耗类）")
+public class CglLowCostHardware1Entity extends BaseEntity {
 
 	private static final long serialVersionUID = 1L;
 
@@ -64,7 +64,6 @@ public class CglRawMaterials1Entity extends BaseEntity {
 	/**
 	 * 合作起始时间
 	 */
-
     @ApiModelProperty(value="合作起始时间")
 	private String cglStartingTime;
 	/**
@@ -85,7 +84,7 @@ public class CglRawMaterials1Entity extends BaseEntity {
 	/**
 	 * 税率
 	 */
-	@ApiModelProperty(value="税率")
+	@ApiModelProperty(value="现行税率")
 	private String cglRate;
 	/**
 	 * 合作数量
@@ -93,9 +92,14 @@ public class CglRawMaterials1Entity extends BaseEntity {
 	@ApiModelProperty(value="合作数量")
 	private String cglMount;
 	/**
+	 * 品牌
+	 */
+	@ApiModelProperty(value="品牌")
+	public String cglBrand;
+	/**
 	 * 单位  度量衡
 	 */
-	@ApiModelProperty(value="单位 度量衡")
+	@ApiModelProperty(value="单位")
 	private String cglUnit;
 	/**
 	 * 执行公司

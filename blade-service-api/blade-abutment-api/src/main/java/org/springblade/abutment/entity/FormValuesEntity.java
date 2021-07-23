@@ -26,6 +26,8 @@ public class FormValuesEntity implements Serializable {
 	private String fd_accord_id;
 	@ApiModelProperty(value = "单据内容:合同id(必填,合同平台生成的电子用印合同的id,可以用于合同查阅)")
 	private String fd_contract_id;
+	@ApiModelProperty(value = "单据内容：合同文件名称")
+	private String fd_file_name;
 	@ApiModelProperty(value = "单据内容:PDF文件id(必填,合同上传E签宝返回的附件id,可用于查阅E签宝签字合同附件)")
 	private String fd_contract_name;
 	@ApiModelProperty(value = "单据内容:合同文件名称(必填)")
@@ -107,15 +109,15 @@ public class FormValuesEntity implements Serializable {
 	@ApiModelProperty(value = "单据内容:银行信息-开户行名称")
 	private String fd_deposit_name;
 	@ApiModelProperty(value = "子公司以及签章单位信息（关联表）")
-	private List<MultiSa> fd_multise;
+	private List<MultiSa> fd_company;
 	@ApiModelProperty(value = "相对方企业信息（关联表）")
-	private List<MultiCo> fd_multico;
+	private List<MultiCo> fd_opposite;
 	@ApiModelProperty(value = "相对方角色信息列表（关联表）")
-	private List<MultiRo> fd_multiro;
+	private List<MultiRo> fd_identity;
 	@ApiModelProperty(value = "多方收付款信息（关联表）")
 	private List<MultiPay> fd_multipay;
 	@ApiModelProperty(value = "多方保证金信息（关联表）")
-	private List<MultiBon> fd_multibon;
+	private List<MultiBon> fd_deposit;
 	@ApiModelProperty(value = "单据内容:履约清单")
 	private List<KeepList> fd_keep_list;
 	@ApiModelProperty(value = "单据内容:收付款清单")

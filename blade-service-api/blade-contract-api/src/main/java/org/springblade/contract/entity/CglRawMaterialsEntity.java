@@ -100,17 +100,17 @@ public class CglRawMaterialsEntity extends BaseEntity {
 	/**
 	 * 乙方开户行名称
 	 */
-    @ApiModelProperty(value="乙方开户行名称")
+    @ApiModelProperty(value="开户行名称")
 	private String cglNameOfBank;
 	/**
 	 * 乙方账号
 	 */
-    @ApiModelProperty(value="乙方账号")
+    @ApiModelProperty(value="账号")
 	private String cglAccount;
 	/**
 	 * 乙方账户名称
 	 */
-    @ApiModelProperty(value="乙方账户名称")
+    @ApiModelProperty(value="账户名称")
 	private String cglNameOfTheAccount;
 	/**
 	 * 第九.9.13项）其他约定

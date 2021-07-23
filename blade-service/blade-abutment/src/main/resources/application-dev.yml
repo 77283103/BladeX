@@ -29,6 +29,8 @@ api:
     password: oaekp
     fdTemplateId: 176212613bf6f84e6bf1ad942cbb8344
     appTemplateId: 179c63d15205aa3926282a5461f9def3
+    #多方起草模板id
+    multiTemplateId: 17ac1b59f79a105dac5d3954958abe4f
     systemName: c_p_notify
     ftlPath: D:/ftl/
   organization:
