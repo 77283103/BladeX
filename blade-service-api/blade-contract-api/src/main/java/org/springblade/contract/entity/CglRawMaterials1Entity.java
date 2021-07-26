@@ -38,9 +38,8 @@ public class CglRawMaterials1Entity extends BaseEntity {
 	/**
 	 * 料号
 	 */
-    @JsonSerialize(nullsUsing = NullSerializer.class)
     @ApiModelProperty(value="料号")
-	private Integer cglMaterial;
+	private String cglMaterial;
 	/**
 	 * 品名
 	 */

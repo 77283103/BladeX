@@ -14,6 +14,7 @@ import org.springblade.system.entity.TemplateFieldJsonEntity;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 /**
@@ -33,7 +34,7 @@ public enum TemplateJsonEnum {
 
 		@Override
 		public Object setScheduler(String type) {
-			List<LinkedHashMap<Object, Object>> objects = new ArrayList<>();
+			List<ConcurrentHashMap<Object, Object>> objects = new ArrayList<>();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(type, TemplateFieldJsonEntity.class);
 			templateFieldList.forEach(teL -> {
 				List<CglRawMaterials1ResponseVO> CglRawMaterials1;
@@ -41,7 +42,7 @@ public enum TemplateJsonEnum {
 					CglRawMaterials1 = JSON.parseArray(teL.getTableData(), CglRawMaterials1ResponseVO.class);
 					CglRawMaterials1.forEach(cg -> {
 						try {
-							LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
+							ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<>();
 							for (Field field : cg.getClass().getDeclaredFields()) {
 								field.setAccessible(true);
 								String fieldName = field.getName();
@@ -78,10 +79,10 @@ public enum TemplateJsonEnum {
 		}
 
 		@Override
-		public List<LinkedHashMap<Object, Object>> setScheduler(String type, Boolean tag) {
+		public List<ConcurrentHashMap<Object, Object>> setScheduler(String type, Boolean tag) {
 			if (tag) {
-				List<LinkedHashMap<Object, Object>> objects = new ArrayList<>();
-				LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
+				List<ConcurrentHashMap<Object, Object>> objects = new ArrayList<>();
+				ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<>();
 				for (Field field : CglRawMaterials1Entity.class.getDeclaredFields()) {
 					if (field.isAnnotationPresent(ApiModelProperty.class)) {
 						/**
@@ -121,15 +122,15 @@ public enum TemplateJsonEnum {
 
 		@Override
 		public Object setScheduler(String type) {
-			List<LinkedHashMap<Object, Object>> objects = new ArrayList<>();
+			List<ConcurrentHashMap<Object, Object>> objects = new ArrayList<>();
 			List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(type, TemplateFieldJsonEntity.class);
 			templateFieldList.forEach(teL -> {
 				List<CglLowCostHardware1ResponseVO> cglLowCostHardware1List;
-				if ("cglRawMaterials1List".equals(teL.getFieldName())) {
+				if ("cglLowCostHardware1List".equals(teL.getFieldName())) {
 					cglLowCostHardware1List = JSON.parseArray(teL.getTableData(), CglLowCostHardware1ResponseVO.class);
 					cglLowCostHardware1List.forEach(cg -> {
 						try {
-							LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
+							ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<>();
 							for (Field field : cg.getClass().getDeclaredFields()) {
 								field.setAccessible(true);
 								if(!containsValue().containsValue(field.getName())) {
@@ -154,10 +155,10 @@ public enum TemplateJsonEnum {
 		}
 
 		@Override
-		public List<LinkedHashMap<Object, Object>> setScheduler(String type, Boolean tag) {
+		public List<ConcurrentHashMap<Object, Object>> setScheduler(String type, Boolean tag) {
 			if (tag) {
-				List<LinkedHashMap<Object, Object>> objects = new ArrayList<>();
-				LinkedHashMap<Object, Object> map = new LinkedHashMap<>();
+				List<ConcurrentHashMap<Object, Object>> objects = new ArrayList<>();
+				ConcurrentHashMap<Object, Object> map = new ConcurrentHashMap<>();
 				for (Field field : CglLowCostHardware1Entity.class.getDeclaredFields()) {
 					if(!containsValue().containsValue(field.getName())) {
 						if (field.isAnnotationPresent(ApiModelProperty.class)) {
@@ -189,7 +190,7 @@ public enum TemplateJsonEnum {
 		}
 
 		@Override
-		public List<LinkedHashMap<Object, Object>> setScheduler(String type, Boolean tag) {
+		public List<ConcurrentHashMap<Object, Object>> setScheduler(String type, Boolean tag) {
 			return null;
 		}
 	};
@@ -197,7 +198,7 @@ public enum TemplateJsonEnum {
 
 	public abstract Object setScheduler(String type);
 
-	public abstract List<LinkedHashMap<Object, Object>> setScheduler(String type, Boolean tag);
+	public abstract List<ConcurrentHashMap<Object, Object>> setScheduler(String type, Boolean tag);
 
 	@Getter
 	public String type;

@@ -42,9 +42,8 @@ public class CglLowCostHardware1ResponseVO extends CglLowCostHardware1Entity {
 	/**
 	 * 料号
 	 */
-	@JsonSerialize(nullsUsing = NullSerializer.class)
 	@ApiModelProperty(value="料号")
-	public Integer cglMaterial;
+	public String cglMaterial;
 	/**
 	 * 品名
 	 */
