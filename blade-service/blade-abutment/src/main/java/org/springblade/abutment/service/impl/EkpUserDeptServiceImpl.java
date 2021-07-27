@@ -13,6 +13,7 @@ import org.springblade.abutment.vo.EkpSyncRequestVO;
 import org.springblade.abutment.vo.EkpSyncUserInfoVo;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
+import org.springblade.core.tool.utils.DateUtil;
 import org.springblade.core.tool.utils.DigestUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Dept;
@@ -31,10 +32,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -58,6 +56,9 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 	@Override
 	public void synchronizationEkpUserData(EkpSyncRequestVO ekpSyncRequestVO) {
 		//获取ekp用户部门数据
+		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
+			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
+		}
 		ekpSyncRequestVO.setToken(ekpService.getToken(ekpProperties.getToken_account(),ekpProperties.getToken_password(),ekpProperties.getToken_url()));
 		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
 		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
