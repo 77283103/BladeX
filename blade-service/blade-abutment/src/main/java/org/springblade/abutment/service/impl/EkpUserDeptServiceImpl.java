@@ -61,7 +61,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		ekpSyncRequestVO.setToken(ekpService.getToken());
 		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
 		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
-		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncRequestVO));
+		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
 		if(null != ekpSyncInfoVo && ekpSyncInfoVo.getMsg().equals(SUCCESS)){
 			Map<String,Dept> deptMap = ekpDeptHandle(ekpSyncInfoVo.getOrgList());
 			Map<String,User> userMap =  ekpUserHandle(ekpSyncInfoVo.getUserList(),deptMap);
