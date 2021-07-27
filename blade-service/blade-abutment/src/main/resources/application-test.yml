@@ -22,7 +22,8 @@ api:
     username: dev_c_p
     password: oa0/YNY374PKB53+IUmjiw==
   ekp:
-    tokenUrl: https://oatest-interface.pec.com.cn/restful/ekp/getToken
+    #tokenUrl: https://oatest-interface.pec.com.cn/restful/ekp/getToken
+    tokenUrl: https://oa-interface.pec.com.cn/restful/ekp/getToken
     ekpUrl: https://oatest-interface.pec.com.cn/restful/ekp/genhrbill
     agencyUrl: https://oatest-interface.pec.com.cn/common/notify/todo
     account: iHR
@@ -70,3 +71,6 @@ api:
     #正式环境
     url: https://oa-interface.pec.com.cn/common/organization/element
     password: 123456
+    token_account: GenFlowNm
+    token_password: o!a@e@k#p
+    token_url: https://oa-interface.pec.com.cn/restful/ekp/getToken

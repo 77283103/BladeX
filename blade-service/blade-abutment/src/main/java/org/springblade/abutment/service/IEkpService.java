@@ -12,6 +12,13 @@ import org.springblade.abutment.vo.EkpVo;
  * @since 2020-12-4
  */
 public interface IEkpService {
+
+	/**
+	 * 获取ekp接口的token(用于测试，解耦)
+	 * @return
+	 */
+	String getToken(String account,String password,String tokenUrl) throws Exception;
+
     /**
      * 获取ekp接口的token
      * @return

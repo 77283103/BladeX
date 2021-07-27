@@ -68,4 +68,7 @@ api:
     #正式环境
     url: https://oa-interface.pec.com.cn/common/organization/element
     password: 123456
+    token_account: GenFlowNm
+    token_password: o!a@e@k#p
+    token_url: https://oa-interface.pec.com.cn/restful/ekp/getToken
 

@@ -13,4 +13,10 @@ public class EkpProperties {
 	private String url;
 
 	private String password;
+
+	private String token_account;
+
+	private String token_password;
+
+	private String token_url;
 }
