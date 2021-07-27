@@ -116,6 +116,8 @@ public class FormValuesEntity implements Serializable {
 	private List<MultiRo> fd_identity;
 	@ApiModelProperty(value = "多方收付款信息（关联表）")
 	private List<MultiPay> fd_multipay;
+	@ApiModelProperty(value = "收款明细列表")
+	private List<CollectionMulti> fd_collection_multi;
 	@ApiModelProperty(value = "多方保证金信息（关联表）")
 	private List<MultiBon> fd_deposit;
 	@ApiModelProperty(value = "单据内容:履约清单")

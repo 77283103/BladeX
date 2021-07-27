@@ -156,7 +156,7 @@ public class EkpServiceImpl implements IEkpService {
 		if (Func.isNull(docInfoJson.getStr("ekp_number"))) {
 			return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo")) : new EkpVo("");
 		} else {
-			return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo"), docInfoJson.getOrDefault("ekp_number","").toString()) : new EkpVo("");
+			return docInfoJson.getBool("success") ? new EkpVo(docInfoJson.getStr("docInfo"), docInfoJson.getOrDefault("ekp_number","").toString(),docInfoJson.getStr("errMessage")) : new EkpVo("","",docInfoJson.getStr("errMessage"));
 		}
 	}
 

@@ -238,7 +238,6 @@
         WHERE contract_id = #{contractId}
     </delete>
 
-
     <insert id="saveListByContractId">
         insert into contract_counterpart_setting
         (
@@ -267,5 +266,4 @@
         FROM contract_counterpart
         WHERE unified_social_credit_code IN (NULL,'null','');
     </delete>
-
 </mapper>

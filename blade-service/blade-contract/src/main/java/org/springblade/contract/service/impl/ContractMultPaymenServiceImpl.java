@@ -20,4 +20,15 @@ public class ContractMultPaymenServiceImpl extends BaseServiceImpl<ContractMultP
 	public IPage<ContractMultPaymenEntity> pageList(IPage<ContractMultPaymenEntity> page, ContractMultPaymenEntity contractMultPaymen) {
 		return baseMapper.pageList(page, contractMultPaymen);
 	}
+
+	@Override
+	public void deleteMult(Long id) {
+		baseMapper.deleteMult(id);
+	}
+
+	@Override
+	public ContractMultPaymenEntity saveMultPay(ContractMultPaymenEntity paymenEntity) {
+		saveOrUpdate(paymenEntity);
+		return null;
+	}
 }

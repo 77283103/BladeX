@@ -140,7 +140,7 @@ public class ExcelSaveUntil {
 				if (contractFormInfoExcel.getSealName().equals(read2Ex.getYwlFullName()) && contractFormInfoExcel.getCounterpartName().equals(read2Ex.getYwlNameOfOpposite())) {
 					CglRawMaterials1Entity cglRawMaterials1 = new CglRawMaterials1Entity();
 					if (!"无".equals(read2Ex.getCglMaterial()) && !"".equals(read2Ex.getCglMaterial()) && read2Ex.getCglMaterial() != null) {
-						cglRawMaterials1.setCglMaterial(Integer.parseInt(read2Ex.getCglMaterial()));
+						cglRawMaterials1.setCglMaterial(read2Ex.getCglMaterial());
 					}
 					if (!"无".equals(read2Ex.getCglOfTheGoods()) && !"".equals(read2Ex.getCglOfTheGoods()) && read2Ex.getCglOfTheGoods() != null) {
 						cglRawMaterials1.setCglOfTheGoods(read2Ex.getCglOfTheGoods());

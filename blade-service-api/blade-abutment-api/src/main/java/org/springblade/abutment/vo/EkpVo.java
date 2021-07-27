@@ -19,6 +19,9 @@ public class EkpVo {
 	@ApiModelProperty(value = "生成预警代办或待阅的单据ID")
 	private String notifyId;
 
+	@ApiModelProperty(value = "返回的状态信息")
+	private String msg_info;
+
 	public EkpVo() {
 	}
 
@@ -26,10 +29,11 @@ public class EkpVo {
 		this.doc_info = doc_info;
 		this.notifyId = doc_info;
 	}
-	public EkpVo(String doc_info,String ekp_number) {
+	public EkpVo(String doc_info,String ekp_number,String msg_info) {
 		this.doc_info = doc_info;
 		this.notifyId = doc_info;
 		this.ekp_number=ekp_number;
+		this.msg_info=msg_info;
 	}
 
 }
