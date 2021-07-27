@@ -86,4 +86,11 @@ public interface RoleMapper extends BaseMapper<Role> {
 	 * @return
 	 */
 	List<RoleVO> lazyList(Long parentId, Map<String, Object> param);
+
+	/**
+	 * 获取角色根据名称
+	 * @param roleName
+	 * @return
+	 */
+	Role getRoleByName(@Param("roleName") String roleName);
 }

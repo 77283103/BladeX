@@ -1,12 +1,15 @@
 package org.springblade.abutment.service.impl;
 
 
+import cn.hutool.crypto.SecureUtil;
 import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springblade.abutment.entity.EkpSynDataEntity;
 import org.springblade.abutment.properties.EkpProperties;
 import org.springblade.abutment.service.EkpUserDeptService;
 import org.springblade.abutment.service.IEkpService;
+import org.springblade.abutment.service.IEkpSynDataService;
 import org.springblade.abutment.vo.EkpSyncDeptInfoVo;
 import org.springblade.abutment.vo.EkpSyncInfoVo;
 import org.springblade.abutment.vo.EkpSyncRequestVO;
@@ -14,9 +17,9 @@ import org.springblade.abutment.vo.EkpSyncUserInfoVo;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.DateUtil;
-import org.springblade.core.tool.utils.DigestUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.entity.Dept;
+import org.springblade.system.entity.Role;
 import org.springblade.system.entity.UserDepartEntity;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
@@ -48,8 +51,11 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 	private ISysClient sysClient;
 	@Autowired
 	private IEkpService ekpService;
+	@Autowired
+	private IEkpSynDataService ekpSynDataService;
 
 	private final static String SUCCESS = "success";
+	private final static String ROLE_NAME = "合同管理员";
 
 
 	@SneakyThrows
@@ -63,13 +69,13 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
 		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
 		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
+		saveEkpData(JsonUtil.toJson(ekpSyncRequestVO));
 		if(null != ekpSyncInfoVo && ekpSyncInfoVo.getMsg().equals(SUCCESS)){
 			Map<String,Dept> deptMap = ekpDeptHandle(ekpSyncInfoVo.getOrgList());
 			Map<String,User> userMap =  ekpUserHandle(ekpSyncInfoVo.getUserList(),deptMap);
 			userDepartHandle(deptMap,userMap,ekpSyncInfoVo.getUserList());
 		}
 	}
-
 
 	public EkpSyncInfoVo getEkpSyncInfo(EkpSyncRequestVO ekpSyncRequestVO){
 		//设置请求头
@@ -88,6 +94,17 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 			return null;
 		}
 	}
+
+
+	private void saveEkpData(String json){
+		if(Func.isEmpty(json)){
+			EkpSynDataEntity entity = new EkpSynDataEntity();
+			entity.setData(json);
+			ekpSynDataService.save(entity);
+		}
+	}
+
+
 
 	/**
 	 * 处理ekp用户数据
@@ -109,7 +126,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 				user.setId(new DefaultIdentifierGenerator().nextId(new Object()).longValue());
 				user.setRealName(ekpSyncUserInfoVo.getUserName());
 				user.setAccount(ekpSyncUserInfoVo.getEmplno());
-				user.setPassword(DigestUtil.encrypt(ekpProperties.getPassword()));
+				user.setPassword(SecureUtil.md5(ekpProperties.getPassword()));
 				user.setCode(ekpSyncUserInfoVo.getEmplno());
 				user.setAssociationId(ekpSyncUserInfoVo.getUserId());
 				user.setIsDeleted(0);
@@ -121,7 +138,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 				user.setFactName(dept.getFactName());
 				user.setFactNo(dept.getFactNo());
 			}
-			user.setIsEnable(Integer.parseInt(Func.isEmpty(ekpSyncUserInfoVo.getAvailable())?"0":ekpSyncUserInfoVo.getAvailable()));
+			user.setIsEnable(Integer.parseInt(Func.isEmpty(ekpSyncUserInfoVo.getAvailable())?"1":ekpSyncUserInfoVo.getAvailable().equals("1")?"2":"1"));
 			baldeUserList.add(user);
 			userMap.put(user.getAssociationId(),user);
 		});
@@ -153,7 +170,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 				dept.setId(new DefaultIdentifierGenerator().nextId(new Object()).longValue());
 				dept.setDeptName(ekpSyncDeptInfoVo.getOrgName());
 				dept.setAssociationId(ekpSyncDeptInfoVo.getOrgId());
-				dept.setIsEnable(Integer.parseInt(Func.isEmpty(ekpSyncDeptInfoVo.getAvailable())?"0":ekpSyncDeptInfoVo.getAvailable()));
+				dept.setIsEnable(Integer.parseInt(Func.isEmpty(ekpSyncDeptInfoVo.getAvailable())?"1":ekpSyncDeptInfoVo.getAvailable().equals("1")?"2":"1"));
 			}
 			dept.setDeptName(ekpSyncDeptInfoVo.getOrgName());
 			dbDeptMap.put(dept.getAssociationId(),dept);
@@ -180,6 +197,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 	public List<UserDepartEntity> userDepartHandle(Map<String,Dept> deptMap, Map<String,User> userMap,List<EkpSyncUserInfoVo> ekpSyncUserInfoVoList){
 		List<UserDepartEntity> userDepartEntityList = new ArrayList<>();
 		List<Long> userIds = new ArrayList<>();
+		Map<String,UserDepartEntity>userDepartMap = getMapUserDepart();
 		ekpSyncUserInfoVoList.forEach(ekpSyncUserInfoVo -> {
 			UserDepartEntity userDepartEntity = new UserDepartEntity();
 			User user = userMap.get(ekpSyncUserInfoVo.getUserId());
@@ -189,8 +207,16 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 			if(null != dept){
 				userDepartEntity.setDeptId(dept.getId());
 			}
-			//同步用户设置默认角色,默认角色由system自动创建
-			userDepartEntity.setRoleId(1270659143136452610L);
+			//同步用户设置默认角色,默认角色为“测试” (如用户在合同平台角色为“合同管理员”，需保持不变)
+			R<Role>role = sysClient.getRoleByName(ROLE_NAME);
+			UserDepartEntity userDepart = userDepartMap.get(user.getId());
+			if(null != userDepart){
+				if(userDepart.getRoleId().equals(role.getData().getId().toString())){
+					userDepartEntity.setRoleId(role.getData().getId());
+				}
+			}else{
+				userDepartEntity.setRoleId(1270659143136452610L);
+			}
 			userDepartEntityList.add(userDepartEntity);
 			userIds.add(user.getId());
 		});
@@ -200,6 +226,17 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		sysClient.saveOrUpdateBatchUserDepart(userDepartEntityList);
 		return userDepartEntityList;
 	}
+
+
+	private Map<String,UserDepartEntity> getMapUserDepart(){
+		Map<String,UserDepartEntity> userDepartMap = new HashMap<>();
+		R<List<UserDepartEntity>>r = sysClient.getUserDepartAll();
+		r.getData().forEach(userDepart -> {
+			userDepartMap.put(userDepart.getUserId().toString(),userDepart);
+		});
+		return userDepartMap;
+	}
+
 
 
 	/**
@@ -258,7 +295,6 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		}
 		return greateAncestors(ekpParentIdNext,dbDeptMap,ancestors);
 	}
-
 
 
 	public static String readFileContent(String fileName) {

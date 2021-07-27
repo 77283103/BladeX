@@ -119,4 +119,11 @@
         </if>
         ORDER BY role.sort
     </select>
+
+    <select id="getRoleByName">
+        <include refid="baseColumnList"></include>
+        from blade_role
+        where
+        role_name = #{roleName}
+    </select>
 </mapper>

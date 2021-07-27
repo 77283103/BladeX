@@ -73,6 +73,7 @@ public interface ISysClient {
 	String GET_DEPT_ID_BY_LUNID = API_PREFIX + "/get-dept-id-by-lunid";
 	String GET_USER_DEPART_ID_BY_LUNID = API_PREFIX + "/get-user-depart-id-by-lunid";
 	String GET_USER_DEPART =API_PREFIX+"/get_user_depart";
+	String GET_USER_DEPART_ALL =API_PREFIX+"/get_user_depart_all";
 	String GET_ANCESTOR_IDS = API_PREFIX + "/get-ancestor-ids";
 	String GET_POST_ID_BY_LUNID = API_PREFIX + "/get-post-id-by-lunid";
 	String GET_DATA_SEAL_AUTHORITY = API_PREFIX + "/get-data-seal-authority";
@@ -205,6 +206,14 @@ public interface ISysClient {
 	 */
 	@GetMapping(ROLE)
 	R<Role> getRole(@RequestParam("id") Long id);
+
+	/**
+	 * 根据角色名称获取角色
+	 * @param roleName
+	 * @return
+	 */
+	@GetMapping(ROLE_NAME)
+	R<Role> getRoleByName(@RequestParam("roleName") String roleName);
 
 	/**
 	 * 获取角色id
@@ -351,6 +360,8 @@ public interface ISysClient {
 	@GetMapping(GET_USER_DEPART)
 	R<UserDepartEntity> getUserDepart(@RequestParam("associationId") Long associationId);
 
+	@GetMapping(GET_USER_DEPART_ALL)
+	R<List<UserDepartEntity>> getUserDepartAll();
 	/**
 	 * 将lunid祖籍列表转为blade祖籍列表
 	 *

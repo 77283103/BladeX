@@ -147,6 +147,11 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
+	public R<Role> getRoleByName(String roleName) {
+		return R.data(roleService.getRoleByName(roleName));
+	}
+
+	@Override
 	public R<String> getRoleIds(String tenantId, String roleNames) {
 		return R.data(roleService.getRoleIds(tenantId, roleNames));
 	}
@@ -254,6 +259,11 @@ public class SysClient implements ISysClient {
 	@GetMapping(GET_USER_DEPART)
 	public R<UserDepartEntity> getUserDepart(Long associationId) {
 		return R.data(userDepartService.getUserDepart(associationId));
+	}
+
+	@Override
+	public R<List<UserDepartEntity>> getUserDepartAll() {
+		return R.data(userDepartService.list());
 	}
 
 	@Override

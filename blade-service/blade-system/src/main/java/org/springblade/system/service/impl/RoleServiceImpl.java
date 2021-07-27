@@ -192,4 +192,9 @@ public class RoleServiceImpl extends BaseServiceImpl<RoleMapper, Role> implement
 		}
 		return baseMapper.lazyList(parentId, param);
 	}
+
+	@Override
+	public Role getRoleByName(String roleName) {
+		return baseMapper.getRoleByName(roleName);
+	}
 }

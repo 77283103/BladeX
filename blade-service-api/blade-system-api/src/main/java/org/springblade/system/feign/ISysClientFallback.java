@@ -104,6 +104,11 @@ public class ISysClientFallback implements ISysClient {
 	}
 
 	@Override
+	public R<Role> getRoleByName(String roleName) {
+		return return R.fail("获取数据失败");
+	}
+
+	@Override
 	public R<String> getRoleIds(String tenantId, String roleNames) {
 		return R.fail("获取数据失败");
 	}
@@ -185,6 +190,11 @@ public class ISysClientFallback implements ISysClient {
 	@Override
 	public R<UserDepartEntity> getUserDepart(Long associationId) {
 		return R.fail("根据用户ID未查询到该用户关联部门和岗位和角色信息");
+	}
+
+	@Override
+	public R<List<UserDepartEntity>> getUserDepartAll() {
+		return R.fail("获取数据失败");
 	}
 
 	@Override
