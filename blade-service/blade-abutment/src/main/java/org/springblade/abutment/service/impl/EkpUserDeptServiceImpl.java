@@ -59,10 +59,10 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 	public void synchronizationEkpUserData(EkpSyncRequestVO ekpSyncRequestVO) {
 		//获取ekp用户部门数据
 		ekpSyncRequestVO.setToken(ekpService.getToken());
+		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
 		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
-//		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\ekp_syn_info.txt");
-//		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
-		if(ekpSyncInfoVo.getMsg().equals(SUCCESS)){
+		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncRequestVO));
+		if(null != ekpSyncInfoVo && ekpSyncInfoVo.getMsg().equals(SUCCESS)){
 			Map<String,Dept> deptMap = ekpDeptHandle(ekpSyncInfoVo.getOrgList());
 			Map<String,User> userMap =  ekpUserHandle(ekpSyncInfoVo.getUserList(),deptMap);
 			userDepartHandle(deptMap,userMap,ekpSyncInfoVo.getUserList());
@@ -77,9 +77,15 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		headers.setContentType(type);
 		headers.add("Accept", MediaType.APPLICATION_JSON.toString());
 		//设置请求参数
-		HttpEntity<String> requestBody = new HttpEntity<String>(JsonUtil.toJson(ekpSyncRequestVO), headers);
+		HttpEntity<String> requestBody = new HttpEntity<>(JsonUtil.toJson(ekpSyncRequestVO), headers);
 		//调用接口
-		return restTemplate.postForObject(ekpProperties.getUrl(),requestBody, EkpSyncInfoVo.class);
+		try{
+			EkpSyncInfoVo ekpSyncInfoVo = restTemplate.postForObject(ekpProperties.getUrl(),requestBody, EkpSyncInfoVo.class);
+			return ekpSyncInfoVo;
+		}catch (Exception e){
+			log.error("同步ekp用户组织机构数据---接口调用失败:{}",e.getMessage());
+			return null;
+		}
 	}
 
 	/**
@@ -255,6 +261,9 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 
 
 	public static String readFileContent(String fileName) {
+
+		//		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\ekp_syn_info.txt");
+//		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
 		File file = new File(fileName);
 		BufferedReader reader = null;
 		StringBuffer sbf = new StringBuffer();
