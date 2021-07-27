@@ -64,4 +64,7 @@ api:
       secondWarning: ",已超期15天末进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
       thirdWarning: ",已超期45天未进行归档，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
       estimateWarning: "已超期计划归档日期，请及时将双方盖章后的合同原件寄于合同管理师处留档:"
-
+  synekp:
+    #正式环境
+    url: https://oa-interface.pec.com.cn/common/organization/element
+    password: 123456
