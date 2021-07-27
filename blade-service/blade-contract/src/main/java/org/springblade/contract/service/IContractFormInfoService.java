@@ -104,6 +104,9 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	void saveAccording(ContractFormInfoRequestVO vo);
 
+
+	void saveBondAndPlan(ContractFormInfoRequestVO vo);
+
 	/**
 	 * 保存合同用印关联id数据方法
 	 *

@@ -8,10 +8,9 @@ import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.service.IContractFormInfoService;
-import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractPerformanceRequestVO;
 import org.springblade.contract.vo.ContractPerformanceResponseVO;
-import org.springblade.contract.wrapper.ContractFormInfoWrapper;
 import org.springblade.contract.wrapper.ContractPerformanceWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.contract.entity.ContractPerformanceEntity;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.springblade.contract.service.impl.ContractBondPlanServiceImpl.plusDay;
@@ -90,10 +88,18 @@ public class ContractPerformanceServiceImpl extends BaseServiceImpl<ContractPerf
 	}
 
 	@Override
-	public ContractPerformanceEntity savePerformance(ContractPerformanceEntity contractPerformance) {
-		performanceMapper.deleteByContractId(contractPerformance.getContractId());
-		performanceMapper.insert(contractPerformance);
-		return contractPerformance;
+	public void savePerformance(ContractFormInfoRequestVO contractFormInfo) {
+		List<ContractPerformanceEntity> performanceEntities=new ArrayList<>();
+		//删除履约信息脏数据
+		deleteByContractId(contractFormInfo.getId());
+		contractFormInfo.getPerformanceList().forEach(performance -> {
+			if (Func.isNotEmpty(performance.getId())) {
+				performance.setId(null);
+			}
+			performance.setContractId(contractFormInfo.getId());
+			performanceEntities.add(performance);
+		});
+		saveBatch(performanceEntities);
 	}
 
 	@Override

@@ -1,12 +1,11 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.springblade.contract.entity.ContractPerformanceEntity;
+import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractPerformanceRequestVO;
 import org.springblade.contract.vo.ContractPerformanceResponseVO;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.contract.entity.ContractPerformanceEntity;
-
-import java.util.Date;
 
 /**
  * 接收/提供服务计划清单 服务类
@@ -51,8 +50,9 @@ public interface IContractPerformanceService extends BaseService<ContractPerform
 	/**
 	 * 保存履约计划清单
 	 *
+	 * @param contractFormInfo
 	 */
-	ContractPerformanceEntity savePerformance(ContractPerformanceEntity contractPerformance);
+	void savePerformance(ContractFormInfoRequestVO contractFormInfo);
 
 
 	/**

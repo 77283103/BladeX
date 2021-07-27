@@ -1,11 +1,12 @@
 package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.springblade.contract.entity.ContractPerformanceEntity;
+import org.springblade.contract.entity.ContractPerformanceColPayEntity;
+import org.springblade.contract.vo.ContractFormInfoRequestVO;
+import org.springblade.contract.vo.ContractFormInfoResponseVO;
 import org.springblade.contract.vo.ContractPerformanceColPayRequestVO;
 import org.springblade.contract.vo.ContractPerformanceColPayResponseVO;
 import org.springblade.core.mp.base.BaseService;
-import org.springblade.contract.entity.ContractPerformanceColPayEntity;
 
 /**
  * 收付款计划清单-收付款 服务类
@@ -50,7 +51,7 @@ public interface IContractPerformanceColPayService extends BaseService<ContractP
 	 * 保存履约计划收付款清单
 	 *
 	 */
-	ContractPerformanceColPayEntity savePerformanceColPay(ContractPerformanceColPayEntity contractPerformanceColPay);
+	void savePerformanceColPay(ContractFormInfoRequestVO contractFormInfo);
 
 	/**
 	 * 通过合同id删除

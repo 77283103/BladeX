@@ -86,6 +86,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Autowired
 	private IAbutmentClient abutmentClient;
 	@Autowired
+	private IContractBondPlanService contractBondPlanService;
+	@Autowired
 	private ContractFormInfoMapper contractFormInfoMapper;
 	@Autowired
 	private ContractCounterpartMapper contractCounterpartMapper;
@@ -991,6 +993,27 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			contractFormInfoMapper.saveAccordingIds(vo.getId(), acIdList);
 		}
 		/**********保存新新依据数据到依据库END********/
+	}
+	@Override
+	public void saveBondAndPlan(ContractFormInfoRequestVO contractFormInfo) {
+		List<Long> list = new ArrayList<>();
+		ContractBondPlanEntity contractBondPlan = new ContractBondPlanEntity();
+		//删除保证金库脏数据
+		contractBondService.deleteByContractId(contractFormInfo.getId());
+		//删除保证金履约计划脏数据
+		contractBondPlanService.deleteByContractId(contractFormInfo.getId());
+		for (ContractBondEntity contractBondEntity : contractFormInfo.getContractBond()) {
+			BeanUtil.copy(contractBondEntity, contractBondPlan);
+			if (Func.isEmpty(contractBondEntity.getId())) {
+				contractBondService.save(contractBondEntity);
+			}
+			//保存保证金履约计划
+			contractBondPlan.setContractId(contractFormInfo.getId());
+			contractBondPlan.setId(null);
+			contractBondPlanService.save(contractBondPlan);
+			list.add(contractBondEntity.getId());
+		}
+		contractBondService.saveBond(list, contractFormInfo.getId());
 	}
 
 	/**

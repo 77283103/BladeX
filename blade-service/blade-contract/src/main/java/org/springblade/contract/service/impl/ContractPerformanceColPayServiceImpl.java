@@ -5,21 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractPerformanceEntity;
+import org.springblade.contract.entity.ContractPerformanceColPayEntity;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
+import org.springblade.contract.mapper.ContractPerformanceColPayMapper;
 import org.springblade.contract.service.IContractFormInfoService;
-import org.springblade.contract.vo.ContractFormInfoResponseVO;
+import org.springblade.contract.service.IContractPerformanceColPayService;
+import org.springblade.contract.vo.ContractFormInfoRequestVO;
 import org.springblade.contract.vo.ContractPerformanceColPayRequestVO;
 import org.springblade.contract.vo.ContractPerformanceColPayResponseVO;
-import org.springblade.contract.vo.ContractPerformanceResponseVO;
 import org.springblade.contract.wrapper.ContractPerformanceColPayWrapper;
-import org.springblade.contract.wrapper.ContractPerformanceWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
-import org.springblade.contract.entity.ContractPerformanceColPayEntity;
-import org.springblade.contract.mapper.ContractPerformanceColPayMapper;
-import org.springblade.contract.service.IContractPerformanceColPayService;
 import org.springblade.core.tool.utils.Func;
 import org.springframework.stereotype.Service;
 
@@ -91,10 +88,18 @@ public class ContractPerformanceColPayServiceImpl extends BaseServiceImpl<Contra
 	}
 
 	@Override
-	public ContractPerformanceColPayEntity savePerformanceColPay(ContractPerformanceColPayEntity contractPerformanceColPay) {
-		performanceColPayMapper.deleteByContractId(contractPerformanceColPay.getContractId());
-		performanceColPayMapper.insert(contractPerformanceColPay);
-		return contractPerformanceColPay;
+	public void savePerformanceColPay(ContractFormInfoRequestVO contractFormInfo) {
+		List<ContractPerformanceColPayEntity> colPayEntities=new ArrayList<>();
+		//删除收付款脏数据
+		deleteByContractId(contractFormInfo.getId());
+		contractFormInfo.getPerformanceColPayList().forEach(performanceColPay -> {
+			if (Func.isNotEmpty(performanceColPay.getId())) {
+				performanceColPay.setId(null);
+			}
+			performanceColPay.setContractId(contractFormInfo.getId());
+			colPayEntities.add(performanceColPay);
+		});
+		saveBatch(colPayEntities);
 	}
 
 	@Override

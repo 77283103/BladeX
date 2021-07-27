@@ -10,8 +10,13 @@ public enum ContractStatusEnum {
 	/*合同解除状态*/
 	RELIEVE_SAVE("解除暂存",88),
 	RELIEVE_SUBMIT("解除已送审",89),
-	RELIEVE_PASS("解除通过",90);
+	RELIEVE_PASS("解除通过",90),
 
+	/*合同履约状态*/
+	CONTRACT_PERFORMANCE_STATUS("合同履约",70),
+	/*合同变更状态*/
+	TEMPORARY_STORAGE_STATUS("变更暂存",10),
+	APPROVE_REVIEW_STATUS("变更送审",20);
 	// 成员变量
 	private String value;
 	private Integer key;
