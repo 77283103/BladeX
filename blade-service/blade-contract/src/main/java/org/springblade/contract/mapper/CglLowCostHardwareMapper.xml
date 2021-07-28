@@ -34,6 +34,7 @@
         <result column="cgl_start_time" property="cglStartTime"/>
         <result column="cgl_of_time" property="cglOfTime"/>
         <result column="cgl_conventions" property="cglConventions"/>
+        <result column="annex" property="annex"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>

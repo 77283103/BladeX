@@ -22,8 +22,8 @@ api:
     username: dev_c_p
     password: oa0/YNY374PKB53+IUmjiw==
   ekp:
-    #tokenUrl: https://oatest-interface.pec.com.cn/restful/ekp/getToken
-    tokenUrl: https://oa-interface.pec.com.cn/restful/ekp/getToken
+    tokenUrl: https://oatest-interface.pec.com.cn/restful/ekp/getToken
+#    tokenUrl: https://oa-interface.pec.com.cn/restful/ekp/getToken
     ekpUrl: https://oatest-interface.pec.com.cn/restful/ekp/genhrbill
     agencyUrl: https://oatest-interface.pec.com.cn/common/notify/todo
     account: iHR

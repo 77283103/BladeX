@@ -120,8 +120,8 @@
         ORDER BY role.sort
     </select>
 
-    <select id="getRoleByName">
-        <include refid="baseColumnList"></include>
+    <select id="getRoleByName" resultMap="roleResultMap">
+        <include refid="baseColumnList"/>
         from blade_role
         where
         role_name = #{roleName}
