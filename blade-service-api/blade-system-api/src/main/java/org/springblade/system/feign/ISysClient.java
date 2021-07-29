@@ -59,6 +59,7 @@ public interface ISysClient {
 	String ROLE_IDS = API_PREFIX + "/role-ids";
 	String ROLE_NAME = API_PREFIX + "/role-name";
 	String ROLE_NAMES = API_PREFIX + "/role-names";
+	String ROLE_NAMES_ID=API_PREFIX +"/role_names_id";
 	String ROLE_ALIAS = API_PREFIX + "/role-alias";
 	String ROLE_ALIASES = API_PREFIX + "/role-aliases";
 	String TENANT = API_PREFIX + "/tenant";
@@ -212,7 +213,7 @@ public interface ISysClient {
 	 * @param roleName
 	 * @return
 	 */
-	@GetMapping(ROLE_NAME)
+	@GetMapping(ROLE_NAMES)
 	R<Role> getRoleByName(@RequestParam("roleName") String roleName);
 
 	/**
@@ -249,7 +250,7 @@ public interface ISysClient {
 	 * @param roleIds 主键
 	 * @return
 	 */
-	@GetMapping(ROLE_NAMES)
+	@GetMapping(ROLE_NAMES_ID)
 	R<List<String>> getRoleNames(@RequestParam("roleIds") String roleIds);
 
 	/**

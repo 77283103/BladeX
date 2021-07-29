@@ -132,6 +132,11 @@ public class CglCategorySalesContractsEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "乙方联系方式")
 	private String contactPartyBPhone;
+	/**
+	 * 拼接附件
+	 */
+	@ApiModelProperty(value="拼接附件")
+	private String annex;
 
 	@ApiModelProperty(value = "新陈列协议书集合")
 	@TableField(exist = false)

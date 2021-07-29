@@ -5,11 +5,21 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="cglCategorySalesContracts1ResultMap" type="org.springblade.contract.entity.CglCategorySalesContracts1Entity">
         <result column="id" property="id"/>
+        <result column="cgl_number" property="cglNumber"/>
+        <result column="cgl_Material" property="cglMaterial"/>
         <result column="cgl_of_the_goods" property="cglOfTheGoods"/>
-        <result column="cgl_specification" property="cglSpecification"/>
+        <result column="cgl_specifications" property="cglSpecifications"/>
         <result column="cgl_unit_price" property="cglUnitPrice"/>
-        <result column="cgl_cooperation_term" property="cglCooperationTerm"/>
+        <result column="cgl_payment_days" property="cglPaymentDays"/>
+        <result column="cgl_starting_time" property="cglStartingTime"/>
+        <result column="cgl_end_of_time" property="cglEndOfTime"/>
+        <result column="cgl_minimum_quantity" property="cglMinimumQuantity"/>
         <result column="cgl_note" property="cglNote"/>
+        <result column="cgl_rate" property="cglRate"/>
+        <result column="cgl_mount" property="cglMount"/>
+        <result column="cgl_brand" property="cglBrand"/>
+        <result column="cgl_unit" property="cglUnit"/>
+        <result column="cgl_company" property="cglCompany"/>
         <result column="status" property="status"/>
         <result column="is_deleted" property="isDeleted"/>
         <result column="create_user" property="createUser"/>
@@ -21,11 +31,16 @@
     <!-- 通用查询结果列 -->
     <sql id="baseColumnList">
         id,
+        cgl_number,
+        cgl_Material,
         cgl_of_the_goods,
-        cgl_specification,
+        cgl_specifications,
         cgl_unit_price,
-        cgl_cooperation_term,
-        cgl_note
+        cgl_payment_days,
+        cgl_starting_time,
+        cgl_end_of_time,
+        cgl_minimum_quantity,
+        cgl_note,cgl_rate,cgl_mount,cgl_unit,cgl_brand,cgl_company,
         status,
         is_deleted,
         create_user,
@@ -37,7 +52,7 @@
     <!-- 分页 -->
     <select id="pageList" resultMap="cglCategorySalesContracts1ResultMap">
         SELECT
-            <include refid="baseColumnList"></include>
+            <include refid="baseColumnList"/>
         FROM cgl_category_sales_contracts1
         WHERE is_deleted = 0
     </select>

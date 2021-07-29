@@ -26,7 +26,6 @@ import org.springblade.system.entity.*;
 import org.springblade.system.service.*;
 import org.springblade.system.vo.DataSealAuthorityResponseVO;
 import org.springblade.system.vo.DeptVO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -147,11 +146,13 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
+	@GetMapping(ROLE_NAMES)
 	public R<Role> getRoleByName(String roleName) {
 		return R.data(roleService.getRoleByName(roleName));
 	}
 
 	@Override
+	@GetMapping(ROLE_IDS)
 	public R<String> getRoleIds(String tenantId, String roleNames) {
 		return R.data(roleService.getRoleIds(tenantId, roleNames));
 	}
@@ -169,7 +170,7 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
-	@GetMapping(ROLE_NAMES)
+	@GetMapping(ROLE_NAMES_ID)
 	public R<List<String>> getRoleNames(String roleIds) {
 		return R.data(roleService.getRoleNames(roleIds));
 	}
