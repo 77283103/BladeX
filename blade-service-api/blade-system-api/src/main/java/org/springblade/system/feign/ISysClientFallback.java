@@ -105,7 +105,7 @@ public class ISysClientFallback implements ISysClient {
 
 	@Override
 	public R<Role> getRoleByName(String roleName) {
-		return return R.fail("获取数据失败");
+		return R.fail("获取数据失败");
 	}
 
 	@Override
