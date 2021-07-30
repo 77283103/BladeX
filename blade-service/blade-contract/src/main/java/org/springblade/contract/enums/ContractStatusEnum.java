@@ -12,11 +12,17 @@ public enum ContractStatusEnum {
 	RELIEVE_SUBMIT("解除已送审",89),
 	RELIEVE_PASS("解除通过",90),
 
+	CONTRACT_AUDIT_QUALITY("审批通过待导出",30),
+	CONTRACT_EXPORT_STATUS("合同导出待用印",40),
+	FILE_EXPORT_CATEGORY("合同导出初始数量",1),
 	/*合同履约状态*/
 	CONTRACT_PERFORMANCE_STATUS("合同履约",70),
 	/*合同变更状态*/
+	ORIGINAL_CONTRACT_CHANGE_ABANDONED_STATUS("修改原合同状态为变更中",75),
 	TEMPORARY_STORAGE_STATUS("变更暂存",10),
 	APPROVE_REVIEW_STATUS("变更送审",20);
+
+
 	// 成员变量
 	private String value;
 	private Integer key;
