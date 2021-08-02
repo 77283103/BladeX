@@ -1,5 +1,6 @@
 package org.springblade.contract.feign;
 
+import org.springblade.contract.entity.ContractChangeEntity;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
@@ -41,6 +42,7 @@ public interface IContractClient {
 	String TEMPLATE_GET_ID = API_PREFIX + "/template_getId";
 	String UTILS_FILE=API_PREFIX +"/utils_file";
 	String NOT_ARCHIVE_SAVE=API_PREFIX+"/not_archive_save";
+	String CHANGE_GET_INFO=API_PREFIX+"/change_get_info";
 
 	/**
 	 * 保存相对方
@@ -124,5 +126,11 @@ public interface IContractClient {
 	 */
 	@GetMapping(NOT_ARCHIVE_SAVE)
 	R saverArchiveNot(@RequestParam("id") Long id, @RequestParam("estimateArchiveDate") Date estimateArchiveDate, @RequestParam("notArchiveReason") String notArchiveReason);
-
+	/**
+	 * 查询合同关联的变更实体信息
+	 * @author jitwxs
+	 * @date 2021/7/30 10:23
+	 */
+	@GetMapping(CHANGE_GET_INFO)
+	R<ContractChangeEntity> getByChangeInfo(@RequestParam("id") Long id);
 }

@@ -2,7 +2,6 @@ package org.springblade.contract.util;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springblade.contract.entity.*;
-import org.springblade.contract.enums.ContractStatusEnum;
 import org.springblade.contract.enums.ContractTypeEnum;
 import org.springblade.contract.service.*;
 import org.springblade.core.tool.utils.Func;
@@ -120,7 +119,6 @@ public class TemplateSaveUntil {
 		Long id = null;
 		if (Func.isEmpty(contractFormInfoEntity.getId())) {
 			contractFormInfoEntity.setContractSoure(ContractTypeEnum.TEMPLATE.getKey().toString());
-			contractFormInfoEntity.setContractStatus(ContractStatusEnum.APPROVAL.getKey().toString());
 			//新陈列协议书
 			if ("CLXY_42".equals(template.getTemplateCode())) {
 //				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);

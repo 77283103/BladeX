@@ -1448,9 +1448,6 @@ public enum TemplateExporterEnum {
 		}
 	},
 
-
-
-
 	//下脚品买卖合同模版
 	MMHT_26("MMHT_26") {
 		@Override

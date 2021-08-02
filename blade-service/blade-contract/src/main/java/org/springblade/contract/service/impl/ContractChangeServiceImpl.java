@@ -51,6 +51,15 @@ public class ContractChangeServiceImpl extends BaseServiceImpl<ContractChangeMap
 	}
 
 	/**
+	 *
+	 * @param id
+	 * @return
+	 */
+	@Override
+	public ContractChangeEntity selectByContractIdChangeInfo(Long id){
+		return contractChangeMapper.selectById(id);
+	}
+	/**
 	 * 删除上传的文件
 	 * @param id
 	 */

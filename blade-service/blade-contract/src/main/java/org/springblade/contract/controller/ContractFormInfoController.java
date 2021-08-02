@@ -74,7 +74,6 @@ import java.util.*;
 @RequestMapping("/contractFormInfo")
 @Api(value = "", tags = "")
 public class ContractFormInfoController extends BladeController {
-	//EKP推送信息
 	@Autowired
 	private IContractCounterpartService counterpartService;
 	@Autowired
@@ -107,9 +106,7 @@ public class ContractFormInfoController extends BladeController {
 	@Value("${api.file.ftlPath}")
 	private String ftlPath;
 
-	/**
-	 * 详情
-	 */
+
 	@GetMapping("/detail")
 	@ApiOperationSupport(order = 1)
 	@ApiOperation(value = "详情", notes = "传入contractFormInfo")
@@ -119,21 +116,16 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(detail);
 	}
 
-	/**
-	 * 合同变更历史详情
-	 */
 	@GetMapping("/version")
 	@ApiOperationSupport(order = 1)
-	@ApiOperation(value = "详情", notes = "传入id")
+	@ApiOperation(value = "合同变更历史详情", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:version')")
 	public R<ContractFormInfoResponseVO> version(@RequestParam Long id) {
 		ContractFormInfoResponseVO version = contractFormInfoService.getByChangeHistoryId(id);
 		return R.data(version);
 	}
 
-	/**
-	 * 分页
-	 */
+
 	@GetMapping("/list")
 	@ApiOperationSupport(order = 2)
 	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
@@ -162,52 +154,26 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(pages);
 	}
 
-	/**
-	 * 統計分析查詢列表
-	 */
 	@GetMapping("/statistics")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
+	@ApiOperation(value = "統計分析查詢列表", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:statistics')")
 	public R<IPage<ContractFormInfoEntity>> statistics(ContractFormInfoRequestVO contractFormInfo, Query query) {
 		IPage<ContractFormInfoEntity> pages = contractFormInfoService.statisticsList(Condition.getPage(query), contractFormInfo);
 		return R.data(pages);
 	}
 
-	/**
-	 * 用印分页
-	 */
 	@GetMapping("/listSealInfo")
 	@ApiOperationSupport(order = 3)
-	@ApiOperation(value = "分页", notes = "传入ContractFormInfoRequestVO")
+	@ApiOperation(value = "用印分页", notes = "传入ContractFormInfoRequestVO")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:listSealInfo')")
 	public R<IPage<ContractFormInfoResponseVO>> listSealInfo(ContractFormInfoRequestVO contractFormInfoRequestVO, Query query) {
 		IPage<ContractFormInfoEntity> pages = contractFormInfoService.pageListSealInfo(Condition.getPage(query), contractFormInfoRequestVO);
 		return R.data(ContractFormInfoWrapper.build().entityPVPage(pages));
 	}
 
-	/**
-	 * 多方起草新增
-	 */
-	@PostMapping("/multiAdd")
-	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
-	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiAdd')")
 	@Transactional(rollbackFor = Exception.class)
-	public R<ContractFormInfoEntity> multiAdd(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
-		R<ContractFormInfoEntity> r = new R<>();
-		contractFormInfo.setContractSoure(ContractTypeEnum.MULTI.getKey().toString());
-		ContractFormInfoEntity contractFormInfoCopy = new ContractFormInfoEntity();
-		BeanUtil.copy(contractFormInfo, contractFormInfoCopy);
-		if (Func.isEmpty(contractFormInfo.getId())) {
-			contractFormInfoService.save(contractFormInfoCopy);
-			contractFormInfo.setId(contractFormInfoCopy.getId());
-			//增加履约计划信息
-			perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList()) ? null :
-				contractFormInfo.getPerServiceContentList().get(0), contractFormInfoCopy.getId());
-			//增加履约收付款信息
-			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(), contractFormInfoCopy.getId());
-		}
+	public ContractFormInfoRequestVO unifiedMethodHandle(ContractFormInfoRequestVO contractFormInfo){
 		/*保存多方向对方身份信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getDraftContractCounterpartList())) {
 			contractFormInfoService.saveDraftContractCounterpartList(contractFormInfo);
@@ -219,6 +185,10 @@ public class ContractFormInfoController extends BladeController {
 		/*保存子公司信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractSeal())) {
 			contractFormInfoService.saveContractSeal(contractFormInfo);
+		}
+		//保存合同首款明细数据
+		if (CollectionUtil.isNotEmpty(contractFormInfo.getCollection())) {
+			contractFormInfoService.saveCollection(contractFormInfo);
 		}
 		/*保存相对方信息*/
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
@@ -240,6 +210,30 @@ public class ContractFormInfoController extends BladeController {
 		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
 			contractPerformanceColPayService.savePerformanceColPay(contractFormInfo);
 		}
+		return contractFormInfo;
+	}
+
+	@PostMapping("/multiAdd")
+	@ApiOperationSupport(order = 5)
+	@ApiOperation(value = "多方起草新增", notes = "传入contractFormInfo")
+	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiAdd')")
+	@Transactional(rollbackFor = Exception.class)
+	public R<ContractFormInfoEntity> multiAdd(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
+		R<ContractFormInfoEntity> r = new R<>();
+		contractFormInfo.setContractSoure(ContractTypeEnum.MULTI.getKey().toString());
+		ContractFormInfoEntity contractFormInfoCopy = new ContractFormInfoEntity();
+		BeanUtil.copy(contractFormInfo, contractFormInfoCopy);
+		if (Func.isEmpty(contractFormInfo.getId())) {
+			contractFormInfoService.save(contractFormInfoCopy);
+			contractFormInfo.setId(contractFormInfoCopy.getId());
+			//增加履约计划信息
+			perServiceContentService.addPerData(Func.isEmpty(contractFormInfo.getPerServiceContentList()) ? null :
+				contractFormInfo.getPerServiceContentList().get(0), contractFormInfoCopy.getId());
+			//增加履约收付款信息
+			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(), contractFormInfoCopy.getId());
+		}
+		//统一处理相同相同数据的方法
+		contractFormInfo=this.unifiedMethodHandle(contractFormInfo);
 		//开始接口处理
 		r.setMsg(ContractErorrCodeEnum.MULTI_PARTY_DRAFT_SAVE.getValue());
 		r.setCode(ContractErorrCodeEnum.MULTI_PARTY_DRAFT_SAVE.getKey());
@@ -254,22 +248,21 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoCopy = r.getData();
 			if (r.getCode() != HttpStatus.OK.value()) {
 				contractFormInfoCopy.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+				r.setMsg(ContractErorrCodeEnum.MULTI_PARTY_DRAFT_APPROVAL_FAIL.getValue());
+				r.setCode(ContractErorrCodeEnum.MULTI_PARTY_DRAFT_APPROVAL_FAIL.getKey());
 			} else {
 				contractFormInfoCopy.setCreateTime(new Date());
+				r.setMsg(ContractErorrCodeEnum.MULTI_PARTY_DRAFT_APPROVAL.getValue());
+				r.setCode(ContractErorrCodeEnum.MULTI_PARTY_DRAFT_APPROVAL.getKey());
 			}
-			r.setMsg(ContractErorrCodeEnum.MULTI_PARTY_DRAFT_APPROVAL.getValue());
-			r.setCode(ContractErorrCodeEnum.MULTI_PARTY_DRAFT_APPROVAL.getKey());
 		}
 		contractFormInfoService.updateById(contractFormInfoCopy);
 		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(contractFormInfoCopy), r.getMsg());
 	}
 
-	/**
-	 * 独立起草新增
-	 */
 	@PostMapping("/add")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
+	@ApiOperation(value = "独立起草新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:add')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> save(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -286,30 +279,8 @@ public class ContractFormInfoController extends BladeController {
 			perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(), contractFormInfoCopy.getId());
 		}
 		contractFormInfo.setId(contractFormInfoCopy.getId());
-		//保存合同首款明细数据
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getCollection())) {
-			contractFormInfoService.saveCollection(contractFormInfo);
-		}
-		/*保存相对方信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
-			contractFormInfoService.saveCounterpart(contractFormInfo);
-		}
-		/*保存保证金信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
-			contractFormInfoService.saveBondAndPlan(contractFormInfo);
-		}
-		/*保存依据信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			contractFormInfoService.saveAccording(contractFormInfo);
-		}
-		/*保存履约信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
-			performanceService.savePerformance(contractFormInfo);
-		}
-		/*保存履约计划收付款*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
-			contractPerformanceColPayService.savePerformanceColPay(contractFormInfo);
-		}
+		//统一处理相同相同数据的方法
+		contractFormInfo=this.unifiedMethodHandle(contractFormInfo);
 		r.setMsg(ContractErorrCodeEnum.INDE_DRAFT_SAVE.getValue());
 		if (ContractStatusEnum.APPROVAL.getKey().toString().equals(contractFormInfo.getContractStatus())) {
 			if (ContractTypeEnum.ELECTRONIC_CONTRACT_WE.getKey().toString().equals(contractFormInfo.getContractForm())
@@ -321,21 +292,21 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoCopy = r.getData();
 			if (r.getCode() != HttpStatus.OK.value()) {
 				contractFormInfoCopy.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+				r.setMsg(ContractErorrCodeEnum.INDE_DRAFT_APPROVAL_FAIL.getValue());
+				r.setCode(ContractErorrCodeEnum.INDE_DRAFT_APPROVAL_FAIL.getKey());
 			} else {
 				contractFormInfoCopy.setCreateTime(new Date());
+				r.setMsg(ContractErorrCodeEnum.INDE_DRAFT_APPROVAL.getValue());
+				r.setCode(ContractErorrCodeEnum.INDE_DRAFT_APPROVAL.getKey());
 			}
-			r.setMsg(ContractErorrCodeEnum.INDE_DRAFT_APPROVAL.getValue());
 		}
 		contractFormInfoService.updateById(contractFormInfoCopy);
-		return R.data(HttpStatus.OK.value(), ContractFormInfoWrapper.build().entityPV(contractFormInfoCopy), r.getMsg());
+		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(contractFormInfoCopy), r.getMsg());
 	}
 
-	/**
-	 * 范本起草新增
-	 */
 	@PostMapping("/templateSave")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
+	@ApiOperation(value = "范本起草新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateSave')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> templateSave(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -350,30 +321,8 @@ public class ContractFormInfoController extends BladeController {
 		BeanUtil.copy(contractFormInfo, contractFormInfoEntity);
 		Long id = TemplateSaveUntil.templateSave(contractFormInfoEntity, template, j);
 		contractFormInfo.setId(id);
-		//保存合同首款明细数据
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getCollection())) {
-			contractFormInfoService.saveCollection(contractFormInfo);
-		}
-		/*保存相对方信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
-			contractFormInfoService.saveCounterpart(contractFormInfo);
-		}
-		/*保存保证金信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
-			contractFormInfoService.saveBondAndPlan(contractFormInfo);
-		}
-		/*保存依据信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			contractFormInfoService.saveAccording(contractFormInfo);
-		}
-		/*保存履约信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
-			performanceService.savePerformance(contractFormInfo);
-		}
-		/*保存履约计划收付款*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
-			contractPerformanceColPayService.savePerformanceColPay(contractFormInfo);
-		}
+		//统一处理相同相同数据的方法
+		contractFormInfo=this.unifiedMethodHandle(contractFormInfo);
 		//保存合同和关联表 这个方法有问题
 		contractFormInfoEntity = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
 		//页面用这个字段来判断是否提交
@@ -389,10 +338,14 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfoEntity = r.getData();
 			if (r.getCode() != HttpStatus.OK.value()) {
 				contractFormInfoEntity.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+				r.setMsg(ContractErorrCodeEnum.TEMPLATE_PARTY_DRAFT_APPROVAL_FAIL.getValue());
+				r.setCode(ContractErorrCodeEnum.TEMPLATE_PARTY_DRAFT_APPROVAL_FAIL.getKey());
 			} else {
+				contractFormInfoEntity.setContractStatus(ContractStatusEnum.APPROVAL.getKey().toString());
+				r.setMsg(ContractErorrCodeEnum.TEMPLATE_PARTY_DRAFT_APPROVAL.getValue());
+				r.setCode(ContractErorrCodeEnum.TEMPLATE_PARTY_DRAFT_APPROVAL.getKey());
 				contractFormInfoEntity.setCreateTime(new Date());
 			}
-			r.setMsg(ContractErorrCodeEnum.TEMPLATE_PARTY_DRAFT_APPROVAL.getValue());
 		}
 		contractFormInfoService.updateById(contractFormInfoEntity);
 		//增加履约计划信息
@@ -400,7 +353,7 @@ public class ContractFormInfoController extends BladeController {
 			contractFormInfo.getPerServiceContentList().get(0), contractFormInfoEntity.getId());
 		//增加履约收付款信息
 		perCollectPayService.addListData(contractFormInfo.getPerCollectPayList(), contractFormInfoEntity.getId());
-		return R.data(HttpStatus.OK.value(), ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity), r.getMsg());
+		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity), r.getMsg());
 	}
 
 	/**
@@ -713,27 +666,19 @@ public class ContractFormInfoController extends BladeController {
 		return listMap;
 	}
 
-	/**
-	 * 合同统计分析分页
-	 */
+
 	@GetMapping("/listStatistics")
 	@ApiOperationSupport(order = 2)
-	@ApiOperation(value = "分页", notes = "传入contractFormInfo")
+	@ApiOperation(value = "合同统计分析分页", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:listStatistics')")
 	public R<IPage<ContractFormInfoResponseVO>> listStatistics(ContractFormInfoRequestVO contractFormInfo, Query query) {
 		IPage<ContractFormInfoResponseVO> pages = contractFormInfoService.pageListStatistics(Condition.getPage(query), contractFormInfo);
 		return R.data(pages);
 	}
 
-	/**
-	 * 导出excel
-	 *
-	 * @param formInfoEntityList
-	 * @param response
-	 */
 	@PostMapping("/exportTargetDataResultStatistics")
 	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "导出", notes = "")
+	@ApiOperation(value = "导出excel", notes = "")
 	public void exportTargetDataResult(@RequestBody List<ContractFormInfoResponseVO> formInfoEntityList, HttpServletResponse response) {
 		if (CollectionUtil.isNotEmpty(formInfoEntityList)) {
 			/* 导出文件名称 */
@@ -790,14 +735,9 @@ public class ContractFormInfoController extends BladeController {
 		}
 	}
 
-	/**
-	 * 导出导出相对方数据excel
-	 *
-	 * @param response
-	 */
 	@PostMapping("/exportCounterpart")
 	@ApiOperationSupport(order = 7)
-	@ApiOperation(value = "导出相对方数据", notes = "")
+	@ApiOperation(value = "导出导出相对方数据excel", notes = "")
 	public void exportCounterpart(HttpServletResponse response) {
 		List<ContractCounterpartEntity> ce = counterpartService.list();
 		if (CollectionUtil.isNotEmpty(ce)) {
@@ -853,13 +793,9 @@ public class ContractFormInfoController extends BladeController {
 		}
 	}
 
-	/**
-	 * 独立起草变更
-	 * 注意当该合同变更成功并且审核通过  那摩变更后的合同又走到履约节点  可能还需要进行变更  那麽此时再审批通过之后就应该清空他的变更状态
-	 */
 	@PostMapping("/addChange")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "变更", notes = "传入contractFormInfo")
+	@ApiOperation(value = "独立起草变更", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:addChange')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> saveChange(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -885,30 +821,8 @@ public class ContractFormInfoController extends BladeController {
 		}
 		contractFormInfoService.saveOrUpdate(contractFormInfoCopy);
 		contractFormInfo.setId(contractFormInfoCopy.getId());
-		//保存合同收付款明细数据
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getCollection())) {
-			contractFormInfoService.saveCollection(contractFormInfo);
-		}
-		/*保存相对方信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
-			contractFormInfoService.saveCounterpart(contractFormInfo);
-		}
-		/*保存保证金信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
-			contractFormInfoService.saveBondAndPlan(contractFormInfo);
-		}
-		/*保存依据信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			contractFormInfoService.saveAccording(contractFormInfo);
-		}
-		/*保存履约信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
-			performanceService.savePerformance(contractFormInfo);
-		}
-		/*保存履约计划收付款*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
-			contractPerformanceColPayService.savePerformanceColPay(contractFormInfo);
-		}
+		//统一处理相同数据方法
+		contractFormInfo=this.unifiedMethodHandle(contractFormInfo);
 		/*送审*/
 		r.setMsg(ContractErorrCodeEnum.CHANGE_INDE_DRAFT_SAVE.getValue());
 		r.setCode(ContractErorrCodeEnum.CHANGE_INDE_DRAFT_SAVE.getKey());
@@ -941,12 +855,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(contractFormInfoCopy), r.getMsg());
 	}
 
-	/**
-	 * 多方起草变更新增
-	 */
 	@PostMapping("/multiAddChange")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "新增", notes = "传入contractFormInfo")
+	@ApiOperation(value = "多方起草变更新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:multiAddChange')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> multiAddChange(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -972,38 +883,8 @@ public class ContractFormInfoController extends BladeController {
 		}
 		contractFormInfoService.saveOrUpdate(contractFormInfoCopy);
 		contractFormInfo.setId(contractFormInfoCopy.getId());
-		/*保存多方向对方身份信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getDraftContractCounterpartList())) {
-			contractFormInfoService.saveDraftContractCounterpartList(contractFormInfo);
-		}
-		/*保存相对方收付款信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getMultPaymenEntityList())) {
-			contractFormInfo = contractFormInfoService.setMultPaymenEntityList(contractFormInfo);
-		}
-		/*保存子公司信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractSeal())) {
-			contractFormInfoService.saveContractSeal(contractFormInfo);
-		}
-		/*保存相对方信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
-			contractFormInfoService.saveCounterpart(contractFormInfo);
-		}
-		/*保存保证金信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
-			contractFormInfoService.saveBondMultiPlan(contractFormInfo);
-		}
-		/*保存依据信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			contractFormInfoService.saveAccording(contractFormInfo);
-		}
-		/*保存履约信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
-			performanceService.savePerformance(contractFormInfo);
-		}
-		/*保存履约计划收付款*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
-			contractPerformanceColPayService.savePerformanceColPay(contractFormInfo);
-		}
+		//统一处理相同数据方法
+		contractFormInfo=this.unifiedMethodHandle(contractFormInfo);
 		r.setMsg(ContractErorrCodeEnum.CHANGE_MULTI_PARTY_DRAFT_SAVE.getValue());
 		r.setCode(ContractErorrCodeEnum.CHANGE_MULTI_PARTY_DRAFT_SAVE.getKey());
 		if (ContractStatusEnum.APPROVAL.getKey().toString().equals(contractFormInfo.getContractStatus())) {
@@ -1028,12 +909,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(contractFormInfoCopy), r.getMsg());
 	}
 
-	/**
-	 * 范本起草变更新增
-	 */
 	@PostMapping("/templateChangeSave")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "范本变更", notes = "传入contractFormInfo")
+	@ApiOperation(value = "范本起草变更新增", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:templateChangeSave')")
 	@Transactional(rollbackFor = Exception.class)
 	public R<ContractFormInfoEntity> templateChangeSave(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
@@ -1077,26 +955,8 @@ public class ContractFormInfoController extends BladeController {
 		//*****************************************变更新增代码END***************************************//
 		Long id = TemplateSaveUntil.templateSave(contractFormInfoEntity, template, j);
 		contractFormInfo.setId(id);
-		/*保存相对方信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getCounterpart())) {
-			contractFormInfoService.saveCounterpart(contractFormInfo);
-		}
-		/*保存保证金信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getContractBond())) {
-			contractFormInfoService.saveBondAndPlan(contractFormInfo);
-		}
-		/*保存依据信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getAccording())) {
-			contractFormInfoService.saveAccording(contractFormInfo);
-		}
-		/*保存履约信息*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceList())) {
-			performanceService.savePerformance(contractFormInfo);
-		}
-		/*保存履约计划收付款*/
-		if (CollectionUtil.isNotEmpty(contractFormInfo.getPerformanceColPayList())) {
-			contractPerformanceColPayService.savePerformanceColPay(contractFormInfo);
-		}
+		//统一处理相同数据方法
+		contractFormInfo=this.unifiedMethodHandle(contractFormInfo);
 		//保存合同和关联表 这个方法有问题
 		contractFormInfoEntity = contractFormInfoService.templateDraft(contractFormInfoEntity, template.getJson());
 		//页面用这个字段来判断是否提交

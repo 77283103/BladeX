@@ -52,6 +52,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -1426,6 +1427,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		} else {
 			ekpVo = abutmentClient.sendEkpFormPost(contractFormInfoEntity);
 		}
+		log.info(ekpVo);
 		if (ekpVo.getCode() == HttpStatus.OK.value()) {
 			contractFormInfoEntity.setRelContractId(ekpVo.getData().getDoc_info());
 			contractFormInfoEntity.setEkpNumber(ekpVo.getData().getEkp_number());
@@ -1520,6 +1522,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	}
 
 	//批量独立送审
+	@Async
 	public void indeBatchPush(List<ContractFormInfoEntity> indeBatch) {
 		//electronic||电子合同，一份合同  需要盖电子章（电子合同-我司用印   实体合同-我司用电子印 ）    entity||实体合同-我司不应电子印   电子合同-对方用印 不需要盖电子章
 		List<ContractFormInfoEntity> electronicContractFormInfoEntity = new ArrayList<>();
@@ -1544,6 +1547,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	/**
 	 * 批量范本送审
 	 */
+	@Async
 	public void templateBatchPush(List<ContractFormInfoEntity> templateBatch) {
 		indeBatchSign(templateBatch);
 	}
@@ -1553,31 +1557,39 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 **/
 	public void indeBatchSignE(List<ContractFormInfoEntity> indeBatchSignE) {
 		indeBatchSignE.forEach(indeE -> {
-			UploadFileEntity uploadFileEntity = new UploadFileEntity();
-			File fileBH;
-			List<File> files = new ArrayList<>();
-			indeE = this.makeContractN(indeE);
-			List<FileVO> fileVO = fileClient.getByIds(indeE.getTextFile()).getData();
-			for (FileVO file : fileVO) {
-				fileBH = contractFileHandle(indeE, file);
-				files.add(fileBH);
-			}
-			uploadFileEntity.setFile(files);
-			uploadFileEntity.setIsMerge("0");
-			List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
-			StringBuilder name = new StringBuilder();
-			uploadFileVoList.forEach(up -> {
-				name.append(up.getId());
-				name.append(",");
-			});
-			name.substring(0, name.length());
-			indeE.setTextFilePdf(name.toString());
-			R<EkpVo> ekpVo = abutmentClient.sendEkpBatchPost(indeE);
-			if (ekpVo.getCode() == HttpStatus.OK.value()) {
-				indeE.setRelContractId(ekpVo.getData().getDoc_info());
-				indeE.setEkpNumber(ekpVo.getData().getEkp_number());
-				indeE.setContractStatus(ContractStatusEnum.APPROVAL.getKey().toString());
+			try {
+				UploadFileEntity uploadFileEntity = new UploadFileEntity();
+				File fileBH;
+				List<File> files = new ArrayList<>();
+				indeE = this.makeContractN(indeE);
+				List<FileVO> fileVO = fileClient.getByIds(indeE.getTextFile()).getData();
+				for (FileVO file : fileVO) {
+					fileBH = contractFileHandle(indeE, file);
+					files.add(fileBH);
+				}
+				uploadFileEntity.setFile(files);
+				uploadFileEntity.setIsMerge("0");
+				List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
+				StringBuilder name = new StringBuilder();
+				uploadFileVoList.forEach(up -> {
+					name.append(up.getId());
+					name.append(",");
+				});
+				name.substring(0, name.length());
+				indeE.setTextFilePdf(name.toString());
+				R<EkpVo> ekpVo = abutmentClient.sendEkpBatchPost(indeE);
+				if (ekpVo.getCode() == HttpStatus.OK.value()) {
+					indeE.setRelContractId(ekpVo.getData().getDoc_info());
+					indeE.setEkpNumber(ekpVo.getData().getEkp_number());
+					indeE.setContractStatus(ContractStatusEnum.APPROVAL.getKey().toString());
+					contractFormInfoMapper.updateById(indeE);
+				}
+			}catch (Exception e){
+				indeE.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+				indeE.setYwlSettlement("送审异常");
+				indeE.setYwlBreachOfContract("3");
 				contractFormInfoMapper.updateById(indeE);
+				log.info(indeE.getContractName()+"送审异常");
 			}
 		});
 	}
@@ -1586,33 +1598,41 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 **/
 	public void indeBatchSign(List<ContractFormInfoEntity> indeBatchSign) {
 		indeBatchSign.forEach(inde -> {
-			UploadFileEntity uploadFileEntity = new UploadFileEntity();
-			List<File> files = new ArrayList<>();
-			File fileBH;
-			inde = this.makeContractN(inde);
-			List<FileVO> fileVO = fileClient.getByIds(inde.getTextFile()).getData();
-			fileBH = contractFileHandle(inde, fileVO.get(0));
-			files.add(fileBH);
-			uploadFileEntity.setFile(files);
-			uploadFileEntity.setIsMerge("0");
-			List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
-			inde.setTextFilePdf(uploadFileVoList.get(0).getId());
-			MultipartFile multipartFile = null;
 			try {
-				//文件的mock方式
-				multipartFile = new MockMultipartFile("file", fileBH.getName(),
-					ContentType.MULTIPART.toString(), new FileInputStream(fileBH));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			R<FileVO> fileR = fileClient.save(multipartFile);
-			inde.setOtherInformation(fileR.getData().getLink());
-			R<EkpVo> ekpVo = abutmentClient.sendEkpBatchPost(inde);
-			if (ekpVo.getCode() == HttpStatus.OK.value()) {
-				inde.setRelContractId(ekpVo.getData().getDoc_info());
-				inde.setEkpNumber(ekpVo.getData().getEkp_number());
-				inde.setContractStatus(ContractStatusEnum.APPROVAL.getKey().toString());
+				UploadFileEntity uploadFileEntity = new UploadFileEntity();
+				List<File> files = new ArrayList<>();
+				File fileBH;
+				inde = this.makeContractN(inde);
+				List<FileVO> fileVO = fileClient.getByIds(inde.getTextFile()).getData();
+				fileBH = contractFileHandle(inde, fileVO.get(0));
+				files.add(fileBH);
+				uploadFileEntity.setFile(files);
+				uploadFileEntity.setIsMerge("0");
+				List<UploadFileVo> uploadFileVoList = abutmentClient.uploadFiles(uploadFileEntity).getData();
+				inde.setTextFilePdf(uploadFileVoList.get(0).getId());
+				MultipartFile multipartFile = null;
+				try {
+					//文件的mock方式
+					multipartFile = new MockMultipartFile("file", fileBH.getName(),
+						ContentType.MULTIPART.toString(), new FileInputStream(fileBH));
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				R<FileVO> fileR = fileClient.save(multipartFile);
+				inde.setOtherInformation(fileR.getData().getLink());
+				R<EkpVo> ekpVo = abutmentClient.sendEkpBatchPost(inde);
+				if (ekpVo.getCode() == HttpStatus.OK.value()) {
+					inde.setRelContractId(ekpVo.getData().getDoc_info());
+					inde.setEkpNumber(ekpVo.getData().getEkp_number());
+					inde.setContractStatus(ContractStatusEnum.APPROVAL.getKey().toString());
+					contractFormInfoMapper.updateById(inde);
+				}
+			}catch (Exception e){
+				inde.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
+				inde.setYwlSettlement("送审异常");
+				inde.setYwlBreachOfContract("3");
 				contractFormInfoMapper.updateById(inde);
+				log.info(inde.getContractName()+"送审异常");
 			}
 		});
 	}
@@ -1668,7 +1688,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return fileBH;
 	}
 /*********************************************************批量起草送审相关END****************************************************************/
-
 	/*生成合同编号*/
 	@Override
 	public ContractFormInfoEntity makeContractN(ContractFormInfoEntity entity) {
