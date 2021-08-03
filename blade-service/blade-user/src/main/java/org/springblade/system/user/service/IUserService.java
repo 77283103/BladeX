@@ -231,4 +231,10 @@ public interface IUserService extends BaseService<User> {
 	 * @return
 	 */
 	List<User> getByRealName(String realName);
+
+	/**
+	 * 停用所有用户
+	 * @return
+	 */
+	Boolean deactivateAllUser();
 }

@@ -64,14 +64,18 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		//获取ekp用户部门数据
 		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\one_user_json.txt");
 		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
-//
-//		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
-//			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
-//		}
+
+		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
+			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
+		}
+		//如果全量，ekp将有效数据全部返回。不包含失效数据。
+		if(ekpSyncRequestVO.getType().equals("initialize")){
+			userClient.deactivateAllUser();
+		}
 //		ekpSyncRequestVO.setToken(ekpService.getToken(ekpProperties.getToken_account(),ekpProperties.getToken_password(),ekpProperties.getToken_url()));
 //		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
 //		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
-		//log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
+//		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
 		saveEkpData(JsonUtil.toJson(ekpSyncInfoVo));
 		if(null != ekpSyncInfoVo && ekpSyncInfoVo.getMsg().equals(SUCCESS)){
 			Map<String,Dept> deptMap = ekpDeptHandle(ekpSyncInfoVo.getOrgList());

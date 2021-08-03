@@ -308,4 +308,9 @@ public class UserServiceImpl extends BaseServiceImpl<UserMapper, User> implement
 	public List<User> getByRealName(String realName) {
 		return userMapper.getByRealName(realName);
 	}
+
+	@Override
+	public Boolean deactivateAllUser() {
+		return userMapper.deactivateAllUser();
+	}
 }

@@ -151,4 +151,9 @@ public class UserClient implements IUserClient {
 		departService.delByUserIds(userIds);
 		return R.success("删除成功");
 	}
+
+	@Override
+	public R deactivateAllUser(){
+		return R.data(service.deactivateAllUser());
+	};
 }

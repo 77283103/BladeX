@@ -59,6 +59,7 @@ public interface IUserClient {
 	String GET_ID_BY_LUNID = API_PREFIX + "/get-id-by-lunid";
 	String GET_USER_ALL = API_PREFIX + "/get-user-all";
 	String DELETE_USER_DEPART_BY_USERIDS = API_PREFIX + "/delete-user-depart-by-userids";
+	String DEACTIVATE_ALL_USER = API_PREFIX + "/deactivate-all-user";
 
 
 	/**
@@ -194,5 +195,12 @@ public interface IUserClient {
 
 	@PostMapping(DELETE_USER_DEPART_BY_USERIDS)
 	R deleteUserDepart(@RequestBody List<Long> userIds);
+
+	/**
+	 * 停用所有用户
+	 * @return
+	 */
+	@PostMapping(DEACTIVATE_ALL_USER)
+	R deactivateAllUser();
 
 }
