@@ -71,4 +71,8 @@ api:
     token_account: GenFlowNm
     token_password: o!a@e@k#p
     token_url: https://oa-interface.pec.com.cn/restful/ekp/getToken
-
+  transferStation:
+    pushUrl: https://dailyerp.pec.com.cn/api/contract/con/addContract
+    tokenUrl: https://dailyerp.pec.com.cn/api/auth/user/login
+    tokenUserName: contract_user
+    tokenPassWord: 123456

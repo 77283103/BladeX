@@ -2,6 +2,7 @@ package org.springblade.abutment.feign;
 
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
+import org.springblade.contract.dto.middleground.Contract;
 import org.springblade.contract.entity.ContractBorrowApplicationEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
@@ -55,6 +56,7 @@ public interface IAbutmentClient {
 	String CONTRACT_BORROWING=API_PREFIX+"/appContract";
 	String TEMPLATE_APP=API_PREFIX+"/templateApp";
 	String EKP_SEND_BATCH_POST=API_PREFIX+"/sendEkpBatchPost";
+	String TRANSFERSTATION_PUSH_CONTRACT=API_PREFIX+"/transferStationPushContract";
 
 
 
@@ -233,6 +235,14 @@ public interface IAbutmentClient {
 
 	@GetMapping(SEND_FILE_TO_FASTDFS)
 	R sendFileToFastDfs(@RequestParam String filesIds);
+
+	/**
+	 * 中台推送合同数据
+	 * @param contract
+	 * @return
+	 */
+	@PostMapping(TRANSFERSTATION_PUSH_CONTRACT)
+	R transferStationPushContract(@RequestBody Contract contract);
 
 
 }

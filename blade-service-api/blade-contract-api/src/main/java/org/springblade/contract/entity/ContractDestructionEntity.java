@@ -48,6 +48,12 @@ public class ContractDestructionEntity extends BaseEntity {
 	private String file;
 
 	/**
+	 * 附件标识表达式
+	 */
+	@ApiModelProperty(value="附件标识表达式")
+    private String fileIds;
+
+	/**
 	 * 关联合同ID
 	 */
 	@ApiModelProperty(value="关联合同ID")

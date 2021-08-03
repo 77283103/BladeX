@@ -14,6 +14,7 @@ import org.springblade.abutment.entity.*;
 import org.springblade.abutment.enumJson.TemplateJsonEnum;
 import org.springblade.abutment.service.*;
 import org.springblade.abutment.vo.*;
+import org.springblade.contract.dto.middleground.Contract;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.feign.IContractClient;
 import org.springblade.contract.vo.ContractFormInfoResponseVO;
@@ -84,6 +85,9 @@ public class AbutmentClient implements IAbutmentClient {
 	private ICounterpartService counterpartService;
 	@Autowired
 	private EkpUserDeptService ekpUserDeptService;
+	@Autowired
+	private TransferStationService transferStationService;
+
 	@Value("${api.ekp.fdTemplateId}")
 	private String fdTemplateId;
 	@Value("${api.ekp.multiTemplateId}")
@@ -2292,6 +2296,12 @@ public class AbutmentClient implements IAbutmentClient {
 			return R.data(listAttachment);
 		}
 		return R.fail("文件标识表达式不能为空");
+	}
+
+	@Override
+	@PostMapping(TRANSFERSTATION_PUSH_CONTRACT)
+	public R transferStationPushContract(Contract contract) {
+		return transferStationService.pushContractData(contract);
 	}
 
 	@Override
