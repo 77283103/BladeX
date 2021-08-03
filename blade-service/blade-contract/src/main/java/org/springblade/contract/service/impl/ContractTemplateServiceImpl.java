@@ -1,25 +1,29 @@
 package org.springblade.contract.service.impl;
 
+import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.AllArgsConstructor;
 import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.abutment.vo.EkpVo;
-import org.springblade.contract.entity.ContractCounterpartEntity;
-import org.springblade.contract.entity.ContractFormInfoEntity;
-import org.springblade.contract.entity.ContractTemplateEntity;
+import org.springblade.contract.dto.middleground.ContractBody;
+import org.springblade.contract.entity.*;
+import org.springblade.contract.enums.TemplateCodeEnum;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
 import org.springblade.contract.mapper.ContractFormInfoMapper;
 import org.springblade.contract.mapper.ContractTemplateMapper;
 import org.springblade.contract.service.IContractTemplateService;
+import org.springblade.contract.vo.CglCategorySalesContracts1ResponseVO;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
 import org.springblade.contract.wrapper.ContractTemplateWrapper;
 import org.springblade.core.mp.base.BaseServiceImpl;
 import org.springblade.core.secure.utils.AuthUtil;
 import org.springblade.core.tool.api.R;
+import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.resource.feign.IFileClient;
 import org.springblade.resource.vo.FileVO;
+import org.springblade.system.entity.TemplateFieldJsonEntity;
 import org.springblade.system.feign.IDictBizClient;
 import org.springblade.system.feign.ISysClient;
 import org.springblade.system.user.entity.User;
@@ -333,5 +337,68 @@ public class ContractTemplateServiceImpl extends BaseServiceImpl<ContractTemplat
 			templateEntityList.add(template);
 		});
 		return templateEntityList;
+	}
+
+	@Override
+	public List<ContractBody> templateToMiddlegroundContractBody(Long templateId,String contractJson) {
+		if(Func.isEmpty(templateId) || Func.isEmpty(contractJson)){
+			return new ArrayList<>();
+		}
+		List<ContractBody> contractBodies = new ArrayList<>();
+		ContractTemplateResponseVO contractTemplate = getById(templateId);
+		String templateCode = Func.isNotEmpty(contractTemplate)?contractTemplate.getTemplateCode():"";
+
+
+		List<TemplateFieldJsonEntity> templateFieldList = JSON.parseArray(contractJson, TemplateFieldJsonEntity.class);
+		String tableJson = "";
+
+		for(TemplateFieldJsonEntity templateFieldJson:templateFieldList){
+			if(Func.isNotEmpty(templateFieldJson.getTableData())){
+				tableJson = templateFieldJson.getTableData();
+				break;
+			}
+		}
+
+		if(templateCode.equals(TemplateCodeEnum.MMHT_08.getKey())){
+			List<CglLowCostHardware1Entity> cglLowCostHardware1Entities = JSON.parseArray(tableJson,CglLowCostHardware1Entity.class);
+			cglLowCostHardware1Entities.forEach(cglLowCostHardware1Entity -> {
+				ContractBody contractBody = new ContractBody();
+				contractBody.setMtrl_no(cglLowCostHardware1Entity.getCglNumber().toString());
+				contractBody.setMtrl_name(cglLowCostHardware1Entity.getCglOfTheGoods());
+				contractBody.setMtrl_spec(cglLowCostHardware1Entity.getCglSpecifications());
+				contractBody.setCondition(null);
+				contractBody.setAccount_period_detail(cglLowCostHardware1Entity.getCglPaymentDays());
+				contractBody.setDeliver_point(cglLowCostHardware1Entity.getCglCompany());
+				contractBody.setUprice(cglLowCostHardware1Entity.getCglUnitPrice());
+				contractBody.setUnit_m(cglLowCostHardware1Entity.getCglUnit());
+				contractBody.setTaxrate(cglLowCostHardware1Entity.getCglRate());
+				contractBody.setQty(cglLowCostHardware1Entity.getCglMount());
+				contractBody.setQty_begin(cglLowCostHardware1Entity.getCglMinimumQuantity());
+				contractBody.setPrice_e_date(cglLowCostHardware1Entity.getCglStartingTime());
+				contractBody.setPrice_b_date(cglLowCostHardware1Entity.getCglEndOfTime());
+				contractBodies.add(contractBody);
+			});
+		}
+		if(templateCode.equals(TemplateCodeEnum.MMHT_10.getKey())){
+			List<CglRawMaterials1Entity> cglRawMaterials1Entities = JSON.parseArray(tableJson,CglRawMaterials1Entity.class);
+			cglRawMaterials1Entities.forEach(cglRawMaterials1Entity -> {
+				ContractBody contractBody = new ContractBody();
+				contractBody.setMtrl_no(cglRawMaterials1Entity.getCglNumber().toString());
+				contractBody.setMtrl_name(cglRawMaterials1Entity.getCglOfTheGoods());
+				contractBody.setMtrl_spec(cglRawMaterials1Entity.getCglSpecifications());
+				contractBody.setCondition(null);
+				contractBody.setAccount_period_detail(cglRawMaterials1Entity.getCglPaymentDays());
+				contractBody.setDeliver_point(cglRawMaterials1Entity.getCglCompany());
+				contractBody.setUprice(cglRawMaterials1Entity.getCglUnitPrice());
+				contractBody.setUnit_m(cglRawMaterials1Entity.getCglUnit());
+				contractBody.setTaxrate(cglRawMaterials1Entity.getCglRate());
+				contractBody.setQty(cglRawMaterials1Entity.getCglMount());
+				contractBody.setQty_begin(cglRawMaterials1Entity.getCglMinimumQuantity());
+				contractBody.setPrice_e_date(cglRawMaterials1Entity.getCglStartingTime());
+				contractBody.setPrice_b_date(cglRawMaterials1Entity.getCglEndOfTime());
+				contractBodies.add(contractBody);
+			});
+		}
+		return contractBodies;
 	}
 }

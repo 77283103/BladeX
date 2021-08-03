@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * (统一中台) 结算区
@@ -19,5 +20,5 @@ public class PayCondition implements Serializable {
 	private String period_num;
 
 	@ApiModelProperty(value = "结算明细")
-	private PayDetail detail;
+	private List<PayDetail> detail;
 }

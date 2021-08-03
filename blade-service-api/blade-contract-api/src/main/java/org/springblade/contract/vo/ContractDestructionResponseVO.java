@@ -34,8 +34,8 @@ public class ContractDestructionResponseVO extends ContractDestructionEntity {
 	private String updateUserName;
 
 	/**
-	 * 附件说明list
+	 * 附件list
 	 * */
-	@ApiModelProperty(value="附件说明list")
+	@ApiModelProperty(value="附件list")
 	private List<FileVO> fileList;
 }

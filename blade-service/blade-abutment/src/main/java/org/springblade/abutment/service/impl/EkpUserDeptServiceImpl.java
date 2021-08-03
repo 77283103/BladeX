@@ -62,14 +62,21 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 	@Override
 	public void synchronizationEkpUserData(EkpSyncRequestVO ekpSyncRequestVO) {
 		//获取ekp用户部门数据
+//		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\one_user_json.txt");
+//		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
+
 		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
 			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
+		}
+		//如果全量，ekp将有效数据全部返回。不包含失效数据。
+		if(ekpSyncRequestVO.getType().equals("initialize")){
+			userClient.deactivateAllUser();
 		}
 		ekpSyncRequestVO.setToken(ekpService.getToken(ekpProperties.getToken_account(),ekpProperties.getToken_password(),ekpProperties.getToken_url()));
 		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
 		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
 		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
-		saveEkpData(JsonUtil.toJson(ekpSyncRequestVO));
+		saveEkpData(JsonUtil.toJson(ekpSyncInfoVo));
 		if(null != ekpSyncInfoVo && ekpSyncInfoVo.getMsg().equals(SUCCESS)){
 			Map<String,Dept> deptMap = ekpDeptHandle(ekpSyncInfoVo.getOrgList());
 			Map<String,User> userMap =  ekpUserHandle(ekpSyncInfoVo.getUserList(),deptMap);
@@ -97,7 +104,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 
 
 	private void saveEkpData(String json){
-		if(Func.isEmpty(json)){
+		if(Func.isNotEmpty(json)){
 			EkpSynDataEntity entity = new EkpSynDataEntity();
 			entity.setData(json);
 			ekpSynDataService.save(entity);
@@ -198,7 +205,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		List<UserDepartEntity> userDepartEntityList = new ArrayList<>();
 		List<Long> userIds = new ArrayList<>();
 		Map<String,UserDepartEntity>userDepartMap = getMapUserDepart();
-		ekpSyncUserInfoVoList.forEach(ekpSyncUserInfoVo -> {
+		for(EkpSyncUserInfoVo ekpSyncUserInfoVo:ekpSyncUserInfoVoList){
 			UserDepartEntity userDepartEntity = new UserDepartEntity();
 			User user = userMap.get(ekpSyncUserInfoVo.getUserId());
 			Dept dept = deptMap.get(ekpSyncUserInfoVo.getParentId());
@@ -209,17 +216,16 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 			}
 			//同步用户设置默认角色,默认角色为“测试” (如用户在合同平台角色为“合同管理员”，需保持不变)
 			R<Role>role = sysClient.getRoleByName(ROLE_NAME);
-			UserDepartEntity userDepart = userDepartMap.get(user.getId());
+			UserDepartEntity userDepart = userDepartMap.get(user.getId().toString());
+			userDepartEntity.setRoleId(1270659143136452610L);
 			if(null != userDepart){
-				if(userDepart.getRoleId().equals(role.getData().getId().toString())){
+				if(userDepart.getRoleId().equals(role.getData().getId())){
 					userDepartEntity.setRoleId(role.getData().getId());
 				}
-			}else{
-				userDepartEntity.setRoleId(1270659143136452610L);
 			}
 			userDepartEntityList.add(userDepartEntity);
 			userIds.add(user.getId());
-		});
+		}
 		//清除同步用户所属部门角色关联表旧数据
 		userClient.deleteUserDepart(userIds);
 		//上千数据新增有延迟，后续操作注意
@@ -325,8 +331,5 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		}
 		return sbf.toString();
 	}
-
-
-
 
 }

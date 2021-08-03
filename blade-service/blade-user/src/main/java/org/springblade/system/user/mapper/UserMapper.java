@@ -112,4 +112,10 @@ public interface UserMapper extends BaseMapper<User> {
 	 * @return
 	 */
 	boolean saveBatchUser(@Param("userList") List<User> userList);
+
+	/**
+	 * 停用所有用户
+	 * @return
+	 */
+	Boolean deactivateAllUser();
 }

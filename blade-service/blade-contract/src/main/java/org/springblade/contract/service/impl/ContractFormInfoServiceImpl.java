@@ -16,9 +16,11 @@ import org.springblade.abutment.vo.CompanyInfoVo;
 import org.springblade.abutment.vo.EkpVo;
 import org.springblade.abutment.vo.UploadFileVo;
 import org.springblade.contract.constant.ContractFormInfoTemplateContract;
+import org.springblade.contract.dto.middleground.*;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.enums.ContractStatusEnum;
 import org.springblade.contract.enums.ContractTypeEnum;
+import org.springblade.contract.enums.TemplateCodeEnum;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.excel.importbatchdraft.ContractImportBatchDraftExcel;
@@ -1276,6 +1278,9 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		//履约计划信息
 		contractFormInfoResponseVO.setPerServiceContentList(perServiceContentService.findInfoByContractId(contractFormInfoResponseVO.getId()));
 		contractFormInfoResponseVO.setPerCollectPayList(perCollectPayService.findListByContractId(contractFormInfoResponseVO.getId()));
+
+		Contract contract = entityToMiddlegroundContract(contractFormInfoResponseVO);
+		log.info("合同转中台json:{}",JsonUtil.toJson(contract));
 		return contractFormInfoResponseVO;
 	}
 
@@ -2274,6 +2279,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return R.data(contractFormInfoEntity);
 	}
 
+	@Override
+	public R middlegroundPushData(ContractFormInfoEntity contractFormInfoEntity) {
+
+		return null;
+	}
 
 	/**
 	 * 查询有编号的合同
@@ -2623,6 +2633,64 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				contractImportBatchDraftExcel.getExtension(), false).getData());
 		}
 		return contractImportBatchDraftExcel;
+	}
+
+	public Contract entityToMiddlegroundContract(ContractFormInfoEntity contractFormInfoEntity){
+		if(null == contractFormInfoEntity){
+			return null;
+		}
+		//合同信息
+		Contract contract = new Contract();
+		contract.setContract_typr1(contractFormInfoEntity.getContractBigCategory());
+		contract.setContract_typr2(contractFormInfoEntity.getContractSmallCategory());
+		contract.setB_data(contractFormInfoEntity.getStartingTime());
+		contract.setE_data(contractFormInfoEntity.getEndTime());
+		contract.setC_apple_date(contractFormInfoEntity.getCreateTime());
+		contract.setC_seal_date(null);
+		contract.setC_audit_date(null);
+		contract.setNo(contractFormInfoEntity.getContractNumber());
+		//向对方信息
+		List<Affiliate> affiliateList = new ArrayList<>();
+		if(Func.isNotEmpty(contractFormInfoEntity.getCounterpart())){
+			contractFormInfoEntity.getCounterpart().forEach(contractCounterpartEntity -> {
+				Affiliate affiliate = new Affiliate();
+				affiliate.setVend_orgcode(contractCounterpartEntity.getUnifiedSocialCreditCode());
+				affiliate.setVend_no(contractCounterpartEntity.getOrganizationCode());
+				affiliate.setVend_name(contractCounterpartEntity.getName());
+				affiliateList.add(affiliate);
+			});
+		}
+		contract.setAffiliates(affiliateList);
+		//收付款
+		PayCondition payCondition = new PayCondition();
+		payCondition.setPay_method(contractFormInfoEntity.getColPayTerm());
+		List<PayDetail> payDetails = new ArrayList<>();
+		if(Func.isNotEmpty(contractFormInfoEntity.getCollection())){
+			contractFormInfoEntity.getCollection().forEach(collectionEntity -> {
+				payCondition.setPeriod_num(collectionEntity.getPeriodNum());
+				PayDetail payDetail = new PayDetail();
+				payDetail.setPay_condition(collectionEntity.getPayCondition());
+				payDetail.setPay_amount(Func.isNotEmpty(collectionEntity.getPayAmount())?new BigDecimal(collectionEntity.getPayAmount().toString()):new BigDecimal(0L));
+				payDetail.setPay_date(null);
+				payDetail.setAccount_period(collectionEntity.getDays());
+				payDetail.setIs_receipt(collectionEntity.getIsReceipt());
+				payDetail.setPer(collectionEntity.getPayPer());
+				payDetail.setPeriod_idx(collectionEntity.getPeriodIdx());
+				payDetails.add(payDetail);
+			});
+		}
+		payCondition.setDetail(payDetails);
+		contract.setPay_condition(payCondition);
+		//银行信息
+		BankArea bankArea = new BankArea();
+		bankArea.setBank_code(contractFormInfoEntity.getBankCode());
+		bankArea.setBank_account_code(contractFormInfoEntity.getBankAccountCode());
+		bankArea.setBank_account_name(contractFormInfoEntity.getBankAccountName());
+		contract.setBank_area(bankArea);
+		//模板信息
+		List<ContractBody>contractBodyList = templateService.templateToMiddlegroundContractBody(contractFormInfoEntity.getContractTemplateId(),contractFormInfoEntity.getJson());
+		contract.setBody(contractBodyList);
+		return contract;
 	}
 
 }

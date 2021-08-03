@@ -2,6 +2,7 @@ package org.springblade.abutment.feign;
 
 import org.springblade.abutment.entity.*;
 import org.springblade.abutment.vo.*;
+import org.springblade.contract.dto.middleground.Contract;
 import org.springblade.contract.entity.ContractBorrowApplicationEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
@@ -131,6 +132,11 @@ public class IAbutmentFallback implements IAbutmentClient {
 
 	@Override
 	public R sendFileToFastDfs(String fileIds) {
+		return R.fail("获取数据失败");
+	}
+
+	@Override
+	public R transferStationPushContract(Contract contract) {
 		return R.fail("获取数据失败");
 	}
 }

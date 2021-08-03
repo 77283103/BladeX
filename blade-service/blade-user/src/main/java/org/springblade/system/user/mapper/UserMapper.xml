@@ -292,4 +292,8 @@
         VALUES(is_deleted),is_enable =
         VALUES(is_enable)
     </insert>
+
+    <update id="deactivateAllUser">
+        update blade_user set is_enable = 1
+    </update>
 </mapper>

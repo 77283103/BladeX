@@ -5,6 +5,7 @@ import lombok.Data;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * (统一中台) 合同
@@ -37,12 +38,15 @@ public class Contract implements Serializable {
 	private String c_seal_date;
 
 	@ApiModelProperty(value = "合同主体")
-	private Affiliate affiliates;
+	private List<Affiliate> affiliates;
 
 	@ApiModelProperty(value = "结算区")
 	private PayCondition pay_condition;
 
 	@ApiModelProperty(value = "合同体")
-	private ContractBody body;
+	private List<ContractBody> body;
+
+	@ApiModelProperty(value = "银行信息")
+	private BankArea bank_area;
 
 }

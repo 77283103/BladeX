@@ -328,5 +328,11 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	R<ContractFormInfoEntity> batchDraftingHandleSignature(ContractFormInfoEntity contractFormInfoEntity);
 
+	/**
+	 * 中台合同推送
+	 * @return
+	 */
+	R middlegroundPushData(ContractFormInfoEntity contractFormInfoEntity);
+
 
 }

@@ -3,6 +3,7 @@ package org.springblade.contract.dto.middleground;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -21,28 +22,28 @@ public class ContractBody {
 	private String mtrl_spec;
 
 	@ApiModelProperty(value = "未税价格")
-	private Integer uprice;
+	private BigDecimal uprice;
 
 	@ApiModelProperty(value = "税率")
-	private Double taxrate;
+	private String taxrate;
 
 	@ApiModelProperty(value = "单位")
 	private String unit_m;
 
 	@ApiModelProperty(value = "帐期")
-	private Integer account_period_detail;
+	private String account_period_detail;
 
 	@ApiModelProperty(value = "价格有效期起")
-	private Date price_b_date;
+	private String price_b_date;
 
 	@ApiModelProperty(value = "价格有效期止")
-	private Date price_e_date;
+	private String price_e_date;
 
 	@ApiModelProperty(value = "数量")
-	private Integer qty;
+	private String qty;
 
 	@ApiModelProperty(value = "起订量")
-	private Integer qty_begin;
+	private String qty_begin;
 
 	@ApiModelProperty(value = "交付地点")
 	private String deliver_point;

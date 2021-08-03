@@ -2,6 +2,7 @@ package org.springblade.contract.service;
 
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springblade.abutment.vo.EkpVo;
+import org.springblade.contract.dto.middleground.ContractBody;
 import org.springblade.contract.entity.ContractTemplateEntity;
 import org.springblade.contract.vo.ContractTemplateRequestVO;
 import org.springblade.contract.vo.ContractTemplateResponseVO;
@@ -75,4 +76,11 @@ public interface IContractTemplateService extends BaseService<ContractTemplateEn
 	 * @return
 	 */
 	List<ContractTemplateEntity> FilterDuplicates(String templateName, String templateCode);
+
+	/**
+	 * 模板转中台body信息
+	 * @param templateId
+	 * @return
+	 */
+	List<ContractBody> templateToMiddlegroundContractBody(Long templateId,String contractJson);
 }

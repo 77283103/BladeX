@@ -13,16 +13,16 @@ import java.util.Date;
 public class PayDetail {
 
 	@ApiModelProperty(value = "第几期")
-	private Integer period_idx;
+	private String period_idx;
 
 	@ApiModelProperty(value = "条件")
 	private String pay_condition;
 
 	@ApiModelProperty(value = "是否要发票")
-	private Integer is_receipt;
+	private String is_receipt;
 
 	@ApiModelProperty(value = "占比")
-	private Integer per;
+	private Double per;
 
 	@ApiModelProperty(value = "金额（未税）")
 	private BigDecimal pay_amount;
