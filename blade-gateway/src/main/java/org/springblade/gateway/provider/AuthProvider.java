@@ -42,6 +42,7 @@ public class AuthProvider {
 		defaultSkipUrl.add("/oauth/select-depart");
 		defaultSkipUrl.add("/token/**");
 		defaultSkipUrl.add("/ekp/submit");
+		defaultSkipUrl.add("/ekp/getArchiveInfo");
 		defaultSkipUrl.add("/actuator/health/**");
 		defaultSkipUrl.add("/v2/api-docs/**");
 		defaultSkipUrl.add("/v2/api-docs-ext/**");

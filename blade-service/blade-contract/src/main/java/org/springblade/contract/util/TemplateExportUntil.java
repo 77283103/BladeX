@@ -72,9 +72,13 @@ public class TemplateExportUntil {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				if(".doc".equals(suffix)){
+				if(!".docx".equals(suffix)){
 					String docx = ftlPath + file.getName().substring(0, index) + df.format(new Date()) + ".docx";
-					AsposeWordToPdfUtils.doc2Docx(pathname,docx);
+					if (".doc".equals(suffix)){
+						AsposeWordToPdfUtils.doc2Docx(pathname,docx);
+					}else if (".pdf".equals(suffix)){
+						MergeWordDocument.pdf2docx(pathname,docx);
+					}
 					File filedoc = new File(pathname);
 					filedoc.delete();
 					pathname=docx;

@@ -6,6 +6,7 @@ public enum ContractStatusEnum {
 	APPROVAL("送审", 20),
 	NOPRINTING("未用印",40),
 	APPROVED("审批通过",30),
+	SIGING("已归档",60),
 
 	/*合同解除状态*/
 	RELIEVE_SAVE("解除暂存",88),

@@ -220,7 +220,6 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Autowired
 	private TemplateExportUntil templateExportUntil;
 
-
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_BIG_CATEGORY = "1332307279915393025";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_STATUS = "1332307106157961217";
 	private static final String DICT_BIZ_FINAL_VALUE_CONTRACT_COL_PAY_TYPE = "1332307534161518593";
@@ -1346,6 +1345,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	public void textExportCount(Long id, Integer fileExportCount, Integer fileExportCategory) {
 		contractFormInfoMapper.textExportCount(id, fileExportCount, fileExportCategory);
 	}
+
 	/**
 	 * 电子签章业务处理 电子合同-对方用印   实体合同-我司不用电子印
 	 */
@@ -1358,7 +1358,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contractFormInfoEntity = this.makeContractN(contractFormInfoEntity);
 		List<FileVO> fileVO = fileClient.getByIds(contractFormInfoEntity.getTextFile()).getData();
 		for (FileVO f : fileVO) {
-			fileBH = contractFileHandle(contractFormInfoEntity,f);
+			fileBH = contractFileHandle(contractFormInfoEntity, f);
 			files.add(fileBH);
 		}
 		uploadFileEntity.setFile(files);
@@ -1389,6 +1389,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		r.setData(contractFormInfoEntity);
 		return r;
 	}
+
 	/**
 	 * 电子签章业务处理  -电子合同-我司用印   实体合同-我司电子印
 	 */
@@ -1584,15 +1585,16 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					indeE.setContractStatus(ContractStatusEnum.APPROVAL.getKey().toString());
 					contractFormInfoMapper.updateById(indeE);
 				}
-			}catch (Exception e){
+			} catch (Exception e) {
 				indeE.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
 				indeE.setYwlSettlement("送审异常");
 				indeE.setYwlBreachOfContract("3");
 				contractFormInfoMapper.updateById(indeE);
-				log.info(indeE.getContractName()+"送审异常");
+				log.info(indeE.getContractName() + "送审异常");
 			}
 		});
 	}
+
 	/**
 	 * 【需要盖电子签章 只上传一个合同文本】  调用该方法
 	 **/
@@ -1627,12 +1629,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					inde.setContractStatus(ContractStatusEnum.APPROVAL.getKey().toString());
 					contractFormInfoMapper.updateById(inde);
 				}
-			}catch (Exception e){
+			} catch (Exception e) {
 				inde.setContractStatus(ContractStatusEnum.DRAFT.getKey().toString());
 				inde.setYwlSettlement("送审异常");
 				inde.setYwlBreachOfContract("3");
 				contractFormInfoMapper.updateById(inde);
-				log.info(inde.getContractName()+"送审异常");
+				log.info(inde.getContractName() + "送审异常");
 			}
 		});
 	}
@@ -1687,7 +1689,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		}
 		return fileBH;
 	}
-/*********************************************************批量起草送审相关END****************************************************************/
+
+	/*********************************************************批量起草送审相关END****************************************************************/
 	/*生成合同编号*/
 	@Override
 	public ContractFormInfoEntity makeContractN(ContractFormInfoEntity entity) {
@@ -2537,6 +2540,47 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	@Override
 	public ContractFormInfoEntity selectByChangeId(Long id) {
 		return contractFormInfoMapper.selectByChangeId(id);
+	}
+
+	@Override
+	public ContractFormInfoEntity saveContractSupplementaryRecording(ContractFormInfoRequestVO contractFormInfo) {
+		ContractSigningEntity signing = new ContractSigningEntity();
+		ContractSealUsingInfoEntity sealUsingInfoEntity = new ContractSealUsingInfoEntity();
+		if (ContractTypeEnum.ELECTRONIC_CONTRACT_WE.getKey().toString().equals(contractFormInfo.getContractForm())) {
+			//关联合同ID
+			signing.setContractId(contractFormInfo.getId());
+			sealUsingInfoEntity.setRefContractId(contractFormInfo.getId());
+			//签订时间 用印时间
+			signing.setSignDate(new Date());
+			sealUsingInfoEntity.setSignTime(new Date());
+			//合同起止时间
+			signing.setContractStartTime(contractFormInfo.getStartingTime());
+			signing.setContractEndTime(contractFormInfo.getEndTime());
+			//用印申请人 部门
+			signing.setManager(contractFormInfo.getCreateUserName());
+			signing.setManageUnit(contractFormInfo.getCreateDeptName());
+			sealUsingInfoEntity.setSignPerson(contractFormInfo.getPersonContract());
+			sealUsingInfoEntity.setManager(contractFormInfo.getCreateUserName());
+			sealUsingInfoEntity.setManageDept(contractFormInfo.getCreateDeptName());
+			sealUsingInfoEntity.setManageUnit(contractFormInfo.getCreateDeptName());
+			//备注
+			signing.setRemark("合同补录");
+			sealUsingInfoEntity.setSignRemark("合同补录");
+			//递交方式
+			signing.setSubmissionType(" ");
+			//收件人
+			signing.setAddressee(" ");
+			//合同文本扫描件
+			signing.setTextFiles(contractFormInfo.getTextFile());
+			sealUsingInfoMapper.insert(sealUsingInfoEntity);
+			signingMapper.insert(signing);
+			//归档人  归档时间
+			contractFormInfo.setFilePerson(contractFormInfo.getPersonContract());
+			contractFormInfo.setFileTime(new Date());
+			contractFormInfo.setContractStatus(ContractStatusEnum.SIGING.getKey().toString());
+			contractFormInfo=ContractFormInfoWrapper.build().entityQV(makeContractN(contractFormInfo));
+		}
+		return contractFormInfo;
 	}
 
 

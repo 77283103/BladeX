@@ -138,7 +138,7 @@ public class EkpController {
 				if (result.isSuccess()) {
 					StringBuilder name = new StringBuilder();
 					result.getData().forEach(fileVO -> {
-						name.append(fileVO.getLink());
+						name.append("http://10.93.1.43:8107/contractFormInfo/downloadFiles?&id="+fileVO.getId());
 						name.append(",");
 					});
 					name.substring(0, name.length());
