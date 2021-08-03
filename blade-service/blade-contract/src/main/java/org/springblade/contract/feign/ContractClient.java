@@ -3,7 +3,6 @@ package org.springblade.contract.feign;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springblade.abutment.feign.IAbutmentClient;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.enums.ContractStatusEnum;
 import org.springblade.contract.mapper.ContractCounterpartMapper;
@@ -19,7 +18,6 @@ import org.springblade.core.mp.support.Condition;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
-import org.springblade.resource.feign.IFileClient;
 import org.springblade.system.cache.SysCache;
 import org.springblade.system.entity.TemplateEntity;
 import org.springblade.system.user.cache.UserCache;
@@ -47,10 +45,6 @@ import java.util.Optional;
 @RestController
 public class ContractClient implements IContractClient {
 	@Autowired
-	private IFileClient fileClient;
-	@Autowired
-	private IAbutmentClient abutmentClient;
-	@Autowired
 	private IContractArchiveNotService notService;
 	@Autowired
 	private IContractFormInfoService formInfoService;
@@ -65,15 +59,13 @@ public class ContractClient implements IContractClient {
 	@Autowired
 	private IContractSealUsingInfoService sealUsingInfoService;
 	@Autowired
-	private IContractCounterpartService iContractCounterpartService;
-	@Autowired
 	private ContractCounterpartMapper counterpartMapper;
 	@Autowired
 	private IContractCounterpartService counterpartService;
 	@Autowired
 	private BladeLogger logger;
-	//模板路径
-	private static final String ftlPath = "D:/ftl/";
+	@Autowired
+	private IContractChangeService contractChangeService;
 	@Value("${api.signing.day.fifteen}")
 	private Integer signingDaysFifteen;
 	@Value("${api.signing.day.fortyfive}")
@@ -345,5 +337,14 @@ public class ContractClient implements IContractClient {
 		notEntity.setManageDate(new Date());
 		notService.save(notEntity);
 		return R.success("提交成功");
+	}
+
+
+	@Override
+	@GetMapping(CHANGE_GET_INFO)
+	public R<ContractChangeEntity> getByChangeInfo(Long id) {
+		//查询变更信息
+		ContractChangeEntity changeEntity = contractChangeService.selectByContractIdChangeInfo(id);
+		return R.data(changeEntity);
 	}
 }

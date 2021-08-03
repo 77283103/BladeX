@@ -1448,9 +1448,6 @@ public enum TemplateExporterEnum {
 		}
 	},
 
-
-
-
 	//下脚品买卖合同模版
 	MMHT_26("MMHT_26") {
 		@Override
@@ -2336,6 +2333,15 @@ public enum TemplateExporterEnum {
 					continue;
 				}
 				dataModel.put(entry.getKey().toString(), entry.getValue().toString());
+			}
+			if (j.get("cglPayment").toString().contains("（1）")) {
+				dataModel.put("cglCost", "/");
+			}
+			if (j.get("cglPayment").toString().contains("（2）")) {
+				dataModel.put("cglCost", j.get("/"));
+			}
+			if (j.get("cglPayment").toString().contains("（3）")) {
+				dataModel.put("cglCost", j.get("cglCost"));
 			}
 			dataModel.put("cglTheBuyer", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("cglTheSeller", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));

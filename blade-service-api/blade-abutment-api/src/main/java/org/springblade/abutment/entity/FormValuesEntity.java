@@ -187,4 +187,7 @@ public class FormValuesEntity implements Serializable {
 
 	@ApiModelProperty(value = "收款明细列表JSONObject")
 	private JSONObject fd_collection_multi_object;
+
+	@ApiModelProperty(value = "合同变更主体内容")
+	private ContractChange fd_change_info;
 }

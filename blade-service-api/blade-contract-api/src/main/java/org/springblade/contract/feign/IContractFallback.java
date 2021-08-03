@@ -1,5 +1,6 @@
 package org.springblade.contract.feign;
 
+import org.springblade.contract.entity.ContractChangeEntity;
 import org.springblade.contract.entity.ContractCounterpartEntity;
 import org.springblade.contract.entity.ContractFormInfoEntity;
 import org.springblade.contract.entity.ContractTemplateEntity;
@@ -70,6 +71,11 @@ public class IContractFallback implements IContractClient {
 	@Override
 	public R saverArchiveNot(Long id, Date estimateArchiveDate, String notArchiveReason) {
 		return R.fail("数据修改失败！");
+	}
+
+	@Override
+	public R<ContractChangeEntity> getByChangeInfo(Long id) {
+		return R.fail("查询合同变更信息失败！");
 	}
 
 }

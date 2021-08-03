@@ -101,7 +101,7 @@ public class EkpController {
 	 * 3）已归档，需附上“归档时间+扫描归档合同的链接”
 	 * @return
 	 */
-	@GetMapping("/getArchiveInfo")
+	@PostMapping("/getArchiveInfo")
 	@AutoLog
 	@ApiOperation(value = "epk通过后返回给合同平台合同状态接口")
 	@ApiLog("EKP获取合同审批后状态以及相关归档文件链接信息")

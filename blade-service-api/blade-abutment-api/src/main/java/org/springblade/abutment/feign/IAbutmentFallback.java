@@ -34,12 +34,12 @@ public class IAbutmentFallback implements IAbutmentClient {
 
 	@Override
 	public R<EkpVo> sendEkpFormPost(ContractFormInfoEntity entity) {
-		return R.fail("推送接口请求超时，请联系管理员处理！(Connection timed out: connect FSD文件服务器连接失败，请联系管理员处理!)");
+		return R.fail("范本起草送审中出错，请联系管理员处理");
 	}
 
 	@Override
 	public R<EkpVo> sendEkpMultiPost(ContractFormInfoEntity entity) {
-		return R.fail("请求超时，获取数据失败");
+		return R.fail("多方起草送审方法内出错，请联系管理员处理！");
 	}
 
 	@Override

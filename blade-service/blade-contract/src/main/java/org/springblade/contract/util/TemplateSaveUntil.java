@@ -2,8 +2,8 @@ package org.springblade.contract.util;
 
 import com.alibaba.fastjson.JSONObject;
 import org.springblade.contract.entity.*;
+import org.springblade.contract.enums.ContractTypeEnum;
 import org.springblade.contract.service.*;
-import org.springblade.contract.service.impl.IContractMmhtService;
 import org.springblade.core.tool.utils.Func;
 import org.springblade.system.vo.TemplateRequestVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +13,8 @@ import javax.annotation.PostConstruct;
 
 @Component
 public class TemplateSaveUntil {
-    /*@Autowired
-    private IDictBizClient bizClient;*/
 	@Autowired
 	private IContractFormInfoService contractFormInfoService;
-	@Autowired
-	private IYwlANewDisplayService ywlANewDisplayService;
-	@Autowired
-	private IYwiShopRecruitmentService ywlShopRecruitmentService;
 	@Autowired
 	private ICglActivityExecutionContractService cglActivityExecutionContractService;
 	@Autowired
@@ -47,7 +41,6 @@ public class TemplateSaveUntil {
 	private IMtlVideoProductionContractService mtlVideoProductionContractService;
 	@Autowired
 	private ISclEquipmentMaintenanceService sclEquipmentMaintenanceService;
-
 	@Autowired
 	private ISclProjectOutsourcingService sclProjectOutsourcingService;
 	@Autowired
@@ -64,8 +57,6 @@ public class TemplateSaveUntil {
 	private ISclLogisticsServiceService sclLogisticsServiceService;
 	@Autowired
 	private ISclProductionCategoryService sclProductionCategoryService;
-	@Autowired
-	private ISclOutsourcingAgreementService sclOutsourcingAgreementService;
 	@Autowired
 	private IOutsourcingAgreementService outsourcingAgreementService;
 	@Autowired
@@ -87,8 +78,6 @@ public class TemplateSaveUntil {
 	@Autowired
 	private ICglSalesContractService cglSalesContractService;
 	@Autowired
-	private ISclContractTemplateService sclContractTemplateService;
-	@Autowired
 	private ICglAdvertisementProductionService cglAdvertisementProductionService;
 	@Autowired
 	private ICglProofingContractService cglProofingContractService;
@@ -100,7 +89,6 @@ public class TemplateSaveUntil {
 	private ILyConfidentialityAgreementService lyConfidentialityAgreementService;
 	@Autowired
 	private IConfidentialityAgreementService confidentialityAgreementService;
-
 	@Autowired
 	private IDistServiceContractService distributionServiceContractService;
 	@Autowired
@@ -117,10 +105,6 @@ public class TemplateSaveUntil {
 	private IYwbUnifiedAgreementService iYwbUnifiedAgreementService;
 	@Autowired
 	private IContractWbhtService iContractWbhtService;
-	@Autowired
-	private IContractMmhtService iContractMmhtService;
-	@Autowired
-	private IContractMmhtxxpfService iContractMmhtxxpfService;
 	//建一个静态的本类
 	private static TemplateSaveUntil templateSaveUntil;
 
@@ -129,14 +113,12 @@ public class TemplateSaveUntil {
 	public void init() {
 		templateSaveUntil = this;
 	}
-
 	public static Long templateSave(ContractFormInfoEntity contractFormInfoEntity, TemplateRequestVO template, JSONObject j) {
 		String infTimeStart="";
 		String infTimeEnd="";
 		Long id = null;
 		if (Func.isEmpty(contractFormInfoEntity.getId())) {
-			contractFormInfoEntity.setContractSoure("30");
-			contractFormInfoEntity.setContractStatus("10");
+			contractFormInfoEntity.setContractSoure(ContractTypeEnum.TEMPLATE.getKey().toString());
 			//新陈列协议书
 			if ("CLXY_42".equals(template.getTemplateCode())) {
 //				YwlANewDisplayEntity ywlANewDisplay = JSONObject.toJavaObject(j, YwlANewDisplayEntity.class);

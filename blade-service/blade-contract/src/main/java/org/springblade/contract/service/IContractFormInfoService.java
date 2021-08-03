@@ -88,6 +88,22 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	void saveCollectionMulti(ContractMultPaymenEntity vo,Long contractId);
+
+	/**
+	 * 多方首付信息保存
+	 * @author jitwxs
+	 * @date 2021/7/29 0:54
+	 * @param contractFormInfo 合同信息
+	 * @return org.springblade.contract.entity.ContractFormInfoEntity
+	 */
+	ContractFormInfoRequestVO setMultPaymenEntityList(ContractFormInfoRequestVO contractFormInfo);
+	/**
+	 * 保存多方子公司  相对方关系
+	 * @author jitwxs
+	 * @date 2021/7/29 9:07
+	 * @param contractFormInfo 合同信息
+	 */
+	void saveDraftContractCounterpartList(ContractFormInfoRequestVO contractFormInfo);
 	/**
 	 * 子公司保存方法
 	 *
@@ -106,6 +122,12 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 
 	void saveBondAndPlan(ContractFormInfoRequestVO vo);
+	/**
+	 * 多方保证金保存
+	 * @author jitwxs
+	 * @date 2021/7/29 0:47
+	 */
+	void saveBondMultiPlan(ContractFormInfoRequestVO vo);
 
 	/**
 	 * 保存合同用印关联id数据方法

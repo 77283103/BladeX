@@ -113,12 +113,6 @@ public class AbutmentClient implements IAbutmentClient {
 	@Value("${api.contract.notSign.estimateWarning}")
 	private String estimateWarning;
 
-	/**
-	 * 模板审批
-	 *
-	 * @param entity
-	 * @return
-	 */
 	@SneakyThrows
 	@Override
 	@PostMapping(TEMPLATE_APP)
@@ -205,12 +199,6 @@ public class AbutmentClient implements IAbutmentClient {
 		return rEkpVo;
 	}
 
-	/**
-	 * 合同借阅申请
-	 *
-	 * @param entity 合同借阅申请
-	 * @return
-	 */
 	@SneakyThrows
 	@PostMapping(CONTRACT_BORROWING)
 	@Override
@@ -670,76 +658,6 @@ public class AbutmentClient implements IAbutmentClient {
 		return rEkpVo;
 	}
 
-	public R<List<Attachment>> attachedFile(ContractFormInfoEntity entity) {
-		List<Attachment> listAttachment = new ArrayList<>();
-		String[] fileIds = new String[0];
-		try {
-			List<FileVO> fileVOs = fileClient.getByIds(entity.getAttachedFiles()).getData();
-			for (FileVO fileVO : fileVOs) {
-				// 开始上传fastDFS服务器
-				Attachment attachment = new Attachment();
-				NameValuePair[] nvp = new NameValuePair[5];
-				int index = fileVO.getName().lastIndexOf(".");
-				String fileSuffix = fileVO.getName().substring(index + 1);
-				nvp[0] = new NameValuePair("fdFileName", fileVO.getName());
-				nvp[1] = new NameValuePair("fileSuffix", fileSuffix);
-				nvp[2] = new NameValuePair("fdKey", "");
-				nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());
-				nvp[4] = new NameValuePair("fileType", "");
-				//3.创建trackerServer
-				TrackerServer trackerServer = null;
-				try {
-					trackerServer = trackerClient.getConnection();
-					if (Func.isNull(trackerServer)) {
-						log.info("FDS服务器链接地址：" + ClientGlobal.CONF_KEY_TRACKER_SERVER);
-						return R.fail("Connection timed out: connect FSD文件服务器连接失败，请联系管理员处理！");
-					}
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				// 4、创建一个 StorageServer 的引用，值为 null
-				StorageServer storageServer = null;
-				// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
-				StorageClient storageClient = new StorageClient(trackerServer, storageServer);
-				InputStream in;
-				BufferedInputStream bin;
-				ByteArrayOutputStream baos;
-				BufferedOutputStream bout;
-				byte[] bytes;
-				try {
-					URL url = new URL(fileVO.getLink());
-					URLConnection conn = url.openConnection();
-					in = conn.getInputStream();
-					bin = new BufferedInputStream(in);
-					baos = new ByteArrayOutputStream();
-					bout = new BufferedOutputStream(baos);
-					byte[] buffer = new byte[1024];
-					int len = bin.read(buffer);
-					while (len != -1) {
-						bout.write(buffer, 0, len);
-						len = bin.read(buffer);
-					}
-					//刷新此输出流并强制写出所有缓冲的输出字节
-					bout.flush();
-					bytes = baos.toByteArray();
-					// 上传
-					fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
-				} catch (IOException | MyException e) {
-					e.printStackTrace();
-				}
-				attachment.setFilename(fileVO.getName());
-				attachment.setFilePath(fileIds[0] + '/' + fileIds[1]);
-				listAttachment.add(attachment);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return R.data(listAttachment);
-	}
-
-	/**
-	 * 独立起草/范本起草-合同起草
-	 */
 	@Override
 	@PostMapping(EKP_SEND_FORM_POST)
 	@ApiLog("独立起草/范本起草-合同起草")
@@ -1091,6 +1009,10 @@ public class AbutmentClient implements IAbutmentClient {
 					formValuesEntity.setFd_back_time(sdf.format(entity.getContractBond().get(0).getPlanReturnTime()));
 				}
 			}
+			//判断变更生审批的信息添加
+			if (Func.isNoneBlank(entity.getChangeContractId())){
+				formValuesEntity=changeInfoHandle(formValuesEntity,entity);
+			}
 			pushEkpEntity.setDocSubject(entity.getContractName());
 			pushEkpEntity.setFormValues(formValuesEntity);
 			try {
@@ -1135,9 +1057,6 @@ public class AbutmentClient implements IAbutmentClient {
 		return rEkpVo;
 	}
 
-	/**
-	 * 合同起草-多方 推送EKP信息
-	 */
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_SEND_MULTI_POST)
@@ -1491,6 +1410,10 @@ public class AbutmentClient implements IAbutmentClient {
 			if ("1".equals(entity.getContractForm()) || "2".equals(entity.getContractForm())) {
 				formValuesEntity = fileTextMulti(formValuesEntity, entity);
 			}
+			//判断变更审批的信息添加
+			if (Func.isNoneBlank(entity.getChangeContractId())){
+				formValuesEntity=changeInfoHandle(formValuesEntity,entity);
+			}
 			pushEkpEntity.setDocSubject(entity.getContractName());
 			pushEkpEntity.setFormValues(formValuesEntity);
 			try {
@@ -1505,6 +1428,7 @@ public class AbutmentClient implements IAbutmentClient {
 						return rEkpVo;
 					}
 				}
+				//判断token
 				pushEkpEntity.setToken(ekpService.getToken());
 				log.info("获取ekp的token：" + pushEkpEntity.getToken());
 				if (StrUtil.isEmpty(pushEkpEntity.getToken())) {
@@ -1514,6 +1438,7 @@ public class AbutmentClient implements IAbutmentClient {
 					rEkpVo.setData(null);
 					return rEkpVo;
 				}
+				//判断推送情况
 				logger.info("multi-pushData", JsonUtil.toJson(pushEkpEntity));
 				ekpVo = ekpService.pushData(pushEkpEntity);
 				log.info("获取ekpVo的内容：" + ekpVo.getDoc_info());
@@ -1536,9 +1461,96 @@ public class AbutmentClient implements IAbutmentClient {
 		return rEkpVo;
 	}
 
-	/**
-	 * 推送EKP节点信息
-	 */
+	/**处理合同上传补充依据的方法**/
+	public R<List<Attachment>> attachedFile(ContractFormInfoEntity entity) {
+		List<Attachment> listAttachment = new ArrayList<>();
+		String[] fileIds = new String[0];
+		try {
+			List<FileVO> fileVOs = fileClient.getByIds(entity.getAttachedFiles()).getData();
+			for (FileVO fileVO : fileVOs) {
+				// 开始上传fastDFS服务器
+				Attachment attachment = new Attachment();
+				NameValuePair[] nvp = new NameValuePair[5];
+				int index = fileVO.getName().lastIndexOf(".");
+				String fileSuffix = fileVO.getName().substring(index + 1);
+				nvp[0] = new NameValuePair("fdFileName", fileVO.getName());
+				nvp[1] = new NameValuePair("fileSuffix", fileSuffix);
+				nvp[2] = new NameValuePair("fdKey", "");
+				nvp[3] = new NameValuePair("fdFileSize", fileVO.getFileSizes());
+				nvp[4] = new NameValuePair("fileType", "");
+				//3.创建trackerServer
+				TrackerServer trackerServer = null;
+				try {
+					trackerServer = trackerClient.getConnection();
+					if (Func.isNull(trackerServer)) {
+						log.info("FDS服务器链接地址：" + ClientGlobal.CONF_KEY_TRACKER_SERVER);
+						return R.fail("Connection timed out: connect FSD文件服务器连接失败，请联系管理员处理！");
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				// 4、创建一个 StorageServer 的引用，值为 null
+				StorageServer storageServer = null;
+				// 5、创建一个 StorageClient 对象，需要两个参数 TrackerServer 对象、StorageServer 的引用
+				StorageClient storageClient = new StorageClient(trackerServer, storageServer);
+				InputStream in;
+				BufferedInputStream bin;
+				ByteArrayOutputStream baos;
+				BufferedOutputStream bout;
+				byte[] bytes;
+				try {
+					URL url = new URL(fileVO.getLink());
+					URLConnection conn = url.openConnection();
+					in = conn.getInputStream();
+					bin = new BufferedInputStream(in);
+					baos = new ByteArrayOutputStream();
+					bout = new BufferedOutputStream(baos);
+					byte[] buffer = new byte[1024];
+					int len = bin.read(buffer);
+					while (len != -1) {
+						bout.write(buffer, 0, len);
+						len = bin.read(buffer);
+					}
+					//刷新此输出流并强制写出所有缓冲的输出字节
+					bout.flush();
+					bytes = baos.toByteArray();
+					// 上传
+					fileIds = storageClient.upload_file(bytes, fileSuffix, nvp);
+				} catch (IOException | MyException e) {
+					e.printStackTrace();
+				}
+				attachment.setFilename(fileVO.getName());
+				attachment.setFilePath(fileIds[0] + '/' + fileIds[1]);
+				listAttachment.add(attachment);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return R.data(listAttachment);
+	}
+	/**合同变更的信息添加处理**/
+	public FormValuesEntity changeInfoHandle(FormValuesEntity formValuesEntity, ContractFormInfoEntity contractFormInfoEntity){
+		ContractChange contractChange=new ContractChange();
+		contractChange.setContract_id(contractFormInfoEntity.getId().toString());
+		contractChange.setEkp_number(contractFormInfoEntity.getEkpNumber());
+		ChangeEntity change=new ChangeEntity();
+		ContractChangeEntity contractChangeEntity=contractClient.getByChangeInfo(Long.parseLong(contractFormInfoEntity.getChangeContractId())).getData();
+		change.setFd_change_content(contractChangeEntity.getChangeContent());
+		change.setFd_change_party(contractChangeEntity.getChangeParty());
+		change.setFd_change_type(contractChangeEntity.getChangeType());
+		change.setFd_change_explain(contractChangeEntity.getChangeExplain());
+		change.setFd_change_reason(contractChangeEntity.getChangeReason());
+		change.setFd_change_text_file(contractChangeEntity.getSuppleAgreement());
+		//提交解除数据中附件至ekp，将附件推送返回结果组装进送审数据
+		R<List<Attachment>>r = this.sendFileToFastDfs(contractChangeEntity.getSuppleAgreement());
+		if(r.isSuccess()){
+			contractChange.setFd_change_attachment(Func.isEmpty(r.getData())?null:r.getData());
+		}
+		contractChange.setChange_entity(change);
+		formValuesEntity.setFd_change_info(contractChange);
+		return formValuesEntity;
+	}
+
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_NODE_FORM_POST)
@@ -1600,13 +1612,10 @@ public class AbutmentClient implements IAbutmentClient {
 		return rEkpVo;
 	}
 
-	/*
-	 * 未归档预警
-	 */
 	@SneakyThrows
 	@Override
 	@PostMapping(EKP_SIG_FORM_POST)
-	@ApiLog("需要推送预警的数据")
+	@ApiLog("未归档信息-推送预警的数据")
 	public R<List<EkpVo>> pushNotSig(ContractFormInfoEntity entity) {
 		List<EkpVo> ekpVo = new ArrayList<>();
 		//KEP接口传输的入参
@@ -1684,10 +1693,6 @@ public class AbutmentClient implements IAbutmentClient {
 
 	/**
 	 * 通过时间秒毫秒数判断两个时间的间隔
-	 *
-	 * @param date1
-	 * @param date2
-	 * @return
 	 */
 	public int differentDaysByMillisecond(Date date1, Date date2) {
 		return (int) ((date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
@@ -1695,14 +1700,13 @@ public class AbutmentClient implements IAbutmentClient {
 
 	/**
 	 * 时间格式转换方法
-	 *
-	 * @return
 	 */
 	private static String getDf() {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		return df.format(new Date());
 	}
 
+	/**独立起草、范本起草的合同文本  签章关键字处理**/
 	public FormValuesEntity fileText(FormValuesEntity formValuesEntity, ContractFormInfoEntity entity) {
 		File filePDF = new File(ftlPath + entity.getContractName() + getDf() + ".pdf");
 		//建立输出字节流
@@ -1757,14 +1761,7 @@ public class AbutmentClient implements IAbutmentClient {
 		}
 		return formValuesEntity;
 	}
-
-	/**
-	 * 多方签章关键字处理
-	 *
-	 * @param formValuesEntity formValuesEntity
-	 * @param entity           entity
-	 * @return FormMultiEntity
-	 */
+	/**多方签章关键字处理**/
 	public FormValuesEntity fileTextMulti(FormValuesEntity formValuesEntity, ContractFormInfoEntity entity) {
 		File filePDF = new File(ftlPath + entity.getContractName() + getDf() + ".pdf");
 		//建立输出字节流
@@ -2141,9 +2138,6 @@ public class AbutmentClient implements IAbutmentClient {
 
 	/**
 	 * 相对方数据新增更新
-	 *
-	 * @param entity
-	 * @return
 	 */
 	@SneakyThrows
 	@Override
@@ -2173,7 +2167,7 @@ public class AbutmentClient implements IAbutmentClient {
 			ContractCounterpartEntity in = new ContractCounterpartEntity();
 			in.setName(i.getCustNm());
 			in.setUnifiedSocialCreditCode(i.getBusinessId());
-			in.setOrganizationCode(i.getBusinessId());
+			in.setOrganizationCode(i.getCustNo());
 			in.setElectronicSealSerialId(i.getBusinessId());
 			in.setCreateUser(1374895070913761282L);
 			in.setUpdateUser(1374895070913761282L);
@@ -2197,7 +2191,7 @@ public class AbutmentClient implements IAbutmentClient {
 			ContractCounterpartEntity up = new ContractCounterpartEntity();
 			up.setName(u.getCustNm());
 			up.setUnifiedSocialCreditCode(u.getBusinessId());
-			up.setOrganizationCode(u.getBusinessId());
+			up.setOrganizationCode(u.getCustNo());
 			up.setElectronicSealSerialId(u.getBusinessId());
 			up.setCreateUser(1374895070913761282L);
 			up.setUpdateUser(1374895070913761282L);
