@@ -5,7 +5,6 @@ import com.deepoove.poi.data.DocxRenderData;
 import com.deepoove.poi.data.PictureType;
 import com.deepoove.poi.data.Pictures;
 import com.spire.doc.Document;
-import com.spire.doc.FileFormat;
 import com.spire.pdf.PdfDocument;
 import com.spire.pdf.automaticfields.PdfCompositeField;
 import com.spire.pdf.automaticfields.PdfPageCountField;
@@ -27,11 +26,15 @@ import javax.annotation.PostConstruct;
 import java.awt.*;
 import java.awt.geom.Dimension2D;
 import java.awt.geom.Rectangle2D;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
+import static com.spire.doc.FileFormat.Docx_2013;
 import static org.springblade.contract.util.AsposeWordToPdfUtils.doc2Docx;
 
 /**
@@ -67,10 +70,10 @@ public class MergeWordDocument {
 		R<List<FileVO>> result = mergeWordDocument.fileClient.getByIds(String.valueOf(dataModel.get("annex")));
 		result.getData().forEach(file -> {
 			//使用insertTextFromFile方法将子文档的内容依次插入到第一个文档
-			document.insertTextFromFile(file.getLink(), FileFormat.Docx_2013);
+			document.insertTextFromFile(file.getLink(), Docx_2013);
 		});
 		//保存文档
-		document.saveToFile(oldFileDoc, FileFormat.Docx_2013);
+		document.saveToFile(oldFileDoc, Docx_2013);
 	}
 
 	/**
@@ -85,8 +88,9 @@ public class MergeWordDocument {
 	/**
 	 * POI
 	 * docx转pdf
+	 *
 	 * @param inPath  docx文档路径
-	 * @param outPath  pdf文档路径
+	 * @param outPath pdf文档路径
 	 */
 	public static boolean docxToPDF(String inPath, String outPath) throws IOException {
 		// 是否需清除中间转换的docx文档
@@ -121,6 +125,7 @@ public class MergeWordDocument {
 		}
 		return true;
 	}
+
 	/**
 	 * 清除临时转换docx
 	 *
@@ -135,7 +140,7 @@ public class MergeWordDocument {
 	 * Spire
 	 * 去除Evaluation Warning : The document was created with Spire.PDF for Java.
 	 *
-	 * @param path 有水印的pdf文档
+	 * @param path    有水印的pdf文档
 	 * @param outPath 去除水印的pdf文档
 	 */
 	public static void AddPdfPageNumbers(String path, String outPath) {
@@ -174,6 +179,7 @@ public class MergeWordDocument {
 	/**
 	 * POI
 	 * 测试拼接方法
+	 *
 	 * @param newFileDoc 合同范本doc
 	 * @param newFilePdf 合同范本pdf
 	 */
@@ -182,7 +188,7 @@ public class MergeWordDocument {
 		SimpleDateFormat df = new SimpleDateFormat("yyyyMMddHHmmss");
 		String date = df.format(new Date());
 		//初始化文件   1.拼接后docx文档  2.拼接后pdf文档  3.转类型doc转docx文档
-		String mergeFileDocx = ftlPath +"mergeFileDocx"+ date + ".docx";
+		String mergeFileDocx = ftlPath + "mergeFileDocx" + date + ".docx";
 		String newFileDocx = ftlPath + "newFileDocx" + date + ".docx";
 		// office转wps,处理兼容问题
 		AsposeWordToPdfUtils.doc2Docx(newFileDoc, newFileDocx);
@@ -192,12 +198,12 @@ public class MergeWordDocument {
 		filepaths.add(0, mergeFileDocx);
 		filepaths.add(1, newFilePdf);
 		filepaths.add(2, newFileDocx);
-		String docxFileUrl="1370231882483777538,1370231706432061441,1370231775097012225,";
-		String imageFileUrl="1371707073609109505";
+		String docxFileUrl = "1370231882483777538,1370231706432061441,1370231775097012225,";
+		String imageFileUrl = "1371707073609109505";
 		List<FileVO> result = mergeWordDocument.fileClient.getByIds(docxFileUrl).getData();
 		result.forEach(file -> {
 			int index = file.getName().lastIndexOf(".");
-			String pathname=ftlPath + file.getName().substring(0, index) + date + ".docx";
+			String pathname = ftlPath + file.getName().substring(0, index) + date + ".docx";
 			//创建空docx文件
 			File filePDF = new File(pathname);
 			//建立输出字节流
@@ -213,28 +219,28 @@ public class MergeWordDocument {
 			filepaths.add(pathname);
 		});
 		//判断是否有需要添加或覆盖的图片
-			List<FileVO> images = mergeWordDocument.fileClient.getByIds(imageFileUrl).getData();
-			images.forEach(image -> {
-				int index = image.getName().lastIndexOf(".");
-				String pathname=ftlPath + image.getName().substring(0, index) + date + ".jpeg";
-				FileOutputStream fosx = null;
-				try {
-					fosx = new FileOutputStream(new File(pathname));
-					//将根据URL获取到的数据流写到空docx文件
-					fosx.write(AsposeWordToPdfUtils.getUrlFileData(image.getLink()));
-					fosx.close();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-				imagepths.add(pathname);
-			});
+		List<FileVO> images = mergeWordDocument.fileClient.getByIds(imageFileUrl).getData();
+		images.forEach(image -> {
+			int index = image.getName().lastIndexOf(".");
+			String pathname = ftlPath + image.getName().substring(0, index) + date + ".jpeg";
+			FileOutputStream fosx = null;
+			try {
+				fosx = new FileOutputStream(new File(pathname));
+				//将根据URL获取到的数据流写到空docx文件
+				fosx.write(AsposeWordToPdfUtils.getUrlFileData(image.getLink()));
+				fosx.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			imagepths.add(pathname);
+		});
 		try {
 			//拼接文档
 			//MagerUtils.mergeDoc(filepaths);
-			magerDocx(filepaths,imagepths);
+			magerDocx(filepaths, imagepths);
 		} catch (Exception e) {
 			e.printStackTrace();
-		}finally {
+		} finally {
 			for (int i = 2; i <= filepaths.size() - 1; i++) {
 				File file = new File(filepaths.get(i));
 				file.delete();
@@ -249,19 +255,20 @@ public class MergeWordDocument {
 	/**
 	 * POI-TL
 	 * word拼接方法三
+	 *
 	 * @param filepaths 相关文档  1.合同范本源模板   附件   1.拼接后文档  2.pdf文档
- 	 */
+	 */
 	@SneakyThrows
-	public static void magerDocx(List<String> filepaths,List<String> imagepaths){
+	public static void magerDocx(List<String> filepaths, List<String> imagepaths) {
 		XWPFTemplate template = XWPFTemplate.compile(filepaths.get(2));
-		HashMap<String, Object> hashMap=new HashMap<>();
+		HashMap<String, Object> hashMap = new HashMap<>();
 		// 插入文档
-		for (int i = 3; i <=filepaths.size()-1 ; i++) {
-			hashMap.put("docx_word"+i, new DocxRenderData(new File(filepaths.get(i))));
+		for (int i = 3; i <= filepaths.size() - 1; i++) {
+			hashMap.put("docx_word" + i, new DocxRenderData(new File(filepaths.get(i))));
 		}
 		// 图片流
-		for (int j = 0; j <=imagepaths.size()- 1; j++) {
-			hashMap.put("streamImg"+j, Pictures.ofStream(new FileInputStream(imagepaths.get(j)), PictureType.JPEG)
+		for (int j = 0; j <= imagepaths.size() - 1; j++) {
+			hashMap.put("streamImg" + j, Pictures.ofStream(new FileInputStream(imagepaths.get(j)), PictureType.JPEG)
 				.size(700, 400).create());
 		}
 		template.render(hashMap);
@@ -281,16 +288,17 @@ public class MergeWordDocument {
 
 	/**
 	 * 获取模板FTL文件
-	 * @param ftlPath 文件路径
+	 *
+	 * @param ftlPath    文件路径
 	 * @param templateVO 拼接文件名称
 	 * @param templateId 关联的范本ID
 	 */
-	public static String getTemplateFTLFile(String ftlPath,TemplateRequestVO templateVO,Long templateId ){
+	public static String getTemplateFTLFile(String ftlPath, TemplateRequestVO templateVO, Long templateId) {
 		//获取模板中的附件
-		File fileFTL=null;
+		File fileFTL = null;
 		List<FileVO> result = mergeWordDocument.fileClient.getByIds(mergeWordDocument.templateService.getById(templateId).getTemplateFileId()).getData();
 		//新建空文件
-		String pathname=ftlPath+templateVO.getTemplateCode()+".docx";
+		String pathname = ftlPath + templateVO.getTemplateCode() + ".docx";
 		//创建空ftl文件
 		fileFTL = new File(pathname);
 		//建立输出字节流
@@ -304,5 +312,21 @@ public class MergeWordDocument {
 			e.printStackTrace();
 		}
 		return pathname;
+	}
+
+	/**
+	 * PDF转DOCX
+	 *
+	 * @param sourcerFile 源文件PDF
+	 * @param targetFile  转换后文件DOCX
+	 * @author jitwxs
+	 * @date 2021/8/2 17:57
+	 */
+	public static void pdf2docx(String sourcerFile, String targetFile) {
+		//加载PDF
+		PdfDocument pdf = new PdfDocument();
+		pdf.loadFromFile(sourcerFile);
+		//保存为Word格式
+		pdf.saveToFile(targetFile, com.spire.pdf.FileFormat.DOCX);
 	}
 }

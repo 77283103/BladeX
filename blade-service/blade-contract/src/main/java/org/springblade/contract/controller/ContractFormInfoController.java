@@ -281,6 +281,10 @@ public class ContractFormInfoController extends BladeController {
 		contractFormInfo.setId(contractFormInfoCopy.getId());
 		//统一处理相同相同数据的方法
 		contractFormInfo=this.unifiedMethodHandle(contractFormInfo);
+		//判断状态为60即为手动补录合同信息  需要补充相关其他信息
+		if (ContractStatusEnum.SIGING.getKey().toString().equals(contractFormInfo.getContractStatus())){
+			contractFormInfoCopy=contractFormInfoService.saveContractSupplementaryRecording(contractFormInfo);
+		}
 		r.setMsg(ContractErorrCodeEnum.INDE_DRAFT_SAVE.getValue());
 		if (ContractStatusEnum.APPROVAL.getKey().toString().equals(contractFormInfo.getContractStatus())) {
 			if (ContractTypeEnum.ELECTRONIC_CONTRACT_WE.getKey().toString().equals(contractFormInfo.getContractForm())
@@ -356,12 +360,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity), r.getMsg());
 	}
 
-	/**
-	 * 判断电子签章和关键字是否存在
-	 */
 	@PostMapping("/singleSignIsNot")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "判断电子签章是否存在", notes = "传入contractFormInfo")
+	@ApiOperation(value = "判断电子签章和关键字是否存在", notes = "传入contractFormInfo")
 	@Transactional(rollbackFor = Exception.class)
 	public R singleSignIsNot(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		FileVO files = null;
@@ -375,9 +376,6 @@ public class ContractFormInfoController extends BladeController {
 		return contractFormInfoService.singleSignIsNot(contractFormInfo, files);
 	}
 
-	/**
-	 * 合同预览
-	 */
 	@PostMapping("/contractBrowse")
 	@ApiOperationSupport(order = 5)
 	@ApiOperation(value = "合同预览", notes = "template")
@@ -403,10 +401,6 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(files);
 	}
 
-
-	/**
-	 * 批量送审
-	 */
 	@PostMapping("/submitBatch")
 	@ApiOperationSupport(order = 12)
 	@ApiOperation(value = "批量送审", notes = "传入依据和合同ids")
@@ -450,9 +444,6 @@ public class ContractFormInfoController extends BladeController {
 	}
 
 
-	/**
-	 * 复用
-	 */
 	@PostMapping("/multiplex")
 	@ApiOperationSupport(order = 13)
 	@ApiOperation(value = "复用", notes = "传入contractFormInfo")
@@ -483,14 +474,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(ContractFormInfoWrapper.build().entityPV(contractFormInfo));
 	}
 
-
-	/**
-	 * 修改
-	 * 判断变更合同id是否为空 否则修改元年合同状态 为已消毁
-	 */
 	@PostMapping("/update")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入contractFormInfo")
+	@ApiOperation(value = "判断变更合同id是否为空 否则修改元年合同状态 为已消毁", notes = "传入contractFormInfo")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:update')")
 	public R update(@Valid @RequestBody ContractFormInfoRequestVO contractFormInfo) {
 		if (Func.isEmpty(contractFormInfo.getId())) {
@@ -504,13 +490,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.updateById(entity));
 	}
 
-	/**
-	 * 导出后修改合同状态为待用印 并统计下载次数 修改下载状态
-	 * 30>40
-	 */
 	@PostMapping("/updateExport")
 	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "修改", notes = "传入id")
+	@ApiOperation(value = "导出后修改合同状态为待用印 并统计下载次数 修改下载状态", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateExport')")
 	public R updateExport(@RequestParam Long id) {
 		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
@@ -543,12 +525,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(status);
 	}
 
-	/**
-	 * 复用导出合同文本
-	 */
 	@PostMapping("/repeatExport")
 	@ApiOperationSupport(order = 6)
-	@ApiOperation(value = "修改", notes = "传入id")
+	@ApiOperation(value = "复用导出合同文本", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:repeatExport')")
 	public R<ContractFormInfoResponseVO> repeatExport(@RequestParam Long id) {
 		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
@@ -569,14 +548,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(formInfoResponseVO);
 	}
 
-
-	/**
-	 * 用印后修改状态为待签定
-	 * 40>50
-	 */
 	@PostMapping("/updateSealStatus")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入id")
+	@ApiOperation(value = "用印后修改状态为待签定", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateSealStatus')")
 	public R sealStatus(@RequestParam Long id) {
 		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
@@ -587,13 +561,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
-	/**
-	 * 归档后修改状态待评估
-	 * 60>110
-	 */
 	@PostMapping("/updateArchiveStatus")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入id")
+	@ApiOperation(value = "归档后修改状态待评估", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateArchiveStatus')")
 	public R archiveStatus(@RequestParam Long id) {
 		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
@@ -604,13 +574,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
-	/**
-	 * 评估后修改状态为待分析
-	 * 100
-	 */
 	@PostMapping("/updateAssessmentStatus")
 	@ApiOperationSupport(order = 5)
-	@ApiOperation(value = "修改", notes = "传入id")
+	@ApiOperation(value = "评估后修改状态为待分析", notes = "传入id")
 	@PreAuth("hasPermission('contractFormInfo:contractFormInfo:updateAssessmentStatus')")
 	public R assessmentStatus(@RequestParam Long id) {
 		ContractFormInfoEntity infoEntity = contractFormInfoService.getById(id);
@@ -621,9 +587,6 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.updateById(infoEntity));
 	}
 
-	/**
-	 * 删除
-	 */
 	@PostMapping("/remove")
 	@ApiOperationSupport(order = 7)
 	@ApiOperation(value = "逻辑删除", notes = "传入ids")
@@ -632,9 +595,6 @@ public class ContractFormInfoController extends BladeController {
 		return R.status(contractFormInfoService.deleteLogic(Func.toLongList(ids)));
 	}
 
-	/**
-	 * 合同大类金额
-	 */
 	@PostMapping("/getAmountList")
 	@ApiOperation(value = "合同大类金额", notes = "")
 	public ArrayList<Map<String, String>> getAmountList() {
@@ -649,9 +609,7 @@ public class ContractFormInfoController extends BladeController {
 		return listMap;
 	}
 
-	/**
-	 * 合同大类数量
-	 */
+
 	@PostMapping("/getNumList")
 	@ApiOperation(value = "合同大类数量", notes = "传入ids")
 	public ArrayList<Map<String, String>> getNumList() {
@@ -995,12 +953,9 @@ public class ContractFormInfoController extends BladeController {
 		return R.data(r.getCode(), ContractFormInfoWrapper.build().entityPV(contractFormInfoEntity), r.getMsg());
 	}
 
-	/**
-	 * 下载文件-实现预览在线预览功能
-	 */
 	@GetMapping("/downloadFiles")
 	@ApiOperationSupport(order = 4)
-	@ApiOperation(value = "下载文件", notes = "传入文件id")
+	@ApiOperation(value = "下载文件-实现预览在线预览功能", notes = "传入文件id")
 	public void downloadFiles(@RequestParam String id, HttpServletResponse response) {
 		try {
 			FileEntity fileEntity = fileClient.getById(Long.valueOf(id)).getData();

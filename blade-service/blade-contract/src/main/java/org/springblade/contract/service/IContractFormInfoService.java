@@ -74,6 +74,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	void saveCounterpart(ContractFormInfoRequestVO vo);
+
 	/**
 	 * 合同收款明细保存 独立起草
 	 *
@@ -81,29 +82,34 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return
 	 */
 	void saveCollection(ContractFormInfoRequestVO vo);
+
 	/**
 	 * 合同收款明细保存 多方起草
 	 *
 	 * @param vo 合同信息
 	 * @return
 	 */
-	void saveCollectionMulti(ContractMultPaymenEntity vo,Long contractId);
+	void saveCollectionMulti(ContractMultPaymenEntity vo, Long contractId);
 
 	/**
 	 * 多方首付信息保存
-	 * @author jitwxs
-	 * @date 2021/7/29 0:54
+	 *
 	 * @param contractFormInfo 合同信息
 	 * @return org.springblade.contract.entity.ContractFormInfoEntity
+	 * @author jitwxs
+	 * @date 2021/7/29 0:54
 	 */
 	ContractFormInfoRequestVO setMultPaymenEntityList(ContractFormInfoRequestVO contractFormInfo);
+
 	/**
 	 * 保存多方子公司  相对方关系
+	 *
+	 * @param contractFormInfo 合同信息
 	 * @author jitwxs
 	 * @date 2021/7/29 9:07
-	 * @param contractFormInfo 合同信息
 	 */
 	void saveDraftContractCounterpartList(ContractFormInfoRequestVO contractFormInfo);
+
 	/**
 	 * 子公司保存方法
 	 *
@@ -122,8 +128,10 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 
 	void saveBondAndPlan(ContractFormInfoRequestVO vo);
+
 	/**
 	 * 多方保证金保存
+	 *
 	 * @author jitwxs
 	 * @date 2021/7/29 0:47
 	 */
@@ -184,6 +192,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 
 	/**
 	 * 统计合同导出次数
+	 *
 	 * @param id                 合同id
 	 * @param fileExportCount    下载次数
 	 * @param fileExportCategory 下载状态
@@ -197,6 +206,7 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return 返回统计状态
 	 */
 	R<ContractFormInfoEntity> SingleSign(R<ContractFormInfoEntity> r);
+
 	/**
 	 * 电子签章业务处理 -批量送审
 	 *
@@ -240,7 +250,6 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 * @return list
 	 */
 	List<ContractFormInfoEntity> getChooseList();
-
 
 
 	void batchDraftingImport(ContractImportBatchDraftRequest contractImportBatchDraftRequest);
@@ -296,15 +305,24 @@ public interface IContractFormInfoService extends BaseService<ContractFormInfoEn
 	 */
 	ContractFormInfoEntity selectByChangeId(Long id);
 
+	/**
+	 * @param contractFormInfo 合同补录相关信息
+	 * @author jitwxs
+	 * @date 2021/8/3 12:37
+	 */
+	ContractFormInfoEntity saveContractSupplementaryRecording(ContractFormInfoRequestVO contractFormInfo);
+
 
 	/**
 	 * 模板批量导入-更新
+	 *
 	 * @param contractFormInfo
 	 */
 	void batchDraftingImportUp(ContractFormInfoRequestVO contractFormInfo);
 
 	/**
 	 * 批量起草处理电子签章
+	 *
 	 * @param contractFormInfoEntity
 	 * @return
 	 */

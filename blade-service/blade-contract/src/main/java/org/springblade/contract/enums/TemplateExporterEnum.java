@@ -2294,7 +2294,7 @@ public enum TemplateExporterEnum {
 			dataModel.put("cglBuyer", Func.isNull(contractFormInfoEntity.getSealName()) ? "" : contractFormInfoEntity.getSealName());
 			dataModel.put("cglSeller", getCounterpart(contractFormInfoEntity).get("name").size() <= 0 ? "未选择相对方" : getCounterpart(contractFormInfoEntity).get("name").get(0));
 			dataModel.put("cglAccount", Func.isNull(contractFormInfoEntity.getBankAccountCode()) ? "" : contractFormInfoEntity.getBankAccountCode());
-			dataModel.put("cglBankNumber", Func.isNull(contractFormInfoEntity.getBankDepositName()) ? "" : contractFormInfoEntity.getBankDepositName());
+			dataModel.put("cglNameOfBank", Func.isNull(contractFormInfoEntity.getBankDepositName()) ? "" : contractFormInfoEntity.getBankDepositName());
 			dataModel.put("cglNameOfTheAccount", Func.isNull(contractFormInfoEntity.getBankAccountName()) ? "" : contractFormInfoEntity.getBankAccountName());
 			dataModel.put("annex", j.get("annex"));
 			modle.put("dataModel", setFile(filepaths, dataModel));

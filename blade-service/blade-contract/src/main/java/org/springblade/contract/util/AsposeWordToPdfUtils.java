@@ -113,7 +113,7 @@ public class AsposeWordToPdfUtils {
 			//sourcerFile是将要被转化的word文档
 			Document docx = new Document(sourcerFile);
 			//全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
-			docx.removeMacros();
+			docx.removeMacros();//删除宏
 			docx.save(os, SaveFormat.DOCX);
 			os.close();
 		} catch (Exception e) {
@@ -127,7 +127,7 @@ public class AsposeWordToPdfUtils {
 	 * @param sourcerFile 源文件
 	 * @param targetFile  目标文件
 	 */
-	public static void pdf2doc(String sourcerFile, String targetFile) {
+	public static void pdf2docx(String sourcerFile, String targetFile) {
 		// 验证License 若不验证则转化出的pdf文档会有水印产生
 		if (!getLicense()) {
 			return;
@@ -137,6 +137,7 @@ public class AsposeWordToPdfUtils {
 			FileOutputStream os = new FileOutputStream(file);
 			Document doc = new Document(sourcerFile);
 			//全面支持DOC, DOCX, OOXML, RTF HTML, OpenDocument, PDF, EPUB, XPS, SWF 相互转换
+			doc.removeMacros();//删除宏
 			doc.save(os, SaveFormat.DOCX);
 			os.close();
 		} catch (Exception e) {
