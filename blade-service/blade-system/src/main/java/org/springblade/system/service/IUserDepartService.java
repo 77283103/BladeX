@@ -45,4 +45,11 @@ public interface IUserDepartService extends IService<UserDepartEntity> {
 	 */
 	boolean saveBatchUserDepart( List<UserDepartEntity> userDepartList);
 
+	/**
+	 * 批量新增
+	 * @param userDepartList
+	 */
+	void saveUserDepartList(List<UserDepartEntity> userDepartList);
+
+
 }

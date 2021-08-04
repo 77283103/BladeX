@@ -173,6 +173,11 @@ public class ISysClientFallback implements ISysClient {
 	}
 
 	@Override
+	public R saveUserDepartBach(List<UserDepartEntity> userDepartEntityList) {
+		return  R.fail("保存數據失敗");
+	}
+
+	@Override
 	public R<Boolean> saveDept(Dept dept) {
 		return R.fail("保存數據失敗");
 	}

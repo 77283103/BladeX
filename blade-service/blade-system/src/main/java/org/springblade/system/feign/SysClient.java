@@ -232,6 +232,12 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
+	public R saveUserDepartBach(List<UserDepartEntity> userDepartEntityList) {
+		userDepartService.saveUserDepartList(userDepartEntityList);
+		return R.data(true);
+	}
+
+	@Override
 	@PostMapping(SUBMIT_DEPT_API)
 	public R<Boolean> saveDept(@RequestBody Dept dept) {
 		return R.data(deptService.saveOrUpdate(dept));

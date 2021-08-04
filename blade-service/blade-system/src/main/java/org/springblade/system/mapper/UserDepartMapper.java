@@ -44,4 +44,14 @@ public interface UserDepartMapper extends BaseMapper<UserDepartEntity> {
 	 * @return
 	 */
 	boolean saveBatchUserDepart(@Param("userDepartList") List<UserDepartEntity> userDepartList);
+
+
+	/**
+	 *
+	 *批量新增
+	 * @param userDepartList
+	 * @return
+	 */
+	boolean saveUserDepartList(@Param("userDepartList") List<UserDepartEntity> userDepartList);
+
 }

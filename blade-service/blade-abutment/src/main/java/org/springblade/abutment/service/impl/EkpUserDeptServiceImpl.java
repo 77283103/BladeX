@@ -10,6 +10,7 @@ import org.springblade.abutment.properties.EkpProperties;
 import org.springblade.abutment.service.EkpUserDeptService;
 import org.springblade.abutment.service.IEkpService;
 import org.springblade.abutment.service.IEkpSynDataService;
+import org.springblade.abutment.util.IdGenUtil;
 import org.springblade.abutment.vo.EkpSyncDeptInfoVo;
 import org.springblade.abutment.vo.EkpSyncInfoVo;
 import org.springblade.abutment.vo.EkpSyncRequestVO;
@@ -60,21 +61,21 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 	@SneakyThrows
 	@Override
 	public void synchronizationEkpUserData(EkpSyncRequestVO ekpSyncRequestVO) {
-//		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\user_json.txt");
-//		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
-		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
-			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
-		}
-		//如果全量，ekp将有效数据全部返回。不包含失效数据。
+		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\user_json.txt");
+		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
+//		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
+//			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
+//		}
+//		//如果全量，ekp将有效数据全部返回。不包含失效数据。
 		if(ekpSyncRequestVO.getType().equals("initialize")){
 			userClient.deactivateAllUser();
 			sysClient.disableDeptAll();
 		}
-		ekpSyncRequestVO.setToken(ekpService.getToken(ekpProperties.getToken_account(),ekpProperties.getToken_password(),ekpProperties.getToken_url()));
-		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
-		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
-		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
-		saveEkpData(JsonUtil.toJson(ekpSyncInfoVo));
+//		ekpSyncRequestVO.setToken(ekpService.getToken(ekpProperties.getToken_account(),ekpProperties.getToken_password(),ekpProperties.getToken_url()));
+//		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
+//		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
+//		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
+//		saveEkpData(JsonUtil.toJson(ekpSyncInfoVo));
 
 		if(null != ekpSyncInfoVo && ekpSyncInfoVo.getMsg().equals(SUCCESS)){
 			Map<String,Dept> deptMap = ekpDeptHandle(ekpSyncInfoVo.getOrgList());
@@ -129,7 +130,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 			//为空则ekp推送的此用户为新增用户。
 			if(null == user){
 				user = new User();
-				user.setId(new DefaultIdentifierGenerator().nextId(new Object()).longValue());
+				user.setId(IdGenUtil.generateId());
 				user.setRealName(ekpSyncUserInfoVo.getUserName());
 				user.setAccount(ekpSyncUserInfoVo.getEmplno());
 				user.setPassword(SecureUtil.md5(ekpProperties.getPassword()));
@@ -173,7 +174,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 			//数据库中不存在代表本次同步数据中存在新增部门
 			if(Func.isEmpty(dept)){
 				dept = new Dept();
-				dept.setId(new DefaultIdentifierGenerator().nextId(new Object()).longValue());
+				dept.setId(IdGenUtil.generateId());
 				dept.setDeptName(ekpSyncDeptInfoVo.getOrgName());
 				dept.setAssociationId(ekpSyncDeptInfoVo.getOrgId());
 			}
@@ -207,6 +208,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		R<Role>role = sysClient.getRoleByName(ROLE_NAME);
 		for(EkpSyncUserInfoVo ekpSyncUserInfoVo:ekpSyncUserInfoVoList){
 			UserDepartEntity userDepartEntity = new UserDepartEntity();
+			userDepartEntity.setId(IdGenUtil.generateId());
 			User user = userMap.get(ekpSyncUserInfoVo.getUserId());
 			Dept dept = deptMap.get(ekpSyncUserInfoVo.getParentId());
 			userDepartEntity.setUserId(user.getId());
@@ -228,7 +230,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		//清除同步用户所属部门角色关联表旧数据
 		userClient.deleteUserDepart(userIds);
 		//上千数据新增有延迟，后续操作注意
-		sysClient.saveOrUpdateBatchUserDepart(userDepartEntityList);
+		sysClient.saveUserDepartBach(userDepartEntityList);
 		return userDepartEntityList;
 	}
 
