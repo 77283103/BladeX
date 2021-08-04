@@ -169,4 +169,8 @@
         ON DUPLICATE KEY UPDATE
         dept_name = VALUES(dept_name),parent_id = VALUES(parent_id),ancestors = VALUES(ancestors),association_id = VALUES(association_id),update_time = VALUES(update_time),status = VALUES(status),is_deleted = VALUES(is_deleted),pinyin_name = VALUES(pinyin_name),is_enable = VALUES(is_enable)
     </insert>
+
+    <update id="disableDeptAll">
+        update blade_dept set is_enable = 1
+    </update>
 </mapper>

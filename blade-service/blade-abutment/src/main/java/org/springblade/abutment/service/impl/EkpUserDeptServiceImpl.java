@@ -57,26 +57,25 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 	private final static String SUCCESS = "success";
 	private final static String ROLE_NAME = "合同管理员";
 
-
 	@SneakyThrows
 	@Override
 	public void synchronizationEkpUserData(EkpSyncRequestVO ekpSyncRequestVO) {
-		//获取ekp用户部门数据
-//		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\one_user_json.txt");
+//		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\user_json.txt");
 //		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
-
 		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
 			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
 		}
 		//如果全量，ekp将有效数据全部返回。不包含失效数据。
 		if(ekpSyncRequestVO.getType().equals("initialize")){
 			userClient.deactivateAllUser();
+			sysClient.disableDeptAll();
 		}
 		ekpSyncRequestVO.setToken(ekpService.getToken(ekpProperties.getToken_account(),ekpProperties.getToken_password(),ekpProperties.getToken_url()));
 		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
 		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
 		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
 		saveEkpData(JsonUtil.toJson(ekpSyncInfoVo));
+
 		if(null != ekpSyncInfoVo && ekpSyncInfoVo.getMsg().equals(SUCCESS)){
 			Map<String,Dept> deptMap = ekpDeptHandle(ekpSyncInfoVo.getOrgList());
 			Map<String,User> userMap =  ekpUserHandle(ekpSyncInfoVo.getUserList(),deptMap);
@@ -177,8 +176,8 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 				dept.setId(new DefaultIdentifierGenerator().nextId(new Object()).longValue());
 				dept.setDeptName(ekpSyncDeptInfoVo.getOrgName());
 				dept.setAssociationId(ekpSyncDeptInfoVo.getOrgId());
-				dept.setIsEnable(Integer.parseInt(Func.isEmpty(ekpSyncDeptInfoVo.getAvailable())?"1":ekpSyncDeptInfoVo.getAvailable().equals("1")?"2":"1"));
 			}
+			dept.setIsEnable(Integer.parseInt(Func.isEmpty(ekpSyncDeptInfoVo.getAvailable())?"1":ekpSyncDeptInfoVo.getAvailable().equals("1")?"2":"1"));
 			dept.setDeptName(ekpSyncDeptInfoVo.getOrgName());
 			dbDeptMap.put(dept.getAssociationId(),dept);
 			ekpDeptMap.put(ekpSyncDeptInfoVo.getOrgId(),ekpSyncDeptInfoVo);
@@ -205,6 +204,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		List<UserDepartEntity> userDepartEntityList = new ArrayList<>();
 		List<Long> userIds = new ArrayList<>();
 		Map<String,UserDepartEntity>userDepartMap = getMapUserDepart();
+		R<Role>role = sysClient.getRoleByName(ROLE_NAME);
 		for(EkpSyncUserInfoVo ekpSyncUserInfoVo:ekpSyncUserInfoVoList){
 			UserDepartEntity userDepartEntity = new UserDepartEntity();
 			User user = userMap.get(ekpSyncUserInfoVo.getUserId());
@@ -215,7 +215,6 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 				userDepartEntity.setDeptId(dept.getId());
 			}
 			//同步用户设置默认角色,默认角色为“测试” (如用户在合同平台角色为“合同管理员”，需保持不变)
-			R<Role>role = sysClient.getRoleByName(ROLE_NAME);
 			UserDepartEntity userDepart = userDepartMap.get(user.getId().toString());
 			userDepartEntity.setRoleId(1270659143136452610L);
 			if(null != userDepart){
@@ -330,6 +329,12 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 			}
 		}
 		return sbf.toString();
+	}
+
+	public static void main(String[] args) {
+		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\user_json.txt");
+		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
+		System.out.println("");
 	}
 
 }

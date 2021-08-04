@@ -81,6 +81,7 @@ public interface ISysClient {
 	String GET_DATA_SEAL_ADMIN_INFO =API_PREFIX +"/get-data-seal-admin-info";
 
 	String GET_TEMPLATE_BY_CODE =API_PREFIX +"/get-template-by-code";
+	String DISABLE_DEPT_ALL = API_PREFIX +"/disable-dept-all";
 
 	/**
 	 * 获取菜单
@@ -304,6 +305,11 @@ public interface ISysClient {
 	 */
 	@PostMapping(SAVE_DEPT_API)
 	R<Boolean> saveOrUpdateBatchDept(@RequestBody List<Dept> dept);
+
+
+	@PostMapping(DISABLE_DEPT_ALL)
+	R disableDeptAll();
+
 
 	/**
 	 * @param post

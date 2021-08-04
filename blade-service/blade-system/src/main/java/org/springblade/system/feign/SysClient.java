@@ -213,6 +213,11 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
+	public R disableDeptAll() {
+		return R.data(deptService.disableDeptAll());
+	}
+
+	@Override
 	@PostMapping(SAVE_POST_API)
 	@ApiLog("更新的岗位信息SAVE_POST_API")
 	public R<Boolean> saveOrUpdateBatchPost(List<Post> post) {

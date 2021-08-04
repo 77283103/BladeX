@@ -142,4 +142,10 @@ public interface IDeptService extends BaseService<Dept> {
 
 	boolean saveBatchDept(List<Dept> deptList);
 
+	/**
+	 * 禁用所有部门
+	 * @return
+	 */
+	Boolean disableDeptAll();
+
 }
