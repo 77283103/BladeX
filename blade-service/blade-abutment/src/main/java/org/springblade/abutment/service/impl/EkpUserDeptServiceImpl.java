@@ -57,25 +57,26 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 
 	private final static String SUCCESS = "success";
 	private final static String ROLE_NAME = "合同管理员";
+	private final static String SUPER_ADMIN_NAME = "超级管理员";
 
 	@SneakyThrows
 	@Override
 	public void synchronizationEkpUserData(EkpSyncRequestVO ekpSyncRequestVO) {
-//		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\user_json.txt");
-//		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
-		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
-			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
-		}
+		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\user_json.txt");
+		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
+//		if(Func.isEmpty(ekpSyncRequestVO.getYyyyMMdd())){
+//			ekpSyncRequestVO.setYyyyMMdd(DateUtil.formatDate(new Date()).replace("-",""));
+//		}
 //		//如果全量，ekp将有效数据全部返回。不包含失效数据。
-		if(ekpSyncRequestVO.getType().equals("initialize")){
-			userClient.deactivateAllUser();
-			sysClient.disableDeptAll();
-		}
-		ekpSyncRequestVO.setToken(ekpService.getToken(ekpProperties.getToken_account(),ekpProperties.getToken_password(),ekpProperties.getToken_url()));
-		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
-		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
-		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
-		saveEkpData(JsonUtil.toJson(ekpSyncInfoVo));
+//		if(ekpSyncRequestVO.getType().equals("initialize")){
+//			userClient.deactivateAllUser();
+//			sysClient.disableDeptAll();
+//		}
+//		ekpSyncRequestVO.setToken(ekpService.getToken(ekpProperties.getToken_account(),ekpProperties.getToken_password(),ekpProperties.getToken_url()));
+//		log.info("同步ekp用户组织机构数据---开始,请求参数:{}",JsonUtil.toJson(ekpSyncRequestVO));
+//		EkpSyncInfoVo ekpSyncInfoVo = getEkpSyncInfo(ekpSyncRequestVO);
+//		log.info("同步ekp用户组织机构数据---获取数据:{}",JsonUtil.toJson(ekpSyncInfoVo));
+//		saveEkpData(JsonUtil.toJson(ekpSyncInfoVo));
 
 		if(null != ekpSyncInfoVo && ekpSyncInfoVo.getMsg().equals(SUCCESS)){
 			Map<String,Dept> deptMap = ekpDeptHandle(ekpSyncInfoVo.getOrgList());
@@ -206,6 +207,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		List<Long> userIds = new ArrayList<>();
 		Map<String,UserDepartEntity>userDepartMap = getMapUserDepart();
 		R<Role>role = sysClient.getRoleByName(ROLE_NAME);
+		R<Role>superRole = sysClient.getRoleByName(SUPER_ADMIN_NAME);
 		for(EkpSyncUserInfoVo ekpSyncUserInfoVo:ekpSyncUserInfoVoList){
 			UserDepartEntity userDepartEntity = new UserDepartEntity();
 			userDepartEntity.setId(IdGenUtil.generateId());
@@ -220,7 +222,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 			UserDepartEntity userDepart = userDepartMap.get(user.getId().toString());
 			userDepartEntity.setRoleId(1270659143136452610L);
 			if(null != userDepart){
-				if(userDepart.getRoleId().equals(role.getData().getId())){
+				if(userDepart.getRoleId().equals(role.getData().getId()) || userDepart.getRoleId().equals(superRole.getData().getId())){
 					userDepartEntity.setRoleId(role.getData().getId());
 				}
 			}
