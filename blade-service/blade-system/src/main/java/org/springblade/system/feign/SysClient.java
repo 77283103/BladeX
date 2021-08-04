@@ -213,6 +213,11 @@ public class SysClient implements ISysClient {
 	}
 
 	@Override
+	public R disableDeptAll() {
+		return R.data(deptService.disableDeptAll());
+	}
+
+	@Override
 	@PostMapping(SAVE_POST_API)
 	@ApiLog("更新的岗位信息SAVE_POST_API")
 	public R<Boolean> saveOrUpdateBatchPost(List<Post> post) {
@@ -224,6 +229,12 @@ public class SysClient implements ISysClient {
 	public R<Boolean> saveOrUpdateBatchUserDepart(List<UserDepartEntity> userDepart) {
 		CacheUtil.clear(SYS_CACHE);
 		return R.data(userDepartService.saveOrUpdateBatch(userDepart));
+	}
+
+	@Override
+	public R saveUserDepartBach(List<UserDepartEntity> userDepartEntityList) {
+		userDepartService.saveUserDepartList(userDepartEntityList);
+		return R.data(true);
 	}
 
 	@Override

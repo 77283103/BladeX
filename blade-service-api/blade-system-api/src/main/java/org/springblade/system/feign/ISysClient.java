@@ -81,6 +81,9 @@ public interface ISysClient {
 	String GET_DATA_SEAL_ADMIN_INFO =API_PREFIX +"/get-data-seal-admin-info";
 
 	String GET_TEMPLATE_BY_CODE =API_PREFIX +"/get-template-by-code";
+	String DISABLE_DEPT_ALL = API_PREFIX +"/disable-dept-all";
+	String SAVE_BACH_USER_DEPART_API = API_PREFIX +"/save-bach-user-depart-api";
+
 
 	/**
 	 * 获取菜单
@@ -305,6 +308,11 @@ public interface ISysClient {
 	@PostMapping(SAVE_DEPT_API)
 	R<Boolean> saveOrUpdateBatchDept(@RequestBody List<Dept> dept);
 
+
+	@PostMapping(DISABLE_DEPT_ALL)
+	R disableDeptAll();
+
+
 	/**
 	 * @param post
 	 * @return
@@ -318,6 +326,9 @@ public interface ISysClient {
 	 */
 	@PostMapping(SAVE_USER_DEPART_API)
 	R<Boolean> saveOrUpdateBatchUserDepart(@RequestBody List<UserDepartEntity> userDepart);
+
+	@PostMapping(SAVE_BACH_USER_DEPART_API)
+	R saveUserDepartBach(@RequestBody List<UserDepartEntity> userDepartEntityList);
 
 	/**
 	 * @param dept

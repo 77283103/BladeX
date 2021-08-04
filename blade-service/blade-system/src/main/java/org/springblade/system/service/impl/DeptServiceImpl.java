@@ -226,4 +226,9 @@ public class DeptServiceImpl extends BaseServiceImpl<DeptMapper, Dept> implement
 	public boolean saveBatchDept(List<Dept> deptList) {
 		return deptMapper.saveBatchDept(deptList);
 	}
+
+	@Override
+	public Boolean disableDeptAll() {
+		return deptMapper.disableDeptAll();
+	}
 }

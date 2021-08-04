@@ -90,4 +90,10 @@ public interface DeptMapper extends BaseMapper<Dept> {
 	 * @return
 	 */
 	boolean saveBatchDept(@Param("deptList") List<Dept> deptList);
+
+	/**
+	 * 禁用所有部门
+	 * @return
+	 */
+	Boolean disableDeptAll();
 }

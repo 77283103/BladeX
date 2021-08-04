@@ -1389,6 +1389,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			contractFormInfoEntity.setRelContractId(ekpVo.getData().getDoc_info());
 			contractFormInfoEntity.setEkpNumber(ekpVo.getData().getEkp_number());
 		}
+		//推送中台
+		abutmentClient.transferStationPushContract(entityToMiddlegroundContract(contractFormInfoEntity));
 		r.setCode(ekpVo.getCode());
 		r.setData(contractFormInfoEntity);
 		return r;
@@ -1437,6 +1439,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			contractFormInfoEntity.setRelContractId(ekpVo.getData().getDoc_info());
 			contractFormInfoEntity.setEkpNumber(ekpVo.getData().getEkp_number());
 		}
+		//推送中台
+		abutmentClient.transferStationPushContract(entityToMiddlegroundContract(contractFormInfoEntity));
 		r.setData(contractFormInfoEntity);
 		r.setCode(ekpVo.getCode());
 		return r;

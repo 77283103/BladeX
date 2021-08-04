@@ -42,4 +42,14 @@
         ON DUPLICATE KEY UPDATE
         user_id = VALUES(user_id),role_id = VALUES(role_id),dept_id = VALUES(dept_id),post_id = VALUES(post_id)
     </insert>
+
+
+    <insert id="saveUserDepartList">
+        insert into blade_user_depart (id, user_id, role_id, dept_id, post_id)
+        VALUES
+        <foreach collection="userDepartList" separator="," item="item">
+            (#{item.id}, #{item.userId}, #{item.roleId}, #{item.deptId}, #{item.postId})
+        </foreach>
+    </insert>
+
 </mapper>
