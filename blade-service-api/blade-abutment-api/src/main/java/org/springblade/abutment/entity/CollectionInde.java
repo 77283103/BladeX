@@ -28,4 +28,8 @@ public class CollectionInde {
 	private String fd_pay_amount;
 	@ApiModelProperty(value = "收款需要填写的 ")
 	private String fd_pay_days_inde;
+	@ApiModelProperty(value = "单据内容:付款信息-完工比例")
+	private String fd_pay_ratio_inde;
+	@ApiModelProperty(value = "单据内容:付款信息-其他表述 ")
+	private String fd_pay_other_inde;
 }

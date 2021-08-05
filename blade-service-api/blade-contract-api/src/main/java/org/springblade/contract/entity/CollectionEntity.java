@@ -54,6 +54,16 @@ public class CollectionEntity extends BaseEntity {
 	@ApiModelProperty(value = "付款信息-未税金额")
 	private Double payAmount;
 	/**
+	 * 付款信息-完工比例
+	 */
+	@ApiModelProperty(value = "付款信息-完工比例")
+	private String payRatio;
+	/**
+	 * 付款信息-其他表述
+	 */
+	@ApiModelProperty(value = "付款信息-其他表述")
+	private String payOther;
+	/**
 	 * 合同关联ID
 	 */
 	@ApiModelProperty(value = "合同关联ID")
