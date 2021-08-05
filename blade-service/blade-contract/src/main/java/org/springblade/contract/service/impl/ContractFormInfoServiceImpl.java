@@ -20,7 +20,6 @@ import org.springblade.contract.dto.middleground.*;
 import org.springblade.contract.entity.*;
 import org.springblade.contract.enums.ContractStatusEnum;
 import org.springblade.contract.enums.ContractTypeEnum;
-import org.springblade.contract.enums.TemplateCodeEnum;
 import org.springblade.contract.excel.ContractFormInfoImporter;
 import org.springblade.contract.excel.ContractFormInfoImporterEx;
 import org.springblade.contract.excel.importbatchdraft.ContractImportBatchDraftExcel;
@@ -2306,6 +2305,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public R singleSignIsNot(ContractFormInfoRequestVO contractFormInfo, FileVO fileVO) {
+		Map<Object,Boolean> mapE=new HashMap<>();
+		Map<Object,Boolean> mapS=new HashMap<>();
 		for (ContractCounterpartEntity counterpart : contractFormInfo.getCounterpart()) {
 			// 查查公司有没有申请电子章
 			CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
@@ -2326,10 +2327,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				boolean contractForm2 = "2".equals(contractFormInfo.getContractForm());
 				//不等于0就是没有电子签章
 				if ((!code || !available) && contractForm1) {
-					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
+					mapS.put(counterpart.getName(),false);
+//					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
 				}
 				if (code && available && contractForm2) {
-					return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
+					mapE.put(counterpart.getName(),true);
+//					return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
 				}
 			}
 		}
@@ -2354,12 +2357,42 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					boolean contractForm2 = "2".equals(contractFormInfo.getContractForm());
 					//不等于0就是没有电子签章
 					if ((!code || !available) && contractForm1) {
-						return R.data(1, seal.getFdFactname(), seal.getFdFactname() + "没有电子签章，请选择实体用印");
+						mapS.put(seal.getFdFactname(),false);
+//						return R.data(1, seal.getFdFactname(), seal.getFdFactname() + ",没有电子签章，请选择实体用印");
 					}
 					if (code && available && contractForm2) {
-						return R.data(1, seal.getFdFactname(), seal.getFdFactname() + "，有电子签章，请选择电子合同-我司平台");
+						mapE.put(seal.getFdFactname(),true);
+//						return R.data(1, seal.getFdFactname(), seal.getFdFactname() + ",有电子签章，请选择电子合同-我司平台");
 					}
 				}
+			}
+		}
+		if (contractFormInfo.getContractForm().equals(ContractTypeEnum.ELECTRONIC_CONTRACT_WE.getKey().toString())){
+			List<Object > mapSList=new ArrayList<>();
+			boolean status=Func.isNotEmpty(mapS);
+			if (status) {
+				Iterator iter = mapS.entrySet().iterator();
+				while (iter.hasNext()) {
+					Map.Entry entry = (Map.Entry) iter.next();
+					if (entry.getKey()!=null){
+						mapSList.add(entry.getKey());
+					}
+				}
+				return R.data(1, mapSList,JsonUtil.toJson(mapSList) + "没有电子签章，请选择实体用印");
+			}
+		}
+		if (contractFormInfo.getContractForm().equals(ContractTypeEnum.ENTITY_CONTRACT_WE.getKey().toString())){
+			List<Object > mapEList=new ArrayList<>();
+			boolean status=Func.isNotEmpty(mapE);
+			if (status) {
+				Iterator iter = mapE.entrySet().iterator();
+				while (iter.hasNext()) {
+					Map.Entry entry = (Map.Entry) iter.next();
+					if (entry.getKey()!=null){
+						mapEList.add(entry.getKey());
+					}
+				}
+				return R.data(1, mapEList,JsonUtil.toJson(mapEList) + ",有电子签章，请选择电子合同-我司平台");
 			}
 		}
 		String newFileDoc = "";
