@@ -9,7 +9,7 @@ import java.io.Serializable;
 public class TransferStationTokenVo implements Serializable {
 
 	@ApiModelProperty("响应状态码-200成功")
-	private String code;
+	private Integer code;
 
 	@ApiModelProperty("返回数据")
 	private String data;

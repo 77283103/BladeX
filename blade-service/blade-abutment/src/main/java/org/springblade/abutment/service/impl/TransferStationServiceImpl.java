@@ -62,7 +62,7 @@ public class TransferStationServiceImpl implements TransferStationService {
 		String json = post(transferStationProperties.getToken_url(),JsonUtil.toJson(paramMap),headers);
 		TransferStationTokenVo transferStationTokenVo = JsonUtil.parse(json, TransferStationTokenVo.class);
 		log.info("中台接口-获取token结果:{}",JsonUtil.toJson(transferStationTokenVo));
-		return transferStationTokenVo.getCode().equals(HttpStatus.OK)?transferStationTokenVo.getData():"";
+		return transferStationTokenVo.getCode() == HttpStatus.OK.value()?transferStationTokenVo.getData():"";
 	}
 
 
@@ -78,6 +78,5 @@ public class TransferStationServiceImpl implements TransferStationService {
 			return "";
 		}
 	}
-
 
 }
