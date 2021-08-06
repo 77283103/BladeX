@@ -14,6 +14,7 @@
         <result column="pay_amount" property="payAmount"/>
         <result column="pay_ratio" property="payRatio"/>
         <result column="pay_other" property="payOther"/>
+        <result column="pay_agreed" property="payAgreed"/>
         <result column="ref_contract_id" property="refContractId"/>
         <result column="ref_paymen_id" property="refPaymenId"/>
         <result column="is_deleted" property="isDeleted"/>
@@ -32,7 +33,7 @@
         pay_condition,
         is_receipt,
         pay_per,
-        pay_amount,pay_ratio,pay_other,
+        pay_amount,pay_ratio,pay_other,pay_agreed,
         ref_contract_id,ref_paymen_id,
         is_deleted,
         create_user,

@@ -33,4 +33,6 @@ public class CollectionMulti {
 	private String fd_pay_ratio_multi;
 	@ApiModelProperty(value = "单据内容:付款信息-其他表述 ")
 	private String fd_pay_other_multi;
+	@ApiModelProperty(value = "单据内容:付款信息-约定日期 ")
+	private String fd_pay_agreed_multi;
 }

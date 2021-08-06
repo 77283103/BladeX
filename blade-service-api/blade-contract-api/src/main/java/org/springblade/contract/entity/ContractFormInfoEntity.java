@@ -3,7 +3,6 @@ package org.springblade.contract.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
@@ -132,7 +131,11 @@ public class ContractFormInfoEntity extends BaseEntity {
 	 */
 	@ApiModelProperty(value = "付款信息-其他表述")
 	private Double payOther;
-
+	/**
+	 * 付款信息-约定日期
+	 */
+	@ApiModelProperty(value = "付款信息-约定日期")
+	private String payAgreed;
 	/**
 	 * 是否有自我延展的功能
 	 */
@@ -226,9 +229,9 @@ public class ContractFormInfoEntity extends BaseEntity {
 	private String isNotOther;
 
 	/**
-	 * 其它信息
+	 * 上传e钱宝的合同文本链接
 	 */
-	@ApiModelProperty(value = "其它信息")
+	@ApiModelProperty(value = "上传e钱宝的合同文本链接")
 	private String otherInformation;
 
 	/**
@@ -471,55 +474,6 @@ public class ContractFormInfoEntity extends BaseEntity {
 	@JsonFormat(pattern = DateUtil.PATTERN_DATE)
 	@ApiModelProperty(value = "归档日期")
 	private Date fileTime;
-
-	/**
-	 * 甲方名称
-	 */
-	@JsonProperty(value = "aName")
-	@ApiModelProperty(value = "甲方名称")
-	private String aName;
-	/**
-	 * 甲方联系人
-	 */
-	@JsonProperty(value = "aPerson")
-	@ApiModelProperty(value = "甲方联系人")
-	private String aPerson;
-	/**
-	 * 甲方地址
-	 */
-	@JsonProperty(value = "aAddress")
-	@ApiModelProperty(value = "甲方地址")
-	private String aAddress;
-	/**
-	 * 甲方联系方式
-	 */
-	@JsonProperty(value = "aTelephone")
-	@ApiModelProperty(value = "甲方联系方式")
-	private String aTelephone;
-	/**
-	 * 甲方指定邮箱
-	 */
-	@JsonProperty(value = "aEmail")
-	@ApiModelProperty(value = "甲方指定邮箱")
-	private String aEmail;
-	/**
-	 * 甲方银行账号
-	 */
-	@JsonProperty(value = "aBankNumber")
-	@ApiModelProperty(value = "甲方银行账号")
-	private Long aBankNumber;
-	/**
-	 * 甲方开户行名称
-	 */
-	@JsonProperty(value = "aBankName")
-	@ApiModelProperty(value = "甲方开户行名称")
-	private String aBankName;
-	/**
-	 * 甲方账号名称
-	 */
-	@JsonProperty(value = "aAccountName")
-	@ApiModelProperty(value = "甲方账号名称")
-	private String aAccountName;
 	/**
 	 * 起订量及说明
 	 */

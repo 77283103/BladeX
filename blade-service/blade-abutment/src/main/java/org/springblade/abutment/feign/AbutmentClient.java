@@ -952,6 +952,10 @@ public class AbutmentClient implements IAbutmentClient {
 				collectionInde.setFd_pay_ratio_inde(conI.getPayRatio());
 				//付款信息-其他表述
 				collectionInde.setFd_pay_other_inde(conI.getPayOther());
+				//付款信息-约定日期
+				if (Func.isNotEmpty(conI.getPayAgreed())){
+					collectionInde.setFd_pay_agreed_inde(conI.getPayAgreed());
+				}
 				indeList.add(collectionInde);
 			});
 			formValuesEntity.setFd_collection_inde(indeList);
@@ -1297,6 +1301,10 @@ public class AbutmentClient implements IAbutmentClient {
 					collectionInde.setFd_pay_ratio_multi(pI.getPayRatio());
 					//付款信息-其他表述
 					collectionInde.setFd_pay_other_multi(pI.getPayOther());
+					//付款信息-约定日期
+					if (Func.isNotEmpty(pI.getPayAgreed())){
+						collectionInde.setFd_pay_agreed_multi(pI.getPayAgreed());
+					}
 					multiList.add(collectionInde);
 				});
 //				pay.setFd_collection_multi(multiList);

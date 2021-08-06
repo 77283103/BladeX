@@ -48,6 +48,7 @@
         <result column="pay_amount" property="payAmount"/>
         <result column="pay_ratio" property="payRatio"/>
         <result column="pay_other" property="payOther"/>
+        <result column="pay_agreed" property="payAgreed"/>
         <result column="extension" property="extension"/>
         <result column="counterpart_person" property="counterpartPerson"/>
         <result column="rel_contract_id" property="relContractId"/>
@@ -61,14 +62,6 @@
         <result column="seal_number" property="sealNumber"/>
         <result column="file_time" property="fileTime"/>
         <result column="json" property="json"/>
-        <result column="a_name" property="aName"/>
-        <result column="a_person" property="aPerson"/>
-        <result column="a_address" property="aAddress"/>
-        <result column="a_telephone" property="aTelephone"/>
-        <result column="a_email" property="aEmail"/>
-        <result column="a_bank_number" property="aBankNumber"/>
-        <result column="a_bank_name" property="aBankName"/>
-        <result column="a_account_name" property="aAccountName"/>
         <result column="ekp_number" property="ekpNumber"/>
         <result column="file_person" property="filePerson"/>
         <result column="bank_code" property="bankCode"/>
@@ -120,7 +113,7 @@
         col_pay_type,
         col_pay_term,
         days,period_num,period_idx,pay_condition,is_receipt,
-        pay_per,pay_amount,pay_ratio,pay_other,
+        pay_per,pay_amount,pay_ratio,pay_other,pay_agreed,
         extension,
         counterpart_person,
         telephone_person,
@@ -135,14 +128,6 @@
         contract_template_id,
         contract_list_name,
         json,
-        a_name,
-        a_person,
-        a_address,
-        a_telephone,
-        a_email,
-        a_bank_number,
-        a_bank_name,
-        a_account_name,
         ekp_number,
         file_person,bank_code,bank_account_code,bank_account_name,bank_deposit_name,ywl_settlement,ywl_breach_of_contract,file_pdf
     </sql>
@@ -197,14 +182,6 @@
         a.contract_template_id,
         a.file_time,
         a.json,
-        a.a_name,
-        a.a_person,
-        a.a_address,
-        a.a_telephone,
-        a.a_email,
-        a.a_bank_number,
-        a.a_bank_name,
-        a.a_account_name
     </sql>
     <select id="selectById" resultMap="formInfoResultMap">
         SELECT

@@ -1279,7 +1279,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contractFormInfoResponseVO.setPerCollectPayList(perCollectPayService.findListByContractId(contractFormInfoResponseVO.getId()));
 
 		Contract contract = entityToMiddlegroundContract(contractFormInfoResponseVO);
-		log.info("合同转中台json:{}",JsonUtil.toJson(contract));
+		log.info("合同转中台json:{}", JsonUtil.toJson(contract));
 		return contractFormInfoResponseVO;
 	}
 
@@ -2305,8 +2305,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 	 */
 	@Override
 	public R singleSignIsNot(ContractFormInfoRequestVO contractFormInfo, FileVO fileVO) {
-		Map<Object,Boolean> mapE=new HashMap<>();
-		Map<Object,Boolean> mapS=new HashMap<>();
+		Map<Object, Boolean> mapE = new HashMap<>();
+		Map<Object, Boolean> mapS = new HashMap<>();
 		for (ContractCounterpartEntity counterpart : contractFormInfo.getCounterpart()) {
 			// 查查公司有没有申请电子章
 			CompanyInfoEntity companyInfoEntity = new CompanyInfoEntity();
@@ -2327,11 +2327,11 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 				boolean contractForm2 = "2".equals(contractFormInfo.getContractForm());
 				//不等于0就是没有电子签章
 				if ((!code || !available) && contractForm1) {
-					mapS.put(counterpart.getName(),false);
+					mapS.put(counterpart.getName(), false);
 //					return R.data(1, counterpart.getName(), counterpart.getName() + "没有电子签章，请选择实体用印");
 				}
 				if (code && available && contractForm2) {
-					mapE.put(counterpart.getName(),true);
+					mapE.put(counterpart.getName(), true);
 //					return R.data(1, counterpart.getName(), counterpart.getName() + "，有电子签章，请选择电子合同-我司平台");
 				}
 			}
@@ -2357,42 +2357,44 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 					boolean contractForm2 = "2".equals(contractFormInfo.getContractForm());
 					//不等于0就是没有电子签章
 					if ((!code || !available) && contractForm1) {
-						mapS.put(seal.getFdFactname(),false);
+						mapS.put(seal.getFdFactname(), false);
 //						return R.data(1, seal.getFdFactname(), seal.getFdFactname() + ",没有电子签章，请选择实体用印");
 					}
 					if (code && available && contractForm2) {
-						mapE.put(seal.getFdFactname(),true);
+						mapE.put(seal.getFdFactname(), true);
 //						return R.data(1, seal.getFdFactname(), seal.getFdFactname() + ",有电子签章，请选择电子合同-我司平台");
 					}
 				}
 			}
 		}
-		if (contractFormInfo.getContractForm().equals(ContractTypeEnum.ELECTRONIC_CONTRACT_WE.getKey().toString())){
-			List<Object > mapSList=new ArrayList<>();
-			boolean status=Func.isNotEmpty(mapS);
+		if (contractFormInfo.getContractForm().equals(ContractTypeEnum.ELECTRONIC_CONTRACT_WE.getKey().toString())) {
+			List<Object> mapSList = new ArrayList<>();
+			boolean status = Func.isNotEmpty(mapS);
 			if (status) {
 				Iterator iter = mapS.entrySet().iterator();
 				while (iter.hasNext()) {
 					Map.Entry entry = (Map.Entry) iter.next();
-					if (entry.getKey()!=null){
+					if (entry.getKey() != null) {
 						mapSList.add(entry.getKey());
 					}
 				}
-				return R.data(1, mapSList,JsonUtil.toJson(mapSList) + "没有电子签章，请选择实体用印");
+				return R.data(1, mapSList, JsonUtil.toJson(mapSList) + "没有电子签章，请选择实体用印");
 			}
 		}
-		if (contractFormInfo.getContractForm().equals(ContractTypeEnum.ENTITY_CONTRACT_WE.getKey().toString())){
-			List<Object > mapEList=new ArrayList<>();
-			boolean status=Func.isNotEmpty(mapE);
-			if (status) {
-				Iterator iter = mapE.entrySet().iterator();
-				while (iter.hasNext()) {
-					Map.Entry entry = (Map.Entry) iter.next();
-					if (entry.getKey()!=null){
-						mapEList.add(entry.getKey());
+		if (contractFormInfo.getContractForm().equals(ContractTypeEnum.ENTITY_CONTRACT_WE.getKey().toString())) {
+			if (mapE.size() == (contractFormInfo.getCounterpart().size() + (Func.isNull(contractFormInfo.getContractSeal())?0:contractFormInfo.getContractSeal().size()))) {
+				List<Object> mapEList = new ArrayList<>();
+				boolean status = Func.isNotEmpty(mapE);
+				if (status) {
+					Iterator iter = mapE.entrySet().iterator();
+					while (iter.hasNext()) {
+						Map.Entry entry = (Map.Entry) iter.next();
+						if (entry.getKey() != null) {
+							mapEList.add(entry.getKey());
+						}
 					}
+					return R.data(1, mapEList, JsonUtil.toJson(mapEList) + ",有电子签章，请选择电子合同-我司平台");
 				}
-				return R.data(1, mapEList,JsonUtil.toJson(mapEList) + ",有电子签章，请选择电子合同-我司平台");
 			}
 		}
 		String newFileDoc = "";
@@ -2625,7 +2627,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 			contractFormInfo.setFilePerson(contractFormInfo.getPersonContract());
 			contractFormInfo.setFileTime(new Date());
 			contractFormInfo.setContractStatus(ContractStatusEnum.SIGING.getKey().toString());
-			contractFormInfo=ContractFormInfoWrapper.build().entityQV(makeContractN(contractFormInfo));
+			contractFormInfo = ContractFormInfoWrapper.build().entityQV(makeContractN(contractFormInfo));
 		}
 		return contractFormInfo;
 	}
@@ -2672,8 +2674,8 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		return contractImportBatchDraftExcel;
 	}
 
-	public Contract entityToMiddlegroundContract(ContractFormInfoEntity contractFormInfoEntity){
-		if(null == contractFormInfoEntity){
+	public Contract entityToMiddlegroundContract(ContractFormInfoEntity contractFormInfoEntity) {
+		if (null == contractFormInfoEntity) {
 			return null;
 		}
 		//合同信息
@@ -2688,7 +2690,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		contract.setNo(contractFormInfoEntity.getContractNumber());
 		//向对方信息
 		List<Affiliate> affiliateList = new ArrayList<>();
-		if(Func.isNotEmpty(contractFormInfoEntity.getCounterpart())){
+		if (Func.isNotEmpty(contractFormInfoEntity.getCounterpart())) {
 			contractFormInfoEntity.getCounterpart().forEach(contractCounterpartEntity -> {
 				Affiliate affiliate = new Affiliate();
 				affiliate.setVend_orgcode(contractCounterpartEntity.getUnifiedSocialCreditCode());
@@ -2702,12 +2704,12 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		PayCondition payCondition = new PayCondition();
 		payCondition.setPay_method(contractFormInfoEntity.getColPayTerm());
 		List<PayDetail> payDetails = new ArrayList<>();
-		if(Func.isNotEmpty(contractFormInfoEntity.getCollection())){
+		if (Func.isNotEmpty(contractFormInfoEntity.getCollection())) {
 			contractFormInfoEntity.getCollection().forEach(collectionEntity -> {
 				payCondition.setPeriod_num(collectionEntity.getPeriodNum());
 				PayDetail payDetail = new PayDetail();
 				payDetail.setPay_condition(collectionEntity.getPayCondition());
-				payDetail.setPay_amount(Func.isNotEmpty(collectionEntity.getPayAmount())?new BigDecimal(collectionEntity.getPayAmount().toString()):new BigDecimal(0L));
+				payDetail.setPay_amount(Func.isNotEmpty(collectionEntity.getPayAmount()) ? new BigDecimal(collectionEntity.getPayAmount().toString()) : new BigDecimal(0L));
 				payDetail.setPay_date(null);
 				payDetail.setAccount_period(collectionEntity.getDays());
 				payDetail.setIs_receipt(collectionEntity.getIsReceipt());
@@ -2725,7 +2727,7 @@ public class ContractFormInfoServiceImpl extends BaseServiceImpl<ContractFormInf
 		bankArea.setBank_account_name(contractFormInfoEntity.getBankAccountName());
 		contract.setBank_area(bankArea);
 		//模板信息
-		List<ContractBody>contractBodyList = templateService.templateToMiddlegroundContractBody(contractFormInfoEntity.getContractTemplateId(),contractFormInfoEntity.getJson());
+		List<ContractBody> contractBodyList = templateService.templateToMiddlegroundContractBody(contractFormInfoEntity.getContractTemplateId(), contractFormInfoEntity.getJson());
 		contract.setBody(contractBodyList);
 		return contract;
 	}

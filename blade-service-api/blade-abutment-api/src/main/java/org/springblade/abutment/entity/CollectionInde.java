@@ -32,4 +32,6 @@ public class CollectionInde {
 	private String fd_pay_ratio_inde;
 	@ApiModelProperty(value = "单据内容:付款信息-其他表述 ")
 	private String fd_pay_other_inde;
+	@ApiModelProperty(value = "单据内容:付款信息-约定日期 ")
+	private String fd_pay_agreed_inde;
 }

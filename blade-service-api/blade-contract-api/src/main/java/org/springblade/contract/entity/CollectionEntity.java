@@ -64,6 +64,11 @@ public class CollectionEntity extends BaseEntity {
 	@ApiModelProperty(value = "付款信息-其他表述")
 	private String payOther;
 	/**
+	 * 付款信息-约定日期
+	 */
+	@ApiModelProperty(value = "付款信息-约定日期")
+	private String payAgreed;
+	/**
 	 * 合同关联ID
 	 */
 	@ApiModelProperty(value = "合同关联ID")
