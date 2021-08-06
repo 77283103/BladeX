@@ -1,10 +1,14 @@
 package org.springblade.abutment.service.impl;
 
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.fileupload.FileItem;
+import org.apache.commons.fileupload.FileItemFactory;
+import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.springblade.abutment.properties.TransferStationProperties;
 import org.springblade.abutment.service.TransferStationService;
 import org.springblade.abutment.vo.TransferStationTokenVo;
 import org.springblade.contract.dto.middleground.Contract;
+import org.springblade.core.excel.util.ExcelUtil;
 import org.springblade.core.tool.api.R;
 import org.springblade.core.tool.jackson.JsonUtil;
 import org.springblade.core.tool.utils.Func;
@@ -15,7 +19,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
