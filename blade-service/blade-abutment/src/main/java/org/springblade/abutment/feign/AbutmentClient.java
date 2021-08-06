@@ -948,6 +948,10 @@ public class AbutmentClient implements IAbutmentClient {
 				//比例
 				collectionInde.setFd_per(conI.getPayPer().toString());
 				collectionInde.setFd_pay_amount(conI.getPayAmount().toString());
+				//付款信息-完工比例
+				collectionInde.setFd_pay_ratio_inde(conI.getPayRatio());
+				//付款信息-其他表述
+				collectionInde.setFd_pay_other_inde(conI.getPayOther());
 				indeList.add(collectionInde);
 			});
 			formValuesEntity.setFd_collection_inde(indeList);
@@ -1289,6 +1293,10 @@ public class AbutmentClient implements IAbutmentClient {
 					//比例
 					collectionInde.setFd_per_multi(pI.getPayPer().toString());
 					collectionInde.setFd_pay_amount_multi(pI.getPayAmount().toString());
+					//付款信息-完工比例
+					collectionInde.setFd_pay_ratio_multi(pI.getPayRatio());
+					//付款信息-其他表述
+					collectionInde.setFd_pay_other_multi(pI.getPayOther());
 					multiList.add(collectionInde);
 				});
 //				pay.setFd_collection_multi(multiList);

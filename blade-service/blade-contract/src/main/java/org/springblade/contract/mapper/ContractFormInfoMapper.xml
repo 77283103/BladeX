@@ -46,6 +46,8 @@
         <result column="is_receipt" property="isReceipt"/>
         <result column="pay_per" property="payPer"/>
         <result column="pay_amount" property="payAmount"/>
+        <result column="pay_ratio" property="payRatio"/>
+        <result column="pay_other" property="payOther"/>
         <result column="extension" property="extension"/>
         <result column="counterpart_person" property="counterpartPerson"/>
         <result column="rel_contract_id" property="relContractId"/>
@@ -118,7 +120,7 @@
         col_pay_type,
         col_pay_term,
         days,period_num,period_idx,pay_condition,is_receipt,
-        pay_per,pay_amount,
+        pay_per,pay_amount,pay_ratio,pay_other,
         extension,
         counterpart_person,
         telephone_person,

@@ -66,7 +66,7 @@ public class FormValuesEntity implements Serializable {
 	private String fd_payee_condition;
 	@ApiModelProperty(value = "单据内容:签约后收款|3  需要填写")
 	private String fd_payee_days;
-	@ApiModelProperty(value = "收款明细列表")
+	@ApiModelProperty(value = "收款明细列表-独立起草、范本起草")
 	private List<CollectionInde> fd_collection_inde;
 	@ApiModelProperty(value = "单据内容:合同未税金额(yyyy-MM-dd文本格式)")
 	private String fd_taxed_price;
@@ -116,7 +116,7 @@ public class FormValuesEntity implements Serializable {
 	private List<MultiRo> fd_identity;
 	@ApiModelProperty(value = "多方收付款信息（关联表）")
 	private List<MultiPay> fd_multipay;
-	@ApiModelProperty(value = "收款明细列表")
+	@ApiModelProperty(value = "收款明细列表-多方起草")
 	private List<CollectionMulti> fd_collection_multi;
 	@ApiModelProperty(value = "多方保证金信息（关联表）")
 	private List<MultiBon> fd_deposit;

@@ -29,4 +29,8 @@ public class CollectionMulti {
 	private String fd_pay_amount_multi;
 	@ApiModelProperty(value = "单据内容:收款明细  需要填写")
 	private String fd_pay_days_multi;
+	@ApiModelProperty(value = "单据内容:付款信息-完工比例")
+	private String fd_pay_ratio_multi;
+	@ApiModelProperty(value = "单据内容:付款信息-其他表述 ")
+	private String fd_pay_other_multi;
 }

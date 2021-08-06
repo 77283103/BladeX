@@ -2,7 +2,6 @@ package org.springblade.abutment.service.impl;
 
 
 import cn.hutool.crypto.SecureUtil;
-import com.baomidou.mybatisplus.core.incrementer.DefaultIdentifierGenerator;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springblade.abutment.entity.EkpSynDataEntity;
@@ -84,7 +83,7 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 			userDepartHandle(deptMap,userMap,ekpSyncInfoVo.getUserList());
 		}
 	}
-
+	@Override
 	public EkpSyncInfoVo getEkpSyncInfo(EkpSyncRequestVO ekpSyncRequestVO){
 		//设置请求头
 		HttpHeaders headers = new HttpHeaders();
@@ -335,10 +334,10 @@ public class EkpUserDeptServiceImpl implements EkpUserDeptService {
 		return sbf.toString();
 	}
 
-	public static void main(String[] args) {
-		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\user_json.txt");
-		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
-		System.out.println("");
-	}
+//	public static void main(String[] args) {
+//		String json = readFileContent("C:\\Users\\woche\\Desktop\\文档\\user_json.txt");
+//		EkpSyncInfoVo ekpSyncInfoVo = JsonUtil.parse(json,EkpSyncInfoVo.class);
+//		System.out.println("");
+//	}
 
 }
